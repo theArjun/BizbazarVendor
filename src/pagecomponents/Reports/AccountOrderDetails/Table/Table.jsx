@@ -6,6 +6,9 @@ import { Tag } from "antd";
 import { Dropdown, Menu, Space } from "antd";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 import OrderStatusModal from "../../../../component/OrderStatusModal/OrderStatusModal";
+import { CSVLink } from "react-csv";
+import { useReactToPrint } from "react-to-print";
+import ReactToPrint from "react-to-print";
 
 const ViewOrderTable = ({
   status,
@@ -19,6 +22,10 @@ const ViewOrderTable = ({
   page1,
 }) => {
   const windowSize = useWindowSize();
+
+  const [print, setPrint] = useState(false);
+
+  const componentRef = useRef();
 
   const navigate = useNavigate();
 
@@ -72,6 +79,13 @@ const ViewOrderTable = ({
       minute: "numeric",
     });
     return monthyear + ", " + time;
+  };
+
+  const scrollHandel = () => {
+    if (!print) {
+      return { y: windowSize.height > 670 ? 450 : 300, x: 1000 };
+    }
+    return {};
   };
 
   const columns = [
@@ -162,26 +176,43 @@ const ViewOrderTable = ({
     setOrder([]);
   }
 
+  const printing = useReactToPrint({
+    content: () => componentRef.current,
+    onAfterPrint: () => setPrint(false),
+  });
+
+  const handlePrint = () => {
+    setPrint(true);
+    const time = setTimeout(printing, 10);
+    return () => clearTimeout(time);
+  };
+
+  console.log(print);
   return (
     <div>
       <Table
-        id="hello"
+        id="reportaccount"
         columns={columns}
+        ref={componentRef}
         loading={loading}
         dataSource={order}
         pagination={false}
-        scroll={{
-          y: windowSize.height > 670 ? 400 : 300,
-          x: 1000,
-        }}
+        scroll={scrollHandel()}
         onChange={onChange}
       />
-      {/* <div className={styles.gross_total}>
-        <p>Gross Total: रु {grossTotal()}</p>
-        <h4>
-          Total Paid <span style={{ color: "green" }}>रु{total()}</span>
-        </h4>
-      </div> */}
+      <button onClick={handlePrint}>print</button>
+
+      <Button type="primary">
+        <CSVLink
+          filename={"Expense_Table.csv"}
+          data={order}
+          className="btn btn-primary"
+          onClick={() => {}}
+        >
+          Export to CSV
+        </CSVLink>
+      </Button>
+
       <OrderStatusModal
         statusModalOpen={statusModalOpen}
         setStatusModalOpen={setStatusModalOpen}
