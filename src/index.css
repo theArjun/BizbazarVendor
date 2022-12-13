@@ -1,0 +1,98 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+.light {
+  --theme-page-background: #f6f6f6;
+  --theme-page-background-sub: #ffffff;
+  --box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  --border-radus: 4px;
+  --top-padding: 70px;
+}
+
+.dark {
+  --theme-page-background: #111;
+}
+
+.container {
+  background-color: var(--theme-page-background);
+  color: var(--theme-page-text);
+  height: 100vh;
+  width: 100%;
+  overflow: hidden !important;
+}
+
+/* .container::-webkit-scrollbar {
+  display: none !important;
+} */
+
+@media (max-width: 1400px) {
+  .container {
+    padding-bottom: 80px;
+  }
+}
+
+body {
+  margin: 0 !important;
+  font-family: "Inter", sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+body::-webkit-scrollbar {
+  display: none !important;
+}
+
+.app {
+  /* width: 100%; */
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* padding-top: 70px; */
+}
+
+@media (min-width: 576px) {
+  .app {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .app {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .app {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .app {
+    max-width: 1140px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .app {
+    max-width: 1450px;
+  }
+}
