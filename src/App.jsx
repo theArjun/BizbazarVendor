@@ -34,6 +34,11 @@ function App() {
             element={<SuspenseWrapper path="pages/Home/Home" />}
             path="/"
             exact
+          /> 
+          <Route
+            element={<SuspenseWrapper path="pages/Profile/Profile" />}
+            path="/Edit Profile"
+            exact
           />
           {/**Order routing */}
           {/**view orders */}
