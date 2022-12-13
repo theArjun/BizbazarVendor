@@ -127,8 +127,10 @@ function App() {
           {/**Reports*/}
           {/**Account Ordes Details*/}
           <Route
-            element={<>Account Ordes Details</>}
-            path="/Reports/Account Ordes Details"
+            element={
+              <SuspenseWrapper path="pages/Reports/AccountOrderDetails/AccountOrderDetails" />
+            }
+            path="/Reports/Account Orders Details"
           ></Route>
           {/**Gift Cards*/}
           <Route element={<>Gift Cards</>} path="/Reports/Gift Cards"></Route>

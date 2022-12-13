@@ -1,72 +1,125 @@
 import React, { useEffect, useState, forwardRef } from "react";
 import styles from "./Search.module.css";
-import { Card, Form, Input, Button } from "antd";
+import { Card, Form, Input, Button, Radio, DatePicker } from "antd";
+import { Dropdown, Space } from "antd";
+import { BsChevronDown } from "react-icons/bs";
 
-const ViewOrderSearch = ({ setSearchValue }) => {
+import "./index.css";
+
+const Search = ({ setSearchValue }) => {
   const [form] = Form.useForm();
+  const { RangePicker } = DatePicker;
 
-  const onFinish = (values) => {};
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-
-  const onvaluechange = (a, values) => {
-    setSearchValue(values);
-  };
+  const items = [
+    {
+      key: "1",
+      label: (
+        <a
+        // target="_blank"
+        // rel="noopener noreferrer"
+        // href="https://www.antgroup.com"
+        >
+          1st menu item
+        </a>
+      ),
+    },
+    {
+      key: "2",
+      label: (
+        <a
+        // target="_blank"
+        // rel="noopener noreferrer"
+        // href="https://www.aliyun.com"
+        >
+          2nd menu item
+        </a>
+      ),
+    },
+    {
+      key: "3",
+      label: (
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.luohanacademy.com"
+        >
+          3rd menu item
+        </a>
+      ),
+    },
+  ];
 
   return (
-    <div className={styles.container}>
-      <Card bordered={true}>
-        <Form
-          layout="vertical"
-          form={form}
-          className={styles.form}
-          name="basic"
-          wrapperCol={{}}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          onValuesChange={onvaluechange}
-          autoComplete="off"
-        >
-          <div className={styles.search_inputs}>
-            <Form.Item id="customer" label="Customer" name="customer">
-              <Input type="text" />
-            </Form.Item>
-            <Form.Item id="email" label="E-mail" name="email">
-              <Input type="text" />
-            </Form.Item>
-            <Form.Item id="phone" label="Phone" name="phone">
-              <Input type="tel" />
-            </Form.Item>
-            <Form.Item id="orderid" label="Order Id" name="orderid">
-              <Input type="tel" />
-            </Form.Item>
+    <div className={styles.container} id="changeHere">
+      <Card>
+        <div className={styles.formcolumn}>
+          <label>
+            Order No.
+            <Input type="text" />
+          </label>
+          <label>
+            Customer
+            <Input type="text" />
+          </label>
+          <label>
+            Customer phone
+            <Input type="text" />
+          </label>
+          <label>
+            Order status
+            <Dropdown
+              menu={{
+                items,
+              }}
+              placement="bottom"
+            >
+              <Button className={styles.dropdownbutton}>
+                bottom <BsChevronDown className={styles.icon} />{" "}
+              </Button>
+            </Dropdown>
+          </label>
+          <label>
+            Payment method
+            <Dropdown
+              menu={{
+                items,
+              }}
+              placement="bottom"
+            >
+              <Button className={styles.dropdownbutton}>
+                bottom <BsChevronDown className={styles.icon} />
+              </Button>
+            </Dropdown>
+          </label>
+          <label>
+            <div>Account Status</div>
 
+            <Dropdown
+              menu={{
+                items,
+              }}
+              placement="bottom"
+            >
+              <Button className={styles.dropdownbutton}>
+                bottom <BsChevronDown className={styles.icon} />
+              </Button>
+            </Dropdown>
+          </label>
+          <label>
+            <div style={{ marginBottom: "3px" }}>Account Status</div>
             <div>
-              <label>Total (रु)</label>
-              <div className={styles.price_container}>
-                <Form.Item
-                  id="min-price"
-                  name="min_price"
-                  style={{ width: "80px" }}
-                >
-                  <Input type="number" />
-                </Form.Item>{" "}
-                <Form.Item>-</Form.Item>
-                <Form.Item
-                  id="max-price"
-                  name="max_price"
-                  style={{ width: "80px" }}
-                >
-                  <Input type="number" />
-                </Form.Item>
-              </div>
+              <Radio>Order Created Date</Radio>
+              <Radio>Settlement Date</Radio>
             </div>
-          </div>
-        </Form>
+          </label>
+          <label>
+            RangePicker
+            <RangePicker />
+          </label>
+        </div>
       </Card>
     </div>
   );
 };
 
-export default ViewOrderSearch;
+export default Search;

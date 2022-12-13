@@ -1,10 +1,12 @@
 import React, { useRef, useState, useCallback } from "react";
 import { Breadcrumb } from "antd";
 import styles from "./AccountOrderDetails.module.css";
-import { ViewOrdersSearch, ViewOrdersTable } from "../..";
+
 import { useEffect } from "react";
 import { apicall } from "../../../utils/apicall/apicall";
 import useDebounce from "../../../utils/Hooks/useDebounce";
+import AccountOrderDetailsSearch from "./../../../pagecomponents/Reports/AccountOrderDetails/Search/Search";
+import AccountOrderDetailsTable from "../../../pagecomponents/Reports/AccountOrderDetails/Table/Table";
 
 const ViewOrders = () => {
   const [sValue, setSearchValue] = useState({});
@@ -74,7 +76,7 @@ const ViewOrders = () => {
 
   const getUrl = (values) => {
     console.log(sValue);
-    let newUrl = "vendors/62/orders?is_search=Y";
+    let newUrl = "orders?is_search=Y";
     if (values?.customer) {
       newUrl = newUrl + "&cname=" + values.customer;
     }
@@ -141,12 +143,12 @@ const ViewOrders = () => {
         </Breadcrumb.Item>
         <Breadcrumb.Item>View Orders</Breadcrumb.Item>
       </Breadcrumb>
-      <ViewOrdersSearch
+      <AccountOrderDetailsSearch
         order={order}
         status={status}
         setSearchValue={setSearchValue}
       />
-      <ViewOrdersTable
+      <AccountOrderDetailsTable
         order={order}
         status={status}
         page1={page1}

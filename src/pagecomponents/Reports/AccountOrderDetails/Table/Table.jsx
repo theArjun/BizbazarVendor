@@ -6,7 +6,6 @@ import { Tag } from "antd";
 import { Dropdown, Menu, Space } from "antd";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 import OrderStatusModal from "../../../../component/OrderStatusModal/OrderStatusModal";
-import "./index.css";
 
 const ViewOrderTable = ({
   status,
@@ -172,17 +171,17 @@ const ViewOrderTable = ({
         dataSource={order}
         pagination={false}
         scroll={{
-          y: windowSize.height > 670 ? 450 : 300,
+          y: windowSize.height > 670 ? 400 : 300,
           x: 1000,
         }}
         onChange={onChange}
       />
-      <div className={styles.gross_total}>
+      {/* <div className={styles.gross_total}>
         <p>Gross Total: रु {grossTotal()}</p>
         <h4>
           Total Paid <span style={{ color: "green" }}>रु{total()}</span>
         </h4>
-      </div>
+      </div> */}
       <OrderStatusModal
         statusModalOpen={statusModalOpen}
         setStatusModalOpen={setStatusModalOpen}
