@@ -1,0 +1,32 @@
+.product_info{
+    display: flex;
+    /* align-items: center; */
+}
+.product_name{
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.icons{
+    cursor: pointer;
+    color: gray;
+    border: 1px solid transparent;
+    padding: 3px 10px;
+    
+    border-radius: 10px;
+}
+.icons:hover{
+    border: 1px solid gray;
+    padding: 3px 10px;
+    border-radius: 10px;
+}
+.icons::before{
+    content:"\f013";
+}
+.order_status{
+    display: flex;
+    flex-direction: column;
+}
+.gross_total{
+    float: right;
+}

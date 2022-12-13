@@ -1,0 +1,42 @@
+.container {
+  width: 100%;
+  background-color: white;
+  box-shadow: var(--box-shadow);
+  /* padding: 18px 0; */
+  border-radius: 5px;
+  margin-right: 1em;
+  height: fit-content;
+  padding: 10px;
+  /* padding-top: 10px !important; */
+}
+
+.divrow {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+}
+
+.gauge {
+  display: flex;
+  align-items: center;
+}
+
+.projectplan > span {
+  margin-left: 70px;
+  font-weight: 600;
+  opacity: 0.9;
+  color: #0c0931;
+}
+
+.projectplan {
+  margin-top: 10px;
+}
+
+.label1 {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.label2 {
+  font-size: 12px;
+  transform: translateY(-3px) !important;
+}

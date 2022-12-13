@@ -1,0 +1,32 @@
+.container {
+  /* height: 100vh; */
+  /* background-color: aquamarine; */
+  width: 100%;
+  /* display: flex; */
+  padding-top: 78px;
+}
+/* 
+.midContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.navContain {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: aqua;
+
+}
+
+.outletContain {
+} */
+
+.midContainer {
+  /* height: 90vh; */
+  overflow: scroll;
+}
+
+.midContainer::-webkit-scrollbar {
+  display: none !important;
+}
