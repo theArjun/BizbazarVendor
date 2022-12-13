@@ -1,0 +1,47 @@
+.container {
+  background-color: #fff;
+  box-shadow: var(--box-shadow);
+  border-radius: 4px;
+  padding: 10px 0 0 10px;
+}
+
+.heading {
+  font-size: 20px;
+  font-weight: 600;
+  opacity: 0.6;
+}
+
+.tabHeadingContainer {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.tab {
+  text-transform: capitalize;
+  margin: 1px 3px;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: rgba(128, 128, 128, 0.138);
+  padding: 7px;
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.601);
+  cursor: pointer;
+}
+
+.activeTab {
+  background: linear-gradient(
+    118deg,
+    #7367f0,
+    rgba(115, 103, 240, 0.7)
+  ) !important;
+  color: white;
+}
+
+.tableWrapper {
+  margin-top: 10px;
+}
+
+.mt {
+  margin-top: 15px;
+}
