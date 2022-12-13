@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Navbar.module.css";
 import { navItem } from "./navitem";
-import { Button, Space } from "antd";
 import cx from "classnames";
 import { HiChevronDown } from "react-icons/hi";
 import { useNavigate, useLocation } from "react-router-dom";

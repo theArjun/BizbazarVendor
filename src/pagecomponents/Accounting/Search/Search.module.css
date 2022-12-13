@@ -60,3 +60,8 @@ input[type=number] {
 .right_card_body > h5 > span.red{
   color: red;
 }
+@media (max-width: 799px) {
+  .right_card {
+    display: none;
+  }
+}
