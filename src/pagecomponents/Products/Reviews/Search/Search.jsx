@@ -12,6 +12,9 @@ const Search = () => {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+  const onValueChange=(a, values)=>{
+    console.log(values)
+  }
   const onChange = (value) => {
     console.log(`selected ${value}`);
   };
@@ -27,9 +30,7 @@ const Search = () => {
           form={form}
           className={styles.form}
           name="basic"
-          // labelCol={{
-          //   span: 8,
-          // }}
+         onValuesChange={onValueChange}
           wrapperCol={{}}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
@@ -69,6 +70,7 @@ const Search = () => {
               id="rating"
               label="Rating"
               name="rating"
+              style={{width:'130px'}}
             >
             <Select
             showSearch
@@ -179,10 +181,6 @@ const Search = () => {
               },
             ]}
           />
-          </Form.Item>
-          <Form.Item  className={styles.search_btn}
-          >
-          <Button htmlType="submit">Search</Button>
           </Form.Item>
           </div>
         

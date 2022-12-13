@@ -107,7 +107,7 @@ function App() {
             path="/Marketing/Product Bundles"
           ></Route>
           {/**Accounting*/}
-          <Route element={<>Accounting</>} path="/Accounting"></Route>
+          <Route element={<SuspenseWrapper path="pages/Accounting/Accounting"/>} path="/Accounting"></Route>
           {/**Setting*/}
           {/**Shipping Methods*/}
           <Route

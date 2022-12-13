@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Search from '../../../pagecomponents/Products/Reviews/Search/Search';
-import { ProductTable, ReviewSearch } from '../..';
+import { ReviewSearch, ReviewTable } from '../..';
 import styles from './Reviews.module.css'
 import { Breadcrumb } from 'antd'
 const Reviews = () => {
@@ -14,7 +14,7 @@ const Reviews = () => {
     <Breadcrumb.Item>Reviews</Breadcrumb.Item>
   </Breadcrumb>
   <ReviewSearch />
-  <ProductTable/>
+  <ReviewTable/>
     </div>
   )
 }
