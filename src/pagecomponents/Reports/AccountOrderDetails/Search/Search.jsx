@@ -65,7 +65,7 @@ const Search = ({ setSearchValue }) => {
             Customer phone
             <Input type="text" />
           </label>
-          <label>
+          {/* <label>
             Order status
             <Dropdown
               menu={{
@@ -77,7 +77,7 @@ const Search = ({ setSearchValue }) => {
                 bottom <BsChevronDown className={styles.icon} />{" "}
               </Button>
             </Dropdown>
-          </label>
+          </label> */}
           <label>
             Payment method
             <Dropdown
@@ -105,13 +105,13 @@ const Search = ({ setSearchValue }) => {
               </Button>
             </Dropdown>
           </label>
-          <label>
+          {/* <label>
             <div style={{ marginBottom: "3px" }}>Account Status</div>
             <div>
               <Radio>Order Created Date</Radio>
               <Radio>Settlement Date</Radio>
             </div>
-          </label>
+          </label> */}
           <label>
             RangePicker
             <RangePicker />

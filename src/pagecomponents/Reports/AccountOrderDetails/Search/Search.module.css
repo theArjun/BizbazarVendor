@@ -45,7 +45,7 @@ input[type="number"] {
 }
 
 .formcolumn > label {
-  width: 18%;
+  width: 200px;
   margin: 20px;
 }
 .dropdownbutton {
@@ -56,4 +56,11 @@ input[type="number"] {
   transform: translate(0, 3px);
   margin-left: 3px;
   font-weight: 500;
+}
+
+@media (max-width: 1400px) {
+  .formcolumn > label {
+    width: 160px;
+    margin: 10px;
+  }
 }

@@ -10,7 +10,7 @@ import { CSVLink } from "react-csv";
 import { useReactToPrint } from "react-to-print";
 import ReactToPrint from "react-to-print";
 
-const ViewOrderTable = ({
+const AccountOrderDetailsTable = ({
   status,
   order,
   // setPage,
@@ -79,13 +79,6 @@ const ViewOrderTable = ({
       minute: "numeric",
     });
     return monthyear + ", " + time;
-  };
-
-  const scrollHandel = () => {
-    if (!print) {
-      return { y: windowSize.height > 670 ? 450 : 300, x: 1000 };
-    }
-    return {};
   };
 
   const columns = [
@@ -193,32 +186,49 @@ const ViewOrderTable = ({
       <Table
         id="reportaccount"
         columns={columns}
-        ref={componentRef}
         loading={loading}
         dataSource={order}
         pagination={false}
-        scroll={scrollHandel()}
+        scroll={{ y: windowSize.height > 670 ? 600 : 320, x: 1000 }}
         onChange={onChange}
       />
-      <button onClick={handlePrint}>print</button>
-
-      <Button type="primary">
-        <CSVLink
-          filename={"Expense_Table.csv"}
-          data={order}
-          className="btn btn-primary"
-          onClick={() => {}}
-        >
-          Export to CSV
-        </CSVLink>
-      </Button>
+      <div className={styles.positionabsolute}>
+        <Button className={styles.print} onClick={handlePrint}>
+          print
+        </Button>
+        <Button>
+          <CSVLink
+            filename={"Expense_Table.csv"}
+            data={order}
+            className="btn btn-primary"
+            onClick={() => {}}
+          >
+            Export to CSV
+          </CSVLink>
+        </Button>
+      </div>
 
       <OrderStatusModal
         statusModalOpen={statusModalOpen}
         setStatusModalOpen={setStatusModalOpen}
       />
+      {print && <div className={styles.margintop} />}
+      {print && (
+        <Table
+          id="reporprintTableaccount1"
+          className={styles.printTable}
+          style={{ zIndex: -1 }}
+          columns={columns}
+          ref={componentRef}
+          loading={loading}
+          dataSource={order}
+          pagination={false}
+          // scroll={{ y: windowSize.height > 670 ? 450 : 300, x: 1000 }}
+          onChange={onChange}
+        />
+      )}
     </div>
   );
 };
 
-export default ViewOrderTable;
+export default AccountOrderDetailsTable;

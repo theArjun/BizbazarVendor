@@ -8,7 +8,7 @@ import useDebounce from "../../../utils/Hooks/useDebounce";
 import AccountOrderDetailsSearch from "./../../../pagecomponents/Reports/AccountOrderDetails/Search/Search";
 import AccountOrderDetailsTable from "../../../pagecomponents/Reports/AccountOrderDetails/Table/Table";
 
-const ViewOrders = () => {
+const AccountOrderDetails = () => {
   const [sValue, setSearchValue] = useState({});
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState([]);
@@ -165,4 +165,4 @@ const ViewOrders = () => {
   );
 };
 
-export default ViewOrders;
+export default AccountOrderDetails;
