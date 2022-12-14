@@ -79,6 +79,14 @@ function TopNavbar() {
       >
         Edit profile
       </div>
+       <div
+        className={styles.dropdownItems}
+        onClick={() => {
+          navigate('SellerInformation')
+        }}
+      >
+        Seller info
+      </div>
           <div
             className={styles.dropdownItems}
             onClick={() => {

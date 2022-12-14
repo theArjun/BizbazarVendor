@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Space, Table, Dropdown, Image,Skeleton} from "antd";
+import { Space, Table, Dropdown, Image,notification} from "antd";
 import styles from "./Table.module.css";
 import { DownOutlined } from "@ant-design/icons";
 import { apicall } from "../../../utils/apicall/apicall";
@@ -15,6 +15,7 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const navigate=useNavigate();
   const windowSize = useWindowSize();
+  const [api, contextHolder] = notification.useNotification();
   useEffect(() => {
     document 
     .querySelector("#product > div > div.ant-table-body")                
@@ -26,6 +27,14 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
         ?.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
+
+  // This is used to alert user for any <information></information>
+  const openNotificationWithIcon = (type, message) => {
+    api[type]({
+      message: message,
+      placement: "bottomRight",
+    });
+  };
   // Delete data
   const deleteProduct = async (id) => {
     // perform api call to retrieve data
@@ -68,8 +77,13 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
         const allData = await apicall({
           url: `vendors/62/products/`,
         });
-        // console.log(allData)|
         await dispatch(loadTableData(allData.data.products));
+        // Seccess message
+        openNotificationWithIcon("success", "Product status update successfully!");
+      }
+      else {
+        // throw error message
+        openNotificationWithIcon("error", "Failed to update product status!");
       }
     }, 500);
     return () => clearTimeout(timeOutId);
@@ -256,6 +270,7 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
   
   return (
     <div>
+    {contextHolder}
       <Table
         id='product'
         loading={loading}
