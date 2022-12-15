@@ -1,13 +1,7 @@
 import React, { lazy, Suspense } from "react";
 
 const SuspenseWrapper = (props) => {
-  const LazyComponent = lazy(() => import(`./../../${props.path}`));
-
-  return (
-    <Suspense fallback={<div>..loading</div>}>
-      <LazyComponent />
-    </Suspense>
-  );
+  return <Suspense fallback={<div>..loading</div>}>{props.children}</Suspense>;
 };
 
 export default SuspenseWrapper;

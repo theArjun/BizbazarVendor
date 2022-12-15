@@ -180,7 +180,6 @@ const AccountOrderDetailsTable = ({
     return () => clearTimeout(time);
   };
 
-  console.log(print);
   return (
     <div>
       <Table

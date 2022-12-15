@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { lazy, useContext, useEffect } from "react";
 import "./App.css";
 import cx from "classnames";
 import { useDispatch } from "react-redux";
@@ -9,6 +9,45 @@ import PrivateRoutes from "./utils/PrivateRoutes";
 import { loadTableData } from "./redux/features/products/productSlice";
 import { saveCategories } from "./redux/features/products/productSlice";
 import { apicall } from "./utils/apicall/apicall";
+import { Button, Result } from "antd";
+
+const Home = lazy(() => import("./pages/Home/Home"));
+const ViewOrders = lazy(() => import("./pages/Orders/ViewOrders/ViewOrders"));
+const CallRequests = lazy(() =>
+  import("./pages/Orders/CallRequests/CallRequests")
+);
+const ReturnRequests = lazy(() =>
+  import("./pages/Orders/ReturnRequests/ReturnRequests")
+);
+const Products = lazy(() => import("./pages/Product/Products"));
+
+const AddProduct = lazy(() => import("./pages/Product/AddProduct/AddProduct"));
+
+const Edit = lazy(() => import("./pages/Product/Edit/Edit"));
+
+const Reviews = lazy(() => import("./pages/Product/Reviews/Reviews"));
+
+const CuntomerCommunication = lazy(() =>
+  import("./pages/CuntomerCommunication/CuntomerCommunication")
+);
+
+const Promotions = lazy(() => import("./pages/Promotions/Promotions"));
+
+const ProductBundles = lazy(() =>
+  import("./pages/ProductBundles/ProductBundles")
+);
+
+const Accounting = lazy(() => import("./pages/Accounting/Accounting"));
+
+const OrderDetails = lazy(() =>
+  import("./pages/Orders/OrderDetails/OrderDetails")
+);
+
+const Login = lazy(() => import("./pages/Login/Login"));
+const AccountOrderDetails = lazy(() =>
+  import("./pages/Reports/AccountOrderDetails/AccountOrderDetails")
+);
+
 function App() {
   const dispatch = useDispatch();
   dispatch(loadTableData);
@@ -30,7 +69,11 @@ function App() {
         <Route element={<PrivateRoutes />}>
           {/** Dashboard */}
           <Route
-            element={<SuspenseWrapper path="pages/Home/Home" />}
+            element={
+              <SuspenseWrapper>
+                <Home />
+              </SuspenseWrapper>
+            }
             path="/"
             exact
           />
@@ -38,77 +81,111 @@ function App() {
           {/**view orders */}
           <Route
             element={
-              <SuspenseWrapper path="pages/Orders/ViewOrders/ViewOrders" />
+              <SuspenseWrapper>
+                <ViewOrders />
+              </SuspenseWrapper>
             }
             path="/orders/View Orders"
           ></Route>
           {/** Cancel orders*/}
           <Route
             element={
-              <SuspenseWrapper path="pages/Orders/CallRequests/CallRequests" />
+              <SuspenseWrapper>
+                <CallRequests />
+              </SuspenseWrapper>
             }
             path="/orders/Call Request"
           ></Route>{" "}
           {/** Return Request*/}
           <Route
             element={
-              <SuspenseWrapper path="pages/Orders/ReturnRequests/ReturnRequests" />
+              <SuspenseWrapper>
+                <ReturnRequests />
+              </SuspenseWrapper>
             }
             path="/orders/Return Request"
           ></Route>
           {/** product routing */}
           <Route
-            element={<SuspenseWrapper path="pages/Product/Products" />}
+            element={
+              <SuspenseWrapper>
+                <Products />
+              </SuspenseWrapper>
+            }
             path="/products/Products"
           ></Route>
           {/** product add  */}
           <Route
             element={
-              <SuspenseWrapper path="pages/Product/AddProduct/AddProduct" />
+              <SuspenseWrapper>
+                <AddProduct />
+              </SuspenseWrapper>
             }
             path="/products/Products/Add Product"
           ></Route>{" "}
           {/** product edit  */}
           <Route
-            element={<SuspenseWrapper path="pages/Product/Edit/Edit" />}
+            element={
+              <SuspenseWrapper>
+                <Edit />
+              </SuspenseWrapper>
+            }
             path="/products/Products/Edit Product"
           ></Route>
           {/** product Reviews */}
           <Route
-            element={<SuspenseWrapper path="pages/Product/Reviews/Reviews" />}
+            element={
+              <SuspenseWrapper>
+                <Reviews />
+              </SuspenseWrapper>
+            }
             path="/products/Reviews"
           ></Route>
           {/**Message Center */}
           {/**Customer Commnunications */}
           <Route
             element={
-              <SuspenseWrapper path="pages/CuntomerCommunication/CuntomerCommunication" />
+              <SuspenseWrapper>
+                <CuntomerCommunication />
+              </SuspenseWrapper>
             }
             path="/Message Center/Customer Commnunications"
           ></Route>
           {/**Admins Communications*/}
           <Route
             element={
-              <SuspenseWrapper path="pages/AdminsCommunications/AdminsCommunications" />
+              <SuspenseWrapper>
+                <Promotions />
+              </SuspenseWrapper>
             }
             path="/Message Center/Admins Communications"
           ></Route>
           {/**Marketing*/}
           {/**Promotions*/}
           <Route
-            element={<SuspenseWrapper path="pages/Promotions/Promotions" />}
+            element={
+              <SuspenseWrapper>
+                <Promotions />
+              </SuspenseWrapper>
+            }
             path="/Marketing/Promotions"
           ></Route>
           {/**Product Bundles*/}
           <Route
             element={
-              <SuspenseWrapper path="pages/ProductBundles/ProductBundles" />
+              <SuspenseWrapper>
+                <ProductBundles />
+              </SuspenseWrapper>
             }
             path="/Marketing/Product Bundles"
           ></Route>
           {/**Accounting*/}
           <Route
-            element={<SuspenseWrapper path="pages/Accounting/Accounting" />}
+            element={
+              <SuspenseWrapper>
+                <Accounting />
+              </SuspenseWrapper>
+            }
             path="/Accounting"
           ></Route>
           {/**Setting*/}
@@ -128,7 +205,9 @@ function App() {
           {/**Account Ordes Details*/}
           <Route
             element={
-              <SuspenseWrapper path="pages/Reports/AccountOrderDetails/AccountOrderDetails" />
+              <SuspenseWrapper>
+                <AccountOrderDetails />
+              </SuspenseWrapper>
             }
             path="/Reports/Account Orders Details"
           ></Route>
@@ -162,15 +241,31 @@ function App() {
           {/**Order details */}
           <Route
             element={
-              <SuspenseWrapper path="./pages/Orders/OrderDetails/OrderDetails" />
+              <SuspenseWrapper>
+                <OrderDetails />
+              </SuspenseWrapper>
             }
             path="/Orders/orders details/:id"
           ></Route>
-          <Route path="*" element={<>Notfound</>} />
+          <Route
+            path="*"
+            element={
+              <Result
+                status="403"
+                title="403"
+                subTitle="Sorry, you are not authorized to access this page."
+                extra={<a href="/">Back Home</a>}
+              />
+            }
+          />
         </Route>
 
         <Route
-          element={<SuspenseWrapper path="pages/Login/Login" />}
+          element={
+            <SuspenseWrapper>
+              <Login />
+            </SuspenseWrapper>
+          }
           path="/login"
         ></Route>
       </Routes>
