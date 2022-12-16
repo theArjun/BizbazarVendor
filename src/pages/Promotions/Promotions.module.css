@@ -1,12 +1,22 @@
 .container {
   width: 100%;
-  background-color: white;
-  box-shadow: var(--box-shadow);
+  /* background-color: white; */
+  /* box-shadow: var(--box-shadow); */
   border-radius: 5px;
+  margin-top: 10px;
 }
 
 .breadcumb {
   margin: 10px 0;
   transform: translateX(10px);
   align-self: start;
+}
+
+.container {
+  position: relative;
+}
+.buttonAddCatalog {
+  position: absolute;
+  top: 0;
+  right: 0;
 }

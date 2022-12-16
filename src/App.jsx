@@ -47,6 +47,9 @@ const Login = lazy(() => import("./pages/Login/Login"));
 const AccountOrderDetails = lazy(() =>
   import("./pages/Reports/AccountOrderDetails/AccountOrderDetails")
 );
+const AddCatalogPromotion = lazy(() =>
+  import("./pages/AddCatalogPromotion/AddCatalogPromotion")
+);
 
 function App() {
   const dispatch = useDispatch();
@@ -162,6 +165,15 @@ function App() {
           ></Route>
           {/**Marketing*/}
           {/**Promotions*/}
+          {/**Add Catalog Promotion */}
+          <Route
+            element={
+              <SuspenseWrapper>
+                <AddCatalogPromotion />
+              </SuspenseWrapper>
+            }
+            path="/Marketing/Add Catalog Promotion"
+          ></Route>
           <Route
             element={
               <SuspenseWrapper>

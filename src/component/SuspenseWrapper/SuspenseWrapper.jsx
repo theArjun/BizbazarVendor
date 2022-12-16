@@ -7,7 +7,7 @@ const SuspenseWrapper = (props) => {
 
 export default SuspenseWrapper;
 
-const style = {
+const customStyle = {
   height: "40vh",
   width: "40vw",
   display: "flex",
@@ -16,7 +16,7 @@ const style = {
 };
 
 const Loading = () => (
-  <div style={style}>
+  <div style={customStyle}>
     <Spin size="large" />
   </div>
 );
