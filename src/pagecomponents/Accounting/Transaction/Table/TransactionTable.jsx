@@ -2,28 +2,26 @@ import React, { useState, useEffect } from "react";
 import styles from "./Table.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { Table, Image, Skeleton } from "antd";
-import { apicall } from "../../../utils/apicall/apicall";
-import {
-  handleEditData,
-} from "../../../redux/features/products/productSlice";
+import { apicall } from "../../../../utils/apicall/apicall";
+import { handleEditData } from "../../../../redux/features/products/productSlice";
 import { useNavigate } from "react-router-dom";
-import useWindowSize from "../../../utils/Hooks/useWindowSize";
+import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 
-const data =[
+const data = [
   {
-    image:'https://m.media-amazon.com/images/I/51UKnksIdGL._SL1275_.jpg',
-    status:'Pending',
-    date:'12/13/2022, 11:00',
-    type:'Withdrawal',
-    t_value:'30600',
-    v_cost:'0',
-    cert_cost:'0',
-    shipping_cost:'100',
-    order_code:'48364',
-    name:'Pendrive'
-  }
-]
-const AccountTable = ({ handleScroll, loading }) => {
+    image: "https://m.media-amazon.com/images/I/51UKnksIdGL._SL1275_.jpg",
+    status: "Pending",
+    date: "12/13/2022, 11:00",
+    type: "Withdrawal",
+    t_value: "30600",
+    v_cost: "0",
+    cert_cost: "0",
+    shipping_cost: "100",
+    order_code: "48364",
+    name: "Pendrive",
+  },
+];
+const TransactionTable = ({ handleScroll, loading }) => {
   const dispatch = useDispatch();
   // const data = useSelector((state) => state.product.products);
   const [productId, setProductId] = useState("");
@@ -55,27 +53,20 @@ const AccountTable = ({ handleScroll, loading }) => {
   const columns = [
     {
       title: "Status",
-      dataIndex: 'status',
+      dataIndex: "status",
       data: "data",
       key: "product",
       render: (status, row) => (
-        
         <div className={styles.product_info}>
-          <Image
-            width={70}
-            src={!row ? "" : row.image}
-            alt={""}
-          />
+          <Image width={70} src={!row ? "" : row.image} alt={""} />
           <div className={styles.product_name}>
-          <strong>{row.name}</strong> <br />
+            <strong>{row.name}</strong> <br />
             <a
               href="#"
               onClick={() => setSelectedRow(row["product_id"], "detail")}
             >
-            #
-            <small>{row.order_code}</small>
+              #<small>{row.order_code}</small>
             </a>
-           
           </div>
         </div>
       ),
@@ -94,47 +85,33 @@ const AccountTable = ({ handleScroll, loading }) => {
       title: "Transaction value",
       dataIndex: "t_value",
       key: "t_value",
-      render:(value)=>(
-
-        <p>रु{value}</p>
-      )
-      
+      render: (value) => <p>रु{value}</p>,
     },
     {
       title: "Voucher cost",
       key: "v_cost",
       dataIndex: "v_cost",
-      render:(value)=>(
-
-        <p>रु{value}</p>
-      )
+      render: (value) => <p>रु{value}</p>,
     },
     {
       title: "Gift certificate cost",
       key: "cert_cost",
       dataIndex: "cert_cost",
-      render:(value)=>(
-
-        <p>रु{value}</p>
-      )
+      render: (value) => <p>रु{value}</p>,
     },
     {
       title: "Shipping cost",
       dataIndex: "shipping_cost",
       key: "shipping_cost",
-      render:(value)=>(
-
-        <p>रु{value}</p>
-      )
+      render: (value) => <p>रु{value}</p>,
     },
     {
       title: "Total transaction",
       dataIndex: "total_transaction",
       key: "total_transaction",
-      render:(value, row)=>(
-
-        <p>रु{row.t_value-row.shipping_cost-row.v_cost-row.cert_cost}</p>
-      )
+      render: (value, row) => (
+        <p>रु{row.t_value - row.shipping_cost - row.v_cost - row.cert_cost}</p>
+      ),
     },
   ];
   return (
@@ -183,4 +160,4 @@ const AccountTable = ({ handleScroll, loading }) => {
   );
 };
 
-export default AccountTable;
+export default TransactionTable;
