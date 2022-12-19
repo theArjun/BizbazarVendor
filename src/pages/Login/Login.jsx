@@ -85,6 +85,13 @@ function Login() {
               </Button>
             </Form.Item>
           </Form>
+
+          <div
+            className={styles.forgetPassword}
+            onClick={() => navigate("/resetPassword")}
+          >
+            Forget Password
+          </div>
         </Card>
       </div>
     </div>

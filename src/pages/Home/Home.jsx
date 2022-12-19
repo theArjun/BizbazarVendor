@@ -1,7 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { DarkModeContext } from "../../context/DarkAndLightMode/DarkAndLightContex";
 import styles from "./Home.module.css";
-import LineCharts from "./../../pagecomponents/Home/Charts/LineCharts";
+import LineCharts from "../../pagecomponents/Home/Charts/LineCharts/LineCharts";
+import BarCharts from "../../pagecomponents/Home/Charts/Barcharts/Barcharts";
+
 import AnalyticsCard from "./../../pagecomponents/Home/Cards/AnalyticsCard/AnalyticsCard";
 import { AiFillSetting, AiOutlinePlus } from "react-icons/ai";
 import { Button, DatePicker, Form, Input, Modal } from "antd";
@@ -178,6 +180,8 @@ const Home = () => {
           ))}
         </div>
         <div className={styles.rightContainer}>
+          <BarCharts series={series} options={options} height={"300px"} />
+          <div className={styles.margin} />
           <LineCharts series={series} options={options} height={"300px"} />
           <div className={styles.margin} />
           <RecentOrders

@@ -110,7 +110,9 @@ const AccountOrderDetails = () => {
     const result = await apicall({
       url: getUrl(values),
     });
-    setOrder(result?.data?.orders);
+    if (result?.status === 200) {
+      setOrder(result?.data?.orders);
+    }
     setLoading(false);
   };
 

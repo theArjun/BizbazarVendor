@@ -51,6 +51,8 @@ const AddCatalogPromotion = lazy(() =>
   import("./pages/AddCatalogPromotion/AddCatalogPromotion")
 );
 
+const ResetPassword = lazy(() => import("./pages/Resetpassword/ResetPassword"));
+
 function App() {
   const dispatch = useDispatch();
   dispatch(loadTableData);
@@ -259,17 +261,6 @@ function App() {
             }
             path="/Orders/orders details/:id"
           ></Route>
-          <Route
-            path="*"
-            element={
-              <Result
-                status="403"
-                title="403"
-                subTitle="Sorry, you are not authorized to access this page."
-                extra={<a href="/">Back Home</a>}
-              />
-            }
-          />
         </Route>
 
         <Route
@@ -280,6 +271,25 @@ function App() {
           }
           path="/login"
         ></Route>
+        <Route
+          element={
+            <SuspenseWrapper>
+              <ResetPassword />
+            </SuspenseWrapper>
+          }
+          path="/resetpassword"
+        ></Route>
+        <Route
+          path="*"
+          element={
+            <Result
+              status="403"
+              title="403"
+              subTitle="Sorry, you are not authorized to access this page."
+              extra={<a href="/">Back Home</a>}
+            />
+          }
+        />
       </Routes>
     </Router>
   );

@@ -179,6 +179,7 @@ const AccountOrderDetailsTable = ({
     const time = setTimeout(printing, 10);
     return () => clearTimeout(time);
   };
+  console.log(loading);
 
   return (
     <div>
@@ -219,7 +220,7 @@ const AccountOrderDetailsTable = ({
           style={{ zIndex: -1 }}
           columns={columns}
           ref={componentRef}
-          loading={loading}
+          // loading={loading}
           dataSource={order}
           pagination={false}
           // scroll={{ y: windowSize.height > 670 ? 450 : 300, x: 1000 }}
