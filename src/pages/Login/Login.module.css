@@ -14,3 +14,12 @@
 .cardTransform {
   transform: translatey(-100px);
 }
+
+.forgetPassword {
+  color: blue;
+  cursor: pointer;
+}
+
+.forgetPassword:hover {
+  text-decoration: underline;
+}

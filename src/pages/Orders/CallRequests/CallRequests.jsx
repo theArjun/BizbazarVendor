@@ -93,7 +93,7 @@ const CallRequests = () => {
   };
 
   const getUrl = (values) => {
-    let newUrl = "vendors/62/call_requests?is_search=Y";
+    let newUrl = "call_requests?is_search=Y";
     if (values?.name) {
       newUrl = newUrl + "&name=" + values.name;
     }

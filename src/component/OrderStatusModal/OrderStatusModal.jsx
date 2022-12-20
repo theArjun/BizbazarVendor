@@ -32,7 +32,7 @@ function OrderStatusModal({ statusModalOpen, setStatusModalOpen }) {
   const handleConfirm = async () => {
     const result = await apicall({
       method: "put",
-      url: "vendors/62/orders/" + statusModalOpen.orderId,
+      url: "orders/" + statusModalOpen.orderId,
       data: {
         status: statusModalOpen?.data?.status,
         notify_user: notifyUser ? "1" : "0",

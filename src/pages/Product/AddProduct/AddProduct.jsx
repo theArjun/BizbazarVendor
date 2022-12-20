@@ -9,7 +9,7 @@ import {
   message,
   Upload,
   Checkbox,
-  notification
+  notification,
 } from "antd";
 import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
 import { InboxOutlined } from "@ant-design/icons";
@@ -18,7 +18,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useState } from "react";
 const { Dragger } = Upload;
-let cat_ids=[];
+let cat_ids = [];
 const AddProduct = () => {
   // for toggling  fields button
   const [info, setInfo] = useState(true);
@@ -29,13 +29,13 @@ const AddProduct = () => {
   const [description, setDescription] = useState("");
   const [vat, setVat] = useState(false);
   const [api, contextHolder] = notification.useNotification();
- // This is used to alert user for any <information></information>
- const openNotificationWithIcon = (type,message) => {
-  api[type]({
-    message: message,
-    placement:'bottomRight'
-  });
-};
+  // This is used to alert user for any <information></information>
+  const openNotificationWithIcon = (type, message) => {
+    api[type]({
+      message: message,
+      placement: "bottomRight",
+    });
+  };
   const options_type = [
     { label: "Simultaneous", value: "P" },
     { label: "Sequential", value: "S" },
@@ -56,8 +56,7 @@ const AddProduct = () => {
 
   // trigger while clicking  on create button if there is no any error at  client side
   const onFinish = (values) => {
-   
-    console.log(values)
+    console.log(values);
     const product_data = {
       product: values.name,
       category_ids: categoryId,
@@ -66,7 +65,7 @@ const AddProduct = () => {
       exceptions_type: values.exceptions,
       product_code: values.code,
       min_qty: values.min_qty,
-      full_description:values.description,
+      full_description: values.description,
       max_qty: values.max_qty,
       zero_price_action: values.price_action,
       amount: values.stock,
@@ -78,21 +77,19 @@ const AddProduct = () => {
       // perform api call to retrieve data
       const result = await apicall({
         method: "post",
-        url: `vendors/62/products`,
+        url: `products`,
         data: { ...product_data },
       });
-      if(result.data){
+      if (result.data) {
         // Seccess message
-        openNotificationWithIcon('success','Product create successfully!');
-      }
-      else{
-        openNotificationWithIcon('error','Failed to create  product!');
-
+        openNotificationWithIcon("success", "Product create successfully!");
+      } else {
+        openNotificationWithIcon("error", "Failed to create  product!");
       }
     }, 500);
     return () => clearTimeout(timeOutId);
   };
-// throw message while error occured at client side
+  // throw message while error occured at client side
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
@@ -101,7 +98,7 @@ const AddProduct = () => {
     const category = [];
     // perform api call to retrieve data
     const result = await apicall({
-      url: `vendors/62/categories`,
+      url: `categories`,
     });
     await result.data.categories.map((item, index) => {
       category.push({
@@ -117,18 +114,18 @@ const AddProduct = () => {
     categories.map((item, index) => {
       if (value == item.label) {
         cat_ids.push(item.id);
-        setCategoryId(cat_ids)
+        setCategoryId(cat_ids);
       }
     });
   };
   //  run code while Deselecting categories
-  const onDeselect=(value)=>{
+  const onDeselect = (value) => {
     categories.map((item, index) => {
       if (value == item.label) {
-        categoryId.pop(item.id)
+        categoryId.pop(item.id);
       }
     });
-  }
+  };
   // this function is for category search
   const onSearch = (value) => {
     console.log("search:", value);
@@ -155,7 +152,7 @@ const AddProduct = () => {
   };
   return (
     <div className={styles.container}>
-    {contextHolder}
+      {contextHolder}
       <div className={styles.breadcrumb_create_btn}>
         <div className="breadcrumb">
           <Breadcrumb>
@@ -169,7 +166,6 @@ const AddProduct = () => {
             <Breadcrumb.Item>Add Products</Breadcrumb.Item>
           </Breadcrumb>
         </div>
-       
       </div>
       <div className={styles.formContainer}>
         <Form
@@ -189,13 +185,11 @@ const AddProduct = () => {
             tax: "N",
           }}
         >
-        <Form.Item
-        style={{float:'right'}}
-        >
-          <Button type="primary" htmlType="submit">
-            Create
-          </Button>
-        </Form.Item>
+          <Form.Item style={{ float: "right" }}>
+            <Button type="primary" htmlType="submit">
+              Create
+            </Button>
+          </Form.Item>
           <div className={styles.information}>
             <div className="information_title" onClick={() => setInfo(!info)}>
               <h2 className={styles.title_header}>
