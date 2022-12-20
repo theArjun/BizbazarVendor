@@ -16,7 +16,7 @@ const Search = ({ setSearchValue }) => {
 
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
-  const onValueChange = (a,value) => {
+  const onValueChange = (a, value) => {
     const sData = { ...value };
     categories.map((item, index) => {
       if (value.category == item.label) {
@@ -29,7 +29,7 @@ const Search = ({ setSearchValue }) => {
     const category = [];
     // perform api call to retrieve data
     const result = await apicall({
-      url: `vendors/62/categories`,
+      url: `categories`,
     });
     await result.data.categories.map((item, index) => {
       category.push({

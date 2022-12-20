@@ -13,6 +13,7 @@ import { navItem } from "../Navbar/navitem";
 import { useNavigate, useLocation } from "react-router-dom";
 import cx from "classnames";
 import useWindowSize from "../../utils/Hooks/useWindowSize";
+import { handleLogout } from "../../utils/auth/auth";
 
 function TopNavbar() {
   const windowsize = useWindowSize();
@@ -62,8 +63,13 @@ function TopNavbar() {
       <div className={styles.profile}>
         <div className={styles.profileWrapper}>
           <div>
-            <div className={styles.profileName}>SitaramPdl</div>
-            <div className={styles.profilerole}>Developer</div>
+            <div className={styles.profileName}>
+              {JSON.parse(localStorage.getItem("userinfo"))?.name}
+            </div>
+            <div className={styles.profilerole}>
+              {" "}
+              {JSON.parse(localStorage.getItem("userinfo"))?.phone}
+            </div>
           </div>
 
           <div>
@@ -74,10 +80,20 @@ function TopNavbar() {
           <div
             className={styles.dropdownItems}
             onClick={() => {
-              localStorage.clear();
-              location.reload();
+              navigate("Edit Profile");
             }}
           >
+            Edit profile
+          </div>
+          <div
+            className={styles.dropdownItems}
+            onClick={() => {
+              navigate("SellerInformation");
+            }}
+          >
+            Seller info
+          </div>
+          <div className={styles.dropdownItems} onClick={() => handleLogout()}>
             Logout
           </div>
         </div>

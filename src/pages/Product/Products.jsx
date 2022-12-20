@@ -37,11 +37,11 @@ const Products = () => {
     [a]
   );
   useEffect(() => {
-      getProducts(sValue);
+    getProducts(sValue);
   }, [sortBy?.order, sortBy?.field]);
   const getUrl = (values) => {
     console.log(values);
-    let newUrl = "vendors/62/products?is_search=Y";
+    let newUrl = "products?is_search=Y";
     if (values?.name) {
       newUrl = newUrl + "&pname=" + values.name;
     }
@@ -194,7 +194,9 @@ const Products = () => {
         setSortBy={setSortBy}
         sortColum={sortColum}
         setSortingColum={setSortingColum}
+        setLoading={setLoading}
         loading={loading}
+        getProducts={getProducts}
       />
     </div>
   );

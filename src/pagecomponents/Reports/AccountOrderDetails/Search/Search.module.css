@@ -1,5 +1,6 @@
 .container {
   margin-top: 10px;
+  background-color: white;
 }
 .search_inputs {
   display: flex;
@@ -35,5 +36,31 @@ input[type="number"] {
 @media (min-width: 1400px) {
   .form {
     width: 85%;
+  }
+}
+
+.formcolumn {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.formcolumn > label {
+  width: 200px;
+  margin: 20px;
+}
+.dropdownbutton {
+  width: 100%;
+}
+
+.icon {
+  transform: translate(0, 3px);
+  margin-left: 3px;
+  font-weight: 500;
+}
+
+@media (max-width: 1400px) {
+  .formcolumn > label {
+    width: 160px;
+    margin: 10px;
   }
 }

@@ -1,23 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Space, Table, Dropdown, Image,Skeleton} from "antd";
+import { Space, Table, Dropdown, Image, notification } from "antd";
 import styles from "./Table.module.css";
 import { DownOutlined } from "@ant-design/icons";
 import { apicall } from "../../../utils/apicall/apicall";
-import { AiFillDelete, AiFillEdit, AiFillSetting } from "react-icons/ai";
-import { handleEditData, loadTableData, setSelectedProductId } from "../../../redux/features/products/productSlice";
+import {
+  AiFillEdit,
+  AiFillDelete,
+  AiFillSetting,
+  AiOutlineBars,
+} from "react-icons/ai";
+import {
+  handleEditData,
+  loadTableData,
+  setSelectedProductId,
+} from "../../../redux/features/products/productSlice";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../utils/Hooks/useWindowSize";
-const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
+import useDebounce from "../../../utils/Hooks/useDebounce";
+const ProductTable = ({
+  setPage,
+  setLoading,
+  loading,
+  handleScroll,
+  setSortBy,
+  getProducts,
+}) => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.product.products);
   const [productId, setProductId] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const navigate=useNavigate();
+  const [deleteIds, setDeleteIds] = useState();
+  const [option, setOption] = useState(false);
+  const navigate = useNavigate();
   const windowSize = useWindowSize();
+  const [api, contextHolder] = notification.useNotification();
   useEffect(() => {
-    document 
-    .querySelector("#product > div > div.ant-table-body")                
+    document
+      .querySelector("#product > div > div.ant-table-body")
       ?.addEventListener("scroll", handleScroll);
 
     return () => {
@@ -26,32 +46,78 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
         ?.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
+
+  // This is used to alert user for any <information></information>
+  const openNotificationWithIcon = (type, message) => {
+    api[type]({
+      message: message,
+      placement: "bottomRight",
+    });
+  };
   // Delete data
   const deleteProduct = async (id) => {
     // perform api call to retrieve data
     if (id) {
       var result = await apicall({
         method: "delete",
-        url: `vendors/62/products/${id}`,
+        url: `products/${id}`,
       });
-      location.reload()
-      
+      location.reload();
     }
   };
-  
-  // Set id 
-  const setSelectedRow=async (id,method)=>{
-      setProductId(id);
-      window.localStorage.setItem('productRowId',JSON.stringify(id))
-      var result = await apicall({
-        url: `vendors/62/products/${id}`,
+  // for toggling delete icon
+  useEffect(() => {
+    if (deleteIds?.length) {
+      setOption(true);
+      console.log(deleteIds);
+      console.log("Open");
+    } else {
+      setOption(false);
+    }
+  }, [deleteIds]);
+  //This  is for product deletion of multiple products
+  const deleteSelectedProduct = async (products) => {
+    setLoading(true);
+    const deleted = [];
+    if (products.length) {
+      products.map(async (id, index) => {
+        var result = await apicall({
+          method: "delete",
+          url: `products/${id}`,
+        });
+        if (result?.status == "204") {
+          deleted.push(index);
+          if (deleted.length == products.length) {
+            await getProducts();
+            setDeleteIds([]);
+            openNotificationWithIcon(
+              "success",
+              "Selected products are deleted successfully!"
+            );
+          }
+        } else {
+          setDeleteIds([]);
+          openNotificationWithIcon(
+            "error",
+            "Failed to delete selected products!"
+          );
+        }
       });
-      dispatch(handleEditData(result.data));
-      if(method==='detail'){
-        navigate('Edit Product');
-      }
-  }
-  
+    }
+  };
+
+  // Set id
+  const setSelectedRow = async (id, method) => {
+    setProductId(id);
+    window.localStorage.setItem("productRowId", JSON.stringify(id));
+    var result = await apicall({
+      url: `products/${id}`,
+    });
+    dispatch(handleEditData(result.data));
+    if (method === "detail") {
+      navigate("Edit Product");
+    }
+  };
 
   //UpdateProduct status
   const updateProductStatus = async (id, status) => {
@@ -62,14 +128,21 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
         data: {
           status,
         },
-        url: `vendors/62/products/${id}`,
+        url: `products/${id}`,
       });
       if (result?.statusText == "OK") {
         const allData = await apicall({
-          url: `vendors/62/products/`,
+          url: `products/`,
         });
-        // console.log(allData)|
         await dispatch(loadTableData(allData.data.products));
+        // Seccess message
+        openNotificationWithIcon(
+          "success",
+          "Product status update successfully!"
+        );
+      } else {
+        // throw error message
+        openNotificationWithIcon("error", "Failed to update product status!");
       }
     }, 500);
     return () => clearTimeout(timeOutId);
@@ -86,8 +159,23 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
         return "Disabled";
     }
   };
+  const selectOpt = [
+    {
+      key: "1",
+      label: (
+        <a
+          rel="noopener noreferrer"
+          href="#"
+          className={styles.action_items}
+          onClick={() => deleteSelectedProduct(deleteIds)}
+        >
+          Delete
+          <AiFillDelete />
+        </a>
+      ),
+    },
+  ];
 
- 
   //  console.log(data)
   const statusItems = [
     {
@@ -113,7 +201,11 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
     {
       key: "1",
       label: (
-        <a  rel="noopener noreferrer" href="#" onClick={()=>navigate('Edit Product')}>
+        <a
+          rel="noopener noreferrer"
+          href="#"
+          onClick={() => navigate("Edit Product")}
+        >
           Edit <AiFillEdit />
         </a>
       ),
@@ -121,7 +213,6 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
     {
       key: "2",
       label: (
-  
         <a
           rel="noopener noreferrer"
           href="#"
@@ -134,6 +225,7 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
       ),
     },
   ];
+
   const columns = [
     {
       title: "Name/Code",
@@ -148,13 +240,18 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
             alt={""}
           />
           <div className={styles.product_name}>
-           <a href="#" onClick={()=>setSelectedRow(row['product_id'],'detail')}> <strong>{row["product"]}</strong></a>
+            <a
+              href="#"
+              onClick={() => setSelectedRow(row["product_id"], "detail")}
+            >
+              {" "}
+              <strong>{row["product"]}</strong>
+            </a>
             <small>{row["product_code"]}</small>
           </div>
         </div>
       ),
       sorter: (a, b) => {},
-
     },
     {
       title: "Price",
@@ -184,7 +281,7 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
             }}
             placement="bottom"
             arrow
-            trigger={['click']}
+            trigger={["click"]}
           >
             <AiFillSetting size={20} className={styles.icons} />
           </Dropdown>
@@ -195,21 +292,24 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
       title: "Status",
       key: "status",
       dataIndex: ["status", "product_id"],
-      defaultFilteredValue:'Requires Approval',
+      defaultFilteredValue: "Requires Approval",
       render: (text, row) => (
         <Dropdown menu={{ items: statusItems }}>
-
           <Space onMouseOver={() => setProductId(row["product_id"])}>
             {changeProductStatus(row["status"])}
-  
+
             <DownOutlined />
           </Space>
         </Dropdown>
       ),
     },
   ];
-  const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
+  const onSelectChange = (newSelectedRowKeys, product) => {
+    const ids = [];
+    product.map((item, index) => {
+      ids.push(item?.product_id);
+    });
+    setDeleteIds(ids);
     setSelectedRowKeys(newSelectedRowKeys);
   };
   const rowSelection = {
@@ -249,15 +349,28 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
       },
     ],
   };
-  function onChange(pagination, filters, sorter,extra) {
+  function onChange(pagination, filters, sorter, extra) {
     setPage(1);
     setSortBy(sorter);
   }
-  
+
   return (
     <div>
+      {contextHolder}
+      <div className={!option ? styles.openDelete : ""}>
+        <Dropdown
+          menu={{
+            items: selectOpt,
+          }}
+          placement="left"
+          arrow
+          trigger={["click"]}
+        >
+          <AiOutlineBars className={styles.selectBar} />
+        </Dropdown>
+      </div>
       <Table
-        id='product'
+        id="product"
         loading={loading}
         rowSelection={rowSelection}
         columns={columns}
@@ -266,7 +379,7 @@ const ProductTable = ({setPage,loading,handleScroll,setSortBy}) => {
         onChange={onChange}
         scroll={{
           y: windowSize.height > 670 ? 300 : 200,
-          x:1000
+          x: 1000,
         }}
       />
     </div>

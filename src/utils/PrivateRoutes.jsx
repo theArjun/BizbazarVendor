@@ -5,16 +5,19 @@ import SuspenseWrapper from "../component/SuspenseWrapper/SuspenseWrapper";
 import useWindowSize from "./Hooks/useWindowSize";
 import styles from "./index.module.css";
 
+import TopNavbar from "./../component/TopNavbar/TopNavbar";
+import Navbar from "./../component/Navbar/Navbar";
+
 const PrivateRoutes = () => {
   const windowSize = useWindowSize();
 
-  return localStorage.getItem("login") ? (
+  return localStorage.getItem("userinfo") ? (
     <div
       className={styles.container}
       style={{ height: windowSize.height + "px" }}
     >
-      <SuspenseWrapper path="component/TopNavbar/TopNavbar" />
-      <SuspenseWrapper path="component/Navbar/Navbar" />
+      <TopNavbar />
+      <Navbar />
 
       <div
         className={styles.midContainer}

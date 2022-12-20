@@ -23,3 +23,14 @@
 .icons::before{
     content:"\f013";
 }
+.openDelete{
+    display: none;
+}
+.selectBar{
+    cursor: pointer;
+    color: #7367f0 !important;
+    font-weight: bold;
+    font-size: 30px;
+    float: right;
+    margin: 5px 20px;
+}

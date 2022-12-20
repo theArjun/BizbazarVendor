@@ -18,7 +18,7 @@ function OrderDetails() {
   const getOrderDetails = async () => {
     setLoading(true);
     const result = await apicall({
-      url: "vendors/62/orders/" + param.id,
+      url: "orders/" + param.id,
     });
 
     setOrderDetails(result.data);

@@ -1,19 +1,11 @@
 .container{
     margin-top: 10px;
-    display: flex;
 }
 .search_inputs{
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-}
-.price_container{
-    display: flex;
-   align-items: center;
-   justify-content: center;
-   height: fit-content;
-   margin-top: 8px;
 }
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -59,4 +51,9 @@ input[type=number] {
 }
 .right_card_body > h5 > span.red{
   color: red;
+}
+@media (max-width: 799px) {
+  .right_card {
+    display: none;
+  }
 }

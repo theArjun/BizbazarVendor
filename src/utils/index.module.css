@@ -25,6 +25,7 @@
 .midContainer {
   /* height: 90vh; */
   overflow: scroll;
+  margin-top: 10px;
 }
 
 .midContainer::-webkit-scrollbar {

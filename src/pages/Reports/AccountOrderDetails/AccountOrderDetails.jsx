@@ -1,12 +1,14 @@
 import React, { useRef, useState, useCallback } from "react";
 import { Breadcrumb } from "antd";
 import styles from "./AccountOrderDetails.module.css";
-import { ViewOrdersSearch, ViewOrdersTable } from "../..";
+
 import { useEffect } from "react";
 import { apicall } from "../../../utils/apicall/apicall";
 import useDebounce from "../../../utils/Hooks/useDebounce";
+import AccountOrderDetailsSearch from "./../../../pagecomponents/Reports/AccountOrderDetails/Search/Search";
+import AccountOrderDetailsTable from "../../../pagecomponents/Reports/AccountOrderDetails/Table/Table";
 
-const ViewOrders = () => {
+const AccountOrderDetails = () => {
   const [sValue, setSearchValue] = useState({});
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState([]);
@@ -29,12 +31,12 @@ const ViewOrders = () => {
 
   useEffect(() => {
     document
-      .querySelector("#hello > div > div.ant-table-body")
+      .querySelector("#reportaccount > div > div.ant-table-body")
       ?.addEventListener("scroll", handleScroll);
 
     return () => {
       document
-        .querySelector("#hello > div > div.ant-table-body ")
+        .querySelector("#reportaccount > div > div.ant-table-body ")
         ?.removeEventListener("scroll", handleScroll);
     };
   }, []);
@@ -74,7 +76,7 @@ const ViewOrders = () => {
 
   const getUrl = (values) => {
     console.log(sValue);
-    let newUrl = "vendors/62/orders?is_search=Y";
+    let newUrl = "orders?is_search=Y";
     if (values?.customer) {
       newUrl = newUrl + "&cname=" + values.customer;
     }
@@ -108,7 +110,9 @@ const ViewOrders = () => {
     const result = await apicall({
       url: getUrl(values),
     });
-    setOrder(result?.data?.orders);
+    if (result?.status === 200) {
+      setOrder(result?.data?.orders);
+    }
     setLoading(false);
   };
 
@@ -141,12 +145,12 @@ const ViewOrders = () => {
         </Breadcrumb.Item>
         <Breadcrumb.Item>View Orders</Breadcrumb.Item>
       </Breadcrumb>
-      <ViewOrdersSearch
+      <AccountOrderDetailsSearch
         order={order}
         status={status}
         setSearchValue={setSearchValue}
       />
-      <ViewOrdersTable
+      <AccountOrderDetailsTable
         order={order}
         status={status}
         page1={page1}
@@ -163,4 +167,4 @@ const ViewOrders = () => {
   );
 };
 
-export default ViewOrders;
+export default AccountOrderDetails;
