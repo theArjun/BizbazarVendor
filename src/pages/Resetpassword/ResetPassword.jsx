@@ -9,10 +9,6 @@ import "./style.css";
 function ResetPassword() {
   const navigate = useNavigate();
 
-  if (localStorage.getItem("login")) {
-    return <Navigate to="/" />;
-  }
-
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {

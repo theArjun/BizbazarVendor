@@ -49,7 +49,7 @@ const Home = () => {
 
   const getOrders = async () => {
     const result = await apicall({
-      url: "vendors/62/orders",
+      url: "orders",
     });
 
     setOrder(result.data.orders);
@@ -57,7 +57,7 @@ const Home = () => {
 
   const getStatus = async () => {
     const result = await apicall({
-      url: "vendors/62/statuses",
+      url: "statuses",
     });
 
     setStatus(result.data.statuses);

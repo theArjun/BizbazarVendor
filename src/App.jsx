@@ -10,6 +10,7 @@ import { loadTableData } from "./redux/features/products/productSlice";
 import { saveCategories } from "./redux/features/products/productSlice";
 import { apicall } from "./utils/apicall/apicall";
 import { Button, Result } from "antd";
+import PublicRoute from "./utils/PublicRoute";
 
 const Home = lazy(() => import("./pages/Home/Home"));
 const ViewOrders = lazy(() => import("./pages/Orders/ViewOrders/ViewOrders"));
@@ -62,7 +63,7 @@ function App() {
   const { darkMode } = useContext(DarkModeContext);
   const getAllCategories = async () => {
     const result = await apicall({
-      url: `vendors/62/categories`,
+      url: `categories`,
     });
     if (result.data) {
       await dispatch(saveCategories(result.data.categories));
@@ -262,23 +263,24 @@ function App() {
             path="/Orders/orders details/:id"
           ></Route>
         </Route>
-
-        <Route
-          element={
-            <SuspenseWrapper>
-              <Login />
-            </SuspenseWrapper>
-          }
-          path="/login"
-        ></Route>
-        <Route
-          element={
-            <SuspenseWrapper>
-              <ResetPassword />
-            </SuspenseWrapper>
-          }
-          path="/resetpassword"
-        ></Route>
+        <Route element={<PublicRoute />}>
+          <Route
+            element={
+              <SuspenseWrapper>
+                <Login />
+              </SuspenseWrapper>
+            }
+            path="/login"
+          ></Route>
+          <Route
+            element={
+              <SuspenseWrapper>
+                <ResetPassword />
+              </SuspenseWrapper>
+            }
+            path="/resetpassword"
+          ></Route>
+        </Route>
         <Route
           path="*"
           element={

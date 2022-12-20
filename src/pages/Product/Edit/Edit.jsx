@@ -10,7 +10,7 @@ import {
   Upload,
   Checkbox,
   notification,
-  Skeleton
+  Skeleton,
 } from "antd";
 import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
 import { InboxOutlined } from "@ant-design/icons";
@@ -91,7 +91,7 @@ const Edit = () => {
     setLoading(true);
     // perform api call to retrieve data
     const result = await apicall({
-      url: `vendors/62/products/${id}`,
+      url: `products/${id}`,
     });
     if (result.data) {
       setData(result.data);
@@ -122,7 +122,7 @@ const Edit = () => {
       // perform api call to retrieve data
       const result = await apicall({
         method: "put",
-        url: `vendors/62/products/${editId}`,
+        url: `products/${editId}`,
         data: { ...product_data },
       });
 
@@ -146,7 +146,7 @@ const Edit = () => {
     const category = [];
     // // perform api call to retrieve data
     const result = await apicall({
-      url: `vendors/62/categories`,
+      url: `categories`,
     });
     await result.data.categories.map((item, index) => {
       category.push({

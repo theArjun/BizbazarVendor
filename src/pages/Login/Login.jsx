@@ -4,19 +4,36 @@ import { Button, Form, Input, Card } from "antd";
 import styles from "./Login.module.css";
 import "./index.css";
 import { apicall } from "./../../utils/apicall/apicall";
+import { handlelogin } from "../../utils/auth/auth";
 
 function Login() {
   const navigate = useNavigate();
 
-  if (localStorage.getItem("login")) {
-    return <Navigate to="/" />;
-  }
+  // if (localStorage.getItem("login")) {
+  //   return <Navigate to="/" />;
+  // }
 
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
-    localStorage.setItem("login", true);
-    navigate("/");
+    console.log(values.email, values.password);
+
+    const result = await apicall({
+      method: "post",
+      auth: true,
+      url: "BizbazarVendors",
+      data: {
+        email: values.email,
+
+        password: values.password,
+
+        user_type: "V",
+      },
+    });
+    if (result.status === 201) {
+      handlelogin(result.data);
+      navigate("/");
+    }
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -49,7 +66,7 @@ function Login() {
             <Form.Item
               id="req"
               label="Email:"
-              name="username"
+              name="email"
               rules={[
                 {
                   required: true,

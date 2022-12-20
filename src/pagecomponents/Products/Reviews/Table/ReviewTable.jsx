@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Table, Dropdown, Image,Skeleton} from "antd";
+import { Table, Dropdown, Image, Skeleton } from "antd";
 import styles from "./Table.module.css";
 import { apicall } from "../../../../utils/apicall/apicall";
 import { AiFillEdit, AiFillSetting } from "react-icons/ai";
-import { handleEditData, loadTableData, setSelectedProductId } from "../../../../redux/features/products/productSlice";
+import {
+  handleEditData,
+  loadTableData,
+  setSelectedProductId,
+} from "../../../../redux/features/products/productSlice";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
-const ReviewTable = ({loading,handleScroll}) => {
+const ReviewTable = ({ loading, handleScroll }) => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.product.products);
   const [productId, setProductId] = useState("");
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const windowSize = useWindowSize();
   useEffect(() => {
-    document 
-    .querySelector("#product > div > div.ant-table-body")                
+    document
+      .querySelector("#product > div > div.ant-table-body")
       ?.addEventListener("scroll", handleScroll);
 
     return () => {
@@ -24,23 +28,27 @@ const ReviewTable = ({loading,handleScroll}) => {
         ?.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
-  // Set id 
-  const setSelectedRow=async (id,method)=>{
-      setProductId(id);
-      window.localStorage.setItem('productRowId',JSON.stringify(id))
-      var result = await apicall({
-        url: `vendors/62/products/${id}`,
-      });
-      dispatch(handleEditData(result.data));
-      if(method==='detail'){
-        navigate('Edit Product');
-      }
-  }
+  // Set id
+  const setSelectedRow = async (id, method) => {
+    setProductId(id);
+    window.localStorage.setItem("productRowId", JSON.stringify(id));
+    var result = await apicall({
+      url: `products/${id}`,
+    });
+    dispatch(handleEditData(result.data));
+    if (method === "detail") {
+      navigate("Edit Product");
+    }
+  };
   const items = [
     {
       key: "1",
       label: (
-        <a  rel="noopener noreferrer" href="#" onClick={()=>navigate('Edit Product')}>
+        <a
+          rel="noopener noreferrer"
+          href="#"
+          onClick={() => navigate("Edit Product")}
+        >
           Edit <AiFillEdit />
         </a>
       ),
@@ -60,12 +68,17 @@ const ReviewTable = ({loading,handleScroll}) => {
             alt={""}
           />
           <div className={styles.product_name}>
-           <a href="#" onClick={()=>setSelectedRow(row['product_id'],'detail')}> <strong>{row["product"]}</strong></a>
+            <a
+              href="#"
+              onClick={() => setSelectedRow(row["product_id"], "detail")}
+            >
+              {" "}
+              <strong>{row["product"]}</strong>
+            </a>
             <small>{row["product_code"]}</small>
           </div>
         </div>
       ),
-
     },
     {
       title: "Advantages",
@@ -76,30 +89,29 @@ const ReviewTable = ({loading,handleScroll}) => {
       title: "Disadvantages",
       dataIndex: "disadvantages",
       key: "disadvantages",
-      
-    }, {
+    },
+    {
       title: "Helpfulness",
       dataIndex: "helpfulness",
       key: "helpfulness",
-      
     },
     {
       title: "Status",
       key: "status",
-      dataIndex: 'status',
+      dataIndex: "status",
       render: (id) => (
         <div
           className={styles.product_action}
           onClick={() => setSelectedRow(id)}
         >
-        <p>{'Status'}</p>
+          <p>{"Status"}</p>
           <Dropdown
             menu={{
               items,
             }}
             placement="bottom"
             arrow
-            trigger={['click']}
+            trigger={["click"]}
           >
             <AiFillSetting size={20} className={styles.icons} />
           </Dropdown>
@@ -109,25 +121,21 @@ const ReviewTable = ({loading,handleScroll}) => {
     {
       title: "Date",
       key: "date",
-      dataIndex:'date',
-      render: (date) => (
-       <div>
-            {date}
-       </div>
-      ),
+      dataIndex: "date",
+      render: (date) => <div>{date}</div>,
     },
   ];
   return (
     <div>
       <Table
-        id='product'
+        id="product"
         loading={loading}
         columns={columns}
         dataSource={data}
         pagination={false}
         scroll={{
           y: windowSize.height > 670 ? 300 : 200,
-          x:1000
+          x: 1000,
         }}
       />
     </div>

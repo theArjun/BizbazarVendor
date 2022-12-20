@@ -76,7 +76,7 @@ const AccountOrderDetails = () => {
 
   const getUrl = (values) => {
     console.log(sValue);
-    let newUrl = "vendors/62/orders?is_search=Y";
+    let newUrl = "orders?is_search=Y";
     if (values?.customer) {
       newUrl = newUrl + "&cname=" + values.customer;
     }

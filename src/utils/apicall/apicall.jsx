@@ -1,12 +1,44 @@
 import axios from "axios";
+import { notification } from "antd";
+import { SmileOutlined } from "@ant-design/icons";
+import { FaRegSadTear } from "react-icons/fa";
 
-export const apicall = async ({ method = "get", url = "", data = {}, body='' }) => {
+const openNotification = (msg1, msg2) => {
+  notification.open({
+    message: msg1,
+    description: msg2,
+    icon:
+      msg1 === "SuccessFull" ? (
+        <SmileOutlined style={{ color: "green" }} />
+      ) : (
+        <FaRegSadTear style={{ color: "red" }} />
+      ),
+  });
+};
+
+export const apicall = async ({
+  method = "get",
+  url = "",
+  data = {},
+  body = "",
+  auth = false,
+}) => {
+  let finalurl = "/api/";
+
+  if (!auth) {
+    finalurl =
+      finalurl +
+      "vendors/" +
+      JSON.parse(localStorage.getItem("userinfo"))?.id +
+      "/";
+  }
+
   try {
-    const result = axios({
+    const result = await axios({
       method: method,
-      url: "/api/" + url,
+      url: finalurl + url,
       data: data,
-      body:body,
+      body: body,
       auth: {
         username: import.meta.env.VITE_APP_USERNAME,
         password: import.meta.env.VITE_APP_PASSWORD,
@@ -16,9 +48,15 @@ export const apicall = async ({ method = "get", url = "", data = {}, body='' }) 
         "Access-Control-Allow-Origin": true,
       },
     });
+
+    if (method != "get") {
+      openNotification("SuccessFull");
+    }
     return result;
   } catch (error) {
-    console.log(error);
+    if (method != "get") {
+      openNotification("Fail", error.message);
+    }
     return error.message;
   }
 };
