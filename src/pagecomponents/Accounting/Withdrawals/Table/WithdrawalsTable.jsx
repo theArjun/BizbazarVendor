@@ -1,19 +1,29 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Table.module.css";
 import { useSelector, useDispatch } from "react-redux";
-import { Table, Dropdown, Image, Skeleton } from "antd";
-import { apicall } from "../../../utils/apicall/apicall";
-import { AiFillEdit, AiFillSetting } from "react-icons/ai";
-import {
-  handleEditData,
-  loadTableData,
-  setSelectedProductId,
-} from "../../../redux/features/products/productSlice";
+import { Table, Image, Skeleton } from "antd";
+import { apicall } from "../../../../utils/apicall/apicall";
+import { handleEditData } from "../../../../redux/features/products/productSlice";
 import { useNavigate } from "react-router-dom";
-import useWindowSize from "../../../utils/Hooks/useWindowSize";
-const AccountTable = ({ handleScroll, loading }) => {
+import useWindowSize from "../../../../utils/Hooks/useWindowSize";
+
+const data = [
+  {
+    image: "https://m.media-amazon.com/images/I/51UKnksIdGL._SL1275_.jpg",
+    status: "Pending",
+    date: "12/13/2022, 11:00",
+    type: "Withdrawal",
+    t_value: "30600",
+    v_cost: "0",
+    cert_cost: "0",
+    shipping_cost: "100",
+    order_code: "48364",
+    name: "Pendrive",
+  },
+];
+const WithdrawalsTable = ({ handleScroll, loading }) => {
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.product.products);
+  // const data = useSelector((state) => state.product.products);
   const [productId, setProductId] = useState("");
   const navigate = useNavigate();
   const windowSize = useWindowSize();
@@ -40,42 +50,23 @@ const AccountTable = ({ handleScroll, loading }) => {
       navigate("Edit Product");
     }
   };
-  const items = [
-    {
-      key: "1",
-      label: (
-        <a
-          rel="noopener noreferrer"
-          href="#"
-          onClick={() => navigate("Edit Product")}
-        >
-          Edit <AiFillEdit />
-        </a>
-      ),
-    },
-  ];
   const columns = [
     {
       title: "Status",
-      dataIndex: ["product_id", "product", "product_code", "main_pair"],
+      dataIndex: "status",
       data: "data",
       key: "product",
-      render: (text, row) => (
+      render: (status, row) => (
         <div className={styles.product_info}>
-          <Image
-            width={70}
-            src={!row["main_pair"] ? "" : row["main_pair"].detailed.image_path}
-            alt={""}
-          />
+          <Image width={70} src={!row ? "" : row.image} alt={""} />
           <div className={styles.product_name}>
+            <strong>{row.name}</strong> <br />
             <a
               href="#"
               onClick={() => setSelectedRow(row["product_id"], "detail")}
             >
-              {" "}
-              <strong>{row["product"]}</strong>
+              #<small>{row.order_code}</small>
             </a>
-            <small>{row["product_code"]}</small>
           </div>
         </div>
       ),
@@ -92,37 +83,9 @@ const AccountTable = ({ handleScroll, loading }) => {
     },
     {
       title: "Transaction value",
-      dataIndex: "transaction_value",
-      key: "transaction_value",
-    },
-    {
-      title: "Voucher cost",
-      key: "voucher_cost",
-      dataIndex: "voucher_cost",
-      render: (id) => (
-        <div
-          className={styles.product_action}
-          onClick={() => setSelectedRow(id)}
-        >
-          <p>{"Status"}</p>
-        </div>
-      ),
-    },
-    {
-      title: "Gift certificate cost",
-      key: "certificate_cost",
-      dataIndex: "certificate_cost",
-      render: (certificate) => <div>{certificate}</div>,
-    },
-    {
-      title: "Shipping cost",
-      dataIndex: "shipping",
-      key: "shipping",
-    },
-    {
-      title: "Shipping cost",
-      dataIndex: "shipping",
-      key: "shipping",
+      dataIndex: "t_value",
+      key: "t_value",
+      render: (value) => <p>रु{value}</p>,
     },
   ];
   return (
@@ -142,4 +105,4 @@ const AccountTable = ({ handleScroll, loading }) => {
   );
 };
 
-export default AccountTable;
+export default WithdrawalsTable;

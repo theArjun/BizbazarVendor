@@ -77,6 +77,22 @@ function TopNavbar() {
           </div>
         </div>
         <div className={styles.dropdown}>
+          <div
+            className={styles.dropdownItems}
+            onClick={() => {
+              navigate("Edit Profile");
+            }}
+          >
+            Edit profile
+          </div>
+          <div
+            className={styles.dropdownItems}
+            onClick={() => {
+              navigate("SellerInformation");
+            }}
+          >
+            Seller info
+          </div>
           <div className={styles.dropdownItems} onClick={() => handleLogout()}>
             Logout
           </div>
