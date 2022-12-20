@@ -10,6 +10,7 @@ import {
   Upload,
   Checkbox,
   notification,
+  Card,
 } from "antd";
 import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
 import { InboxOutlined } from "@ant-design/icons";
@@ -196,7 +197,7 @@ const AddProduct = () => {
                 Information{!info ? <AiFillCaretRight /> : <AiFillCaretDown />}
               </h2>
             </div>
-            <div
+            <Card
               className={
                 info ? styles.information_container : styles.close_container
               }
@@ -280,7 +281,7 @@ const AddProduct = () => {
                   </p>
                 </Dragger>
               </Form.Item>
-            </div>
+            </Card>
           </div>
           <div className={styles.options}>
             <div
@@ -292,7 +293,7 @@ const AddProduct = () => {
                 {!options ? <AiFillCaretRight /> : <AiFillCaretDown />}
               </h2>
             </div>
-            <div
+            <Card
               className={
                 options ? styles.options_container : styles.close_container
               }
@@ -321,7 +322,7 @@ const AddProduct = () => {
                   }))}
                 />
               </Form.Item>
-            </div>
+            </Card>
           </div>
           <div className={styles.pricing}>
             <div className="pricing_title" onClick={() => setPricing(!pricing)}>
@@ -330,7 +331,7 @@ const AddProduct = () => {
                 {!pricing ? <AiFillCaretRight /> : <AiFillCaretDown />}
               </h2>{" "}
             </div>
-            <div
+            <Card
               className={
                 pricing ? styles.pricing_container : styles.close_container
               }
@@ -396,7 +397,7 @@ const AddProduct = () => {
               <Form.Item label="Taxes" valuePropName="yes" name="tax">
                 <Checkbox onChange={() => setVat(!vat)}>VAT</Checkbox>
               </Form.Item>
-            </div>
+            </Card>
           </div>
         </Form>
       </div>

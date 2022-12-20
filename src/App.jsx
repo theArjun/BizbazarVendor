@@ -51,6 +51,8 @@ const AccountOrderDetails = lazy(() =>
 const AddCatalogPromotion = lazy(() =>
   import("./pages/AddCatalogPromotion/AddCatalogPromotion")
 );
+const Profile = lazy(() => import("./pages/Profile/Profile"));
+const Seller = lazy(() => import("./pages/Seller/Seller"));
 
 const ResetPassword = lazy(() => import("./pages/Resetpassword/ResetPassword"));
 
@@ -73,7 +75,6 @@ function App() {
     <Router>
       <Routes>
         <Route element={<PrivateRoutes />}>
-          {/** Dashboard */}
           <Route
             element={
               <SuspenseWrapper>
@@ -83,6 +84,24 @@ function App() {
             path="/"
             exact
           />
+          <Route
+            element={
+              <SuspenseWrapper>
+                <Seller />
+              </SuspenseWrapper>
+            }
+            path="/SellerInformation"
+            exact
+          />
+          <Route
+            element={
+              <SuspenseWrapper>
+                <Profile />
+              </SuspenseWrapper>
+            }
+            path="/Edit Profile"
+          />{" "}
+          {/** Dashboard */}
           {/**Order routing */}
           {/**view orders */}
           <Route

@@ -1,0 +1,8 @@
+.title_header{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .close_container{
+    display: none;
+  }

@@ -194,7 +194,9 @@ const Products = () => {
         setSortBy={setSortBy}
         sortColum={sortColum}
         setSortingColum={setSortingColum}
+        setLoading={setLoading}
         loading={loading}
+        getProducts={getProducts}
       />
     </div>
   );
