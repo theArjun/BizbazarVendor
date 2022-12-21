@@ -1,14 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
-import { DarkModeContext } from "../../context/DarkAndLightMode/DarkAndLightContex";
+import React, { useState, useEffect } from "react";
 import styles from "./Home.module.css";
 import LineCharts from "../../pagecomponents/Home/Charts/LineCharts/LineCharts";
 import BarCharts from "../../pagecomponents/Home/Charts/Barcharts/Barcharts";
-
 import AnalyticsCard from "./../../pagecomponents/Home/Cards/AnalyticsCard/AnalyticsCard";
-import { AiFillSetting, AiOutlinePlus } from "react-icons/ai";
 import { Button, DatePicker, Form, Input, Modal } from "antd";
 import RecentOrders from "./../../pagecomponents/Home/RecentOrders/RecentOrders";
-import OrderByStatus from "./../../pagecomponents/Home/OrderByStatus/OrderByStatus";
 import RecentActivities from "./../../pagecomponents/Home/RecentActivities/RecentActivities";
 import CurrentPlanUsage from "./../../pagecomponents/Home/CurrentPlanUsage/CurrentPlanUsage";
 import {
@@ -23,7 +19,7 @@ import {
   InsertRowAboveOutlined,
 } from "@ant-design/icons";
 import { apicall } from "../../utils/apicall/apicall";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const Home = () => {
   const { RangePicker } = DatePicker;
