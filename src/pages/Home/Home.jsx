@@ -23,7 +23,6 @@ import { useDispatch } from "react-redux";
 
 const Home = () => {
   const { RangePicker } = DatePicker;
-  const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState([]);
@@ -135,7 +134,7 @@ const Home = () => {
       <div className={styles.dashboardHeader}>
         <div className={styles.dashboardHeaderLeft}>Dashboard</div>
         <div className={styles.dashboardHeaderRight}>
-          <RangePicker />
+          <RangePicker onChange={(e) => console.log(e)} />
         </div>
       </div>
 

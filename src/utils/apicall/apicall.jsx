@@ -33,6 +33,7 @@ export const apicall = async ({
         "Access-Control-Allow-Origin": true,
       },
     });
+
     if (method != "get") {
       notification.success({
         message: "Sucessfully Done",
@@ -43,7 +44,7 @@ export const apicall = async ({
   } catch (error) {
     if (method != "get") {
       notification.error({
-        message: "Fail",
+        message: "Process Fail",
         description: error.message,
       });
     }

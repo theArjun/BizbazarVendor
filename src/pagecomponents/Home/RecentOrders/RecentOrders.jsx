@@ -172,7 +172,7 @@ function RecentOrders({ order, status, statusModalOpen, setStatusModalOpen }) {
           pagination={false}
           scroll={{
             y: 240,
-            x: order.length < 1 ? 0 : 1000,
+            x: 800,
           }}
         />
       </div>
