@@ -1,0 +1,11 @@
+.rdrDateRangePickerWrapper {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+}
+
+.rdrInputRange:nth-child(1) {
+  display: none !important;
+}
+
+.rdrInputRange:nth-child(0) {
+  margin-top: 10px !important;
+}
