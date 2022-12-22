@@ -19,14 +19,11 @@ import {
   InsertRowAboveOutlined,
 } from "@ant-design/icons";
 import { apicall } from "../../utils/apicall/apicall";
-import { useDispatch } from "react-redux";
-import dayjs from "dayjs";
-import { useRef } from "react";
+
 import DateRangePickerComp from "../../pagecomponents/Home/RangePicker/Rangepicker";
 import { addDays } from "date-fns";
 
 const Home = () => {
-  const { RangePicker } = DatePicker;
   // const a = dayjs(new Date(new Date().setMonth(new Date().getMonth() - 1)));
 
   const [open, setOpen] = useState(false);
@@ -35,7 +32,7 @@ const Home = () => {
   const [range, setRange] = useState([
     {
       startDate: new Date(),
-      endDate: addDays(new Date(), -7),
+      endDate: addDays(new Date(), -30),
     },
   ]);
 
@@ -81,11 +78,17 @@ const Home = () => {
     },
   };
 
-  // const ref = useRef();
-  // console.log(ref.current.blur());
-  // const b = new Date(new Date().setMonth(new Date().getMonth() - 1));
+  // let timelaps = {
+  //   end: range[0].endDate.getTime(),
+  //   start: range[0].startDate.getTime(),
+  // };
 
-  // console.log(new Date(new Date().setMonth())
+  // let date = {
+  //   start: new Date(timelaps.start),
+  //   end: new Date(timelaps.end),
+  // };
+
+  // console.log(date, timelaps);
 
   const leftContainerData = [
     {
@@ -145,8 +148,6 @@ const Home = () => {
   ];
 
   const { TextArea } = Input;
-
-  console.log(range);
 
   return (
     <>
