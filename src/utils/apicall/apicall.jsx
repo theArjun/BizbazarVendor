@@ -34,7 +34,10 @@ export const apicall = async ({
       },
     });
 
+    console.log(result);
+
     if (method != "get") {
+      
       notification.success({
         message: "Sucessfully Done",
       });

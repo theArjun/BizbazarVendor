@@ -9,7 +9,6 @@ import {
   message,
   Upload,
   Checkbox,
-  notification,
   Card,
 } from "antd";
 import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
@@ -18,9 +17,11 @@ import { apicall } from "../../../utils/apicall/apicall";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 const { Dragger } = Upload;
 let cat_ids = [];
 const AddProduct = () => {
+  const navigate=useNavigate()
   // for toggling  fields button
   const [info, setInfo] = useState(true);
   const [options, setOptions] = useState(true);
@@ -29,14 +30,6 @@ const AddProduct = () => {
   const [categoryId, setCategoryId] = useState([]);
   const [description, setDescription] = useState("");
   const [vat, setVat] = useState(false);
-  const [api, contextHolder] = notification.useNotification();
-  // This is used to alert user for any <information></information>
-  const openNotificationWithIcon = (type, message) => {
-    api[type]({
-      message: message,
-      placement: "bottomRight",
-    });
-  };
   const options_type = [
     { label: "Simultaneous", value: "P" },
     { label: "Sequential", value: "S" },
@@ -82,10 +75,7 @@ const AddProduct = () => {
         data: { ...product_data },
       });
       if (result.data) {
-        // Seccess message
-        openNotificationWithIcon("success", "Product create successfully!");
-      } else {
-        openNotificationWithIcon("error", "Failed to create  product!");
+        navigate('/Products/Products')
       }
     }, 500);
     return () => clearTimeout(timeOutId);
@@ -153,7 +143,6 @@ const AddProduct = () => {
   };
   return (
     <div className={styles.container}>
-      {contextHolder}
       <div className={styles.breadcrumb_create_btn}>
         <div className="breadcrumb">
           <Breadcrumb>

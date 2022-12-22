@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Table.module.css";
-import { useSelector, useDispatch } from "react-redux";
 import { Table, Image, Skeleton } from "antd";
 import { apicall } from "../../../../utils/apicall/apicall";
-import { handleEditData } from "../../../../redux/features/products/productSlice";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 
@@ -22,7 +20,6 @@ const data = [
   },
 ];
 const WithdrawalsTable = ({ handleScroll, loading }) => {
-  const dispatch = useDispatch();
   // const data = useSelector((state) => state.product.products);
   const [productId, setProductId] = useState("");
   const navigate = useNavigate();
@@ -41,11 +38,6 @@ const WithdrawalsTable = ({ handleScroll, loading }) => {
   // Set id
   const setSelectedRow = async (id, method) => {
     setProductId(id);
-    window.localStorage.setItem("productRowId", JSON.stringify(id));
-    var result = await apicall({
-      url: `products/${id}`,
-    });
-    dispatch(handleEditData(result.data));
     if (method === "detail") {
       navigate("Edit Product");
     }

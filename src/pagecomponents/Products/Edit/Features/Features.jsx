@@ -12,13 +12,16 @@ const Features = ({ features }) => {
   const [electronics, setElectronics] = useState();
   const [electItems, setElectItems] = useState();
   const [gExport, setGexport] = useState(false);
+  const [items, setItems]=useState()
   const onFinish = (values) => {
-    console.log("Success:", values);
+    // console.log("Success:", values);
     //  console.log(features);
+    getExportItems();
+
   };
   useEffect(() => {
     getElectronics();
-  }, [electItems]);
+  }, []);
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
@@ -34,7 +37,7 @@ const Features = ({ features }) => {
     var c_colors = [];
     //call api to retrieve all colors
     const result = await apicall({
-      url: "features/549/",
+      url: "vendors/62/features/549/",
     });
     if (result?.data) {
       const data = { ...result.data.variants };
@@ -55,7 +58,7 @@ const Features = ({ features }) => {
     var c_brands = [];
     //call api to retrieve all brands
     const result = await apicall({
-      url: "features/18/",
+      url: "vendors/62/features/18/",
     });
     if (result?.data) {
       const data = { ...result.data.variants };
@@ -76,7 +79,7 @@ const Features = ({ features }) => {
     var c_size = [];
     //call api to retrieve all brands
     const result = await apicall({
-      url: "features/563/",
+      url: "vendors/62/features/563/",
     });
     if (result?.data) {
       const data = { ...result.data.variants };
@@ -108,7 +111,7 @@ const Features = ({ features }) => {
   const getElectItems = async (id) => {
     var temp = [];
     const result = await apicall({
-      url: `/features/${id}`,
+      url: `/vendors/62/features/${id}`,
     });
     if (result?.data) {
       const data = { ...result.data.variants };
@@ -125,17 +128,45 @@ const Features = ({ features }) => {
     }
   };
 
-  // Here we get  google export items
-  const getExportItems = () => {
-    const data = { ...features?.features };
-    const keys = Object.keys(data);
-    keys.map((item, i) => {
-      if (data[item]?.parent_id == "14") {
-        temp.push(data[item]);
-      }
-    });
-    setElectronics(temp);
-  };
+  // Here we get  google export items 
+  const getExportItems= ()=>{
+    const data = [ ...features?.features ];
+    var element= data.filter((item, i) => {
+      return(item.parent_id=='550')
+    }).map( (item, index)=>{
+      return (
+        <Form.Item key={index} name={item?.description} label={item?.description} onClick={()=>getExportSubItems(item.feature_id)}>
+        <Select
+        showSearch
+        placeholder={`Select `+item?.description}
+        optionFilterProp="children"
+        onSelect={onSelect}
+        onDeselect={onDeselect}
+        filterOption={(input, option) =>
+          (option?.label ?? "")
+            .toLowerCase()
+            .includes(input.toLowerCase())
+        }
+        options={items}
+      />
+        </Form.Item>
+      )
+    }
+    )
+     return(element)
+  }
+  // get export sub items 
+  const getExportSubItems= async (id)=>{
+     const result= await apicall({
+      url:`vendors/62/features/${id}`
+     })
+ const temp = Object.values(result.data.variants).map((dat,i)=>({
+    label: dat.variant,
+    value:dat.variant_id
+  }))
+  setItems(temp);
+ 
+  }
   return (
     <div className={styles.feature_container}>
       <Form
@@ -210,38 +241,38 @@ const Features = ({ features }) => {
           {electro ? <AiFillCaretRight /> : <AiFillCaretDown />}
         </div>
         <Card className={electro ? styles.close_electro : ""}>
-          {electronics?.map((item) => {
+          {electronics?.map((item, index) => {
             return (
-              <Form.Item
-                name={item.internal_name}
-                label={item.internal_name}
-                onClick={() => getElectItems(item.feature_id)}
-              >
-                <Select
-                  showSearch
-                  placeholder={`Select a ` + item.internal_name}
-                  optionFilterProp="children"
-                  onSelect={onSelect}
-                  onDeselect={onDeselect}
-                  filterOption={(input, option) =>
-                    (option?.label ?? "")
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                  options={electItems}
-                />
+              <Form.Item name={item.internal_name} key={index} label={item.internal_name} onClick={()=>getElectItems(item.feature_id)}>
+              <Select
+              showSearch
+              placeholder={`Select a `+item.internal_name}
+              optionFilterProp="children"
+              onSelect={onSelect}
+              onDeselect={onDeselect}
+              filterOption={(input, option) =>
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
+              options={electItems}
+            />
               </Form.Item>
             );
           })}
         </Card>
         <div
-          className={styles.export_title}
-          onClick={() => setGexport(!gExport)}
-        >
-          <h3 className={styles.export}>Google export features</h3>
-          {gExport ? <AiFillCaretRight /> : <AiFillCaretDown />}
-        </div>
-        <Card className={gExport ? styles.close_electro : styles.export}></Card>
+        className={styles.export_title}
+        onClick={() => setGexport(!gExport)}
+      >
+        <h3 className={styles.export}>Google export features</h3>
+        {gExport ? <AiFillCaretRight /> : <AiFillCaretDown />}
+      </div>
+      <Card className={gExport ? styles.close_electro :styles.export}>
+      {
+        getExportItems()
+      }
+      </Card>
       </Form>
     </div>
   );

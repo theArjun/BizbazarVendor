@@ -21,7 +21,7 @@ import {
 import { apicall } from "../../utils/apicall/apicall";
 
 import DateRangePickerComp from "../../pagecomponents/Home/RangePicker/Rangepicker";
-import { addDays } from "date-fns";
+// import { addDays } from "date-fns";
 
 const Home = () => {
   // const a = dayjs(new Date(new Date().setMonth(new Date().getMonth() - 1)));
@@ -32,7 +32,7 @@ const Home = () => {
   const [range, setRange] = useState([
     {
       startDate: new Date(),
-      endDate: addDays(new Date(), -30),
+      // endDate: addDays(new Date(), -30),
     },
   ]);
 
