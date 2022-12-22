@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { Button, Modal } from "antd";
 import { Input } from "antd";
-import { Checkbox, notification } from "antd";
+import { Checkbox } from "antd";
 import { apicall } from "../../utils/apicall/apicall";
 
 function OrderStatusModal({ statusModalOpen, setStatusModalOpen }) {
@@ -15,19 +15,9 @@ function OrderStatusModal({ statusModalOpen, setStatusModalOpen }) {
     });
   };
 
-  const [api] = notification.useNotification();
-
   const [notifyUser, setNotifyUser] = useState(true);
   const [notifyDepartment, setNotifyDepartment] = useState(true);
   const [notifyVendor, setNotifyVendor] = useState(true);
-
-  const openNotification = (placement, message) => {
-    notification.open({
-      message: `Order update ${message}`,
-
-      placement,
-    });
-  };
 
   const handleConfirm = async () => {
     const result = await apicall({
@@ -41,14 +31,10 @@ function OrderStatusModal({ statusModalOpen, setStatusModalOpen }) {
       },
     });
     if (result.status === 200) {
-      openNotification("bottomRight", "SucessFull");
-
       handleCancel();
       return;
     }
     if (result.status != 200) {
-      openNotification("bottomRight", "Failed");
-
       handleCancel();
       return;
     }

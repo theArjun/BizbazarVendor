@@ -1,20 +1,5 @@
 import axios from "axios";
 import { notification } from "antd";
-import { SmileOutlined } from "@ant-design/icons";
-import { FaRegSadTear } from "react-icons/fa";
-
-const openNotification = (msg1, msg2) => {
-  notification.open({
-    message: msg1,
-    description: msg2,
-    icon:
-      msg1 === "SuccessFull" ? (
-        <SmileOutlined style={{ color: "green" }} />
-      ) : (
-        <FaRegSadTear style={{ color: "red" }} />
-      ),
-  });
-};
 
 export const apicall = async ({
   method = "get",
@@ -50,12 +35,18 @@ export const apicall = async ({
     });
 
     if (method != "get") {
-      openNotification("SuccessFull");
+      notification.success({
+        message: "Sucessfully Done",
+      });
     }
+
     return result;
   } catch (error) {
     if (method != "get") {
-      openNotification("Fail", error.message);
+      notification.error({
+        message: "Process Fail",
+        description: error.message,
+      });
     }
     return error.message;
   }
