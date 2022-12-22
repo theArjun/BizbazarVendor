@@ -57,7 +57,7 @@ const Edit = () => {
   const getContainerFromTab = () => {
     switch (active) {
       case tabs[1]:
-        return <EditShipping />;
+        return data?<EditShipping data={data} />:'';
       case tabs[2]:
         return <EditOptions/>;
       case tabs[3]:
@@ -65,7 +65,7 @@ const Edit = () => {
       case tabs[4]:
         return <div>Variations</div>;
       case tabs[5]:
-        return <EditSeo/>;
+        return data?<EditSeo data={data} />:'';
       case tabs[6]:
         return <div>Quantity discounts</div>;
       case tabs[7]:

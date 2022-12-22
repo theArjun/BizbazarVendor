@@ -2,17 +2,18 @@ import React,{useState} from "react";
 import styles from "./Shipping.module.css";
 import './index.css'
 import { Form, Input, Checkbox, Button, Card } from "antd";
-const Shipping = () => {
+import { apicall } from "../../../../utils/apicall/apicall";
+const Shipping = ({data}) => {
   const [itemsInBox, setItemsInBox]=useState(false)
+  const [free_ship,setFree_ship]=useState(false);
   const onFinish = (values) => {
-    console.log("Success:", values);
+      const temp={...values,...{free_shipping:free_ship?'Y':'N'}};
+      console.log(temp)
+      updateShipping(data?.product_id, temp);
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-  const onValueChange=(a,b)=>{
-      console.log(b);
-  }
   const onItemChange=(e)=>{
         const value= e?.target.value;
         if(value=='' || value==0){
@@ -22,23 +23,33 @@ const Shipping = () => {
           setItemsInBox(true)
         }
   }
+  // lets call api to update shipping details
+  const updateShipping= async(id,values)=>{
+      const result=await apicall({
+        url:`products/${id}`,
+        data:values,
+        method:'put',
+      })
+      if(result.data){
+        window.location.reload();
+      }
+  }
   return (
     <div className={styles.shipping}>
       <Form
         name="basic"
         initialValues={{
-          weight: "0.000",
-          freight: "0.00",
-          min_items:'0',
-          max_items:'0',
-          box_width:'0',
-          box_length:'0',
-          box_height:'0'
+          weight: data?.weight,
+          shipping_freight: data?.shipping_freight,
+          min_items_in_box:data?.min_items_in_box,
+          max_items_in_box:data.max_items_in_box,
+          box_width:data?.box_width,
+          box_length:data?.box_length,
+          box_height:data?.box_height
         }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
-        onValuesChange={onValueChange}
       >
         <Form.Item style={{ float: "right" }}>
           <Button type="primary" htmlType="submit">
@@ -58,31 +69,28 @@ const Shipping = () => {
 
           <Form.Item
             label="Free shipping"
-            name="free_ship"
             extra="Products with the Free shipping option enabled will be excluded from shipping calculation if shipping method has the Use for free shipping option enabled."
           >
-            <Checkbox />
+            <Checkbox  onChange={()=>setFree_ship(!free_ship)}/>
           </Form.Item>
-
-          <Form.Item label="Shipping freight(रु)" name="freight">
+          <Form.Item label="Shipping freight(रु)" name="shipping_freight">
             <Input />
           </Form.Item>
 
           <Form.Item
             label="Items in a box"
-            name="items_in_box"
             extra="Use this field to define the minimum and maximum number of product items to be shipped in a separate box. Enter a non-zero value and specify the box dimensions below."
           >
            
             <div  className={styles.items_in_box}>
-              <Form.Item name="min_items" style={{width:'50px'}} >
+              <Form.Item name="min_items_in_box" style={{width:'50px'}} >
                 <Input  onChange={(e)=>onItemChange(e)}/>
               </Form.Item>
               <Form.Item>
             -
               
               </Form.Item>
-              <Form.Item name="max_items" style={{width:'50px'}}>
+              <Form.Item name="max_items_in_box" style={{width:'50px'}}>
                 <Input onChange={(e)=>onItemChange(e)} />
               </Form.Item>
             </div>
@@ -114,5 +122,4 @@ const Shipping = () => {
     </div>
   );
 };
-
 export default Shipping;
