@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Edit.module.css";
 import { Breadcrumb } from "antd";
-import { EditFeatures, EditGeneral, EditShipping } from "../..";
+import { EditFeatures, EditGeneral, EditOptions, EditSeo, EditShipping } from "../..";
 import { useSelector } from "react-redux";
 import cx from "classnames";
 import { apicall } from "../../../utils/apicall/apicall";
@@ -11,50 +11,67 @@ const tabs = [
   "Options",
   "Features",
   "Variations",
+  "SEO",
   "Quantity discounts",
   "Product bundles",
 ];
 const Edit = () => {
-  const editData = useSelector((state) => state.product.editData);
+  const categories=useSelector((state)=>state.product.categories);
+  const editID=JSON.parse(window.localStorage.getItem("productRowId"));
   const [active, setActive] = useState("General");
   const [features, setFeatures]=useState(''); 
+  const [data, setData]=useState('');
+  const [loading, setLoading]=useState(false);
   useEffect(() => {
    getData();
-    return () => {};
   }, []);
-// lets get all the required data  from api concurrently using Promise 
-    const getData=async()=>{
-      await Promise.all([getFeatures()])
+  // lets get all the required data  from api concurrently using Promise 
+  const getData=async()=>{
+    await Promise.all([getFeatures(), getEditData(editID)])
+  }
+  // Get all edit data
+  const getEditData= async (id)=>{
+    setLoading(true)
+    const result = await apicall({
+      url:`products/${id}`,
+    });
+    if(result.data){
+        setData({...result?.data})
+        setLoading(false)
     }
+  }
   // Lets get features from API
   const getFeatures = async () => {
+    setLoading(true);
     //call api to retrieve categories
     const result = await apicall({
       url: "features",
     });
-    if (result?.data) {
+    if(result.data){
       setFeatures(result.data)
+
     } else {
      setFeatures('')
     }
   };
-
   const getContainerFromTab = () => {
     switch (active) {
       case tabs[1]:
         return <EditShipping />;
       case tabs[2]:
-        return <div>Options</div>;
+        return <EditOptions/>;
       case tabs[3]:
         return <EditFeatures features={features} />;
       case tabs[4]:
         return <div>Variations</div>;
       case tabs[5]:
-        return <div>Quantity discounts</div>;
+        return <EditSeo/>;
       case tabs[6]:
+        return <div>Quantity discounts</div>;
+      case tabs[7]:
         return <div>Product bundles</div>;
       default:
-        return <EditGeneral editData={editData} />;
+        return categories && data?<EditGeneral editData={data?data:''} loading={loading} categories={categories}/>:'';
     }
   };
   return (

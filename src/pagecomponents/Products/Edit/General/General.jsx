@@ -1,7 +1,6 @@
 import React from "react";
 import styles from "./General.module.css";
 import {
-  Breadcrumb,
   Button,
   Form,
   Input,
@@ -9,7 +8,6 @@ import {
   message,
   Upload,
   Checkbox,
-  notification,
   Skeleton,
   Card,
 } from "antd";
@@ -19,27 +17,15 @@ import { apicall } from "../../../../utils/apicall/apicall";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useState } from "react";
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { getSelectedCategory } from "../../../../redux/features/products/productSlice";
 const { Dragger } = Upload;
-const General = ({ editData }) => {
-  const dispatch = useDispatch();
-  const cats = useSelector((state) => state.product.selectedCats);
-  const editId = JSON.parse(window.localStorage.getItem("productRowId"));
+const General = ({ editData, loading, categories }) => {
   // for toggling  fields button
   const [info, setInfo] = useState(true);
   const [options, setOptions] = useState(true);
   const [pricing, setPricing] = useState(true);
-  const [categories, setCategories] = useState("");
-  const [categoryId, setCategoryId] = useState(
-    editData ? [...editData.category_ids] : []
-  );
+  const [categoryId, setCategoryId] = useState([...editData.category_ids]);
   const [description, setDescription] = useState("");
-  const [data, setData] = useState("");
   const [vat, setVat] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [api, contextHolder] = notification.useNotification();
   var {
     product_id,
     product,
@@ -55,7 +41,7 @@ const General = ({ editData }) => {
     max_qty,
     min_qty,
     tax,
-  } = editData ? editData : data;
+  } = editData;
 
   const options_t = [
     { label: "Simultaneous", value: "P" },
@@ -74,32 +60,19 @@ const General = ({ editData }) => {
     { label: "Yes", value: "B" },
     { label: "No", value: "D" },
   ];
-  // This is used to alert user for any <information></information>
-  const openNotificationWithIcon = (type, message) => {
-    api[type]({
-      message: message,
-      placement: "bottomRight",
+  const getSelectedCatLabel = () => {
+    let temp = [];
+    categories.map((item) => {
+      category_ids.map((id) => {
+        if (item.category_id == id) {
+          temp.push({
+            label: item.category,
+            value: item.category_id,
+          });
+        }
+      });
     });
-  };
-  // use useeffect for api call
-  useEffect(() => {
-    // This is to check for same data
-    getProductData(editId);
-    retrieveCategories();
-    dispatch(getSelectedCategory());
-  }, []);
-  // this function is used to get particular product dat acc to id
-  const getProductData = async (id) => {
-    setLoading(true);
-    // perform api call to retrieve data
-    const result = await apicall({
-      url: `products/${id}`,
-    });
-    if (result.data) {
-      setData(result.data);
-      setCategoryId(result.data.category_ids);
-    }
-    setLoading(false);
+    return temp;
   };
   // trigger while clicking  on create button if there is no any error at  client side
   const onFinish = (values) => {
@@ -116,7 +89,6 @@ const General = ({ editData }) => {
       zero_price_action: values.price_action,
       amount: values.stock,
       tracking: values.track_inventory,
-      tax: vat ? "Y" : "N",
     };
     // console.log(product_data);
     const timeOutId = setTimeout(async () => {
@@ -124,17 +96,9 @@ const General = ({ editData }) => {
       // perform api call to retrieve data
       const result = await apicall({
         method: "put",
-        url: `products/${editId}`,
+        url: `products/${product_id}`,
         data: { ...product_data },
       });
-
-      if (result.data) {
-        // Seccess message
-        openNotificationWithIcon("success", "Product update successfully!");
-      } else {
-        // throw error message
-        openNotificationWithIcon("error", "Failed to update product!");
-      }
     }, 500);
     return () => clearTimeout(timeOutId);
   };
@@ -143,40 +107,32 @@ const General = ({ editData }) => {
     console.log("Failed:", errorInfo);
   };
   // This function is used to retrieve categories from database
-  const retrieveCategories = async () => {
-    setLoading(true);
-    const category = [];
-    // // perform api call to retrieve data
-    const result = await apicall({
-      url: `categories`,
-    });
-    await result.data.categories.map((item, index) => {
-      category.push({
-        value: item.category,
-        label: item.category,
-        id: item.category_id,
-      });
-    });
-    setCategories(category);
-    setLoading(false);
+  const retrieveCategories = () => {
+    const temp = categories.map((dat, i) => ({
+      label: dat.category,
+      value: dat.category_id,
+    }));
+    return temp;
   };
   //  run code while selecting categories
   const onSelect = (value) => {
-    categories.map((item, index) => {
-      if (value == item.label) {
-        categoryId.push(item.id);
-        setCategoryId(categoryId);
+    const temp = [...categoryId];
+    categories.map((item) => {
+      if (item.category_id == value) {
+        temp.push(parseInt(value));
       }
     });
-    console.log(categoryId);
+    setCategoryId(temp);
   };
   //  run code while Deselecting categories
   const onDeselect = (value) => {
-    categories.map((item, index) => {
-      if (value == item.label) {
-        categoryId.pop(item.id);
+    const temp = [...categoryId];
+    categories.map((item) => {
+      if (item.category_id == value) {
+        temp.pop(parseInt(value));
       }
     });
+    setCategoryId(temp);
   };
   // this function is for category search
   const onSearch = (value) => {
@@ -208,7 +164,6 @@ const General = ({ editData }) => {
   }
   return (
     <div className={styles.formContainer}>
-      {contextHolder}
       <Form
         name="basic"
         onFinish={onFinish}
@@ -227,7 +182,7 @@ const General = ({ editData }) => {
           tax: "N",
           description: full_description,
           code: product_code,
-          category: cats,
+          category: getSelectedCatLabel(),
           price: parseFloat(price).toFixed(2),
           price_action: zero_price_action,
         }}
@@ -284,7 +239,7 @@ const General = ({ editData }) => {
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={categories}
+                options={retrieveCategories()}
               />
             </Form.Item>
             <Form.Item

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Space, Table, Dropdown, Image, notification } from "antd";
+import { Space, Table, Dropdown, Image } from "antd";
 import styles from "./Table.module.css";
 import { DownOutlined } from "@ant-design/icons";
 import { apicall } from "../../../utils/apicall/apicall";
@@ -11,13 +11,11 @@ import {
   AiOutlineBars,
 } from "react-icons/ai";
 import {
-  handleEditData,
   loadTableData,
   setSelectedProductId,
 } from "../../../redux/features/products/productSlice";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../utils/Hooks/useWindowSize";
-import useDebounce from "../../../utils/Hooks/useDebounce";
 const ProductTable = ({
   setPage,
   setLoading,
@@ -34,7 +32,6 @@ const ProductTable = ({
   const [option, setOption] = useState(false);
   const navigate = useNavigate();
   const windowSize = useWindowSize();
-  const [api, contextHolder] = notification.useNotification();
   useEffect(() => {
     document
       .querySelector("#product > div > div.ant-table-body")
@@ -46,14 +43,6 @@ const ProductTable = ({
         ?.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
-
-  // This is used to alert user for any <information></information>
-  const openNotificationWithIcon = (type, message) => {
-    api[type]({
-      message: message,
-      placement: "bottomRight",
-    });
-  };
   // Delete data
   const deleteProduct = async (id) => {
     // perform api call to retrieve data
@@ -89,18 +78,12 @@ const ProductTable = ({
           deleted.push(index);
           if (deleted.length == products.length) {
             await getProducts();
+            setSelectedRowKeys([])
             setDeleteIds([]);
-            openNotificationWithIcon(
-              "success",
-              "Selected products are deleted successfully!"
-            );
           }
         } else {
+          setSelectedRowKeys([])
           setDeleteIds([]);
-          openNotificationWithIcon(
-            "error",
-            "Failed to delete selected products!"
-          );
         }
       });
     }
@@ -110,10 +93,6 @@ const ProductTable = ({
   const setSelectedRow = async (id, method) => {
     setProductId(id);
     window.localStorage.setItem("productRowId", JSON.stringify(id));
-    var result = await apicall({
-      url: `products/${id}`,
-    });
-    dispatch(handleEditData(result.data));
     if (method === "detail") {
       navigate("Edit Product");
     }
@@ -135,14 +114,7 @@ const ProductTable = ({
           url: `products/`,
         });
         await dispatch(loadTableData(allData.data.products));
-        // Seccess message
-        openNotificationWithIcon(
-          "success",
-          "Product status update successfully!"
-        );
-      } else {
-        // throw error message
-        openNotificationWithIcon("error", "Failed to update product status!");
+       
       }
     }, 500);
     return () => clearTimeout(timeOutId);
@@ -356,7 +328,6 @@ const ProductTable = ({
 
   return (
     <div>
-      {contextHolder}
       <div className={!option ? styles.openDelete : ""}>
         <Dropdown
           menu={{

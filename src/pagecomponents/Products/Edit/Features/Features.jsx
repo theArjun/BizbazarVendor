@@ -135,7 +135,7 @@ const Features = ({ features }) => {
       return(item.parent_id=='550')
     }).map( (item, index)=>{
       return (
-        <Form.Item name={item?.description} label={item?.description} onClick={()=>getExportSubItems(item.feature_id)}>
+        <Form.Item key={index} name={item?.description} label={item?.description} onClick={()=>getExportSubItems(item.feature_id)}>
         <Select
         showSearch
         placeholder={`Select `+item?.description}
@@ -241,9 +241,9 @@ const Features = ({ features }) => {
           {electro ? <AiFillCaretRight /> : <AiFillCaretDown />}
         </div>
         <Card className={electro ? styles.close_electro : ""}>
-          {electronics?.map((item) => {
+          {electronics?.map((item, index) => {
             return (
-              <Form.Item name={item.internal_name} label={item.internal_name} onClick={()=>getElectItems(item.feature_id)}>
+              <Form.Item name={item.internal_name} key={index} label={item.internal_name} onClick={()=>getElectItems(item.feature_id)}>
               <Select
               showSearch
               placeholder={`Select a `+item.internal_name}

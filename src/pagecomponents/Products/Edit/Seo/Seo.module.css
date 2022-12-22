@@ -1,0 +1,23 @@
+.seo_card{
+    display: flex;
+}
+.seo_card_left{
+    width: 50%;
+}
+.seo_card_right{
+    margin-left: 20px;
+    margin-top: 40px;
+}
+@media (max-width: 718px) {
+    .seo_card {
+   display: block;
+    }
+    .seo_card_left{
+        width: 100%;
+    }
+    .seo_card_right{
+        margin-left: 0px;
+        margin-top: 0px;
+    }
+    
+  }
