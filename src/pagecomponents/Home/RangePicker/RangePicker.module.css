@@ -1,0 +1,42 @@
+/* input.inputBox {
+  font-size: 22px;
+  padding: 5px 8px 4px 8px;
+  border-radius: 3px;
+  border: 1px solid #666;
+} */
+
+.calendarWrap {
+  /* display: inline-block; */
+  position: relative;
+  width: fit-content;
+  /* height: 0 !important; */
+  /* background-color: aqua; */
+}
+
+.calendarElement {
+  position: absolute;
+  right: 0%;
+  /* transform: translateX(-50%); */
+  top: 20px;
+  border: 1px solid #ccc;
+  z-index: 999;
+}
+
+@media (max-width: 600px) {
+  .datepicker {
+    transform: scale(0.6) translate(200px, -120px);
+    height: 350px;
+    /* scale: 0.6; */
+  }
+
+  .calendarElement {
+    height: 0 !important;
+  }
+}
+
+.dateWrap {
+  background-color: white;
+  padding: 5px 10px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border-radius: 5px;
+}
