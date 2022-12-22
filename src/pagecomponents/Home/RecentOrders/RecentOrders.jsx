@@ -63,7 +63,7 @@ function RecentOrders({ order, status, statusModalOpen, setStatusModalOpen }) {
     {
       title: "Order Id",
       dataIndex: "order_id",
-      key: "status_id",
+      // key: "order_id",
       render: (text, dat) => (
         <div
           style={{ color: "blue", cursor: "pointer" }}
@@ -73,12 +73,11 @@ function RecentOrders({ order, status, statusModalOpen, setStatusModalOpen }) {
         </div>
       ),
       width: 140,
-      // sorter: (a, b) => {},
     },
     {
       title: "User name",
       dataIndex: "firstname",
-      key: "order_id",
+      // key: "firstname",
       render: (text, dat) => (
         <div>
           {text} {dat.lastname}
@@ -88,32 +87,27 @@ function RecentOrders({ order, status, statusModalOpen, setStatusModalOpen }) {
     {
       title: "Email",
       dataIndex: "email",
-      key: "order_id",
     },
     {
       title: "Status",
       dataIndex: "status",
-      key: "order_id",
+      key: "status",
       render: (text, obj) => getStatusTag(text, obj.order_id),
       width: 100,
     },
     {
       title: "Phone",
       dataIndex: "phone",
-      key: "order_id",
     },
     {
       title: "Date And Time",
       dataIndex: "timestamp",
-      key: "order_id",
       render: (text) => getTimeAndDate(text),
-      // sorter: (a, b) => {},
     },
 
     {
       title: "Total",
       dataIndex: "total",
-      key: "order_id",
       render: (text) => <div>रु{text}</div>,
       width: 100,
     },
@@ -174,10 +168,11 @@ function RecentOrders({ order, status, statusModalOpen, setStatusModalOpen }) {
         <Table
           dataSource={fiterData(order)}
           columns={columns}
+          rowKey="order_id"
           pagination={false}
           scroll={{
             y: 240,
-            x: order.length < 1 ? 0 : 1000,
+            x: 800,
           }}
         />
       </div>

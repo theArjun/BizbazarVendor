@@ -1,14 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
-import { DarkModeContext } from "../../context/DarkAndLightMode/DarkAndLightContex";
+import React, { useState, useEffect } from "react";
 import styles from "./Home.module.css";
 import LineCharts from "../../pagecomponents/Home/Charts/LineCharts/LineCharts";
 import BarCharts from "../../pagecomponents/Home/Charts/Barcharts/Barcharts";
-
 import AnalyticsCard from "./../../pagecomponents/Home/Cards/AnalyticsCard/AnalyticsCard";
-import { AiFillSetting, AiOutlinePlus } from "react-icons/ai";
 import { Button, DatePicker, Form, Input, Modal } from "antd";
 import RecentOrders from "./../../pagecomponents/Home/RecentOrders/RecentOrders";
-import OrderByStatus from "./../../pagecomponents/Home/OrderByStatus/OrderByStatus";
 import RecentActivities from "./../../pagecomponents/Home/RecentActivities/RecentActivities";
 import CurrentPlanUsage from "./../../pagecomponents/Home/CurrentPlanUsage/CurrentPlanUsage";
 import {
@@ -23,15 +19,22 @@ import {
   InsertRowAboveOutlined,
 } from "@ant-design/icons";
 import { apicall } from "../../utils/apicall/apicall";
-import { useDispatch, useSelector } from "react-redux";
+
+import DateRangePickerComp from "../../pagecomponents/Home/RangePicker/Rangepicker";
+import { addDays } from "date-fns";
 
 const Home = () => {
-  const { RangePicker } = DatePicker;
-  const dispatch = useDispatch();
+  // const a = dayjs(new Date(new Date().setMonth(new Date().getMonth() - 1)));
 
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState([]);
+  const [range, setRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: addDays(new Date(), -30),
+    },
+  ]);
 
   const [statusModalOpen, setStatusModalOpen] = useState({
     open: false,
@@ -74,6 +77,18 @@ const Home = () => {
       categories: ["2019-05-01", "2019-05-02", "2019-05-03", "2019-05-04"],
     },
   };
+
+  // let timelaps = {
+  //   end: range[0].endDate.getTime(),
+  //   start: range[0].startDate.getTime(),
+  // };
+
+  // let date = {
+  //   start: new Date(timelaps.start),
+  //   end: new Date(timelaps.end),
+  // };
+
+  // console.log(date, timelaps);
 
   const leftContainerData = [
     {
@@ -139,7 +154,8 @@ const Home = () => {
       <div className={styles.dashboardHeader}>
         <div className={styles.dashboardHeaderLeft}>Dashboard</div>
         <div className={styles.dashboardHeaderRight}>
-          <RangePicker />
+          {/* <RangePicker value={dateRange} onChange={(e, a) => setDateRange(e)} /> */}
+          <DateRangePickerComp range={range} setRange={setRange} />
         </div>
       </div>
 
