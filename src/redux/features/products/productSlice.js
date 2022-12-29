@@ -15,15 +15,13 @@ export const productSlice=createSlice({
         state.loading=action.payload;
       },
        loadTableData:  (state, action)=>{
-         let data=[]
            // setting to the initial state
            if(action.payload){
-              action.payload.map((item, index)=>{
-                item['key']=index
-                data.push(item);
-              })
+            let data  = action.payload.map((item, index)=>({...item,key:index}))
+            state.products=data;
           }
-       state.products=data;
+
+          
         
        },
        handleAdvanceSearchModal: (state,action)=>{

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Edit.module.css";
 import { Breadcrumb } from "antd";
-import { EditFeatures, EditGeneral, EditOptions, EditQuantityDiscount, EditSeo, EditShipping } from "../..";
+import { EditFeatures, EditGeneral, EditOptions, EditQuantityDiscount, EditSeo, EditShipping, EditVariations } from "../..";
 import { useSelector } from "react-redux";
 import cx from "classnames";
 import { apicall } from "../../../utils/apicall/apicall";
@@ -64,7 +64,7 @@ const Edit = () => {
       case tabs[3]:
         return <EditFeatures features={features} />;
       case tabs[4]:
-        return <div>Variations</div>;
+        return data?<EditVariations data={data}/>:'';
       case tabs[5]:
         return data?<EditSeo data={data} />:'';
       case tabs[6]:

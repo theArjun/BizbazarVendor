@@ -217,7 +217,7 @@ const ProductTable = ({
               onClick={() => setSelectedRow(row["product_id"], "detail")}
             >
               {" "}
-              <strong>{row["product"]}</strong>
+              <strong>{row["product"]?.length>15?row["product"].substring(0,15)+'...':row["product"]}</strong>
             </a>
             <small>{row["product_code"]}</small>
           </div>

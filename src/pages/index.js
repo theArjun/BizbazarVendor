@@ -59,6 +59,9 @@ const EditSeo = React.lazy(() =>
 const EditQuantityDiscount = React.lazy(() =>
   import("../pagecomponents/Products/Edit/QuantityDiscounts/QuantityDiscounts")
 );
+const EditVariations = React.lazy(() =>
+  import("../pagecomponents/Products/Edit/Variations/Variations")
+);
 
 export {
   ProductTable,
@@ -80,5 +83,6 @@ export {
   EditFeatures,
   EditOptions,
   EditSeo,
-  EditQuantityDiscount
+  EditQuantityDiscount, 
+  EditVariations
 };
