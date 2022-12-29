@@ -3,31 +3,34 @@ import { Breadcrumb } from "antd";
 import styles from "./AccountOrderDetails.module.css";
 
 import { useEffect } from "react";
+import { apicall2 } from "../../../utils/apicall/apicall2";
 import { apicall } from "../../../utils/apicall/apicall";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 import AccountOrderDetailsSearch from "./../../../pagecomponents/Reports/AccountOrderDetails/Search/Search";
 import AccountOrderDetailsTable from "../../../pagecomponents/Reports/AccountOrderDetails/Table/Table";
+import { addDays } from "date-fns";
 
 const AccountOrderDetails = () => {
+  const [range, setRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: addDays(new Date(), -30),
+    },
+  ]);
   const [sValue, setSearchValue] = useState({});
   const [status, setStatus] = useState([]);
-  const [order, setOrder] = useState([]);
+  const [accountOrderDetails, setAccountOrderDetails] = useState([]);
 
   const [loading, setLoading] = useState(false);
+  const [load, setLoad] = useState(false);
 
   const page1 = useRef(1);
-
-  const [statusModalOpen, setStatusModalOpen] = useState({
-    open: false,
-    data: {},
-    orderId: null,
-  });
 
   const [sortBy, setSortBy] = useState("");
   const [sortColum, setSortingColum] = useState("");
   const [bottom, setBottom] = useState(false);
 
-  const a = Object.values(sValue).join("");
+  // const a = Object.values(sValue).join("");
 
   useEffect(() => {
     document
@@ -45,96 +48,35 @@ const AccountOrderDetails = () => {
     const condition =
       event.target.scrollTop + event.target.offsetHeight + 100 >
       event.target.scrollHeight;
-
     setBottom(condition);
   };
 
-  useDebounce(
-    () => {
-      page1.current = 1;
-      getOrder(sValue);
-    },
-    1200,
-    [a]
-  );
-
   useEffect(() => {
-    getStatus();
-  }, []);
+    getAccountOrderDetails(sValue);
+  }, [load]);
 
-  useEffect(() => {
-    getOrder(sValue);
-  }, [statusModalOpen.open, sortBy?.order, sortBy?.field]);
+  console.log(range[0].startDate.getFullYear());
 
-  const getStatus = async () => {
-    const result = await apicall({
-      url: "statuses",
-    });
-
-    setStatus(result.data.statuses);
+  const getApicallFormatDate = (date) => {
+    return date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay();
   };
 
-  const getUrl = (values) => {
-    console.log(sValue);
-    let newUrl = "orders?is_search=Y";
-    if (values?.customer) {
-      newUrl = newUrl + "&cname=" + values.customer;
-    }
-    if (values?.email) {
-      newUrl = newUrl + "&email=" + values.email;
-    }
-    if (values?.phone) {
-      newUrl = newUrl + "&phone=" + values.phone;
-    }
-    if (values?.max_price) {
-      newUrl = newUrl + "&total_to=" + values.max_price;
-    }
-    if (values?.orderid) {
-      newUrl = newUrl + "&order_id=" + values.orderid;
-    }
-    if (values?.min_price) {
-      newUrl = newUrl + "&total_from=" + values.min_price;
-    }
-    if (sortBy?.order) {
-      const orderType = sortBy?.order === "ascend" ? "asc" : "desc";
-      newUrl = newUrl + "&sort_order=" + orderType;
-
-      const sortByType = sortBy?.field === "order_id" ? "order" : "date";
-      newUrl = newUrl + "&sort_by=" + sortByType;
-    }
-    return newUrl + `&page=${page1.current}&items_per_page=${50}`;
-  };
-
-  const getOrder = async (values) => {
+  const getAccountOrderDetails = async () => {
     setLoading(true);
-    const result = await apicall({
-      url: getUrl(values),
+    const result = await apicall2({
+      preurl: "AccountOrderDetail",
+      posturl:
+        "time_from=" +
+        // getApicallFormatDate(range[0].endDate) +
+        "&time_to=",
+      // getApicallFormatDate(range[0].startDate),
     });
+    console.log(result);
     if (result?.status === 200) {
-      setOrder(result?.data?.orders);
+      setAccountOrderDetails(result.data);
     }
     setLoading(false);
   };
-
-  const getMoreData = async (values) => {
-    setLoading(true);
-    const result = await apicall({
-      url: getUrl(values),
-    });
-    setOrder((prevOrder) => [...prevOrder, ...result?.data?.orders]);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    if (order.length < 10) {
-      return;
-    }
-    if (!bottom) {
-      return;
-    }
-    page1.current = page1.current + 1;
-    getMoreData(sValue);
-  }, [bottom]);
 
   return (
     <div className={styles.container}>
@@ -146,22 +88,25 @@ const AccountOrderDetails = () => {
         <Breadcrumb.Item>View Orders</Breadcrumb.Item>
       </Breadcrumb>
       <AccountOrderDetailsSearch
-        order={order}
+        setAccountOrderDetails={setAccountOrderDetails}
         status={status}
         setSearchValue={setSearchValue}
+        sValue={sValue}
+        range={range}
+        setRange={setRange}
+        setLoad={setLoad}
       />
       <AccountOrderDetailsTable
-        order={order}
+        setAccountOrderDetails={setAccountOrderDetails}
+        accountOrderDetails={accountOrderDetails}
         status={status}
         page1={page1}
-        statusModalOpen={statusModalOpen}
-        setStatusModalOpen={setStatusModalOpen}
         sortBy={sortBy}
         sortColum={sortColum}
         setSortingColum={setSortingColum}
         setSortBy={setSortBy}
-        setOrder={setOrder}
         loading={loading}
+        setLoad={setLoad}
       />
     </div>
   );

@@ -7,7 +7,6 @@ import styles from "./RightContain.module.css";
 function RightContain({ orderDetail, statusModalOpen, setStatusModalOpen }) {
   const [status, setStatus] = useState([]);
 
-  console.log(orderDetail);
   useEffect(() => {
     getStatus();
   }, []);
@@ -16,7 +15,6 @@ function RightContain({ orderDetail, statusModalOpen, setStatusModalOpen }) {
     const result = await apicall({
       url: "statuses",
     });
-    // console.log(result.data.statuses);
     setStatus(result.data.statuses);
   };
 

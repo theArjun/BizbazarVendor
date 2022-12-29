@@ -6,7 +6,7 @@ import "./index.css";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
-const DateRangePickerComp = ({ range, setRange, setLoad }) => {
+const DateRangePickerComp = ({ range, setRange }) => {
   const [open, setOpen] = useState(false);
   const refOne = useRef(null);
 
@@ -35,7 +35,6 @@ const DateRangePickerComp = ({ range, setRange, setLoad }) => {
           <DateRangePicker
             onChange={(item) => {
               setRange([item.range1]);
-              setLoad((dat) => !dat);
             }}
             editableDateInputs={true}
             moveRangeOnFirstSelection={false}

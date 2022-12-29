@@ -22,6 +22,7 @@ import { apicall } from "../../utils/apicall/apicall";
 
 import DateRangePickerComp from "../../pagecomponents/Home/RangePicker/Rangepicker";
 import { addDays } from "date-fns";
+import ProductCountReport from "./../../pagecomponents/Reports/ProductCountReport/ProductCountReport";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -197,6 +198,8 @@ const Home = () => {
             {/* <OrderByStatus order={order} status={status} /> */}
             {/* <CurrentPlanUsage /> */}
           </div>
+          <ProductCountReport />
+          <div className={styles.margin} />
           <CurrentPlanUsage />
           <div className={styles.margin} />
           <RecentActivities />

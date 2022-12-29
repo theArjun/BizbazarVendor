@@ -5,21 +5,19 @@ import { useNavigate } from "react-router-dom";
 import { Tag } from "antd";
 import { Dropdown, Menu, Space } from "antd";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
-import OrderStatusModal from "../../../../component/OrderStatusModal/OrderStatusModal";
 import { CSVLink } from "react-csv";
 import { useReactToPrint } from "react-to-print";
 import ReactToPrint from "react-to-print";
+import { apicall } from "../../../../utils/apicall/apicall";
 
 const AccountOrderDetailsTable = ({
   status,
-  order,
-  // setPage,
-  statusModalOpen,
-  setStatusModalOpen,
+  setAccountOrderDetails,
+  accountOrderDetails,
   setSortBy,
-  setOrder,
   loading,
   page1,
+  setLoad,
 }) => {
   const windowSize = useWindowSize();
 
@@ -36,17 +34,7 @@ const AccountOrderDetailsTable = ({
         .map((dat, i) => ({
           key: i,
           label: (
-            <div
-              onClick={() => {
-                setStatusModalOpen({
-                  open: true,
-                  data: dat,
-                  orderId: objId,
-                });
-              }}
-              target="_blank"
-              style={{ color: dat?.params?.color }}
-            >
+            <div target="_blank" style={{ color: dat?.params?.color }}>
               {dat.description}
             </div>
           ),
@@ -67,7 +55,8 @@ const AccountOrderDetailsTable = ({
   };
 
   const getTimeAndDate = (timeStamp) => {
-    const date = new Date(parseInt(timeStamp));
+    const date = new Date(parseInt(timeStamp) * 1000);
+    console.log(timeStamp, date);
     const monthyear = date.toLocaleString("en-US", {
       year: "numeric",
       month: "short",
@@ -83,47 +72,37 @@ const AccountOrderDetailsTable = ({
 
   const columns = [
     {
-      title: "sn",
-      dataIndex: "firstname",
+      title: "Date And Time",
+      dataIndex: "timestamp",
       key: "order_id",
-      render: (text, dat, i) => <div>{i + 1}</div>,
-      width: 60,
+      render: (text) => getTimeAndDate(text),
+      sorter: (a, b) => {},
     },
     {
       title: "Order Id",
       dataIndex: "order_id",
       key: "status_id",
       render: (text, dat) => (
-        <div
-          style={{ color: "blue", cursor: "pointer" }}
-          onClick={() => navigate(`/Orders/orders details/${dat.order_id}`)}
-        >
-          #{text}
-        </div>
+        <div style={{ color: "blue", cursor: "pointer" }}>#{text}</div>
       ),
       width: 140,
       sorter: (a, b) => {},
     },
     {
-      title: "User name",
-      dataIndex: "firstname",
+      title: "CUSTOMER",
+      dataIndex: "customer",
       key: "order_id",
-      render: (text, dat) => (
-        <div>
-          {text} {dat.lastname}
-        </div>
-      ),
+      render: (text, dat) => <div>{text}</div>,
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "order_id",
+      title: "TOTAL ORDER VALUE",
+      dataIndex: "subtotal",
     },
     {
       title: "Status",
-      dataIndex: "status",
+      dataIndex: "statuses",
       key: "order_id",
-      render: (text, obj) => getStatusTag(text, obj.order_id),
+
       width: 100,
     },
     {
@@ -131,20 +110,52 @@ const AccountOrderDetailsTable = ({
       dataIndex: "phone",
       key: "order_id",
     },
-    {
-      title: "Date And Time",
-      dataIndex: "timestamp",
-      key: "order_id",
-      render: (text) => getTimeAndDate(text),
-      sorter: (a, b) => {},
-    },
 
     {
-      title: "Total",
-      dataIndex: "total",
+      title: "PAYMENT METHOD",
+      dataIndex: "payment_method",
       key: "order_id",
-      render: (text) => <div>रु{text}</div>,
-      width: 100,
+    },
+    {
+      title: "SHIPMENT AMOUNT",
+      dataIndex: "shipping_cost",
+      key: "order_id",
+    },
+    {
+      title: "VENDOR PAYABLE AMOUNT",
+      dataIndex: "vendor_payable_amount",
+      key: "order_id",
+    },
+    {
+      title: "REMAINING AMOUNT",
+      dataIndex: "remaining_amount",
+      key: "order_id",
+    },
+    {
+      title: "GIFT CARD AMOUNT USED",
+      dataIndex: "gift_card_amount_used",
+      render: (text) => <>{text || 0}</>,
+    },
+    {
+      title: "PRODUCT NAME",
+      dataIndex: "product_name",
+      render: (text) => <>{text}</>,
+    },
+    {
+      title: "PRODUCT CATEGORY",
+      dataIndex: "product_category",
+    },
+    {
+      title: "SETTLEMENT STATUS",
+      dataIndex: "settlement_status",
+    },
+    {
+      title: "SETTLEMENT DATE",
+      dataIndex: "settlement_date",
+    },
+    {
+      title: "CASH VENDOR SETTLEMENT",
+      dataIndex: "cash_vendor_settlement",
     },
   ];
 
@@ -166,7 +177,7 @@ const AccountOrderDetailsTable = ({
   function onChange(pagination, filters, sorter, extra) {
     page1.current = 1;
     setSortBy(sorter);
-    setOrder([]);
+    // setOrder([]);
   }
 
   const printing = useReactToPrint({
@@ -179,7 +190,6 @@ const AccountOrderDetailsTable = ({
     const time = setTimeout(printing, 10);
     return () => clearTimeout(time);
   };
-  console.log(loading);
 
   return (
     <div>
@@ -187,9 +197,9 @@ const AccountOrderDetailsTable = ({
         id="reportaccount"
         columns={columns}
         loading={loading}
-        dataSource={order}
+        dataSource={accountOrderDetails}
         pagination={false}
-        scroll={{ y: windowSize.height > 670 ? 600 : 320, x: 1000 }}
+        scroll={{ y: windowSize.height > 670 ? 10000 : 3200, x: 2700 }}
         onChange={onChange}
       />
       <div className={styles.positionabsolute}>
@@ -199,7 +209,7 @@ const AccountOrderDetailsTable = ({
         <Button>
           <CSVLink
             filename={"Expense_Table.csv"}
-            data={order}
+            data={[]}
             className="btn btn-primary"
             onClick={() => {}}
           >
@@ -208,10 +218,6 @@ const AccountOrderDetailsTable = ({
         </Button>
       </div>
 
-      <OrderStatusModal
-        statusModalOpen={statusModalOpen}
-        setStatusModalOpen={setStatusModalOpen}
-      />
       {print && <div className={styles.margintop} />}
       {print && (
         <Table
@@ -220,8 +226,9 @@ const AccountOrderDetailsTable = ({
           style={{ zIndex: -1 }}
           columns={columns}
           ref={componentRef}
+          rowKey={"order_id"}
           // loading={loading}
-          dataSource={order}
+          dataSource={accountOrderDetails}
           pagination={false}
           // scroll={{ y: windowSize.height > 670 ? 450 : 300, x: 1000 }}
           onChange={onChange}
