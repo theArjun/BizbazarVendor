@@ -11,19 +11,26 @@ function OrderDetails() {
   const [orderDetail, setOrderDetails] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const [statusModalOpen, setStatusModalOpen] = useState({
+    open: false,
+    data: {},
+    orderId: null,
+  });
+
   useEffect(() => {
+    if (statusModalOpen.open === true) {
+      return;
+    }
+
     getOrderDetails();
-  }, []);
+  }, [statusModalOpen.open]);
 
   const getOrderDetails = async () => {
-    setLoading(true);
     const result = await apicall({
       url: "orders/" + param.id,
     });
 
     setOrderDetails(result.data);
-
-    setLoading(false);
   };
 
   if (loading) {
@@ -39,7 +46,11 @@ function OrderDetails() {
         </Breadcrumb.Item>
         <Breadcrumb.Item>View Orders</Breadcrumb.Item>
       </Breadcrumb>
-      <Deatails orderDetail={orderDetail} />
+      <Deatails
+        orderDetail={orderDetail}
+        statusModalOpen={statusModalOpen}
+        setStatusModalOpen={setStatusModalOpen}
+      />
     </div>
   );
 }

@@ -24,8 +24,6 @@ import DateRangePickerComp from "../../pagecomponents/Home/RangePicker/Rangepick
 import { addDays } from "date-fns";
 
 const Home = () => {
-  // const a = dayjs(new Date(new Date().setMonth(new Date().getMonth() - 1)));
-
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState([]);
@@ -77,18 +75,6 @@ const Home = () => {
       categories: ["2019-05-01", "2019-05-02", "2019-05-03", "2019-05-04"],
     },
   };
-
-  // let timelaps = {
-  //   end: range[0].endDate.getTime(),
-  //   start: range[0].startDate.getTime(),
-  // };
-
-  // let date = {
-  //   start: new Date(timelaps.start),
-  //   end: new Date(timelaps.end),
-  // };
-
-  // console.log(date, timelaps);
 
   const leftContainerData = [
     {

@@ -12,7 +12,8 @@
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   z-index: 1;
   padding: 10px;
-  height: 50vh;
+  height: fit-content;
+  max-height: 50vh;
   overflow-y: scroll;
 }
 

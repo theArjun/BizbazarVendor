@@ -5,3 +5,7 @@
 .container {
   padding: 10px;
 }
+
+.container > div {
+  margin: 15px 0;
+}

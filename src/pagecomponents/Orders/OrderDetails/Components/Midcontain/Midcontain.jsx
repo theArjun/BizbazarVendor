@@ -4,7 +4,7 @@ import { Image, Input } from "antd";
 
 function Midcontain({ orderDetail }) {
   const { TextArea } = Input;
-  console.log(orderDetail);
+  // console.log(orderDetail);
   return (
     <div className={styles.container}>
       <div className={styles.table}>

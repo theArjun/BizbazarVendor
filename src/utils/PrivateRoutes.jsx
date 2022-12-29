@@ -10,6 +10,7 @@ import Navbar from "./../component/Navbar/Navbar";
 
 const PrivateRoutes = () => {
   const windowSize = useWindowSize();
+  console.log(windowSize);
 
   return localStorage.getItem("userinfo") ? (
     <div

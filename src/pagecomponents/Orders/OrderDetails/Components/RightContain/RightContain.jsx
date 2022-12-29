@@ -1,17 +1,72 @@
-import React from "react";
+import { Dropdown, Input, Menu, Tag } from "antd";
+import React, { useEffect, useState } from "react";
+import OrderStatusModal from "../../../../../component/OrderStatusModal/OrderStatusModal";
+import { apicall } from "../../../../../utils/apicall/apicall";
 import styles from "./RightContain.module.css";
 
-function RightContain({ orderDetail }) {
+function RightContain({ orderDetail, statusModalOpen, setStatusModalOpen }) {
+  const [status, setStatus] = useState([]);
+
   console.log(orderDetail);
+  useEffect(() => {
+    getStatus();
+  }, []);
+
+  const getStatus = async () => {
+    const result = await apicall({
+      url: "statuses",
+    });
+    // console.log(result.data.statuses);
+    setStatus(result.data.statuses);
+  };
+
+  const menu = (filterStatus, objId) => (
+    <Menu
+      items={status
+        .filter((datt, ii) => filterStatus != datt?.description)
+        .map((dat, i) => ({
+          key: i,
+          label: (
+            <div
+              onClick={() => {
+                setStatusModalOpen({
+                  open: true,
+                  data: dat,
+                  orderId: objId,
+                });
+              }}
+              target="_blank"
+              style={{ color: dat?.params?.color }}
+            >
+              {dat.description}
+            </div>
+          ),
+        }))}
+    />
+  );
+
+  const getStatusTag = (data, obj) => {
+    const [statusOfRow] = status.filter((dat) => dat.status === data);
+
+    return (
+      <Dropdown overlay={menu(statusOfRow?.description, obj)}>
+        <Tag className={styles.dpContainer} color={statusOfRow?.params?.color}>
+          {statusOfRow?.description}
+        </Tag>
+      </Dropdown>
+    );
+  };
+
   return (
     <div className={styles.container}>
       <div>
         {" "}
-        <lable className={styles.label}>Status</lable> {orderDetail.status}
+        <lable className={styles.label}>Status</lable>{" "}
+        {getStatusTag(orderDetail.status, orderDetail.order_id)}
       </div>
       <div>
         {" "}
-        <lable className={styles.label}>Settlements</lable> Unsettled
+        {/* <lable className={styles.label}>Settlements</lable> Unsettled */}
       </div>
       <div>
         {" "}
@@ -24,7 +79,8 @@ function RightContain({ orderDetail }) {
       </div>
       <div>
         {" "}
-        <lable className={styles.label}>Manager</lable>
+        <lable className={styles.label}>Manager</lable> <br />
+        <Input />
       </div>
       <div>
         {orderDetail?.issuer_data?.firstname}{" "}
@@ -40,6 +96,10 @@ function RightContain({ orderDetail }) {
           <div>Method : {dat?.shipping}</div>
         </>
       ))}
+      <OrderStatusModal
+        statusModalOpen={statusModalOpen}
+        setStatusModalOpen={setStatusModalOpen}
+      />
     </div>
   );
 }

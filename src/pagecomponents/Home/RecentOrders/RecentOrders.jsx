@@ -8,22 +8,7 @@ import OrderStatusModal from "../../../component/OrderStatusModal/OrderStatusMod
 import useWindowSize from "../../../utils/Hooks/useWindowSize";
 
 function RecentOrders({ order, status, statusModalOpen, setStatusModalOpen }) {
-  const heading = [
-    "all",
-    "paid",
-    "confirmed",
-    "awaiting call",
-    "canceled",
-    "backordered",
-    "declined",
-    "failed",
-    "open",
-    "fulfillment Started",
-  ];
-
   const [activeTab, setActiveTab] = useState("");
-
-  const windowSize = useWindowSize();
 
   const menu = (filterStatus, objId) => (
     <Menu

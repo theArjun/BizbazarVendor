@@ -7,6 +7,7 @@ import Products from "./Components/Products/Products";
 
 function ProductBundleCreateModal({ openCreateModal, setOpenCreateModal }) {
   const [activeTab, setActiveTab] = useState("General");
+  const [productList, setProductList] = useState([]);
 
   const getDivision = () => {
     switch (activeTab) {
@@ -14,7 +15,9 @@ function ProductBundleCreateModal({ openCreateModal, setOpenCreateModal }) {
         return <General />;
 
       default:
-        return <Products />;
+        return (
+          <Products productList={productList} setProductList={setProductList} />
+        );
     }
   };
   return (
