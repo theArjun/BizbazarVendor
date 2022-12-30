@@ -45,8 +45,8 @@ input[type="number"] {
 }
 
 .formcolumn > label {
-  width: 200px;
-  margin: 20px;
+  width: 15%;
+  margin: 20px 10px;
 }
 .dropdownbutton {
   width: 100%;
@@ -63,4 +63,14 @@ input[type="number"] {
     width: 160px;
     margin: 10px;
   }
+}
+
+.flex {
+  width: 400px;
+  display: flex;
+  width: inherit;
+}
+
+.datepicker {
+  width: 100%;
 }

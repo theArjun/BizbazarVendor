@@ -56,7 +56,6 @@ const AccountOrderDetailsTable = ({
 
   const getTimeAndDate = (timeStamp) => {
     const date = new Date(parseInt(timeStamp) * 1000);
-    console.log(timeStamp, date);
     const monthyear = date.toLocaleString("en-US", {
       year: "numeric",
       month: "short",
@@ -83,7 +82,12 @@ const AccountOrderDetailsTable = ({
       dataIndex: "order_id",
       key: "status_id",
       render: (text, dat) => (
-        <div style={{ color: "blue", cursor: "pointer" }}>#{text}</div>
+        <div
+          onClick={() => navigate(`/Orders/orders details/${dat.order_id}`)}
+          style={{ color: "blue", cursor: "pointer" }}
+        >
+          #{text}
+        </div>
       ),
       width: 140,
       sorter: (a, b) => {},
@@ -159,25 +163,10 @@ const AccountOrderDetailsTable = ({
     },
   ];
 
-  const total = () => {
-    const data = order;
-    const gr = data.reduce((init, dat) => init + parseInt(dat.total), 0);
-    return gr;
-  };
-
-  const grossTotal = () => {
-    const data = order;
-    const t = data
-      .filter((datt, ii) => datt.status === "P")
-      .reduce((init, dat) => init + parseInt(dat.total), 0);
-
-    return t;
-  };
-
   function onChange(pagination, filters, sorter, extra) {
     page1.current = 1;
+
     setSortBy(sorter);
-    // setOrder([]);
   }
 
   const printing = useReactToPrint({
@@ -196,10 +185,14 @@ const AccountOrderDetailsTable = ({
       <Table
         id="reportaccount"
         columns={columns}
+        rowKey={"order_id"}
         loading={loading}
         dataSource={accountOrderDetails}
         pagination={false}
-        scroll={{ y: windowSize.height > 670 ? 10000 : 3200, x: 2700 }}
+        scroll={{
+          y: windowSize.height > 670 ? 560 : 300,
+          x: 2500,
+        }}
         onChange={onChange}
       />
       <div className={styles.positionabsolute}>
@@ -209,7 +202,7 @@ const AccountOrderDetailsTable = ({
         <Button>
           <CSVLink
             filename={"Expense_Table.csv"}
-            data={[]}
+            data={accountOrderDetails}
             className="btn btn-primary"
             onClick={() => {}}
           >

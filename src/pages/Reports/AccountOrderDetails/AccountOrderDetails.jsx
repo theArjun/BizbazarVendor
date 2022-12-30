@@ -11,18 +11,14 @@ import AccountOrderDetailsTable from "../../../pagecomponents/Reports/AccountOrd
 import { addDays } from "date-fns";
 
 const AccountOrderDetails = () => {
-  const [range, setRange] = useState([
-    {
-      startDate: new Date(),
-      endDate: addDays(new Date(), -30),
-    },
-  ]);
   const [sValue, setSearchValue] = useState({});
   const [status, setStatus] = useState([]);
   const [accountOrderDetails, setAccountOrderDetails] = useState([]);
+  const [radio, setRadio] = useState("O");
 
   const [loading, setLoading] = useState(false);
   const [load, setLoad] = useState(false);
+  const [dload, setDload] = useState(false);
 
   const page1 = useRef(1);
 
@@ -30,7 +26,15 @@ const AccountOrderDetails = () => {
   const [sortColum, setSortingColum] = useState("");
   const [bottom, setBottom] = useState(false);
 
-  // const a = Object.values(sValue).join("");
+  const stateChange = Object.values(sValue).join("");
+
+  useDebounce(
+    () => {
+      getAccountOrderDetails(sValue);
+    },
+    1200,
+    [stateChange, dload]
+  );
 
   useEffect(() => {
     document
@@ -53,27 +57,79 @@ const AccountOrderDetails = () => {
 
   useEffect(() => {
     getAccountOrderDetails(sValue);
-  }, [load]);
+  }, [load, sortBy?.order, sortBy?.field, radio]);
 
-  console.log(range[0].startDate.getFullYear());
+  const getPostUrl = (searchValue) => {
+    let postUrl = "?";
 
-  const getApicallFormatDate = (date) => {
-    return date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay();
+    if (searchValue.orderno && searchValue.orderno.length > 0) {
+      postUrl = postUrl + "order_id=" + searchValue.orderno;
+    }
+    if (searchValue.customername && searchValue.customername.length > 0) {
+      postUrl = postUrl + "&customer=" + searchValue.customername;
+    }
+    if (searchValue.customerphone && searchValue.customerphone.length > 0) {
+      postUrl = postUrl + "&phone=" + searchValue.customerphone;
+    }
+    if (searchValue.paymentmethod && searchValue.paymentmethod.length > 0) {
+      postUrl = postUrl + "&payment_id=" + searchValue.paymentmethod;
+    }
+    if (searchValue.accountstatus && searchValue.accountstatus.length > 0) {
+      postUrl = postUrl + "&account_status=" + searchValue.accountstatus;
+    }
+    if (searchValue.date && searchValue.date.length > 1) {
+      postUrl =
+        postUrl +
+        "&time_from=" +
+        searchValue.date[0].replace("-", "/").replace("-", "/") +
+        "&time_to=" +
+        searchValue.date[1].replace("-", "/").replace("-", "/");
+    }
+    if (sortBy?.order) {
+      const orderType = sortBy?.order === "ascend" ? "asc" : "desc";
+      postUrl = postUrl + "&sort_order=" + orderType;
+
+      const sortByType = sortBy?.field === "order_id" ? "order" : "date";
+      postUrl = postUrl + "&sort_by=" + sortByType;
+    }
+    postUrl = postUrl + "&filter_date=" + radio;
+    console.log(postUrl, sValue);
+
+    return postUrl + `&page=${page1.current}&items_per_page=${50}`;
   };
 
   const getAccountOrderDetails = async () => {
     setLoading(true);
     const result = await apicall2({
       preurl: "AccountOrderDetail",
-      posturl:
-        "time_from=" +
-        // getApicallFormatDate(range[0].endDate) +
-        "&time_to=",
-      // getApicallFormatDate(range[0].startDate),
+      posturl: getPostUrl(sValue),
     });
-    console.log(result);
+
     if (result?.status === 200) {
       setAccountOrderDetails(result.data);
+    }
+    setLoading(false);
+  };
+  useEffect(() => {
+    if (accountOrderDetails.length < 50) {
+      return;
+    }
+    if (!bottom) {
+      return;
+    }
+    page1.current = page1.current + 1;
+    getMoreAccountOrderDetails(sValue);
+  }, [bottom]);
+
+  const getMoreAccountOrderDetails = async () => {
+    setLoading(true);
+    const result = await apicall2({
+      preurl: "AccountOrderDetail",
+      posturl: getPostUrl(sValue),
+    });
+
+    if (result?.status === 200) {
+      setAccountOrderDetails((prev) => [...prev, ...result.data]);
     }
     setLoading(false);
   };
@@ -92,9 +148,11 @@ const AccountOrderDetails = () => {
         status={status}
         setSearchValue={setSearchValue}
         sValue={sValue}
-        range={range}
-        setRange={setRange}
         setLoad={setLoad}
+        setDload={setDload}
+        radio={radio}
+        setRadio={setRadio}
+        page1={page1}
       />
       <AccountOrderDetailsTable
         setAccountOrderDetails={setAccountOrderDetails}

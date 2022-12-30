@@ -1,6 +1,5 @@
 export const handleLogout = () => {
   localStorage.clear();
-
   location.reload();
 };
 

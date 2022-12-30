@@ -1,14 +1,23 @@
 import React, { useEffect, useState, forwardRef } from "react";
 import styles from "./Search.module.css";
-import { Card, Form, Input, Button, Radio, DatePicker } from "antd";
+import { Card, Form, Input, Button, Radio } from "antd";
 import { Select, Space } from "antd";
-import { BsChevronDown } from "react-icons/bs";
 
 import "./index.css";
-import DateRangePickerComp from "../../../Home/RangePicker/Rangepicker";
 import { apicall } from "../../../../utils/apicall/apicall";
+import { DatePicker } from "antd";
 
-const Search = ({ setSearchValue, sValue, range, setRange, setLoad }) => {
+const { RangePicker } = DatePicker;
+
+const Search = ({
+  setSearchValue,
+  sValue,
+  setLoad,
+  setDload,
+  setRadio,
+  radio,
+  page1,
+}) => {
   const [paymentmethod, setPaymentMethod] = useState([]);
 
   useEffect(() => {
@@ -29,7 +38,7 @@ const Search = ({ setSearchValue, sValue, range, setRange, setLoad }) => {
           <label>
             Order No.
             <Input
-              type="text"
+              type="number"
               value={sValue?.orderno}
               onChange={(e) =>
                 setSearchValue({
@@ -70,17 +79,23 @@ const Search = ({ setSearchValue, sValue, range, setRange, setLoad }) => {
             Payment method
             <Select
               defaultValue=""
-              style={{ width: 120 }}
-              onChange={(e) =>
+              style={{ width: "100%" }}
+              onChange={(e) => {
                 setSearchValue({
                   ...sValue,
                   paymentmethod: e,
-                })
-              }
-              options={paymentmethod.map((dat) => ({
-                value: dat.payment_id,
-                label: dat.payment,
-              }))}
+                });
+              }}
+              options={[
+                {
+                  value: "",
+                  label: "Select PaymentMethod ",
+                },
+                ...paymentmethod.map((dat) => ({
+                  value: dat.payment_id,
+                  label: dat.payment,
+                })),
+              ]}
             />
           </label>
           <label>
@@ -88,7 +103,7 @@ const Search = ({ setSearchValue, sValue, range, setRange, setLoad }) => {
 
             <Select
               defaultValue=""
-              style={{ width: 120 }}
+              style={{ width: "100%" }}
               onChange={(e) =>
                 setSearchValue({
                   ...sValue,
@@ -97,30 +112,56 @@ const Search = ({ setSearchValue, sValue, range, setRange, setLoad }) => {
               }
               options={[
                 {
-                  value: "paid",
+                  value: "",
+                  label: "Select Account Status ",
+                },
+                {
+                  value: "Paid",
                   label: "Paid",
                 },
                 {
-                  value: "pending",
+                  value: "Pending",
                   label: "Pending",
                 },
               ]}
             />
           </label>
-          {/* <label>
-            <div style={{ marginBottom: "3px" }}>Account Status</div>
-            <div>
-              <Radio>Order Created Date</Radio>
-              <Radio>Settlement Date</Radio>
-            </div>
-          </label> */}
           <label>
-            RangePicker
-            <DateRangePickerComp
-              setLoad={setLoad}
-              range={range}
-              setRange={setRange}
+            RangePicker <br />
+            <RangePicker
+              value={sValue?.range}
+              className={styles.datepicker}
+              onChange={(e, a) => {
+                setSearchValue({
+                  range: e,
+                  date: a,
+                  ...sValue,
+                });
+                setDload((d) => !d);
+              }}
             />
+          </label>
+          <label>
+            <Radio
+              value="O"
+              checked={radio === "O" ? true : false}
+              onClick={() => {
+                setRadio("O");
+                page1.current = 1;
+              }}
+            >
+              Order Created Date{" "}
+            </Radio>
+            <Radio
+              value="S"
+              checked={radio === "S" ? true : false}
+              onClick={() => {
+                setRadio("S");
+                page1.current = 1;
+              }}
+            >
+              Settlement Date
+            </Radio>
           </label>
         </div>
       </Card>

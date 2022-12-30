@@ -17,10 +17,9 @@ export const apicall2 = async ({
       preurl +
       "/" +
       JSON.parse(localStorage.getItem("userinfo"))?.id +
-      "?" +
       posturl;
   } else {
-    finalurl = finalurl + preurl + "?" + posturl;
+    finalurl = finalurl + preurl + posturl;
   }
 
   try {
