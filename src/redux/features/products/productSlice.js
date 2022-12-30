@@ -4,9 +4,6 @@ const initialState={
   loading:false,
   products:null,
   categories:'',
-  editData:'',
-  selectedCats:'',
-  selectedCatIds:''
  
     }
 export const productSlice=createSlice({
@@ -45,29 +42,10 @@ export const productSlice=createSlice({
        saveCategories:(state,action)=>{
         state.categories=action.payload;
        }, 
-       handleEditData:(state,action)=>{
-        state.editData=action.payload
-       },
-       getSelectedCategory:(state)=>{
-        var ids=[];
-        var categories=[]
-        if(state.categories && state.editData){
-          state.categories.map((item)=>{
-            state.editData.category_ids.map((id)=>{
-              if(item.category_id==id){
-                categories.push(item.category)
-                ids.push(item.category_id)
-              }
-            })
-          })
-        }
-        state.selectedCats=categories;
-        state.selectedCatIds=ids;
-       }
     }
 
 })
 
 //Action Creators are generated for each case reducer function
-export const {loadTableData,handleAdvanceSearchModal, setLoading,setSelectedProductId,saveCategories,handleEditData,getSelectedCategory}=productSlice.actions;
+export const {loadTableData,handleAdvanceSearchModal, setLoading,setSelectedProductId,saveCategories}=productSlice.actions;
 export default productSlice.reducer;

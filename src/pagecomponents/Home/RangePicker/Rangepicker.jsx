@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DateRangePicker } from "react-date-range";
 import styles from "./RangePicker.module.css";
-import format from "date-fns/format";
+// import format from "date-fns/format";
 import "./index.css";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -24,10 +24,7 @@ const DateRangePickerComp = ({ range, setRange, setLoad }) => {
   return (
     <div className={styles.calendarWrap}>
       <div className={styles.dateWrap} onClick={() => setOpen((open) => !open)}>
-        {`${format(range[0].startDate, "MM/dd/yyyy")} - ${format(
-          range[0].endDate,
-          "MM/dd/yyyy"
-        )}`}
+      
       </div>
 
       <div ref={refOne} className={styles.calendarElement}>

@@ -31,7 +31,7 @@ const Home = () => {
   const [range, setRange] = useState([
     {
       startDate: new Date(),
-      endDate: addDays(new Date(), -30),
+      // endDate: addDays(new Date(), -30),
     },
   ]);
 
