@@ -1,20 +1,9 @@
 import React from "react";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 import { Table } from "antd";
-import { useState } from "react";
-import { useEffect } from "react";
-import { apicall } from "../../../../utils/apicall/apicall";
-const data= ''
-const VariationTable = ({ variation, columns }) => {
-    console.log(variation)
+const VariationTable = ({ data, columns, loading }) => {
+    console.log(data)
   const windowSize = useWindowSize();
-const [column, setColumn]=useState('')
-useEffect(()=>{
-
-},[])
-
-
-  
   return (
     <div>
       <Table
@@ -24,6 +13,7 @@ useEffect(()=>{
         columns={columns}
         dataSource={data}
         pagination={false}
+        loading={loading}
         // onChange={onChange}
         scroll={{
           y: windowSize.height > 670 ? 500 : 300,

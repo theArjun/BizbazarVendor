@@ -62,7 +62,7 @@ const Edit = () => {
       case tabs[2]:
         return <EditOptions/>;
       case tabs[3]:
-        return <EditFeatures features={features} />;
+        return data?<EditFeatures features={features} />:'';
       case tabs[4]:
         return data?<EditVariations data={data}/>:'';
       case tabs[5]:

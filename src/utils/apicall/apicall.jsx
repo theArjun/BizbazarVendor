@@ -34,7 +34,7 @@ export const apicall = async ({
       },
     });
 
-    console.log(result);
+    // console.log(result);
 
     if (method != "get") {
       

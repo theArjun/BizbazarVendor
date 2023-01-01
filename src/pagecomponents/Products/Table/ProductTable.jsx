@@ -78,11 +78,11 @@ const ProductTable = ({
           deleted.push(index);
           if (deleted.length == products.length) {
             await getProducts();
-            setSelectedRowKeys([])
+            setSelectedRowKeys([]);
             setDeleteIds([]);
           }
         } else {
-          setSelectedRowKeys([])
+          setSelectedRowKeys([]);
           setDeleteIds([]);
         }
       });
@@ -114,7 +114,6 @@ const ProductTable = ({
           url: `products/`,
         });
         await dispatch(loadTableData(allData.data.products));
-       
       }
     }, 500);
     return () => clearTimeout(timeOutId);
@@ -217,7 +216,11 @@ const ProductTable = ({
               onClick={() => setSelectedRow(row["product_id"], "detail")}
             >
               {" "}
-              <strong>{row["product"]?.length>15?row["product"].substring(0,15)+'...':row["product"]}</strong>
+              <strong>
+                {row["product"]?.length > 15
+                  ? row["product"].substring(0, 15) + "..."
+                  : row["product"]}
+              </strong>
             </a>
             <small>{row["product_code"]}</small>
           </div>
