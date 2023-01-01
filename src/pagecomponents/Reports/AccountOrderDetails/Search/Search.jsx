@@ -6,7 +6,6 @@ import { Select, Space } from "antd";
 import "./index.css";
 import { apicall } from "../../../../utils/apicall/apicall";
 import { DatePicker } from "antd";
-import DateRangePickerComp from "../../../Home/RangePicker/Rangepicker";
 
 const { RangePicker } = DatePicker;
 
@@ -130,72 +129,27 @@ const Search = ({
           <label>
             RangePicker <br />
             <div style={{ display: "flex" }}>
-              {/* <input
-                type="date"
-                value={sValue?.startDate}
-                onChange={(e) => {
-                  setSearchValue({
-                    startDate: e.target.value,
-                    ...sValue,
-                  });
-                  setDload((d) => !d);
-                }}
-              ></input>
-              -
-              <input
-                type="date"
-                // value={sValue?.endDate}
-                onChange={(e, a) => {
-                  console.log(e.target.value);
-                  const temp = sValue;
-                  // console.log(temp);
-                  temp.endDate = e.target.value;
-                  // console.log(temp);
-                  setSearchValue(temp);
-                  setDload((d) => !d);
-                }}
-              ></input> */}
               <DatePicker
                 className={styles.date}
                 onChange={(e, a) => {
                   const temp = sValue;
                   temp.startDate = a;
-                  setSearchValue(temp);
-                  // setSearchValue({
-                  //   srange: e,
-                  //   startDate: a,
-                  //   ...sValue,
-                  // });
+
                   setDload((d) => !d);
                 }}
-              />{" "}
+              />
+              {"-"}
               <DatePicker
                 className={styles.date}
                 onChange={(e, a) => {
                   const temp = sValue;
                   temp.endDate = a;
                   setSearchValue(temp);
-                  // setSearchValue({
-                  //   erange: e,
-                  //   endDate: a,
-                  //   ...sValue,
-                  // });
+
                   setDload((d) => !d);
                 }}
               />
             </div>
-            {/* <RangePicker
-              value={sValue?.range}
-              className={styles.datepicker}
-              onChange={(e, a) => {
-                setSearchValue({
-                  range: e,
-                  date: a,
-                  ...sValue,
-                });
-                setDload((d) => !d);
-              }}
-            /> */}
           </label>
           <span className={styles.span}>
             <div> Order date</div>
