@@ -6,6 +6,7 @@ import { Select, Space } from "antd";
 import "./index.css";
 import { apicall } from "../../../../utils/apicall/apicall";
 import { DatePicker } from "antd";
+import DateRangePickerComp from "../../../Home/RangePicker/Rangepicker";
 
 const { RangePicker } = DatePicker;
 
@@ -128,7 +129,32 @@ const Search = ({
           </label>
           <label>
             RangePicker <br />
-            <RangePicker
+            <div style={{ display: "flex" }}>
+              <DatePicker
+                className={styles.date}
+                onChange={(e, a) => {
+                  setSearchValue({
+                    range: e,
+                    startDate: a,
+                    ...sValue,
+                  });
+                  setDload((d) => !d);
+                }}
+              />{" "}
+              -
+              <DatePicker
+                className={styles.date}
+                onChange={(e, a) => {
+                  setSearchValue({
+                    range: e,
+                    endDate: a,
+                    ...sValue,
+                  });
+                  setDload((d) => !d);
+                }}
+              />
+            </div>
+            {/* <RangePicker
               value={sValue?.range}
               className={styles.datepicker}
               onChange={(e, a) => {
@@ -139,30 +165,34 @@ const Search = ({
                 });
                 setDload((d) => !d);
               }}
-            />
+            /> */}
           </label>
-          <label>
-            <Radio
-              value="O"
-              checked={radio === "O" ? true : false}
-              onClick={() => {
-                setRadio("O");
-                page1.current = 1;
-              }}
-            >
-              Order Created Date{" "}
-            </Radio>
-            <Radio
-              value="S"
-              checked={radio === "S" ? true : false}
-              onClick={() => {
-                setRadio("S");
-                page1.current = 1;
-              }}
-            >
-              Settlement Date
-            </Radio>
-          </label>
+          <span className={styles.span}>
+            <div> Order date</div>
+
+            <div style={{ display: "flex" }}>
+              <Radio
+                value="O"
+                checked={radio === "O" ? true : false}
+                onClick={() => {
+                  setRadio("O");
+                  page1.current = 1;
+                }}
+              >
+                Order Created Date{" "}
+              </Radio>
+              <Radio
+                value="S"
+                checked={radio === "S" ? true : false}
+                onClick={() => {
+                  setRadio("S");
+                  page1.current = 1;
+                }}
+              >
+                Settlement Date
+              </Radio>
+            </div>
+          </span>
         </div>
       </Card>
     </div>

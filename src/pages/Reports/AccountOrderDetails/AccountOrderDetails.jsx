@@ -77,13 +77,14 @@ const AccountOrderDetails = () => {
     if (searchValue.accountstatus && searchValue.accountstatus.length > 0) {
       postUrl = postUrl + "&account_status=" + searchValue.accountstatus;
     }
-    if (searchValue.date && searchValue.date.length > 1) {
+    if (searchValue.startDate && searchValue.startDate.length > 1) {
+      let sdate = searchValue.startDate.split("-");
+      postUrl + "&time_from=" + sdate[2] + "/" + sdate[1] + "/" + sdate[0];
+    }
+    if (searchValue.endDate && searchValue.endDate.length > 1) {
+      let edate = searchValue.startDate.split("-");
       postUrl =
-        postUrl +
-        "&time_from=" +
-        searchValue.date[0].replace("-", "/").replace("-", "/") +
-        "&time_to=" +
-        searchValue.date[1].replace("-", "/").replace("-", "/");
+        postUrl + "&time_to=" + +edate[2] + "/" + edate[1] + "/" + edate[0];
     }
     if (sortBy?.order) {
       const orderType = sortBy?.order === "ascend" ? "asc" : "desc";
@@ -94,6 +95,7 @@ const AccountOrderDetails = () => {
     }
     postUrl = postUrl + "&filter_date=" + radio;
     console.log(postUrl, sValue);
+    // return "?time_from=01/01/2022&time_to=27/12/2022";
 
     return postUrl + `&page=${page1.current}&items_per_page=${50}`;
   };

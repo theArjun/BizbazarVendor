@@ -5,7 +5,7 @@ import styles from "./Table.module.css";
 import { apicall } from "../../../../utils/apicall/apicall";
 import { AiFillEdit, AiFillSetting } from "react-icons/ai";
 import {
-  handleEditData,
+  // handleEditData,
   loadTableData,
   setSelectedProductId,
 } from "../../../../redux/features/products/productSlice";
@@ -35,7 +35,7 @@ const ReviewTable = ({ loading, handleScroll }) => {
     var result = await apicall({
       url: `products/${id}`,
     });
-    dispatch(handleEditData(result.data));
+    // dispatch(handleEditData(result.data));
     if (method === "detail") {
       navigate("Edit Product");
     }

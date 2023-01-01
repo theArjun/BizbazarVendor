@@ -5,7 +5,6 @@ import { Dropdown, Menu, Table } from "antd";
 import { apicall } from "../../../utils/apicall/apicall";
 import { Tag } from "antd";
 import OrderStatusModal from "../../../component/OrderStatusModal/OrderStatusModal";
-import useWindowSize from "../../../utils/Hooks/useWindowSize";
 
 function RecentOrders({ order, status, statusModalOpen, setStatusModalOpen }) {
   const [activeTab, setActiveTab] = useState("");
@@ -99,7 +98,7 @@ function RecentOrders({ order, status, statusModalOpen, setStatusModalOpen }) {
   ];
 
   const getTimeAndDate = (timeStamp) => {
-    const date = new Date(parseInt(timeStamp));
+    const date = new Date(parseInt(timeStamp) * 1000);
     const monthyear = date.toLocaleString("en-US", {
       year: "numeric",
       month: "short",

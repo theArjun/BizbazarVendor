@@ -65,16 +65,49 @@ const Home = () => {
     setStatus(result.data.statuses);
   };
 
+  const gRN = () => {
+    return Math.ceil(Math.random() * (100 + 100) - 100);
+  };
+
   const series = [
     {
       name: "Guests",
-      data: [1, 0, 0, -1],
+      data: [
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+      ],
     },
   ];
   const options = {
-    xaxis: {
-      categories: ["2019-05-01", "2019-05-02", "2019-05-03", "2019-05-04"],
+    stroke: {
+      curve: "smooth",
     },
+    colors: ["#218c74"],
+
+    // xaxis: {
+    //   categories: ["2019-05-01", "2019-05-02", "2019-05-03", "2019-05-04"],
+    // },
   };
 
   const leftContainerData = [

@@ -61,7 +61,7 @@ const ViewOrderTable = ({
   };
 
   const getTimeAndDate = (timeStamp) => {
-    const date = new Date(parseInt(timeStamp));
+    const date = new Date(parseInt(timeStamp) * 1000);
     const monthyear = date.toLocaleString("en-US", {
       year: "numeric",
       month: "short",
