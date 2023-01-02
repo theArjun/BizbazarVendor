@@ -2,7 +2,6 @@ import React from "react";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 import { Table } from "antd";
 const VariationTable = ({ data, columns, loading }) => {
-    console.log(data)
   const windowSize = useWindowSize();
   return (
     <div>

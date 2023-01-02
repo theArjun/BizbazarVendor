@@ -58,8 +58,6 @@ const ProductTable = ({
   useEffect(() => {
     if (deleteIds?.length) {
       setOption(true);
-      console.log(deleteIds);
-      console.log("Open");
     } else {
       setOption(false);
     }
@@ -128,6 +126,8 @@ const ProductTable = ({
         return "Active";
       case "D":
         return "Disabled";
+      default:
+        return "Attention required"
     }
   };
   const selectOpt = [

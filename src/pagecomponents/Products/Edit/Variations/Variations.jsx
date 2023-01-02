@@ -12,39 +12,8 @@ const status = {
   H: "Hidden",
   D: "Disabled",
 };
-const action_items = [
-  {
-    label: <a href="#">Edit</a>,
-    key: "0",
-  },
-  {
-    label: <a href="#">Remove variation from group</a>,
-    key: "1",
-  },
-
-  {
-    label: <a href="#">Delete product</a>,
-    key: "2",
-  },
-];
-const status_items = [
-  {
-    label: <a href="#">Active</a>,
-    value: "A",
-    key: "0",
-  },
-  {
-    label: <a href="#">Disabled</a>,
-    value: "D",
-    key: "1",
-  },
-
-  {
-    label: <a href="#">Hidden</a>,
-    value: "H",
-    key: "2",
-  },
-];
+let id=''
+const { confirm } = Modal;
 const Variations = ({ data }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [features, setFeatures] = useState("");
@@ -53,7 +22,8 @@ const Variations = ({ data }) => {
   const [variationData, setVariationData] = useState([]);
   const [columns, setColumns] = useState("");
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [updated, setUpdated] =useState(false);
+  const [selectVariantId, setSelectVariantId] = useState("");
   //   console.log("This is variation data =>", data);
 
   useEffect(() => {
@@ -62,12 +32,77 @@ const Variations = ({ data }) => {
       getColumns(),
       getProductVariationGroup(data.variation_group_id),
     ]);
-  }, []);
+  }, [updated]);
+  useEffect(()=>{
+    id=selectVariantId;
+  },[selectVariantId])
+  const status_items = [
+    {
+      label: (
+        <div onClick={() => updateStatus( "A")}>
+          Active
+        </div>
+      ),
+      value: "A",
+      key: "0",
+    },
+    {
+      label: (<div onClick={() => updateStatus( "D")}>Disabled</div>),
+      value: "D",
+      key: "1",
+    },
+
+    {
+      label: (<div onClick={() => updateStatus( "H")}>Hidden</div>),
+      value: "H",
+      key: "2",
+    },
+  ];
+  // action_items
+  const action_items = [
+    {
+      label: (<a onClick={()=>onEditPress('detail')}>Edit</a>),
+      key: "0",
+    },
+    {
+      label: <a href="#" onClick={()=>showConfirm('Do you want to remove variation from group?','',`product_variations/${id}/detach_product_variation`, 'post')}  >Remove variation from group</a>,
+      key: "1",
+    },
+  
+    {
+      label: <a href="#" onClick={()=>showConfirm('Do you want to delete the item?','',`products/${id}`,'delete')}>Delete product</a>,
+      key: "2",
+    },
+  ];
+
+
+  // show delete or variation detach confirmation 
+function showConfirm(title,message,url, method) {
+  confirm({
+    title: title,
+    content:
+      message,
+    async onOk() {
+      try {
+        setUpdated(true)
+          let result=await apicall({
+              url:url,
+              method:method
+          })
+          if(result.status){
+              setUpdated(false)
+          }
+      } catch (e) {
+        return console.log('Oops errors!');
+      }
+    },
+    onCancel() {},
+  });
+}
   const getAllFeatures = async () => {
-    let res= await apicall({
-      url:'products/1218/features'
-    })
-    console.log(res.data)
+    let res = await apicall({
+      url: `products/${data.product_id}/features`,
+    });
     let temp = Object.values(data.product_features).map((item) => ({
       value: item.feature_id,
       label: item.internal_name,
@@ -114,6 +149,31 @@ const Variations = ({ data }) => {
     setLoading(false);
   };
 
+//for edit option 
+ // Set id
+ const onEditPress = async (method) => {
+  window.localStorage.setItem("productRowId", JSON.stringify(id));
+  if (method === "detail") {
+    location.reload()
+  }
+};
+  // update status of variant
+  const updateStatus = async (status) => {
+    setUpdated(true)
+   let res = await apicall({
+    url:`products/${id}`,
+    method:'put',
+    data:{
+      status
+    }
+   })
+   if(res.data){
+    setUpdated(false)
+  }else{
+    setUpdated(false)
+  }
+ 
+  };
   const getColumns = () => {
     let temp = [
       {
@@ -168,7 +228,7 @@ const Variations = ({ data }) => {
         dataIndex: "action",
         key: "action",
 
-        render: (action) => (
+        render: (action, row) => (
           <div className={styles.action_btn}>
             <Dropdown
               menu={{
@@ -176,8 +236,8 @@ const Variations = ({ data }) => {
               }}
               trigger={["click"]}
             >
-              <a onClick={(e) => e.preventDefault()}>
-                <AiFillSetting size={20} className={styles.icons} />
+              <a href="#">
+                <AiFillSetting onClick={() => setSelectVariantId(row.product_id)} size={20} className={styles.icons} />
               </a>
             </Dropdown>
           </div>
@@ -188,7 +248,7 @@ const Variations = ({ data }) => {
         title: "Status",
         dataIndex: "status",
         key: "status",
-        render: (value) => (
+        render: (value, row) => (
           <div>
             <Dropdown
               menu={{
@@ -196,7 +256,7 @@ const Variations = ({ data }) => {
               }}
               trigger={["click"]}
             >
-              <a onClick={(e) => e.preventDefault()}>{status[value]}</a>
+              <a onClick={() => setSelectVariantId(row.product_id)}>{status[value]}</a>
             </Dropdown>
           </div>
         ),
