@@ -105,7 +105,6 @@ const AccountOrderDetails = () => {
         postUrl = postUrl + "&";
       }
       let edate = searchValue.endDate.split("-");
-
       postUrl =
         postUrl + "time_to=" + +edate[2] + "/" + edate[1] + "/" + edate[0];
       initial = false;
@@ -116,8 +115,8 @@ const AccountOrderDetails = () => {
       }
       const orderType = sortBy?.order === "ascend" ? "asc" : "desc";
       postUrl = postUrl + "sort_order=" + orderType;
-
-      const sortByType = sortBy?.field === "order_id" ? "order" : "date";
+      initial = false;
+      const sortByType = sortBy?.field;
       if (!initial) {
         postUrl = postUrl + "&";
       }
@@ -128,7 +127,6 @@ const AccountOrderDetails = () => {
       postUrl = postUrl + "&";
     }
     postUrl = postUrl + "filter_date=" + radio;
-
     return postUrl + `&page=${page1.current}&items_per_page=${50}`;
   };
 

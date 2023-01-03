@@ -77,6 +77,7 @@ function App() {
       await dispatch(saveCategories(result.data.categories));
     }
   };
+
   return (
     <Router>
       <Routes>

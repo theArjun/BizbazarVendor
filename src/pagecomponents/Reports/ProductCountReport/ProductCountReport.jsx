@@ -1,85 +1,101 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./ProductCountReport.module.css";
 import { Button, Space, Table, Tag } from "antd";
 import { CSVLink } from "react-csv";
 import { useLocation } from "react-router-dom";
-import { apicall } from "../../../utils/apicall/apicall";
+import { apicall2 } from "../../../utils/apicall/apicall2";
+import { useReactToPrint } from "react-to-print";
 
 function ProductCountReport() {
   const location = useLocation();
 
+  const [report, setReport] = useState([]);
+  const [print, setPrint] = useState(false);
+
+  const componentRef = useRef();
+
+  useEffect(() => {
+    getProductCountReport();
+  }, []);
+
+  const getProductCountReport = async () => {
+    const result = await apicall2({
+      preurl: "VendorCountReport",
+    });
+    setReport(result.data);
+  };
+
   const columns = [
     {
       title: "Vendor Id",
-      dataIndex: "name",
+      dataIndex: "company_id",
       key: "name",
       render: (text) => <a>{text}</a>,
     },
     {
       title: "Vendor Name",
-      dataIndex: "age",
-      key: "age",
+      dataIndex: "company",
     },
     {
       title: "Vendor Plan",
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "plan",
     },
     {
       title: "Total Products",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "total_products",
       render: (text) => <a>{text}</a>,
     },
     {
       title: "Active Products",
-      dataIndex: "age",
-      key: "age",
+      dataIndex: "active_products",
     },
     {
       title: "Disable Products",
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "disabled_products",
     },
 
     {
       title: "Out Of Stock Products",
-      dataIndex: "age",
-      key: "age",
+      dataIndex: "out_of_stock_products",
     },
     {
       title: "Image Missing Products",
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "images_missing_count",
     },
   ];
-  const data = [
-    {
-      key: "1",
-      name: "John Brown",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-      tags: ["nice", "developer"],
-    },
-  ];
+
+  const printing = useReactToPrint({
+    content: () => componentRef.current,
+    onAfterPrint: () => setPrint(false),
+  });
+
+  const handlePrint = () => {
+    setPrint(true);
+    const time = setTimeout(printing, 10);
+    return () => clearTimeout(time);
+  };
+
   return (
     <div className={styles.container}>
       <Table
         pagination={false}
         columns={columns}
-        dataSource={data}
+        dataSource={report}
+        rowKey={"company_id"}
         scroll={{
-          y: 240,
+          // y: 240,
           x: 1000,
         }}
       />
       {location.pathname != "/" && (
         <div className={styles.positionabsolute}>
-          <Button className={styles.print}>print</Button>
+          <Button className={styles.print} onClick={handlePrint}>
+            print
+          </Button>
           <Button>
             <CSVLink
-              filename={"Expense_Table.csv"}
-              data={[]}
+              filename={"ProductCountReport.csv"}
+              data={report || []}
               className="btn btn-primary"
               onClick={() => {}}
             >
@@ -87,6 +103,16 @@ function ProductCountReport() {
             </CSVLink>
           </Button>
         </div>
+      )}
+      {print && <div className={styles.margintop} />}
+      {print && (
+        <Table
+          ref={componentRef}
+          pagination={false}
+          rowKey={"company_id"}
+          columns={columns}
+          dataSource={report}
+        />
       )}
     </div>
   );

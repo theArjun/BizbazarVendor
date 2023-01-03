@@ -190,7 +190,7 @@ const AccountOrderDetailsTable = ({
         dataSource={accountOrderDetails}
         pagination={false}
         scroll={{
-          y: windowSize.height > 670 ? 560 : 300,
+          y: windowSize.height > 670 ? 500 : 300,
           x: 2500,
         }}
         onChange={onChange}
