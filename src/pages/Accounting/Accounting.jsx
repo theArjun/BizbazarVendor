@@ -1,20 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Accounting.module.css";
-import { Breadcrumb, Modal, Button, Space, Form, Input } from "antd";
+import { Breadcrumb, Modal, Button, Space, Form, Input, Spin } from "antd";
 import { HiPlus } from "react-icons/hi";
 import cx from "classnames";
 import Transactions from "./Transactions/Transactions";
 import Withdrawals from "./Withdrawals/Withdrawals";
 import TextArea from "antd/es/input/TextArea";
+import { apicall } from "../../utils/apicall/apicall";
 const Accounting = () => {
   const tabs = ["Transactions", "Balance withdrawals"];
   const [active, setActive] = useState("Transactions");
+  const [data,setData]=useState('')
   const [open, setOpen] = useState(false);
+  const[status,setStatus]=useState([])
+  const [loading, setLoading]=useState(false)
+// getting userInformation
+let user= JSON.parse(localStorage.getItem('userinfo'));
+  // Lets get Accounting data through api
+  useEffect(()=>{
+    
+    getAccountingInformation();
+    getStatus();
+  },[])
+  const getStatus = async () => {
+    const result = await apicall({
+      url: "statuses",
+    });
+    setStatus(result.data.statuses);
+  };
+// get Account info
+  const getAccountingInformation=async ()=>{
+    setLoading(true)
+     let result = await apicall({
+        url:`BizbazarAccounting/${user.id}`
+      });
+      if(result.data){
+        setData(result.data)
+        setLoading(false)
+      }
+      setLoading(false)
+  };
+
   const showModal = () => {
     setOpen(true);
   };
   const [form] = Form.useForm();
-
   const onFinish = async (values) => {
     localStorage.setItem("login", true);
     navigate("/");
@@ -29,10 +59,10 @@ const Accounting = () => {
   const getContainerFromTab = () => {
     switch (active) {
       case "Balance withdrawals":
-        return <Withdrawals />;
+        return data?<Withdrawals data={data}/>:'';
 
       default:
-        return <Transactions />;
+        return data?<Transactions data={data} status={status} />:'';
     }
   };
   return (
@@ -126,12 +156,12 @@ const Accounting = () => {
                 >
                  <Button primary type="primary" htmlType="submit" style={{float:'right'}}>Create</Button>
                 </Form.Item>
-                
               </Form>
             </Modal>
           </div>
         </div>
-        {getContainerFromTab()}
+        {
+          loading?<Spin/>:getContainerFromTab()}
       </div>
     </div>
   );
