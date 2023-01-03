@@ -51,11 +51,11 @@
 .dropdown {
   position: absolute;
   left: 0;
-  top: 105%;
+  top: 100%;
   height: fit-content;
   width: 200px;
   background-color: white;
-  z-index: 10;
+  z-index: 100;
   display: none;
   flex-direction: column;
   padding: 5px 0;

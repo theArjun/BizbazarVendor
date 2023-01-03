@@ -24,12 +24,10 @@ const DateRangePickerComp = ({ range, setRange }) => {
   return (
     <div className={styles.calendarWrap}>
       <div className={styles.dateWrap} onClick={() => setOpen((open) => !open)}>
-        {range[0]?.startDate && range[0]?.endDate
-          ? `${format(range[0]?.startDate, "MM/dd/yyyy")} - ${format(
-              range[0]?.endDate,
-              "MM/dd/yyyy"
-            )}`
-          : "Select date range"}
+        {`${format(range[0].startDate, "MM/dd/yyyy")} - ${format(
+          range[0].endDate,
+          "MM/dd/yyyy"
+        )}`}
       </div>
 
       <div ref={refOne} className={styles.calendarElement}>

@@ -50,7 +50,9 @@ function LeftContain({ orderDetail }) {
         <iframe
           width="100%"
           height="200"
-          src={`https://maps.google.com/maps?q=${orderDetail?.s_address}&t=&z=11&ie=UTF8&iwloc=&output=embed`}
+          src={`https://maps.google.com/maps?q=${
+            orderDetail?.s_address || "pokhara"
+          }&t=&z=11&ie=UTF8&iwloc=&output=embed`}
           frameborder="0"
           scrolling="no"
           marginheight="0"

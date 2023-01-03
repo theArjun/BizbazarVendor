@@ -1,9 +1,8 @@
 import React, { useRef, useState, useCallback } from "react";
 import { Breadcrumb } from "antd";
 import styles from "./AccountOrderDetails.module.css";
-
 import { useEffect } from "react";
-import { apicall } from "../../../utils/apicall/apicall";
+import { apicall2 } from "../../../utils/apicall/apicall2";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 import AccountOrderDetailsSearch from "./../../../pagecomponents/Reports/AccountOrderDetails/Search/Search";
 import AccountOrderDetailsTable from "../../../pagecomponents/Reports/AccountOrderDetails/Table/Table";
@@ -11,23 +10,24 @@ import AccountOrderDetailsTable from "../../../pagecomponents/Reports/AccountOrd
 const AccountOrderDetails = () => {
   const [sValue, setSearchValue] = useState({});
   const [status, setStatus] = useState([]);
-  const [order, setOrder] = useState([]);
-
+  const [accountOrderDetails, setAccountOrderDetails] = useState([]);
+  const [radio, setRadio] = useState("O");
   const [loading, setLoading] = useState(false);
-
+  const [load, setLoad] = useState(false);
+  const [dload, setDload] = useState(false);
   const page1 = useRef(1);
-
-  const [statusModalOpen, setStatusModalOpen] = useState({
-    open: false,
-    data: {},
-    orderId: null,
-  });
-
   const [sortBy, setSortBy] = useState("");
   const [sortColum, setSortingColum] = useState("");
   const [bottom, setBottom] = useState(false);
+  const stateChange = Object.values(sValue).join("");
 
-  const a = Object.values(sValue).join("");
+  useDebounce(
+    () => {
+      getAccountOrderDetails(sValue);
+    },
+    1200,
+    [stateChange, dload]
+  );
 
   useEffect(() => {
     document
@@ -45,96 +45,126 @@ const AccountOrderDetails = () => {
     const condition =
       event.target.scrollTop + event.target.offsetHeight + 100 >
       event.target.scrollHeight;
-
     setBottom(condition);
   };
 
-  useDebounce(
-    () => {
-      page1.current = 1;
-      getOrder(sValue);
-    },
-    1200,
-    [a]
-  );
-
   useEffect(() => {
-    getStatus();
-  }, []);
+    getAccountOrderDetails(sValue);
+  }, [load, sortBy?.order, sortBy?.field, radio]);
 
-  useEffect(() => {
-    getOrder(sValue);
-  }, [statusModalOpen.open, sortBy?.order, sortBy?.field]);
+  const getPostUrl = (searchValue) => {
+    let initial = true;
+    let postUrl = "?";
 
-  const getStatus = async () => {
-    const result = await apicall({
-      url: "statuses",
-    });
-
-    setStatus(result.data.statuses);
-  };
-
-  const getUrl = (values) => {
-    console.log(sValue);
-    let newUrl = "orders?is_search=Y";
-    if (values?.customer) {
-      newUrl = newUrl + "&cname=" + values.customer;
+    if (searchValue.orderno && searchValue.orderno.length > 0) {
+      if (!initial) {
+        postUrl = postUrl + "&";
+      }
+      postUrl = postUrl + "order_id=" + searchValue.orderno;
+      initial = false;
     }
-    if (values?.email) {
-      newUrl = newUrl + "&email=" + values.email;
+    if (searchValue.customername && searchValue.customername.length > 0) {
+      if (!initial) {
+        postUrl = postUrl + "&";
+      }
+      postUrl = postUrl + "customer=" + searchValue.customername;
+      initial = false;
     }
-    if (values?.phone) {
-      newUrl = newUrl + "&phone=" + values.phone;
+    if (searchValue.customerphone && searchValue.customerphone.length > 0) {
+      if (!initial) {
+        postUrl = postUrl + "&";
+      }
+      postUrl = postUrl + "phone=" + searchValue.customerphone;
+      initial = false;
     }
-    if (values?.max_price) {
-      newUrl = newUrl + "&total_to=" + values.max_price;
+    if (searchValue.paymentmethod && searchValue.paymentmethod.length > 0) {
+      if (!initial) {
+        postUrl = postUrl + "&";
+      }
+      postUrl = postUrl + "payment_id=" + searchValue.paymentmethod;
+      initial = false;
     }
-    if (values?.orderid) {
-      newUrl = newUrl + "&order_id=" + values.orderid;
+    if (searchValue.accountstatus && searchValue.accountstatus.length > 0) {
+      if (!initial) {
+        postUrl = postUrl + "&";
+      }
+      postUrl = postUrl + "account_status=" + searchValue.accountstatus;
+      initial = false;
     }
-    if (values?.min_price) {
-      newUrl = newUrl + "&total_from=" + values.min_price;
+    if (searchValue.startDate && searchValue.startDate.length > 1) {
+      if (!initial) {
+        postUrl = postUrl + "&";
+      }
+      let sdate = searchValue.startDate.split("-");
+      postUrl =
+        postUrl + "time_from=" + sdate[2] + "/" + sdate[1] + "/" + sdate[0];
+      initial = false;
+    }
+    if (searchValue.endDate && searchValue.endDate.length > 1) {
+      if (!initial) {
+        postUrl = postUrl + "&";
+      }
+      let edate = searchValue.endDate.split("-");
+      postUrl =
+        postUrl + "time_to=" + +edate[2] + "/" + edate[1] + "/" + edate[0];
+      initial = false;
     }
     if (sortBy?.order) {
+      if (!initial) {
+        postUrl = postUrl + "&";
+      }
       const orderType = sortBy?.order === "ascend" ? "asc" : "desc";
-      newUrl = newUrl + "&sort_order=" + orderType;
-
-      const sortByType = sortBy?.field === "order_id" ? "order" : "date";
-      newUrl = newUrl + "&sort_by=" + sortByType;
+      postUrl = postUrl + "sort_order=" + orderType;
+      initial = false;
+      const sortByType = sortBy?.field;
+      if (!initial) {
+        postUrl = postUrl + "&";
+      }
+      postUrl = postUrl + "sort_by=" + sortByType;
+      initial = false;
     }
-    return newUrl + `&page=${page1.current}&items_per_page=${50}`;
+    if (!initial) {
+      postUrl = postUrl + "&";
+    }
+    postUrl = postUrl + "filter_date=" + radio;
+    return postUrl + `&page=${page1.current}&items_per_page=${50}`;
   };
 
-  const getOrder = async (values) => {
+  const getAccountOrderDetails = async () => {
     setLoading(true);
-    const result = await apicall({
-      url: getUrl(values),
+    const result = await apicall2({
+      preurl: "AccountOrderDetail",
+      posturl: getPostUrl(sValue),
     });
+
     if (result?.status === 200) {
-      setOrder(result?.data?.orders);
+      setAccountOrderDetails(result.data);
     }
     setLoading(false);
   };
-
-  const getMoreData = async (values) => {
-    setLoading(true);
-    const result = await apicall({
-      url: getUrl(values),
-    });
-    setOrder((prevOrder) => [...prevOrder, ...result?.data?.orders]);
-    setLoading(false);
-  };
-
   useEffect(() => {
-    if (order.length < 10) {
+    if (accountOrderDetails.length < 50) {
       return;
     }
     if (!bottom) {
       return;
     }
     page1.current = page1.current + 1;
-    getMoreData(sValue);
+    getMoreAccountOrderDetails(sValue);
   }, [bottom]);
+
+  const getMoreAccountOrderDetails = async () => {
+    setLoading(true);
+    const result = await apicall2({
+      preurl: "AccountOrderDetail",
+      posturl: getPostUrl(sValue),
+    });
+
+    if (result?.status === 200) {
+      setAccountOrderDetails((prev) => [...prev, ...result.data]);
+    }
+    setLoading(false);
+  };
 
   return (
     <div className={styles.container}>
@@ -146,22 +176,27 @@ const AccountOrderDetails = () => {
         <Breadcrumb.Item>View Orders</Breadcrumb.Item>
       </Breadcrumb>
       <AccountOrderDetailsSearch
-        order={order}
+        setAccountOrderDetails={setAccountOrderDetails}
         status={status}
         setSearchValue={setSearchValue}
+        sValue={sValue}
+        setLoad={setLoad}
+        setDload={setDload}
+        radio={radio}
+        setRadio={setRadio}
+        page1={page1}
       />
       <AccountOrderDetailsTable
-        order={order}
+        setAccountOrderDetails={setAccountOrderDetails}
+        accountOrderDetails={accountOrderDetails}
         status={status}
         page1={page1}
-        statusModalOpen={statusModalOpen}
-        setStatusModalOpen={setStatusModalOpen}
         sortBy={sortBy}
         sortColum={sortColum}
         setSortingColum={setSortingColum}
         setSortBy={setSortBy}
-        setOrder={setOrder}
         loading={loading}
+        setLoad={setLoad}
       />
     </div>
   );

@@ -1,9 +1,10 @@
 import axios from "axios";
 import { notification } from "antd";
 
-export const apicall = async ({
+export const apicall2 = async ({
   method = "get",
-  url = "",
+  preurl = "",
+  posturl = "",
   data = {},
   body = "",
   auth = false,
@@ -13,15 +14,18 @@ export const apicall = async ({
   if (!auth) {
     finalurl =
       finalurl +
-      "vendors/" +
+      preurl +
+      "/" +
       JSON.parse(localStorage.getItem("userinfo"))?.id +
-      "/";
+      posturl;
+  } else {
+    finalurl = finalurl + preurl + posturl;
   }
 
   try {
     const result = await axios({
       method: method,
-      url: finalurl + url,
+      url: finalurl,
       data: data,
       body: body,
       auth: {
@@ -33,7 +37,7 @@ export const apicall = async ({
         "Access-Control-Allow-Origin": true,
       },
     });
-    // console.log(result);
+
     if (method != "get") {
       notification.success({
         message: "Sucessfully Done",

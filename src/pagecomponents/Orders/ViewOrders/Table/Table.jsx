@@ -61,7 +61,7 @@ const ViewOrderTable = ({
   };
 
   const getTimeAndDate = (timeStamp) => {
-    const date = new Date(parseInt(timeStamp));
+    const date = new Date(parseInt(timeStamp) * 1000);
     const monthyear = date.toLocaleString("en-US", {
       year: "numeric",
       month: "short",
@@ -144,15 +144,15 @@ const ViewOrderTable = ({
 
   const total = () => {
     const data = order;
-    const gr = data.reduce((init, dat) => init + parseInt(dat.total), 0);
+    const gr = data?.reduce((init, dat) => init + parseInt(dat.total), 0);
     return gr;
   };
 
   const grossTotal = () => {
     const data = order;
     const t = data
-      .filter((datt, ii) => datt.status === "P")
-      .reduce((init, dat) => init + parseInt(dat.total), 0);
+      ?.filter((datt, ii) => datt.status === "P")
+      ?.reduce((init, dat) => init + parseInt(dat.total), 0);
 
     return t;
   };

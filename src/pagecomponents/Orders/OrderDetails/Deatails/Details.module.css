@@ -8,6 +8,7 @@
   margin-bottom: 50px;
   display: flex;
   box-shadow: var(--box-shadow);
+  position: relative;
 }
 
 .leftContain {
@@ -87,4 +88,10 @@
   .rightContain {
     width: 100%;
   }
+}
+
+.savebutton {
+  position: absolute;
+  right: 0;
+  top: -35px;
 }

@@ -1,53 +1,35 @@
 import React, { useEffect, useState, forwardRef } from "react";
 import styles from "./Search.module.css";
-import { Card, Form, Input, Button, Radio, DatePicker } from "antd";
-import { Dropdown, Space } from "antd";
-import { BsChevronDown } from "react-icons/bs";
+import { Card, Form, Input, Button, Radio } from "antd";
+import { Select, Space } from "antd";
 
 import "./index.css";
+import { apicall } from "../../../../utils/apicall/apicall";
+import { DatePicker } from "antd";
 
-const Search = ({ setSearchValue }) => {
-  const [form] = Form.useForm();
-  const { RangePicker } = DatePicker;
+const { RangePicker } = DatePicker;
 
-  const items = [
-    {
-      key: "1",
-      label: (
-        <a
-        // target="_blank"
-        // rel="noopener noreferrer"
-        // href="https://www.antgroup.com"
-        >
-          1st menu item
-        </a>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <a
-        // target="_blank"
-        // rel="noopener noreferrer"
-        // href="https://www.aliyun.com"
-        >
-          2nd menu item
-        </a>
-      ),
-    },
-    {
-      key: "3",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.luohanacademy.com"
-        >
-          3rd menu item
-        </a>
-      ),
-    },
-  ];
+const Search = ({
+  setSearchValue,
+  sValue,
+  setLoad,
+  setDload,
+  setRadio,
+  radio,
+  page1,
+}) => {
+  const [paymentmethod, setPaymentMethod] = useState([]);
+
+  useEffect(() => {
+    getpayment();
+  }, []);
+
+  const getpayment = async () => {
+    const result = await apicall({
+      url: "payments",
+    });
+    setPaymentMethod(result.data.payments);
+  };
 
   return (
     <div className={styles.container} id="changeHere">
@@ -55,67 +37,146 @@ const Search = ({ setSearchValue }) => {
         <div className={styles.formcolumn}>
           <label>
             Order No.
-            <Input type="text" />
+            <Input
+              type="number"
+              value={sValue?.orderno}
+              onChange={(e) =>
+                setSearchValue({
+                  ...sValue,
+                  orderno: e.target.value,
+                })
+              }
+            />
           </label>
           <label>
             Customer
-            <Input type="text" />
+            <Input
+              type="text"
+              value={sValue?.customername}
+              onChange={(e) =>
+                setSearchValue({
+                  ...sValue,
+                  customername: e.target.value,
+                })
+              }
+            />
           </label>
           <label>
             Customer phone
-            <Input type="text" />
+            <Input
+              type="number"
+              value={sValue?.customerphone}
+              onChange={(e) =>
+                setSearchValue({
+                  ...sValue,
+                  customerphone: e.target.value,
+                })
+              }
+            />
           </label>
-          {/* <label>
-            Order status
-            <Dropdown
-              menu={{
-                items,
-              }}
-              placement="bottom"
-            >
-              <Button className={styles.dropdownbutton}>
-                bottom <BsChevronDown className={styles.icon} />{" "}
-              </Button>
-            </Dropdown>
-          </label> */}
+
           <label>
             Payment method
-            <Dropdown
-              menu={{
-                items,
+            <Select
+              defaultValue=""
+              style={{ width: "100%" }}
+              onChange={(e) => {
+                setSearchValue({
+                  ...sValue,
+                  paymentmethod: e,
+                });
               }}
-              placement="bottom"
-            >
-              <Button className={styles.dropdownbutton}>
-                bottom <BsChevronDown className={styles.icon} />
-              </Button>
-            </Dropdown>
+              options={[
+                {
+                  value: "",
+                  label: "Select PaymentMethod ",
+                },
+                ...paymentmethod.map((dat) => ({
+                  value: dat.payment_id,
+                  label: dat.payment,
+                })),
+              ]}
+            />
           </label>
           <label>
             <div>Account Status</div>
 
-            <Dropdown
-              menu={{
-                items,
-              }}
-              placement="bottom"
-            >
-              <Button className={styles.dropdownbutton}>
-                bottom <BsChevronDown className={styles.icon} />
-              </Button>
-            </Dropdown>
+            <Select
+              defaultValue=""
+              style={{ width: "100%" }}
+              onChange={(e) =>
+                setSearchValue({
+                  ...sValue,
+                  accountstatus: e,
+                })
+              }
+              options={[
+                {
+                  value: "",
+                  label: "Select Account Status ",
+                },
+                {
+                  value: "Paid",
+                  label: "Paid",
+                },
+                {
+                  value: "Pending",
+                  label: "Pending",
+                },
+              ]}
+            />
           </label>
-          {/* <label>
-            <div style={{ marginBottom: "3px" }}>Account Status</div>
-            <div>
-              <Radio>Order Created Date</Radio>
-              <Radio>Settlement Date</Radio>
-            </div>
-          </label> */}
           <label>
-            RangePicker
-            <RangePicker />
+            RangePicker <br />
+            <div style={{ display: "flex" }}>
+              <DatePicker
+                className={styles.date}
+                onChange={(e, a) => {
+                  const temp = sValue;
+                  temp.startDate = a;
+
+                  setDload((d) => !d);
+                }}
+              />
+              {"-"}
+              <DatePicker
+                className={styles.date}
+                onChange={(e, a) => {
+                  const temp = sValue;
+                  temp.endDate = a;
+                  setSearchValue(temp);
+
+                  setDload((d) => !d);
+                }}
+              />
+            </div>
           </label>
+          <span className={styles.span}>
+            <div> Order date</div>
+
+            <div style={{ display: "flex" }}>
+              <Radio
+                value="O"
+                checked={radio === "O" ? true : false}
+                onClick={() => {
+                  setRadio("O");
+                  page1.current = 1;
+                }}
+              >
+                Order Created Date{" "}
+              </Radio>
+              <Radio
+                value="S"
+                checked={radio === "S" ? true : false}
+                onClick={() => {
+                  setRadio("S");
+                  page1.current = 1;
+                }}
+              >
+                Settlement Date
+              </Radio>
+            </div>
+          </span>
         </div>
       </Card>
     </div>

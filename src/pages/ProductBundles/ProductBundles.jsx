@@ -2,91 +2,57 @@ import React from "react";
 import styles from "./ProductBundles.module.css";
 import { Breadcrumb, Table } from "antd";
 import { Input, Button } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
+import ProductBundleCreateModal from "../../pagecomponents/Marketing/ProductBundle/ProductBundleCreateModal/ProductBundleCreateModal";
+import { useState } from "react";
 
 function ProductBundles() {
-  const columns = [
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const data = [
     {
-      title: "Full Name",
-      width: 100,
-      dataIndex: "name",
-      key: "name",
-      fixed: "left",
-    },
-    {
-      title: "Age",
-      width: 100,
-      dataIndex: "age",
-      key: "age",
-      fixed: "left",
-    },
-    {
-      title: "Column 1",
-      dataIndex: "address",
       key: "1",
-      width: 150,
+      name: "Mike",
+      age: 2,
+      address: "10 Downing Street",
     },
     {
-      title: "Column 2",
-      dataIndex: "address",
       key: "2",
-      width: 150,
-    },
-    {
-      title: "Column 3",
-      dataIndex: "address",
-      key: "3",
-      width: 150,
-    },
-    {
-      title: "Column 4",
-      dataIndex: "address",
-      key: "4",
-      width: 150,
-    },
-    {
-      title: "Column 5",
-      dataIndex: "address",
-      key: "5",
-      width: 150,
-    },
-    {
-      title: "Column 6",
-      dataIndex: "address",
-      key: "6",
-      width: 150,
-    },
-    {
-      title: "Column 7",
-      dataIndex: "address",
-      key: "7",
-      width: 150,
-    },
-    {
-      title: "Column 8",
-      dataIndex: "address",
-      key: "8",
-    },
-    {
-      title: "Action",
-      key: "operation",
-      fixed: "right",
-      width: 100,
-      render: () => <a>action</a>,
+      name: "John",
+      age: 4,
+      address: "10 Downing Street",
     },
   ];
 
-  const data = [];
-  for (let i = 0; i < 1000000; i++) {
-    data.push({
-      key: i,
-      name: `Edrward ${i}`,
-      age: 32,
-      address: `London Park no. ${i}`,
-    });
-  }
+  const columns = [
+    {
+      title: "Bundle name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Products",
+      dataIndex: "age",
+      key: "age",
+    },
+    {
+      title: "Address",
+      dataIndex: "address",
+      key: "address",
+    },
+    {
+      title: "Action",
+      dataIndex: "address",
+      key: "address",
+      render: (text, dat) => (
+        <div className={styles.icon}>
+          <SettingOutlined />
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <>
+    <div className={styles.containerWrapper}>
       <div className={styles.breadcumb}>
         <Breadcrumb>
           <Breadcrumb.Item>Marketing</Breadcrumb.Item>
@@ -106,20 +72,20 @@ function ProductBundles() {
             Bundle with product
             <Input placeholder="Basic usage" />
           </div>
-          <div>
-            <Button className={styles.button}>search</Button>
-          </div>
         </div>
-        <Table
-          columns={columns}
-          dataSource={data}
-          scroll={{
-            x: 1500,
-            y: 800,
-          }}
-        />
+        <Table columns={columns} dataSource={data} />
       </div>
-    </>
+      <ProductBundleCreateModal
+        openCreateModal={openCreateModal}
+        setOpenCreateModal={setOpenCreateModal}
+      />
+      <Button
+        className={styles.createProductBundle}
+        onClick={() => setOpenCreateModal(true)}
+      >
+        Create Product Bundle
+      </Button>
+    </div>
   );
 }
 

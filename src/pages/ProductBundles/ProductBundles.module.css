@@ -4,6 +4,9 @@
   box-shadow: var(--box-shadow);
   border-radius: 5px;
 }
+.containerWrapper {
+  position: relative;
+}
 
 .breadcumb {
   margin: 10px 0;
@@ -22,4 +25,21 @@
 
 .button {
   transform: translateY(25px);
+}
+.icon {
+  width: fit-content;
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.icon:hover {
+  background-color: rgba(128, 128, 128, 0.471);
+  color: rgba(0, 0, 255, 0.572);
+}
+
+.createProductBundle {
+  position: absolute;
+  right: 0;
+  top: -10px;
 }

@@ -21,11 +21,10 @@ import {
 import { apicall } from "../../utils/apicall/apicall";
 
 import DateRangePickerComp from "../../pagecomponents/Home/RangePicker/Rangepicker";
-// import { addDays } from "date-fns";
+import { addDays } from "date-fns";
+import ProductCountReport from "./../../pagecomponents/Reports/ProductCountReport/ProductCountReport";
 
 const Home = () => {
-  // const a = dayjs(new Date(new Date().setMonth(new Date().getMonth() - 1)));
-
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState([]);
@@ -66,29 +65,50 @@ const Home = () => {
     setStatus(result.data.statuses);
   };
 
+  const gRN = () => {
+    return Math.ceil(Math.random() * (100 + 100) - 100);
+  };
+
   const series = [
     {
       name: "Guests",
-      data: [1, 0, 0, -1],
+      data: [
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+        gRN(),
+      ],
     },
   ];
   const options = {
-    xaxis: {
-      categories: ["2019-05-01", "2019-05-02", "2019-05-03", "2019-05-04"],
+    stroke: {
+      curve: "smooth",
     },
+    colors: ["#218c74"],
+
+    // xaxis: {
+    //   categories: ["2019-05-01", "2019-05-02", "2019-05-03", "2019-05-04"],
+    // },
   };
-
-  // let timelaps = {
-  //   end: range[0].endDate.getTime(),
-  //   start: range[0].startDate.getTime(),
-  // };
-
-  // let date = {
-  //   start: new Date(timelaps.start),
-  //   end: new Date(timelaps.end),
-  // };
-
-  // console.log(date, timelaps);
 
   const leftContainerData = [
     {
@@ -211,6 +231,8 @@ const Home = () => {
             {/* <OrderByStatus order={order} status={status} /> */}
             {/* <CurrentPlanUsage /> */}
           </div>
+          <ProductCountReport />
+          <div className={styles.margin} />
           <CurrentPlanUsage />
           <div className={styles.margin} />
           <RecentActivities />

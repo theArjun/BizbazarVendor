@@ -13,6 +13,12 @@ import { Button, Result } from "antd";
 import PublicRoute from "./utils/PublicRoute";
 
 const Home = lazy(() => import("./pages/Home/Home"));
+const ProductCountReport = lazy(() =>
+  import("./pages/Reports/ProductCountReport/ProductCountReport")
+);
+const ShippingMethod = lazy(() =>
+  import("./pages/Setting/ShippingMethod/ShippingMethod")
+);
 const ViewOrders = lazy(() => import("./pages/Orders/ViewOrders/ViewOrders"));
 const CallRequests = lazy(() =>
   import("./pages/Orders/CallRequests/CallRequests")
@@ -71,6 +77,7 @@ function App() {
       await dispatch(saveCategories(result.data.categories));
     }
   };
+
   return (
     <Router>
       <Routes>
@@ -225,7 +232,11 @@ function App() {
           {/**Setting*/}
           {/**Shipping Methods*/}
           <Route
-            element={<>Shipping Methods</>}
+            element={
+              <SuspenseWrapper>
+                <ShippingMethod />
+              </SuspenseWrapper>
+            }
             path="/Setting/Shipping Methods"
           ></Route>
           {/**Logos And Styles*/}
@@ -264,7 +275,11 @@ function App() {
           ></Route>
           {/**Product Count Reports*/}
           <Route
-            element={<>Product Count Reports</>}
+            element={
+              <SuspenseWrapper>
+                <ProductCountReport />
+              </SuspenseWrapper>
+            }
             path="/Reports/Product Count Reports"
           ></Route>
           {/**Monthly Order Report*/}
