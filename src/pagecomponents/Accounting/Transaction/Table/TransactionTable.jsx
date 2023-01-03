@@ -1,28 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Table.module.css";
-import { Table, Image, Skeleton } from "antd";
-import { apicall } from "../../../../utils/apicall/apicall";
-import { useNavigate } from "react-router-dom";
+import { Table, Tag } from "antd";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
-
-const data = [
-  {
-    image: "https://m.media-amazon.com/images/I/51UKnksIdGL._SL1275_.jpg",
-    status: "Pending",
-    date: "12/13/2022, 11:00",
-    type: "Withdrawal",
-    t_value: "30600",
-    v_cost: "0",
-    cert_cost: "0",
-    shipping_cost: "100",
-    order_code: "48364",
-    name: "Pendrive",
-  },
-];
-const TransactionTable = ({ handleScroll, loading }) => {
-  // const data = useSelector((state) => state.product.products);
-  const [productId, setProductId] = useState("");
-  const navigate = useNavigate();
+const TransactionTable = ({ handleScroll, loading, data, status,getTotalTransaction,getTotalShipping,getTotalVoucher,getTotalGift, getNetIncome}) => {
   const windowSize = useWindowSize();
   useEffect(() => {
     document
@@ -35,74 +15,83 @@ const TransactionTable = ({ handleScroll, loading }) => {
         ?.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
-  // Set id
-  const setSelectedRow = async (id, method) => {
-    setProductId(id);
-    if (method === "detail") {
-      navigate("Edit Product");
-    }
+
+
+// getting status tag
+  const getStatusTag = (data, obj) => {
+    const [statusOfRow] = status.filter((dat) => dat.status === data);
+    return (
+      <div>
+      <Tag className={styles.dpContainer} color={statusOfRow?.params?.color}>
+      {statusOfRow?.description}
+      </Tag>
+      </div>
+    );
+  };
+// getting time and date 
+  const getTimeAndDate = (timeStamp) => {
+    const date = new Date(parseInt(timeStamp));
+    const monthyear = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    });
+
+    const time = date.toLocaleString("en-US", {
+      hour: "2-digit",
+      minute: "numeric",
+    });
+    return monthyear + ", " + time;
   };
   const columns = [
     {
       title: "Status",
-      dataIndex: "status",
+      dataIndex: "approval_status",
       data: "data",
       key: "product",
-      render: (status, row) => (
-        <div className={styles.product_info}>
-          <Image width={70} src={!row ? "" : row.image} alt={""} />
-          <div className={styles.product_name}>
-            <strong>{row.name}</strong> <br />
-            <a
-              href="#"
-              onClick={() => setSelectedRow(row["product_id"], "detail")}
-            >
-              #<small>{row.order_code}</small>
-            </a>
-          </div>
-        </div>
-      ),
+      render: (text) => getStatusTag(text)
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
+      render:(text, row)=>getTimeAndDate(row.payout_date)
     },
     {
       title: "Type",
-      dataIndex: "type",
+      dataIndex: "payout_type",
       key: "type",
     },
     {
       title: "Transaction value",
-      dataIndex: "t_value",
+      dataIndex: "payout_amount",
       key: "t_value",
       render: (value) => <p>रु{value}</p>,
     },
     {
       title: "Voucher cost",
       key: "v_cost",
-      dataIndex: "v_cost",
-      render: (value) => <p>रु{value}</p>,
+      dataIndex: "voucher_cost",
+      render: (value) => <p>रु{value?value:0}</p>,
     },
     {
       title: "Gift certificate cost",
       key: "cert_cost",
-      dataIndex: "cert_cost",
-      render: (value) => <p>रु{value}</p>,
+      dataIndex: "gift_certificate_cost",
+      render: (value) => <p>रु{value?value:0}</p>,
     },
     {
       title: "Shipping cost",
       dataIndex: "shipping_cost",
       key: "shipping_cost",
-      render: (value) => <p>रु{value}</p>,
+      render: (value) => <p>रु{value?value:0}</p>,
     },
     {
       title: "Total transaction",
       dataIndex: "total_transaction",
       key: "total_transaction",
       render: (value, row) => (
-        <p>रु{row.t_value - row.shipping_cost - row.v_cost - row.cert_cost}</p>
+        <p>रु{parseFloat(row?.payout_amount?row.payout_amount:0) - parseFloat(row?.shipping_cost?row.shipping_cost:0) - parseFloat(row?.voucher_cost?row.voucher_cost:0) - parseFloat(row?.gift_certificate_cost?row.gift_certificate_cost:0)}</p>
       ),
     },
   ];
@@ -127,23 +116,23 @@ const TransactionTable = ({ handleScroll, loading }) => {
           <div className={styles.right_card_body}>
             <h5>
               Total Transaction value:
-              <span>{"रु44,760"}</span>
+              <span>रु{getTotalTransaction()}</span>
             </h5>
             <h5>
               Shipping cost:
-              <span>रु44,760</span>
+              <span>रु{getTotalShipping()}</span>
             </h5>
             <h5>
               Voucher cost:
-              <span className={styles.red}>रु44,760</span>
+              <span className={styles.red}>रु{getTotalVoucher()}</span>
             </h5>
             <h5>
               Gift certificate cost:
-              <span className={styles.red}>रु44,760</span>
+              <span className={styles.red}>रु{getTotalGift()}</span>
             </h5>
             <h5>
               Net income:
-              <span>रु44,760</span>
+              <span>रु{getNetIncome()}</span>
             </h5>
           </div>
         </div>

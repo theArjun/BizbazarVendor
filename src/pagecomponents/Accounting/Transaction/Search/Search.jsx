@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./Search.module.css";
 import { Card,Form,Select,Input, DatePicker } from "antd";
 const {RangePicker}=DatePicker;
-const Search = () => {
+const Search = ({getTotalTransaction,getTotalShipping, getTotalVoucher, getTotalGift, getNetIncome}) => {
     const [form]=Form.useForm()
   const types = [
     { key: "all", label: "All", value: "all" },
@@ -91,16 +91,16 @@ const Search = () => {
           </div>
           <div className={styles.right_card_body}>
                 <h5>Total Transaction value:
-                <span >{'रु44,760'}</span>
+                <span >रु{getTotalTransaction()}</span>
                 </h5>
                 <h5>Shipping cost:
-                <span>रु44,760</span></h5>
+                <span className={styles.red}>रु{getTotalShipping()}</span></h5>
                 <h5>Voucher cost:
-                <span className={styles.red}>रु44,760</span></h5>
+                <span className={styles.red}>रु{getTotalVoucher()}</span></h5>
                 <h5>Gift certificate cost:
-                <span className={styles.red}>रु44,760</span></h5> 
+                <span className={styles.red}>रु{getTotalGift()}</span></h5> 
                 <h5>Net income:
-                <span>रु44,760</span></h5>
+                <span>रु{getNetIncome()}</span></h5>
           </div>
           </div>
       </Card>
