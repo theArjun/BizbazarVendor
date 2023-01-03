@@ -33,7 +33,7 @@ export const apicall = async ({
         "Access-Control-Allow-Origin": true,
       },
     });
-
+    // console.log(result);
     if (method != "get") {
       notification.success({
         message: "Sucessfully Done",
