@@ -24,7 +24,6 @@ const ViewOrders = () => {
   const [sortBy, setSortBy] = useState("");
   const [sortColum, setSortingColum] = useState("");
   const [bottom, setBottom] = useState(false);
-
   const a = Object.values(sValue).join("");
 
   useEffect(() => {

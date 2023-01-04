@@ -1,25 +1,24 @@
 import React from "react";
 import styles from "./Search.module.css";
-import { Card,Form,Select,Input, DatePicker } from "antd";
+import { Card,Form,Select, DatePicker } from "antd";
 const {RangePicker}=DatePicker;
-const Search = () => {
+const Search = ({getWithdrawInformation}) => {
     const [form]=Form.useForm()
-  const types = [
-    { key: "all", label: "All", value: "all" },
-    { key: "other", label: "Other", value: "other" },
-    { key: "placed", label: "Order placed", value: "placed" },
-    { key: "changed", label: "Order changed", value: "changed" },
-    { key: "refunded", label: "Order refunded", value: "refunded" },
-    { key: "payout", label: "Payout", value: "payout" },
-  ];
   const status = [
-    { key: "all", label: "All", value: "all" },
-    { key: "pending", label: "Pending", value: "pending" },
-    { key: "completed", label: "Completed", value: "completed" },
-    { key: "declined", label: "Declined", value: "declined" },
+    { key: "all", label: "All", value: "" },
+    { key: "pending", label: "Pending", value: "P" },
+    { key: "completed", label: "Completed", value: "C" },
+    { key: "declined", label: "Declined", value: "D" },
   ];
   const onValueChange = (a, values) => {
-    console.log(values);
+    if(values.dates){
+      let startDate = new Date(values?.dates[0]?.$y,values?.dates[0]?.$M, values?.dates[0]?.$D).getTime()/1000;
+      let endDate = new Date(values?.dates[1]?.$y,values?.dates[1]?.$M, values?.dates[1]?.$D).getTime()/1000;
+      let data={...values, start_date:startDate, end_date:endDate}
+      getWithdrawInformation(data)
+    }else{
+      getWithdrawInformation(values)
+    }
   };
   const onSearch = (value) => {
     console.log("search:", value);
@@ -37,28 +36,11 @@ const Search = () => {
           onValuesChange={onValueChange}
           initialValues={
             {
-                types:types[0].value,
                 status:status[0].value
             }
           }
         >
           <div className={styles.search_inputs}>
-            <Form.Item id="req" label="Type" name="types"
-            style={{width:'200px'}}
-            >
-              <Select
-                showSearch
-                placeholder="Select a type"
-                optionFilterProp="children"
-                onSearch={onSearch}
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={types}
-              />
-            </Form.Item>
             <Form.Item id="status" 
             label="Approval Status" 
             name="status"

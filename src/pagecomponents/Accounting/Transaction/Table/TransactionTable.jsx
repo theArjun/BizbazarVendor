@@ -30,7 +30,7 @@ const TransactionTable = ({ handleScroll, loading, data, status,getTotalTransact
   };
 // getting time and date 
   const getTimeAndDate = (timeStamp) => {
-    const date = new Date(parseInt(timeStamp));
+    const date = new Date(parseInt(timeStamp*1000));
     const monthyear = date.toLocaleString("en-US", {
       year: "numeric",
       month: "short",
@@ -49,7 +49,7 @@ const TransactionTable = ({ handleScroll, loading, data, status,getTotalTransact
       dataIndex: "approval_status",
       data: "data",
       key: "product",
-      render: (text) => getStatusTag(text)
+      render: (text) => getStatusTag(text=='P'?'G':text)
     },
     {
       title: "Date",
