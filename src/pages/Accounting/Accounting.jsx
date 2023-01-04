@@ -14,14 +14,42 @@ const Accounting = () => {
   const [open, setOpen] = useState(false);
   const[status,setStatus]=useState([])
   const [loading, setLoading]=useState(false)
+  const [withdrawData,setWithdrawData]=useState('')
 // getting userInformation
 let user= JSON.parse(localStorage.getItem('userinfo'));
   // Lets get Accounting data through api
   useEffect(()=>{
-    
     getAccountingInformation();
+    getWithdrawInformation();
     getStatus();
-  },[])
+  },[]);
+
+  // get url for transaction search value 
+  const getUrl=(values)=>{
+    let baseUrl=`BizbazarAccounting/${user.id}?is_search=Y`
+    if(values?.types){
+      baseUrl=baseUrl+"&payout_type="+values.types
+    }
+    if(values?.status){
+      baseUrl=baseUrl+'&approval_status='+values.status
+    }
+    if(values?.start_date && values?.end_date){
+      baseUrl= baseUrl+'&time_from='+values.start_date+'&time_to='+values.end_date
+    }
+    return baseUrl;
+  }
+  // search url for withdrawals
+  const getWithdrawUrl=(values)=>{
+    let baseUrl=`BizbazarAccounting/${user.id}?is_search=Y&selected_section=withdrawals`
+    if(values?.status){
+      baseUrl=baseUrl+'&approval_status='+values.status
+    }
+    if(values?.start_date && values?.end_date){
+      baseUrl= baseUrl+'&time_from='+values.start_date+'&time_to='+values.end_date
+    }
+    return baseUrl;
+  }
+  // getting status of transaction detail
   const getStatus = async () => {
     const result = await apicall({
       url: "statuses",
@@ -29,10 +57,10 @@ let user= JSON.parse(localStorage.getItem('userinfo'));
     setStatus(result.data.statuses);
   };
 // get Account info
-  const getAccountingInformation=async ()=>{
+  const getAccountingInformation=async (values)=>{
     setLoading(true)
      let result = await apicall({
-        url:`BizbazarAccounting/${user.id}`
+        url:getUrl(values)
       });
       if(result.data){
         setData(result.data)
@@ -40,7 +68,18 @@ let user= JSON.parse(localStorage.getItem('userinfo'));
       }
       setLoading(false)
   };
-
+// get Withdraw information 
+const getWithdrawInformation= async(values)=>{
+  setLoading(true)
+  let result = await apicall({
+     url:getWithdrawUrl(values)
+   });
+   if(result.data){
+     setWithdrawData(result.data)
+     setLoading(false)
+   }
+   setLoading(false)
+}
   const showModal = () => {
     setOpen(true);
   };
@@ -59,10 +98,10 @@ let user= JSON.parse(localStorage.getItem('userinfo'));
   const getContainerFromTab = () => {
     switch (active) {
       case "Balance withdrawals":
-        return data?<Withdrawals data={data}/>:'';
+        return <Withdrawals data={withdrawData} status={status}  loading={loading} getWithdrawInformation={getWithdrawInformation}/>;
 
       default:
-        return data?<Transactions data={data} status={status} />:'';
+        return <Transactions data={data} status={status} getAccountingInformation={getAccountingInformation} loading={loading} />;
     }
   };
   return (
@@ -161,7 +200,7 @@ let user= JSON.parse(localStorage.getItem('userinfo'));
           </div>
         </div>
         {
-          loading?<Spin/>:getContainerFromTab()}
+          getContainerFromTab()}
       </div>
     </div>
   );
