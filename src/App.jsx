@@ -12,6 +12,20 @@ import { apicall } from "./utils/apicall/apicall";
 import { Button, Result } from "antd";
 import PublicRoute from "./utils/PublicRoute";
 
+const CouponVoucherReport = lazy(() =>
+  import("./pages/Reports/CouponVoucherReport/CouponVoucherReport")
+);
+
+const VendorTransactionDetails = lazy(() =>
+  import("./pages/Reports/VendorTransactionDetails/VendorTransactionDetails")
+);
+
+const OrderDetailsReport = lazy(() =>
+  import("./pages/Reports/OrderDetailsReport/OrderDetailsReport")
+);
+
+const GiftCards = lazy(() => import("./pages/Reports/GiftCards/GiftCards"));
+
 const Home = lazy(() => import("./pages/Home/Home"));
 const ProductCountReport = lazy(() =>
   import("./pages/Reports/ProductCountReport/ProductCountReport")
@@ -257,20 +271,39 @@ function App() {
             path="/Reports/Account Orders Details"
           ></Route>
           {/**Gift Cards*/}
-          <Route element={<>Gift Cards</>} path="/Reports/Gift Cards"></Route>
+          <Route
+            element={
+              <SuspenseWrapper>
+                <GiftCards />
+              </SuspenseWrapper>
+            }
+            path="/Reports/Gift Cards"
+          ></Route>
           {/**Order Details*/}
           <Route
-            element={<>Order Details</>}
+            element={
+              <SuspenseWrapper>
+                <OrderDetailsReport />
+              </SuspenseWrapper>
+            }
             path="/Reports/Order Details"
           ></Route>
           {/**Vendor Transaction Details*/}
           <Route
-            element={<>Vendor Transaction Details</>}
+            element={
+              <SuspenseWrapper>
+                <VendorTransactionDetails />
+              </SuspenseWrapper>
+            }
             path="/Reports/Vendor Transaction Details"
           ></Route>
           {/**Coupon Voucher Report*/}
           <Route
-            element={<>Coupon Voucher Report</>}
+            element={
+              <SuspenseWrapper>
+                <CouponVoucherReport />
+              </SuspenseWrapper>
+            }
             path="/Reports/Coupon Voucher Report"
           ></Route>
           {/**Product Count Reports*/}

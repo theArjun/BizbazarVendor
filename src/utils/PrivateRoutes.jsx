@@ -1,7 +1,4 @@
 import { Outlet, Navigate } from "react-router-dom";
-// import TopNavbar from "./../component/TopNavbar/TopNavbar";
-// import second from "./../component/Navbar/Navbar";
-import SuspenseWrapper from "../component/SuspenseWrapper/SuspenseWrapper";
 import useWindowSize from "./Hooks/useWindowSize";
 import styles from "./index.module.css";
 

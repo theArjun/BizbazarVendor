@@ -175,3 +175,27 @@
 .navDropdownItem {
   padding: 3px 0;
 }
+
+@media (max-width: 1400px) {
+  .container {
+    height: 45px;
+  }
+  .profileName {
+    font-size: 12px;
+  }
+  .profileImage {
+    width: 35px;
+    transform: translateY(7px);
+  }
+  .logo {
+    /* height: 20px; */
+    width: 100px;
+  }
+  .icons {
+    font-size: 20px;
+  }
+  .profilerole {
+    font-size: 10px;
+    transform: translate(0, -4px);
+  }
+}
