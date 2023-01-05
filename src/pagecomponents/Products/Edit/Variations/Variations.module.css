@@ -1,0 +1,7 @@
+.feature_main > *{
+    margin: 10px
+}
+.action_btn{
+    width: fit-content;
+    cursor: pointer;
+}

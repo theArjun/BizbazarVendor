@@ -1,20 +1,89 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Accounting.module.css";
-import { Breadcrumb, Modal, Button, Space, Form, Input } from "antd";
+import { Breadcrumb, Modal, Button, Space, Form, Input, Spin } from "antd";
 import { HiPlus } from "react-icons/hi";
 import cx from "classnames";
 import Transactions from "./Transactions/Transactions";
 import Withdrawals from "./Withdrawals/Withdrawals";
 import TextArea from "antd/es/input/TextArea";
+import { apicall } from "../../utils/apicall/apicall";
 const Accounting = () => {
   const tabs = ["Transactions", "Balance withdrawals"];
   const [active, setActive] = useState("Transactions");
+  const [data,setData]=useState('')
   const [open, setOpen] = useState(false);
+  const[status,setStatus]=useState([])
+  const [loading, setLoading]=useState(false)
+  const [withdrawData,setWithdrawData]=useState('')
+// getting userInformation
+let user= JSON.parse(localStorage.getItem('userinfo'));
+  // Lets get Accounting data through api
+  useEffect(()=>{
+    getAccountingInformation();
+    getWithdrawInformation();
+    getStatus();
+  },[]);
+
+  // get url for transaction search value 
+  const getUrl=(values)=>{
+    let baseUrl=`BizbazarAccounting/${user.id}?is_search=Y`
+    if(values?.types){
+      baseUrl=baseUrl+"&payout_type="+values.types
+    }
+    if(values?.status){
+      baseUrl=baseUrl+'&approval_status='+values.status
+    }
+    if(values?.start_date && values?.end_date){
+      baseUrl= baseUrl+'&time_from='+values.start_date+'&time_to='+values.end_date
+    }
+    return baseUrl;
+  }
+  // search url for withdrawals
+  const getWithdrawUrl=(values)=>{
+    let baseUrl=`BizbazarAccounting/${user.id}?is_search=Y&selected_section=withdrawals`
+    if(values?.status){
+      baseUrl=baseUrl+'&approval_status='+values.status
+    }
+    if(values?.start_date && values?.end_date){
+      baseUrl= baseUrl+'&time_from='+values.start_date+'&time_to='+values.end_date
+    }
+    return baseUrl;
+  }
+  // getting status of transaction detail
+  const getStatus = async () => {
+    const result = await apicall({
+      url: "statuses",
+    });
+    setStatus(result.data.statuses);
+  };
+// get Account info
+  const getAccountingInformation=async (values)=>{
+    setLoading(true)
+     let result = await apicall({
+        url:getUrl(values)
+      });
+      if(result.data){
+        setData(result.data)
+        setLoading(false)
+      }
+      setLoading(false)
+  };
+// get Withdraw information 
+const getWithdrawInformation= async(values)=>{
+  setLoading(true)
+  let result = await apicall({
+     url:getWithdrawUrl(values)
+   });
+   if(result.data){
+     setWithdrawData(result.data)
+     setLoading(false)
+   }
+   setLoading(false)
+}
   const showModal = () => {
     setOpen(true);
   };
   const [form] = Form.useForm();
-
   const onFinish = async (values) => {
     localStorage.setItem("login", true);
     navigate("/");
@@ -29,10 +98,10 @@ const Accounting = () => {
   const getContainerFromTab = () => {
     switch (active) {
       case "Balance withdrawals":
-        return <Withdrawals />;
+        return <Withdrawals data={withdrawData} status={status}  loading={loading} getWithdrawInformation={getWithdrawInformation}/>;
 
       default:
-        return <Transactions />;
+        return <Transactions data={data} status={status} getAccountingInformation={getAccountingInformation} loading={loading} />;
     }
   };
   return (
@@ -126,12 +195,12 @@ const Accounting = () => {
                 >
                  <Button primary type="primary" htmlType="submit" style={{float:'right'}}>Create</Button>
                 </Form.Item>
-                
               </Form>
             </Modal>
           </div>
         </div>
-        {getContainerFromTab()}
+        {
+          getContainerFromTab()}
       </div>
     </div>
   );

@@ -1,28 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Table.module.css";
-import { Table, Image, Skeleton } from "antd";
-import { apicall } from "../../../../utils/apicall/apicall";
-import { useNavigate } from "react-router-dom";
+import { Table, Tag } from "antd";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
+const WithdrawalsTable = ({ handleScroll, loading, data, status}) => {
 
-const data = [
-  {
-    image: "https://m.media-amazon.com/images/I/51UKnksIdGL._SL1275_.jpg",
-    status: "Pending",
-    date: "12/13/2022, 11:00",
-    type: "Withdrawal",
-    t_value: "30600",
-    v_cost: "0",
-    cert_cost: "0",
-    shipping_cost: "100",
-    order_code: "48364",
-    name: "Pendrive",
-  },
-];
-const WithdrawalsTable = ({ handleScroll, loading }) => {
-  // const data = useSelector((state) => state.product.products);
-  const [productId, setProductId] = useState("");
-  const navigate = useNavigate();
   const windowSize = useWindowSize();
   useEffect(() => {
     document
@@ -35,50 +16,59 @@ const WithdrawalsTable = ({ handleScroll, loading }) => {
         ?.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
-  // Set id
-  const setSelectedRow = async (id, method) => {
-    setProductId(id);
-    if (method === "detail") {
-      navigate("Edit Product");
-    }
+
+  // getting status tag
+  const getStatusTag = (data, obj) => {
+    const [statusOfRow] = status.filter((dat) => dat.status === data);
+    return (
+      <div>
+      <Tag className={styles.dpContainer} color={statusOfRow?.params?.color}>
+      {statusOfRow?.description}
+      </Tag>
+      </div>
+    );
+  };
+  // getting time and date 
+  const getTimeAndDate = (timeStamp) => {
+    const date = new Date(parseInt(timeStamp*1000));
+    const monthyear = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    });
+
+    const time = date.toLocaleString("en-US", {
+      hour: "2-digit",
+      minute: "numeric",
+    });
+    return monthyear + ", " + time;
   };
   const columns = [
     {
       title: "Status",
-      dataIndex: "status",
+      dataIndex: "approval_status",
       data: "data",
       key: "product",
-      render: (status, row) => (
-        <div className={styles.product_info}>
-          <Image width={70} src={!row ? "" : row.image} alt={""} />
-          <div className={styles.product_name}>
-            <strong>{row.name}</strong> <br />
-            <a
-              href="#"
-              onClick={() => setSelectedRow(row["product_id"], "detail")}
-            >
-              #<small>{row.order_code}</small>
-            </a>
-          </div>
-        </div>
-      ),
+      render: (text) =>getStatusTag(text=='P'?'G':text)
     },
     {
       title: "Date",
-      dataIndex: "date",
+      dataIndex: "payout_date",
       key: "date",
+      render:(date)=>getTimeAndDate(date)
     },
     {
       title: "Type",
-      dataIndex: "type",
+      dataIndex: "payout_type",
       key: "type",
     },
     {
       title: "Transaction value",
-      dataIndex: "t_value",
-      key: "t_value",
+      dataIndex: "payout_amount",
+      key: "transaction",
       render: (value) => <p>रु{value}</p>,
     },
+    
   ];
   return (
     <div>
@@ -88,6 +78,19 @@ const WithdrawalsTable = ({ handleScroll, loading }) => {
         columns={columns}
         dataSource={data}
         pagination={false}
+        expandable={{
+          expandedRowRender: (record) => (
+            <p
+              style={{
+                margin: 0,
+              }}
+            >
+            Comment: 
+              {' '+record.comments}
+            </p>
+          ),
+          rowExpandable: (record) => record.comments,
+        }}
         scroll={{
           y: windowSize.height > 670 ? 300 : 200,
           x: 1000,

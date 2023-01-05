@@ -17,6 +17,7 @@ import { apicall } from "../../../../utils/apicall/apicall";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useState } from "react";
+import { useEffect } from "react";
 const { Dragger } = Upload;
 const General = ({ editData, loading, categories }) => {
   // for toggling  fields button
@@ -25,7 +26,24 @@ const General = ({ editData, loading, categories }) => {
   const [pricing, setPricing] = useState(true);
   const [categoryId, setCategoryId] = useState([...editData.category_ids]);
   const [description, setDescription] = useState("");
-  const [vat, setVat] = useState(false);
+  const [taxChecked, setTaxChecked] = useState(false);
+  const [vatId, setVatId] = useState([]);
+  // for setting vatId
+  useEffect(() => {
+    if (taxChecked) {
+      getTax();
+    } else {
+      setVatId([]);
+    }
+  }, [taxChecked]);
+  // for check vat and uncheck
+  useEffect(() => {
+    editData?.tax_ids.map((item) => {
+      if (item == "6") {
+        setTaxChecked(true);
+      }
+    });
+  }, []);
   var {
     product_id,
     product,
@@ -42,7 +60,6 @@ const General = ({ editData, loading, categories }) => {
     min_qty,
     tax,
   } = editData;
-
   const options_t = [
     { label: "Simultaneous", value: "P" },
     { label: "Sequential", value: "S" },
@@ -57,8 +74,8 @@ const General = ({ editData, loading, categories }) => {
     { label: "Ask customer to enter the price", value: "A" },
   ];
   const track_inventory = [
-    { label: "Yes", value: "B" },
-    { label: "No", value: "D" },
+    { label: "Yes", value: "Y" },
+    { label: "No", value: "N" },
   ];
   const getSelectedCatLabel = () => {
     let temp = [];
@@ -89,6 +106,7 @@ const General = ({ editData, loading, categories }) => {
       zero_price_action: values.price_action,
       amount: values.stock,
       tracking: values.track_inventory,
+      tax_ids: vatId,
     };
     // console.log(product_data);
     const timeOutId = setTimeout(async () => {
@@ -157,6 +175,18 @@ const General = ({ editData, loading, categories }) => {
     onDrop(e) {
       console.log("Dropped files", e.dataTransfer.files);
     },
+  };
+  // get Tax  and set value to the state
+  const getTax = async () => {
+    const result = await apicall({
+      url: "taxes",
+    });
+    if (result.data) {
+      let tax = result?.data?.taxes?.filter((item) => {
+        return item.tax === "VAT";
+      });
+      setVatId([...tax[0].tax_id]);
+    }
   };
 
   if (loading) {
@@ -352,7 +382,12 @@ const General = ({ editData, loading, categories }) => {
                 }))}
               />
             </Form.Item>
-            <Form.Item label="Track inventory" name="track_inventory">
+            <Form.Item
+              label="Track inventory"
+              name="track_inventory"
+              extra="When inventory is tracked, the number of products in stock will
+            decrease after each purchase."
+            >
               <Select
                 style={{
                   width: 300,
@@ -362,10 +397,6 @@ const General = ({ editData, loading, categories }) => {
                   value: track.value,
                 }))}
               />
-              <p>
-                When inventory is tracked, the number of products in stock will
-                decrease after each purchase.
-              </p>
             </Form.Item>
             <Form.Item
               label="Minimum quantity to buy per product"
@@ -395,7 +426,12 @@ const General = ({ editData, loading, categories }) => {
               <Input type="number" />
             </Form.Item>
             <Form.Item label="Taxes" valuePropName="yes" name="tax">
-              <Checkbox onChange={() => setVat(!vat)}>VAT</Checkbox>
+              <Checkbox
+                checked={taxChecked}
+                onChange={(e) => setTaxChecked(e.target.checked)}
+              >
+                VAT
+              </Checkbox>
             </Form.Item>
           </Card>
         </div>

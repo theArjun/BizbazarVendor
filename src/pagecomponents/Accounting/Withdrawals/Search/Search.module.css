@@ -4,8 +4,10 @@
 .search_inputs{
     display: flex;
     align-items: center;
-    justify-content: space-between;
     flex-wrap: wrap;
+}
+.search_inputs > *{
+  margin: 0 10px;
 }
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,

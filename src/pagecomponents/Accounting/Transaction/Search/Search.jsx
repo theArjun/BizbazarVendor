@@ -2,24 +2,31 @@ import React from "react";
 import styles from "./Search.module.css";
 import { Card,Form,Select,Input, DatePicker } from "antd";
 const {RangePicker}=DatePicker;
-const Search = () => {
+const Search = ({getAccountingInformation,getTotalTransaction,getTotalShipping, getTotalVoucher, getTotalGift, getNetIncome}) => {
     const [form]=Form.useForm()
   const types = [
-    { key: "all", label: "All", value: "all" },
+    { key: "all", label: "All", value: "" },
     { key: "other", label: "Other", value: "other" },
-    { key: "placed", label: "Order placed", value: "placed" },
-    { key: "changed", label: "Order changed", value: "changed" },
-    { key: "refunded", label: "Order refunded", value: "refunded" },
+    { key: "placed", label: "Order placed", value: "order_placed" },
+    { key: "changed", label: "Order changed", value: "order_changed" },
+    { key: "refunded", label: "Order refunded", value: "order_refunded" },
     { key: "payout", label: "Payout", value: "payout" },
   ];
   const status = [
-    { key: "all", label: "All", value: "all" },
-    { key: "pending", label: "Pending", value: "pending" },
-    { key: "completed", label: "Completed", value: "completed" },
-    { key: "declined", label: "Declined", value: "declined" },
+    { key: "all", label: "All", value: "" },
+    { key: "pending", label: "Pending", value: "P" },
+    { key: "completed", label: "Completed", value: "C" },
+    { key: "declined", label: "Declined", value: "D" },
   ];
   const onValueChange = (a, values) => {
-    console.log(values);
+    if(values.dates){
+      let startDate = new Date(values?.dates[0]?.$y,values?.dates[0]?.$M, values?.dates[0]?.$D).getTime()/1000;
+      let endDate = new Date(values?.dates[1]?.$y,values?.dates[1]?.$M, values?.dates[1]?.$D).getTime()/1000;
+      let data={...values, start_date:startDate, end_date:endDate}
+      getAccountingInformation(data)
+    }else{
+      getAccountingInformation(values)
+    }
   };
   const onSearch = (value) => {
     console.log("search:", value);
@@ -91,16 +98,16 @@ const Search = () => {
           </div>
           <div className={styles.right_card_body}>
                 <h5>Total Transaction value:
-                <span >{'रु44,760'}</span>
+                <span >रु{getTotalTransaction()}</span>
                 </h5>
                 <h5>Shipping cost:
-                <span>रु44,760</span></h5>
+                <span className={styles.red}>रु{getTotalShipping()}</span></h5>
                 <h5>Voucher cost:
-                <span className={styles.red}>रु44,760</span></h5>
+                <span className={styles.red}>रु{getTotalVoucher()}</span></h5>
                 <h5>Gift certificate cost:
-                <span className={styles.red}>रु44,760</span></h5> 
+                <span className={styles.red}>रु{getTotalGift()}</span></h5> 
                 <h5>Net income:
-                <span>रु44,760</span></h5>
+                <span>रु{getNetIncome()}</span></h5>
           </div>
           </div>
       </Card>
