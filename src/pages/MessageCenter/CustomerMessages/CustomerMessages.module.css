@@ -1,0 +1,81 @@
+.nav_top{
+    display: flex;
+    align-items: center;
+    font-size: large;
+    font-weight: bold;
+}
+.main_content{
+    display: flex;
+}
+.message_container{
+    /* position:relative; */
+    width: 70%;
+    height: calc(100vh - 150px);
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    overflow-y: hidden;
+    overflow: hidden;
+}
+.chat{
+    overflow-y: scroll;
+   padding:10px 30px;
+    height: 100%;
+    
+}
+.write_message_box{
+    padding: 20px 20px;
+    margin-bottom: 0px;
+    margin-top: auto;
+    background-color: rgb(212, 211, 213);
+}
+
+.send_box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.send_box >div{
+    margin-bottom: 0 !important;
+}
+.buttons{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+.buttons > div{
+    margin-bottom: 0 !important;
+}
+.client_message{
+    background-color: rgb(204, 211, 216);
+    margin: 5px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    width: fit-content;
+}
+.your_message{
+    background-color: rgb(160, 185, 235);
+    margin: 5px;
+    padding: 10px 15px;
+    border-radius: 20px;
+    width: fit-content;
+    margin-right: 0px;
+    margin-left: auto;
+}
+.product_container{
+    width: 30%;
+    background-color: white;
+    margin-left: 2px;
+    padding: 0 10px;
+}
+.image_container{
+    text-align: center;
+}
+@media (max-width: 550px) {
+    .product_container{
+        display: none;
+    }
+    .message_container{
+        width: 100%;
+    }
+  }

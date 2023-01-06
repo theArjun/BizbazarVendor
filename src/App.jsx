@@ -11,7 +11,6 @@ import { saveCategories } from "./redux/features/products/productSlice";
 import { apicall } from "./utils/apicall/apicall";
 import { Button, Result } from "antd";
 import PublicRoute from "./utils/PublicRoute";
-
 const Home = lazy(() => import("./pages/Home/Home"));
 const ProductCountReport = lazy(() =>
   import("./pages/Reports/ProductCountReport/ProductCountReport")
@@ -34,8 +33,15 @@ const Edit = lazy(() => import("./pages/Product/Edit/Edit"));
 
 const Reviews = lazy(() => import("./pages/Product/Reviews/Reviews"));
 
-const CuntomerCommunication = lazy(() =>
-  import("./pages/CuntomerCommunication/CuntomerCommunication")
+const CustomerCommunication = lazy(() =>
+  import("./pages/MessageCenter/CustomerCommunication/CustomerCommunication")
+);
+const CustomerMessages = lazy(() =>
+  import("./pages/MessageCenter/CustomerMessages/CustomerMessages")
+);
+
+const AdminCommunication = lazy(() =>
+  import("./pages/MessageCenter/AdminCommunication/AdminCommunication")
 );
 
 const Promotions = lazy(() => import("./pages/Promotions/Promotions"));
@@ -178,16 +184,24 @@ function App() {
           <Route
             element={
               <SuspenseWrapper>
-                <CuntomerCommunication />
+                <CustomerCommunication />
               </SuspenseWrapper>
             }
             path="/Message Center/Customer Commnunications"
           ></Route>
+          <Route
+          element={
+            <SuspenseWrapper>
+              <CustomerMessages />
+            </SuspenseWrapper>
+          }
+          path="/Message Center/Customer Commnunications/CustomerMessage/:id"
+        ></Route>
           {/**Admins Communications*/}
           <Route
             element={
               <SuspenseWrapper>
-                <Promotions />
+                <AdminCommunication />
               </SuspenseWrapper>
             }
             path="/Message Center/Admins Communications"
