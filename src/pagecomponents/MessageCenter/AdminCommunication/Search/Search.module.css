@@ -1,0 +1,11 @@
+.container{
+    margin-top: 10px;
+}
+.search_inputs{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.search_inputs > *{
+  margin: 0 10px;
+}
