@@ -43,7 +43,7 @@ const Profile = () => {
   const getVendorInformation = async () => {
     setLoading(true);
     const result = await apicall({
-      url: `vendors/62`,
+      
     });
     if (result.data) {
       setVendorData(result.data);

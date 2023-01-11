@@ -1,10 +1,9 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { Card, Form, Input, Button, Image } from "antd";
-import styles from "./CustomerMessages.module.css";
+import styles from "./AdminMessages.module.css";
 import { useState } from "react";
 import { useEffect } from "react";
-const { TextArea } = Input;
 const data = [
   {
     chat: [
@@ -23,8 +22,7 @@ const data = [
       {
         id: "you",
         message: "What are you looking for sir?",
-      }, 
-     
+      },
     ],
     image:
       "https://www.digitaltrends.com/wp-content/uploads/2021/11/macbook-pro-2021-16.jpg",
@@ -38,42 +36,48 @@ const data = [
     desc: "Importer Details:Rashi Peripherals Pvt. Ltd. Rashi Complex,A Building, Survey186, Dongaripada, Poman Village, Vasai Bhiwandi Road, Dist. Thane,Maharastra 401208, India",
   },
 ];
-const CustomerMessages = () => {
-    const[message, setMessage]=useState(data[0].chat)
+const AdminMessages = () => {
+  const [message, setMessage] = useState(data[0].chat);
   const { id } = useParams();
-  useEffect(()=>{
-      let element= document.querySelector("#chat_container");
-     const scroll=(el)=>{
-        el.scroll({top:el.scrollHeight})
-     }
-     scroll(element)
-  },[message])
+  useEffect(() => {
+    let element = document.querySelector("#chat_container");
+    const scroll = (el) => {
+      el.scroll({ top: el.scrollHeight });
+    };
+    scroll(element);
+  }, [message]);
   const onValueChange = (a, values) => {
     // console.log(values)
   };
   const onFinish = (values) => {
-    if(values.message){
-        setMessage([...message,{id:'you',message:values.message}])
+    if (values.message) {
+      setMessage([...message, { id: "you", message: values.message }]);
     }
   };
+
   return (
     <div className={styles.messages}>
       {/* <div className={styles.nav_top}>
-        <HiArrowCircleLeft size={40} color="blue" /> <span>{id}</span>
-      </div> */}
+      <HiArrowCircleLeft size={40} color="blue" /> <span>{id}</span>
+    </div> */}
       <div>
         <div className={styles.main_content}>
           <div className={styles.message_container}>
-            <div id='chat_container' className={styles.chat}>
-              {
-                message.map((item,index)=>{
-                    return(
-                        <div key={index} className={item.id=='user'?styles.client_message:styles.your_message}>
-                        {item.message}
-                        </div>
-                    )
-                })
-              }
+            <div id="chat_container" className={styles.chat}>
+              {message.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={
+                      item.id == "user"
+                        ? styles.client_message
+                        : styles.your_message
+                    }
+                  >
+                    {item.message}
+                  </div>
+                );
+              })}
             </div>
             <div className={styles.write_message_box}>
               <Form
@@ -86,14 +90,21 @@ const CustomerMessages = () => {
                 initialValues={""}
               >
                 <div className={styles.send_box}>
-                  <Form.Item name="message" 
-                  style={{ width:'100%'}}
-                  >
-                    <Input style={{fontSize:'16px', borderRadius:'20px'}}  placeholder={"Type a message..."} />
+                  <Form.Item name="message" style={{ width: "100%" }}>
+                    <Input
+                      style={{ fontSize: "16px", borderRadius: "20px" }}
+                      placeholder={"Type a message..."}
+                    />
                   </Form.Item>
-                    <Form.Item>
-                      <Button htmlType="submit" type="default" style={{ borderRadius:'20px'}}> <b> Send</b></Button>
-                    </Form.Item>
+                  <Form.Item>
+                    <Button
+                      htmlType="submit"
+                      type="default"
+                      style={{ borderRadius: "20px" }}
+                    >
+                      <b> Send</b>
+                    </Button>
+                  </Form.Item>
                 </div>
               </Form>
             </div>
@@ -117,4 +128,4 @@ const CustomerMessages = () => {
   );
 };
 
-export default CustomerMessages;
+export default AdminMessages;

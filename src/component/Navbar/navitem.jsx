@@ -32,7 +32,7 @@ export const navItem = [
     navName: "Message Center",
     dropdown: [
       {
-        subNav: "Customer Commnunications",
+        subNav: "Customer Communications",
       },
       {
         subNav: "Admins Communications",
