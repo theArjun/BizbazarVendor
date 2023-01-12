@@ -1,7 +1,6 @@
 import { Outlet, Navigate } from "react-router-dom";
 import useWindowSize from "./Hooks/useWindowSize";
 import styles from "./index.module.css";
-
 import TopNavbar from "./../component/TopNavbar/TopNavbar";
 import Navbar from "./../component/Navbar/Navbar";
 
