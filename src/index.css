@@ -87,12 +87,12 @@ body::-webkit-scrollbar {
 
 @media (min-width: 1200px) {
   .app {
-    max-width: 1140px;
+    max-width: 94%;
   }
 }
 
 @media (min-width: 1600px) {
   .app {
-    max-width: 1450px;
+    max-width: 95%;
   }
 }

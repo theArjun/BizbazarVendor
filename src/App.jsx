@@ -75,6 +75,9 @@ const Profile = lazy(() => import("./pages/Profile/Profile"));
 const Seller = lazy(() => import("./pages/Seller/Seller"));
 
 const ResetPassword = lazy(() => import("./pages/Resetpassword/ResetPassword"));
+const ViewShippingMethod = lazy(() =>
+  import("./pages/Setting/ViewShippingMethod/ViewShippingMethod")
+);
 
 function App() {
   const dispatch = useDispatch();
@@ -252,6 +255,15 @@ function App() {
               </SuspenseWrapper>
             }
             path="/Setting/Shipping Methods"
+          ></Route>
+          {/**View Shipping Methods*/}
+          <Route
+            element={
+              <SuspenseWrapper>
+                <ViewShippingMethod />
+              </SuspenseWrapper>
+            }
+            path="/Setting/Shipping Methods/:id"
           ></Route>
           {/**Logos And Styles*/}
           <Route

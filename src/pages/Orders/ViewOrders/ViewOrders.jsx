@@ -121,7 +121,7 @@ const ViewOrders = () => {
   };
 
   useEffect(() => {
-    if (order.length < 10) {
+    if (order.length < 50) {
       return;
     }
     if (!bottom) {

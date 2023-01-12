@@ -51,3 +51,24 @@ export const apicall = async ({
     return error.message;
   }
 };
+
+export const dummyApicall = async ({ method = "get", url = "", data = {} }) => {
+  try {
+    const result = axios({
+      method: method,
+      url: url,
+      data: data,
+      auth: {
+        username: import.meta.env.VITE_APP_USERNAME,
+        password: import.meta.env.VITE_APP_PASSWORD,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": true,
+      },
+    });
+    return result;
+  } catch (error) {
+    return error;
+  }
+};
