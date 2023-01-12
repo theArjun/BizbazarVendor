@@ -18,6 +18,7 @@ import {
 import { useState, useEffect } from "react";
 import { apicall } from "../../utils/apicall/apicall";
 const Profile = () => {
+  const userInfo=JSON.parse(localStorage.getItem('userinfo'));
   const [pradesh, setPradesh] = useState("");
   const [cities, setCities] = useState([]);
   const [isShipping, setIsShipping] = useState(false);
@@ -43,6 +44,7 @@ const Profile = () => {
   const getVendorInformation = async () => {
     setLoading(true);
     const result = await apicall({
+      url:`users/${userInfo.user_id}`
       
     });
     if (result.data) {
@@ -71,7 +73,7 @@ const Profile = () => {
   }
   const onFinish = async (values) => {
     const data = { ...values };
-    data.company = values.fname + " " + values.lname;
+    data.company = values.firstname + " " + values.lastname;
     if (values.password?.length > 0 && values?.password?.length < 8) {
       setConfirm("Password should at least 8 character!");
     } else {
@@ -80,7 +82,7 @@ const Profile = () => {
       } else {
         setConfirm("");
         const result = await apicall({
-          url: `vendors/62`,
+          url: `users/${userInfo.user_id}`,
           data: data,
           method: "put",
         });
@@ -131,8 +133,8 @@ const Profile = () => {
           initialValues={{
             email: vendorData?.email,
             phone: vendorData?.phone,
-            fname: vendorData?.company?.split(" ")[0],
-            lname: vendorData?.company?.split(" ")[1],
+            firstname: vendorData?.firstname,
+            lastname: vendorData?.lastname,
             country: vendorData?.country,
             state: vendorData?.state,
             city: vendorData?.city,
@@ -154,7 +156,7 @@ const Profile = () => {
               <div className={styles.name_container}>
                 <Form.Item
                   label=" First Name"
-                  name="fname"
+                  name="firstname"
                   style={{
                     width: "100%",
                   }}
@@ -170,7 +172,7 @@ const Profile = () => {
                 <Form.Item
                   className={styles.left_margin}
                   label=" Last Name"
-                  name="lname"
+                  name="lastname"
                   style={{
                     width: "100%",
                   }}

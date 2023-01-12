@@ -75,7 +75,9 @@ const getWithdrawInformation= async(values)=>{
      url:getWithdrawUrl(values)
    });
    if(result.data){
-     setWithdrawData(result.data)
+    
+    let temp=result.data.map((item, index)=>({...item, key:index}))
+     setWithdrawData(temp)
      setLoading(false)
    }
    setLoading(false)
