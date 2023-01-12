@@ -62,6 +62,18 @@ const EditQuantityDiscount = React.lazy(() =>
 const EditVariations = React.lazy(() =>
   import("../pagecomponents/Products/Edit/Variations/Variations")
 );
+const CustomerCommunicationSearch = React.lazy(() =>
+  import("../pagecomponents/MessageCenter/CustomerCommunication/Search/Search")
+);
+const CustomerCommunicationTable = React.lazy(() =>
+  import("../pagecomponents/MessageCenter/CustomerCommunication/Table/Table")
+);
+const AdminCommunicationSearch = React.lazy(() =>
+  import("../pagecomponents/MessageCenter/AdminCommunication/Search/Search")
+);
+const AdminCommunicationTable = React.lazy(() =>
+  import("../pagecomponents/MessageCenter/AdminCommunication/Table/Table")
+);
 
 export {
   ProductTable,
@@ -84,5 +96,9 @@ export {
   EditOptions,
   EditSeo,
   EditQuantityDiscount, 
-  EditVariations
+  EditVariations,
+  CustomerCommunicationSearch,
+  CustomerCommunicationTable,
+  AdminCommunicationSearch,
+  AdminCommunicationTable
 };
