@@ -19,8 +19,9 @@ const QuantityDiscounts = ({
   const [data, setData] = useState([]);
   const [type, setType] = useState("A");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [deleteDiscount,setDeleteDiscount]=useState([]);
+  const [deleteDiscount, setDeleteDiscount] = useState([]);
   const windowSize = useWindowSize();
+  let discounts = price_data?.prices;
   const onFinish = (values) => {
     let temp =
       type == "A"
@@ -41,19 +42,15 @@ const QuantityDiscounts = ({
     };
     updateDiscount(id, req_data);
   };
-
-  useEffect(()=>{
-    console.log(deleteDiscount)
-  },[deleteDiscount])
   useEffect(() => {
     const result = Object.values(price_data?.prices).map((item, i) => ({
       ...item,
-      key:i,
+      key: i,
       type: item.percentage_discount == "0" ? "Absolute" : "Percentage",
       user_group: userGroup[item.usergroup_id],
     }));
     setData(result);
-    setDeleteDiscount(price_data?.prices)
+    setDeleteDiscount(price_data?.prices);
   }, [price_data]);
 
   // Update Quantity discount
@@ -66,6 +63,7 @@ const QuantityDiscounts = ({
     });
     if (result.data) {
       getData();
+      setSelectedRowKeys([]);
     }
   };
   const onValueChange = (a) => {
@@ -74,19 +72,31 @@ const QuantityDiscounts = ({
       setType(a.price_type);
     }
   };
-  // handleDeleteDiscount
-
-  const handleDeleteDiscounts=()=>{
-      
-    }
-  const onSelectChange = (newSelectedRowKeys,) => {
-    // console.log('selectedRowKeys changed: ', newSelectedRowKeys);
-   
+  // setDelete Discount
+  const handleDeleteDiscounts = (indexes) => {
+    let temp = [...discounts];
+    let test = temp.filter((item, i) => !indexes.includes(i));
+    setDeleteDiscount({
+      prices: test.map((item) =>
+        item.percentage_discount == "0"
+          ? { ...item }
+          : { ...item, price: price_data?.price }
+      ),
+    });
+  };
+  const onSelectChange = (newSelectedRowKeys) => {
+    //  console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+    handleDeleteDiscounts(newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+    getCheckboxProps: (record) => ({
+      disabled: record.key === 0,
+      // Column configuration not to be checked
+      name: record.lower_limit,
+    }),
   };
   const hasSelected = selectedRowKeys.length > 0;
   const columns = [
@@ -216,10 +226,15 @@ const QuantityDiscounts = ({
           </div>
         </Form>
       </Card>
-      <div style={{backgroundColor:'white', padding:'10px'}}>
-      <Button type="primary" disabled={!hasSelected} loading={loading} >
-      Delete
-      </Button>
+      <div style={{ backgroundColor: "white", padding: "10px" }}>
+        <Button
+          type="primary"
+          disabled={!hasSelected}
+          loading={loading}
+          onClick={() => updateDiscount(id, deleteDiscount)}
+        >
+          Delete
+        </Button>
       </div>
       <Table
         id="product"
@@ -232,7 +247,7 @@ const QuantityDiscounts = ({
           y: windowSize.height > 670 ? 300 : 200,
           x: 1000,
         }}
-        />
+      />
     </div>
   );
 };

@@ -72,7 +72,7 @@ const Edit = () => {
       case tabs[7]:
         return <div>Product bundles</div>;
       default:
-        return categories && data?<EditGeneral editData={data?data:''} loading={loading} categories={categories}/>:'';
+        return categories && data?<EditGeneral editData={data?data:''} categories={categories}/>:<Skeleton active/>;
     }
   };
   return (
