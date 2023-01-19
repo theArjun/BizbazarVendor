@@ -26,11 +26,13 @@ function OrderDetails() {
   }, [statusModalOpen.open]);
 
   const getOrderDetails = async () => {
+    setLoading(true);
     const result = await apicall({
       url: "orders/" + param.id,
     });
 
     setOrderDetails(result.data);
+    setLoading(false);
   };
 
   if (loading) {

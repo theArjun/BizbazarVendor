@@ -12,6 +12,10 @@ import { apicall } from "./utils/apicall/apicall";
 import { Button, Result } from "antd";
 import PublicRoute from "./utils/PublicRoute";
 
+const ViewRateAreas = lazy(() =>
+  import("./pages/Setting/ShippingMethod/ViewRateAreas/ViewRateAreas")
+);
+
 const CouponVoucherReport = lazy(() =>
   import("./pages/Reports/CouponVoucherReport/CouponVoucherReport")
 );
@@ -279,6 +283,15 @@ function App() {
               </SuspenseWrapper>
             }
             path="/Setting/Shipping Methods/:id"
+          ></Route>
+          {/**View Rate Areas*/}
+          <Route
+            element={
+              <SuspenseWrapper>
+                <ViewRateAreas />
+              </SuspenseWrapper>
+            }
+            path="/Setting/Rate Areas/:id"
           ></Route>
           {/**Logos And Styles*/}
           <Route

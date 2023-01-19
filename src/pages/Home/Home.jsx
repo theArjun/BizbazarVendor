@@ -199,7 +199,7 @@ const Home = () => {
             </div>
           </AnalyticsCard>
 
-          {leftContainerData.map((dat, i) => (
+          {/* {leftContainerData.map((dat, i) => (
             <AnalyticsCard key={i}>
               <div className={styles.cardWrapper}>
                 <div
@@ -210,14 +210,14 @@ const Home = () => {
                   }}
                 >
                   {dat.icon}
-                  {/* <AiOutlinePlus style={{ color: "#865be9" }} /> */}
+              
                 </div>
                 <div className={styles.cardValue}>{dat.data}</div>
 
                 <div className={styles.cardTitle}>{dat.title}</div>
               </div>
             </AnalyticsCard>
-          ))}
+          ))} */}
         </div>
         <div className={styles.rightContainer}>
           <BarCharts series={series} options={options} height={"300px"} />
