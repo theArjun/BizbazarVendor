@@ -29,7 +29,7 @@ const Seller = () => {
     const getVendorInformation= async ()=>{
       setLoading(true);
       const result= await apicall({
-        url: `vendors/62`
+        url: ``
       })
       if(result.data){
           setVendorData(result.data)

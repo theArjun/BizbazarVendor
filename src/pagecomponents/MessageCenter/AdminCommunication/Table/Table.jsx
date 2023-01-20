@@ -1,10 +1,11 @@
 import React from 'react'
 import styles from './Table.module.css'
 import useWindowSize from '../../../../utils/Hooks/useWindowSize'
-import { Table } from 'antd'
+import { Table, Image } from 'antd'
+import { useNavigate } from 'react-router-dom'
 const AdminCommunicationTable = ({loading, data}) => {
   const windowSize = useWindowSize();
-
+  const navigate=useNavigate()
    // getting time and date 
    const getTimeAndDate = (timeStamp) => {
     const date = new Date(parseInt(timeStamp*1000));
@@ -26,7 +27,13 @@ const AdminCommunicationTable = ({loading, data}) => {
       dataIndex: "image",
       key: "type",
       render:(text, row)=>(
-        <div>{text}</div>
+        <div>
+        <Image
+        width={70}
+        src={text}
+        alt={""}
+      />
+        </div>
       )
     },
     {
@@ -34,7 +41,7 @@ const AdminCommunicationTable = ({loading, data}) => {
       dataIndex: "id",
       key: "id",
       render: (text) =>(
-        <div>{text}</div>
+        <a>{text}</a>
       )
     },
     {
@@ -68,6 +75,11 @@ const AdminCommunicationTable = ({loading, data}) => {
         columns={columns}
         dataSource={data}
         pagination={false}
+        onRow={(record, rowIndex) => {
+          return {
+            onClick: (event) => navigate(`AdminMessage/${record.id}`), // click row
+          };
+        }}
         scroll={{
           y: windowSize.height > 670 ? 300 : 200,
           x: 1000,

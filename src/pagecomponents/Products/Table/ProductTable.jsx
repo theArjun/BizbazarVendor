@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Space, Table, Dropdown, Image } from "antd";
+import { Space, Table, Dropdown, Image, message, Modal } from "antd";
 import styles from "./Table.module.css";
 import { DownOutlined } from "@ant-design/icons";
 import { apicall } from "../../../utils/apicall/apicall";
@@ -16,6 +16,7 @@ import {
 } from "../../../redux/features/products/productSlice";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../utils/Hooks/useWindowSize";
+const { confirm } = Modal;
 const ProductTable = ({
   setPage,
   setLoading,
@@ -43,15 +44,36 @@ const ProductTable = ({
         ?.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
+  function showConfirm(title,message='',id) {
+    confirm({
+      title: title,
+      content:
+        message,
+      async onOk() {
+        try {
+          deleteProduct(id)
+        } catch (e) {
+          return console.log('Oops errors!');
+        }
+      },
+      onCancel() {},
+    });
+  }
   // Delete data
   const deleteProduct = async (id) => {
+    setLoading(true)
     // perform api call to retrieve data
     if (id) {
       var result = await apicall({
         method: "delete",
         url: `products/${id}`,
       });
-      location.reload();
+      
+     if(result.status=='204'){
+      setLoading(false)
+      getProducts()
+     }
+     setLoading(false)
     }
   };
   // for toggling delete icon
@@ -188,7 +210,7 @@ const ProductTable = ({
           rel="noopener noreferrer"
           href="#"
           className={styles.action_items}
-          onClick={() => deleteProduct(productId)}
+          onClick={() => showConfirm('Are you sure to delete?','',productId)}
         >
           Delete
           <AiFillDelete />

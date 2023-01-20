@@ -26,6 +26,7 @@ const ReturnRequests = lazy(() =>
   import("./pages/Orders/ReturnRequests/ReturnRequests")
 );
 const Products = lazy(() => import("./pages/Product/Products"));
+const BulkAddition = lazy(() => import("./pages/Product/BulkAddition/BulkAddition"));
 
 const AddProduct = lazy(() => import("./pages/Product/AddProduct/AddProduct"));
 
@@ -38,6 +39,10 @@ const CustomerCommunication = lazy(() =>
 );
 const CustomerMessages = lazy(() =>
   import("./pages/MessageCenter/CustomerMessages/CustomerMessages")
+);
+
+const AdminMessages = lazy(() =>
+  import("./pages/MessageCenter/AdminMessage/AdminMessages")
 );
 
 const AdminCommunication = lazy(() =>
@@ -161,6 +166,15 @@ function App() {
             }
             path="/products/Products/Add Product"
           ></Route>{" "}
+        {  /*Bulk Product addition  */}
+          <Route
+            element={
+              <SuspenseWrapper>
+                <BulkAddition />
+              </SuspenseWrapper>
+            }
+            path="/products/BulkProductAddition"
+          ></Route>{" "}
           {/** product edit  */}
           <Route
             element={
@@ -187,7 +201,7 @@ function App() {
                 <CustomerCommunication />
               </SuspenseWrapper>
             }
-            path="/Message Center/Customer Commnunications"
+            path="/Message Center/Customer Communications"
           ></Route>
           <Route
           element={
@@ -195,8 +209,9 @@ function App() {
               <CustomerMessages />
             </SuspenseWrapper>
           }
-          path="/Message Center/Customer Commnunications/CustomerMessage/:id"
+          path="/Message Center/Customer Communications/CustomerMessage/:id"
         ></Route>
+        
           {/**Admins Communications*/}
           <Route
             element={
@@ -206,6 +221,15 @@ function App() {
             }
             path="/Message Center/Admins Communications"
           ></Route>
+
+          <Route
+          element={
+            <SuspenseWrapper>
+              <AdminMessages />
+            </SuspenseWrapper>
+          }
+          path="/Message Center/Admins Communications/AdminMessage/:id"
+        ></Route>
           {/**Marketing*/}
           {/**Promotions*/}
           {/**Add Catalog Promotion */}

@@ -76,8 +76,6 @@ const WithdrawalsTable = ({ handleScroll, loading, data, status}) => {
         id="product"
         loading={loading}
         columns={columns}
-        dataSource={data}
-        pagination={false}
         expandable={{
           expandedRowRender: (record) => (
             <p
@@ -91,6 +89,8 @@ const WithdrawalsTable = ({ handleScroll, loading, data, status}) => {
           ),
           rowExpandable: (record) => record.comments,
         }}
+        dataSource={data}
+        pagination={false}
         scroll={{
           y: windowSize.height > 670 ? 300 : 200,
           x: 1000,

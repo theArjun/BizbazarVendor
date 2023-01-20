@@ -8,7 +8,6 @@ import {
   message,
   Upload,
   Checkbox,
-  Skeleton,
   Card,
 } from "antd";
 import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
@@ -19,12 +18,12 @@ import "react-quill/dist/quill.snow.css";
 import { useState } from "react";
 import { useEffect } from "react";
 const { Dragger } = Upload;
-const General = ({ editData, loading, categories }) => {
+const General = ({ editData, categories }) => {
   // for toggling  fields button
   const [info, setInfo] = useState(true);
   const [options, setOptions] = useState(true);
   const [pricing, setPricing] = useState(true);
-  const [categoryId, setCategoryId] = useState([...editData.category_ids]);
+  const [categoryId, setCategoryId] = useState([...editData?.category_ids]);
   const [description, setDescription] = useState("");
   const [taxChecked, setTaxChecked] = useState(false);
   const [vatId, setVatId] = useState([]);
@@ -59,7 +58,7 @@ const General = ({ editData, loading, categories }) => {
     max_qty,
     min_qty,
     tax,
-  } = editData;
+  } = editData?editData:'';
   const options_t = [
     { label: "Simultaneous", value: "P" },
     { label: "Sequential", value: "S" },
@@ -79,7 +78,7 @@ const General = ({ editData, loading, categories }) => {
   ];
   const getSelectedCatLabel = () => {
     let temp = [];
-    categories.map((item) => {
+    categories?.map((item) => {
       category_ids.map((id) => {
         if (item.category_id == id) {
           temp.push({
@@ -126,7 +125,7 @@ const General = ({ editData, loading, categories }) => {
   };
   // This function is used to retrieve categories from database
   const retrieveCategories = () => {
-    const temp = categories.map((dat, i) => ({
+    const temp = categories?.map((dat, i) => ({
       label: dat.category,
       value: dat.category_id,
     }));
@@ -135,7 +134,7 @@ const General = ({ editData, loading, categories }) => {
   //  run code while selecting categories
   const onSelect = (value) => {
     const temp = [...categoryId];
-    categories.map((item) => {
+    categories?.map((item) => {
       if (item.category_id == value) {
         temp.push(parseInt(value));
       }
@@ -145,7 +144,7 @@ const General = ({ editData, loading, categories }) => {
   //  run code while Deselecting categories
   const onDeselect = (value) => {
     const temp = [...categoryId];
-    categories.map((item) => {
+    categories?.map((item) => {
       if (item.category_id == value) {
         temp.pop(parseInt(value));
       }
@@ -189,9 +188,6 @@ const General = ({ editData, loading, categories }) => {
     }
   };
 
-  if (loading) {
-    return <Skeleton active />;
-  }
   return (
     <div className={styles.formContainer}>
       <Form
