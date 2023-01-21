@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Space, Table, Dropdown, Image } from "antd";
+import { Space, Table, Dropdown, Image, Button } from "antd";
 import styles from "./Table.module.css";
 import { DownOutlined } from "@ant-design/icons";
 import { apicall } from "../../../utils/apicall/apicall";
@@ -8,7 +8,6 @@ import {
   AiFillEdit,
   AiFillDelete,
   AiFillSetting,
-  AiOutlineBars,
 } from "react-icons/ai";
 import {
   loadTableData,
@@ -98,7 +97,6 @@ const ProductTable = ({
 
   //UpdateProduct status
   const updateProductStatus = async (id, status) => {
-    console.log(productId);
     const timeOutId = setTimeout(async () => {
       const result = await apicall({
         method: "put",
@@ -111,7 +109,7 @@ const ProductTable = ({
         const allData = await apicall({
           url: `products/`,
         });
-        await dispatch(loadTableData(allData.data.products));
+        await dispatch(loadTableData(allData?.data?.products));
       }
     }, 500);
     return () => clearTimeout(timeOutId);
@@ -130,23 +128,6 @@ const ProductTable = ({
         return "Attention required"
     }
   };
-  const selectOpt = [
-    {
-      key: "1",
-      label: (
-        <a
-          rel="noopener noreferrer"
-          href="#"
-          className={styles.action_items}
-          onClick={() => deleteSelectedProduct(deleteIds)}
-        >
-          Delete
-          <AiFillDelete />
-        </a>
-      ),
-    },
-  ];
-
   //  console.log(data)
   const statusItems = [
     {
@@ -330,19 +311,11 @@ const ProductTable = ({
   }
 
   return (
-    <div>
-      <div className={!option ? styles.openDelete : ""}>
-        <Dropdown
-          menu={{
-            items: selectOpt,
-          }}
-          placement="left"
-          arrow
-          trigger={["click"]}
-        >
-          <AiOutlineBars className={styles.selectBar} />
-        </Dropdown>
-      </div>
+    <div >
+    <div style={{backgroundColor:'white', padding:'10px'}}>
+    
+    <Button type="primary" onClick={() => deleteSelectedProduct(deleteIds)}  disabled={!option} >Delete</Button>
+    </div>
       <Table
         id="product"
         loading={loading}

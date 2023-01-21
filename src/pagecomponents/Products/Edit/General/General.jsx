@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./General.module.css";
+import './index.css'
 import {
   Button,
   Form,
@@ -74,8 +75,8 @@ const General = ({ editData, loading, categories }) => {
     { label: "Ask customer to enter the price", value: "A" },
   ];
   const track_inventory = [
-    { label: "Yes", value: "Y" },
-    { label: "No", value: "N" },
+    { label: "Yes", value: "B" },
+    { label: "No", value: "D" },
   ];
   const getSelectedCatLabel = () => {
     let temp = [];

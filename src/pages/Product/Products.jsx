@@ -48,6 +48,9 @@ const Products = () => {
     if (values?.cid) {
       newUrl = newUrl + "&cid=" + values.cid;
     }
+    if (values?.status) {
+      newUrl = newUrl + "&status=" + values.status;
+    }
     if (values?.max_price) {
       newUrl = newUrl + "&price_to=" + values.max_price;
     }
@@ -185,10 +188,10 @@ const Products = () => {
           </Col>
         </Row>
       </div>
-      <ProductSearch data={data} setSearchValue={setSearchValue} />
+      <ProductSearch data={data?data:''} setSearchValue={setSearchValue} />
       <ProductTable
         handleScroll={handleScroll}
-        data={data}
+        data={data?data:''}
         page={page}
         setPage={setPage}
         setSortBy={setSortBy}
