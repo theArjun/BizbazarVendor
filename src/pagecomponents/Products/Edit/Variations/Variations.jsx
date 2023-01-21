@@ -315,7 +315,7 @@ function showConfirm(title,message,url, method) {
                     <b>{item.internal_name}</b>
                   </span>
                   <Select
-                    mode="multiple"
+                    mode="multiple"roduct
                     onClick={() => getFeatureVariant(item.feature_id)}
                     onDropdownVisibleChange={dropdownClose}
                     showSearch

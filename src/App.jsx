@@ -26,6 +26,7 @@ const ReturnRequests = lazy(() =>
   import("./pages/Orders/ReturnRequests/ReturnRequests")
 );
 const Products = lazy(() => import("./pages/Product/Products"));
+const BulkAddition = lazy(() => import("./pages/Product/BulkAddition/BulkAddition"));
 
 const AddProduct = lazy(() => import("./pages/Product/AddProduct/AddProduct"));
 
@@ -164,6 +165,15 @@ function App() {
               </SuspenseWrapper>
             }
             path="/products/Products/Add Product"
+          ></Route>{" "}
+        {  /*Bulk Product addition  */}
+          <Route
+            element={
+              <SuspenseWrapper>
+                <BulkAddition />
+              </SuspenseWrapper>
+            }
+            path="/products/BulkProductAddition"
           ></Route>{" "}
           {/** product edit  */}
           <Route

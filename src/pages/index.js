@@ -74,6 +74,12 @@ const AdminCommunicationSearch = React.lazy(() =>
 const AdminCommunicationTable = React.lazy(() =>
   import("../pagecomponents/MessageCenter/AdminCommunication/Table/Table")
 );
+const AdditionField = React.lazy(() =>
+  import("../pagecomponents/Products/BulkAddition/AdditionField/AdditionField")
+);
+const AdditionTable = React.lazy(() =>
+  import("../pagecomponents/Products/BulkAddition/AdditionTable/AdditionTable")
+);
 
 export {
   ProductTable,
@@ -100,5 +106,7 @@ export {
   CustomerCommunicationSearch,
   CustomerCommunicationTable,
   AdminCommunicationSearch,
-  AdminCommunicationTable
+  AdminCommunicationTable,
+  AdditionField,
+  AdditionTable
 };

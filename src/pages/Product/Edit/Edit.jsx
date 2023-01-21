@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Edit.module.css";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Skeleton } from "antd";
 import { EditFeatures, EditGeneral, EditOptions, EditQuantityDiscount, EditSeo, EditShipping, EditVariations } from "../..";
 import { useSelector } from "react-redux";
 import cx from "classnames";
@@ -68,11 +68,11 @@ const Edit = () => {
       case tabs[5]:
         return data?<EditSeo data={data} />:'';
       case tabs[6]:
-        return data?<EditQuantityDiscount id={data.product_id} prices={data.prices}/>:'';
+        return data?<EditQuantityDiscount loading={loading} setLoading={setLoading} getData={getData} id={data.product_id} price_data={data}/>:'';
       case tabs[7]:
         return <div>Product bundles</div>;
       default:
-        return categories && data?<EditGeneral editData={data?data:''} loading={loading} categories={categories}/>:'';
+        return categories && data?<EditGeneral editData={data?data:''} categories={categories}/>:<Skeleton active/>;
     }
   };
   return (

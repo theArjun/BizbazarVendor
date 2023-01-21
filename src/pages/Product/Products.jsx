@@ -6,7 +6,7 @@ import "./index.css";
 import { AiFillSetting, AiOutlinePlus } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { Col, Row, Breadcrumb, Dropdown } from "antd";
-import { HiChevronDown } from "react-icons/hi";
+import { HiChevronDown, HiPlus } from "react-icons/hi";
 import { ProductSearch, ProductTable } from "..";
 import useDebounce from "../../utils/Hooks/useDebounce";
 import { loadTableData } from "../../redux/features/products/productSlice";
@@ -40,7 +40,7 @@ const Products = () => {
     getProducts(sValue);
   }, [sortBy?.order, sortBy?.field]);
   const getUrl = (values) => {
-    console.log(values);
+
     let newUrl = "products?is_search=Y";
     if (values?.name) {
       newUrl = newUrl + "&pname=" + values.name;
@@ -123,9 +123,8 @@ const Products = () => {
       key: "2",
       label: (
         <a
-          target="_blank"
           rel="noopener noreferrer"
-          href="/products/products/delete"
+          href="/products/BulkProductAddition"
           className={styles.action_items}
         >
           Bulk product addition
@@ -133,7 +132,7 @@ const Products = () => {
       ),
     },
     {
-      key: "2",
+      key: "3",
       label: (
         <a
           target="_blank"
@@ -146,7 +145,7 @@ const Products = () => {
       ),
     },
     {
-      key: "2",
+      key: "4",
       label: (
         <a
           target="_blank"
@@ -174,16 +173,15 @@ const Products = () => {
           </Col>
           <Col span={8} offset={8}>
             <div className={styles.productAsset}>
-              <Dropdown menu={{ items }} className={styles.dropdown_setting}>
-                <div>
+              <Dropdown menu={{ items }} className={styles.dropdown_setting} arrow
+              trigger={["click"]}>
                   <AiFillSetting className={styles.icons1} />
-                  <HiChevronDown />
-                </div>
               </Dropdown>
-              <AiOutlinePlus
-                className={styles.icons}
-                onClick={() => navigate("Add Product")}
+              <div   className={styles.new_add_btn}
+              onClick={() => navigate("Add Product")}>
+              <HiPlus style={{margin:0,padding:0}} size={20}
               />
+              </div>
             </div>
           </Col>
         </Row>
