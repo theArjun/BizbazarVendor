@@ -4,18 +4,31 @@ import { apicall } from "../../../utils/apicall/apicall";
 import { Card, Form, Input, Button, Select } from "antd";
 import "./index.css";
 import AdvanceSearch from "./AdvanceSearch/AdvanceSearch";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  handleAdvanceSearchModal,
-  loadTableData,
-  setLoading,
-} from "../../../redux/features/products/productSlice";
-import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { handleAdvanceSearchModal } from "../../../redux/features/products/productSlice";
 const Search = ({ setSearchValue }) => {
   const dispatch = useDispatch();
 
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
+  const status = [
+    {
+      label: "All",
+      value: "",
+    },
+    {
+      label: "Active",
+      value: "A",
+    },
+    {
+      label: "Disabled",
+      value: "D",
+    },
+    {
+      label: "Hidden",
+      value: "H",
+    },
+  ];
   const onValueChange = (a, value) => {
     const sData = { ...value };
     categories.map((item, index) => {
@@ -54,9 +67,17 @@ const Search = ({ setSearchValue }) => {
           wrapperCol={{}}
           autoComplete="off"
           onValuesChange={onValueChange}
+          initialValues={{
+            status: "",
+          }}
         >
           <div className={styles.search_inputs}>
-            <Form.Item id="req" label="Product name" name="name">
+            <Form.Item
+              id="req"
+              label="Product name"
+              name="name"
+              style={{ width: "200px" }}
+            >
               <Input type="text" />
             </Form.Item>
             <div>
@@ -79,7 +100,12 @@ const Search = ({ setSearchValue }) => {
                 </Form.Item>
               </div>
             </div>
-            <Form.Item id="req" label="Search in categories" name="category">
+            <Form.Item
+              id="req"
+              label="Search in categories"
+              name="category"
+              style={{ width: "200px" }}
+            >
               <Select
                 onClick={() => retrieveCategories()}
                 showSearch
@@ -94,11 +120,23 @@ const Search = ({ setSearchValue }) => {
                 options={categories}
               />
             </Form.Item>
+            <Form.Item label="Status" name="status" style={{ width: "200px" }}>
+              <Select
+                showSearch
+                optionFilterProp="children"
+                onSearch={onSearch}
+                filterOption={(input, option) =>
+                  (option?.label ?? "")
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={status}
+              />
+            </Form.Item>
             <div
               style={{ float: "right", cursor: "pointer", color: "#7367f0" }}
               onClick={() => dispatch(handleAdvanceSearchModal("open"))}
             >
-              {" "}
               Advanced search
             </div>
             <AdvanceSearch />

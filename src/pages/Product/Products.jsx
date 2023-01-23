@@ -5,7 +5,7 @@ import styles from "./Product.module.css";
 import "./index.css";
 import { AiFillSetting, AiOutlinePlus } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { Col, Row, Breadcrumb, Dropdown } from "antd";
+import { Col, Row, Breadcrumb, Dropdown, } from "antd";
 import { HiChevronDown, HiPlus } from "react-icons/hi";
 import { ProductSearch, ProductTable } from "..";
 import useDebounce from "../../utils/Hooks/useDebounce";
@@ -47,6 +47,9 @@ const Products = () => {
     }
     if (values?.cid) {
       newUrl = newUrl + "&cid=" + values.cid;
+    }
+    if (values?.status) {
+      newUrl = newUrl + "&status=" + values.status;
     }
     if (values?.max_price) {
       newUrl = newUrl + "&price_to=" + values.max_price;
@@ -183,10 +186,10 @@ const Products = () => {
           </Col>
         </Row>
       </div>
-      <ProductSearch data={data} setSearchValue={setSearchValue} />
+      <ProductSearch data={data?data:''} setSearchValue={setSearchValue} />
       <ProductTable
         handleScroll={handleScroll}
-        data={data}
+        data={data?data:''}
         page={page}
         setPage={setPage}
         setSortBy={setSortBy}
