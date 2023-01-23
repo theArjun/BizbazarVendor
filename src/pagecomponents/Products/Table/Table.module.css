@@ -16,7 +16,7 @@
     border-radius: 10px;
 }
 .icons:hover{
-    border: 1px solid gray;
+   background-color: rgb(209, 205, 205);
     padding: 3px 10px;
     border-radius: 10px;
 }

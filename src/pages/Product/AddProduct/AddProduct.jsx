@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./AddProduct.module.css";
+import './index.css'
 import {
   Breadcrumb,
   Button,
@@ -16,7 +17,7 @@ import { InboxOutlined } from "@ant-design/icons";
 import { apicall } from "../../../utils/apicall/apicall";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 const { Dragger } = Upload;
 let cat_ids = [];
@@ -30,6 +31,8 @@ const AddProduct = () => {
   const [categoryId, setCategoryId] = useState([]);
   const [description, setDescription] = useState("");
   const [vat, setVat] = useState(false);
+  const [taxChecked, setTaxChecked] = useState(false);
+  const [vatId, setVatId] = useState([]);
   const options_type = [
     { label: "Simultaneous", value: "P" },
     { label: "Sequential", value: "S" },
@@ -44,13 +47,20 @@ const AddProduct = () => {
     { label: "Ask customer to enter the price", value: "A" },
   ];
   const track_inventory = [
-    { label: "Yes", value: "Y" },
-    { label: "No", value: "N" },
+    { label: "Yes", value: "B" },
+    { label: "No", value: "D" },
   ];
 
+  useEffect(() => {
+    if (taxChecked) {
+      getTax();
+    } else {
+     
+      setVatId([]);
+    }
+  }, [taxChecked]);
   // trigger while clicking  on create button if there is no any error at  client side
   const onFinish = (values) => {
-    console.log(values);
     const product_data = {
       product: values.name,
       category_ids: categoryId,
@@ -64,7 +74,7 @@ const AddProduct = () => {
       zero_price_action: values.price_action,
       amount: values.stock,
       tracking: values.track_inventory,
-      tax: vat ? "Y" : "N",
+      tax_ids: vatId,
     };
     // console.log(product_data);
     const timeOutId = setTimeout(async () => {
@@ -100,6 +110,20 @@ const AddProduct = () => {
     });
     setCategories(category);
   };
+
+   // get Tax  and set value to the state
+   const getTax = async () => {
+    const result = await apicall({
+      url: "taxes",
+    });
+    if (result.data) {
+      let tax = result?.data?.taxes?.filter((item) => {
+        return item.tax === "VAT";
+      });
+      setVatId([...tax[0].tax_id]);
+    }
+  };
+
   //  run code while selecting categories
   const onSelect = (value) => {
     categories.map((item, index) => {
@@ -111,6 +135,7 @@ const AddProduct = () => {
   };
   //  run code while Deselecting categories
   const onDeselect = (value) => {
+    console.log(value)
     categories.map((item, index) => {
       if (value == item.label) {
         categoryId.pop(item.id);
@@ -164,7 +189,7 @@ const AddProduct = () => {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
           initialValues={{
-            track_inventory: "Y",
+            track_inventory: "B",
             available_qty: 1,
             exceptions: "F",
             max_qty: 1,
@@ -341,7 +366,8 @@ const AddProduct = () => {
                   }))}
                 />
               </Form.Item>
-              <Form.Item label="Track inventory" name="track_inventory">
+              <Form.Item label="Track inventory" name="track_inventory" extra="When inventory is tracked, the number of products in stock
+              will decrease after each purchase.">
                 <Select
                   style={{
                     width: 300,
@@ -351,10 +377,6 @@ const AddProduct = () => {
                     value: track.value,
                   }))}
                 />
-                <p>
-                  When inventory is tracked, the number of products in stock
-                  will decrease after each purchase.
-                </p>
               </Form.Item>
               <Form.Item
                 label="Minimum quantity to buy per product"
@@ -384,7 +406,8 @@ const AddProduct = () => {
                 <Input type="number" />
               </Form.Item>
               <Form.Item label="Taxes" valuePropName="yes" name="tax">
-                <Checkbox onChange={() => setVat(!vat)}>VAT</Checkbox>
+                <Checkbox checked={taxChecked}
+                onChange={(e) => setTaxChecked(e.target.checked)}>VAT</Checkbox>
               </Form.Item>
             </Card>
           </div>
