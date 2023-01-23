@@ -27,7 +27,7 @@ const Edit = () => {
   }, []);
   // lets get all the required data  from api concurrently using Promise 
   const getData=async()=>{
-    await Promise.all([getFeatures(), getEditData(editID)])
+    await Promise.all([getFeatures(editID), getEditData(editID)])
   }
   // Get all edit data
   const getEditData= async (id)=>{
@@ -42,11 +42,11 @@ const Edit = () => {
     }
   }
   // Lets get features from API
-  const getFeatures = async () => {
+  const getFeatures = async (id) => {
     setLoading(true);
     //call api to retrieve categories
     const result = await apicall({
-      url: "features",
+      url: `products/${id}/ProductFeature`,
     });
     if(result.data){
       setFeatures(result.data)
@@ -62,7 +62,7 @@ const Edit = () => {
       case tabs[2]:
         return <EditOptions/>;
       case tabs[3]:
-        return data?<EditFeatures features={features} />:'';
+        return features?<EditFeatures features={features.features} />:'';
       case tabs[4]:
         return data?<EditVariations data={data}/>:'';
       case tabs[5]:

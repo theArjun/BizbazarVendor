@@ -374,7 +374,7 @@ const ProductTable = ({
         pagination={false}
         onChange={onChange}
         scroll={{
-          y: windowSize.height > 670 ? 300 : 200,
+          y: windowSize.height > 670 ? 450 : 200,
           x: 1000,
         }}
       />

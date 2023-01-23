@@ -14,13 +14,12 @@ const Features = ({ features }) => {
   const [gExport, setGexport] = useState(false);
   const [items, setItems]=useState()
   const onFinish = (values) => {
-    // console.log("Success:", values);
-    //  console.log(features);
     getExportItems();
 
   };
   useEffect(() => {
     getElectronics();
+  //  getMainFeatures();
   }, []);
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -28,6 +27,30 @@ const Features = ({ features }) => {
   const onValueChange = (a, b) => {
     console.log(b);
   };
+
+  const getMainFeatures=()=>{
+    let m_features=features.filter((item,i)=> !item.subfeatures);
+    return(
+      <Card>
+      {m_features.map((item, i)=>{
+        return(
+          <Form.Item key={i} name={item?.internal_name} label={item?.internal_name}>
+        <Select
+        showSearch
+        optionFilterProp="children"
+        filterOption={(input, option) =>
+          (option?.label ?? "")
+            .toLowerCase()
+            .includes(input.toLowerCase())
+        }
+        options={Object.values(item.variants).map((variant)=>({label:variant.variant,value:variant.variant_id}))}
+      />
+        </Form.Item>
+        )
+      })}
+      </Card>
+    )
+  }
   //  run code while selecting categories
   const onSelect = (value) => {};
   //  run code while Deselecting categories
@@ -130,7 +153,7 @@ const Features = ({ features }) => {
 
   // Here we get  google export items 
   const getExportItems= ()=>{
-    const data = [ ...features?.features ];
+    const data = [ ...features ];
     var element= data.filter((item, i) => {
       return(item.parent_id=='550')
     }).map( (item, index)=>{
@@ -184,55 +207,9 @@ const Features = ({ features }) => {
         </Form.Item>
         <br />
         <br />
-        <Card className={styles.first_card}>
-          <Form.Item label="Brand" name="brand" onClick={() => getBrands()}>
-            <Select
-              showSearch
-              placeholder="Select a brand"
-              optionFilterProp="children"
-              onSelect={onSelect}
-              onDeselect={onDeselect}
-              filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-              options={brands}
-            />
-          </Form.Item>
-
-          <Form.Item label="Color" name="color" onClick={() => getColors()}>
-            <Select
-              showSearch
-              placeholder="Select a brand"
-              optionFilterProp="children"
-              onSelect={onSelect}
-              onDeselect={onDeselect}
-              filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-              options={colors}
-            />
-          </Form.Item>
-
-          <Form.Item label="Size" name="size" onClick={() => getSize()}>
-            <Select
-              showSearch
-              placeholder="Select a size"
-              optionFilterProp="children"
-              onSelect={onSelect}
-              onDeselect={onDeselect}
-              filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-              options={size}
-            />
-          </Form.Item>
-        </Card>
+      {
+        getMainFeatures()
+      }
         <div
           className={styles.electronics_title}
           onClick={() => setElectro(!electro)}
