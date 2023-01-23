@@ -5,7 +5,7 @@ import styles from "./Product.module.css";
 import "./index.css";
 import { AiFillSetting, AiOutlinePlus } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { Col, Row, Breadcrumb, Dropdown } from "antd";
+import { Col, Row, Breadcrumb, Dropdown, } from "antd";
 import { HiChevronDown, HiPlus } from "react-icons/hi";
 import { ProductSearch, ProductTable } from "..";
 import useDebounce from "../../utils/Hooks/useDebounce";
