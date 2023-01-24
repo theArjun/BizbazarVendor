@@ -31,7 +31,7 @@ const Features = ({ features, selected_features, editID,getData }) => {
         product_features: {
           ...insertFeature["product_features"],
           [b.feature]: {
-            feature_type: "S",
+            feature_type: b.type,
             value: "Feature updated",
             variant_id: b.value,
           },
@@ -73,6 +73,8 @@ const Features = ({ features, selected_features, editID,getData }) => {
                                     label: variant.variant,
                                     value: variant.variant_id,
                                     feature: subfeature.feature_id,
+                                    type:variant.feature_type
+                                    
                                   })
                                 )
                               : []
@@ -112,6 +114,7 @@ const Features = ({ features, selected_features, editID,getData }) => {
                     label: variant.variant,
                     value: variant.variant_id,
                     feature: item.feature_id,
+                    type:variant.feature_type
                   }))}
                 />
               </Form.Item>

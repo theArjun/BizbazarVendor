@@ -5,3 +5,15 @@
     width: fit-content;
     cursor: pointer;
 }
+.modal_body{
+   height: 450px;
+   overflow-y: scroll;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   overflow-x: hidden;
+}
+ .feature_container{
+    
+   
+ }

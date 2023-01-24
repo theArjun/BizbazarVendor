@@ -146,6 +146,8 @@ const ProductTable = ({
         return "Active";
       case "D":
         return "Disabled";
+        case "R":
+          return "Requires Approval";
       default:
         return "Attention required"
     }
