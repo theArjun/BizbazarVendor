@@ -13,40 +13,11 @@ const status = {
   H: "Hidden",
   D: "Disabled",
   R: "Requires Approval",
+  X: "Disapproved"
 };
 let id = "";
 const { confirm } = Modal;
-const feature_data=[
-  {
-    "feature":"Brand",
-    "id":"1",
-    "variations":[
-      {
-        "variant":"Apple",
-        "variant_id":"1"
-      },
-      {
-        "variant":"Adidas",
-        "variant_id":"2"
-      }
-    ]
-  },
-  {
-    "feature":"Color",
-    "id":"2",
-    "variations":[
-      {
-        "variant":"Green",
-        "variant_id":"3"
-      },
-      {
-        "variant":"Yellow",
-        "variant_id":"4"
-      }
-    ]
-  }
-]
-const Variations = ({ data }) => {
+const Variations = ({ data, variations }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [features, setFeatures] = useState("");
   const [featureList, setFeatureList] = useState([]);
@@ -55,16 +26,36 @@ const Variations = ({ data }) => {
   const [loading, setLoading] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [selectVariantId, setSelectVariantId] = useState("");
-  const [tableData, setTableData]=useState([])
+  const [tableData, setTableData]=useState({})
+  const [variant,setVariant]=useState([])
   useEffect(()=>{
-    console.log(tableData)
+    let arr=[];
+    let t_data =Object.keys(tableData)
+     t_data.map((key)=>{
+      if(!arr.length){
+        tableData[key].map((item)=>{
+          arr.push(item)
+        })
+      }else{
+        if(arr.length>tableData[key].length){
+           
+        }else{
+          tableData[key].map((item, i)=>{
+            arr[i]={...arr[i],item}
+          })
+
+        }
+
+      }
+     })
+     console.log(arr)
   },[tableData])
 
   useEffect(() => {
-    setFeatures(feature_data.map((item) => ({
-      value: item.id,
-      label: item.feature,
-      variation:item.variations
+    setFeatures(variations.map((item) => ({
+      value: item?.id,
+      label: item?.text,
+      variation:Object.values(item?.object?.variants)
     })))
     Promise.all([
       getColumns(),
@@ -161,12 +152,14 @@ const Variations = ({ data }) => {
   }
   // on feature select
   const onFeatureSelect = (a,b) => {
-    
+
      setFeatureList((current) => [...current,b]);
-    // const tempFeature = features.filter((item) => {
-    //   return item.value !== value;
-    // });
-    // setFeatures(tempFeature);
+     setTableData({...tableData,[a]:[]})
+    const tempFeature = features.filter((item) => {
+      return item.value !== a;
+    });
+
+    setFeatures(tempFeature);
   };
 
   const dropdownClose = (open) => {
@@ -213,21 +206,10 @@ const Variations = ({ data }) => {
     }
   };
   const handleVariantSelect=(a,b)=>{
-      setTableData({...tableData,[b.value]:{
-        feature:b.label,
-        id:b.value,
-        price:100,
-        code:'product_123',
-        quantity:12,
-        name:'Pendrive'
-      }})
+    setTableData({...tableData,[b.feature_id]:[...tableData[b.feature_id],b]})
   }
   const handleVariantDeselect=(a,b)=>{
-    console.log(b)
-    let temp={...tableData}
-    delete temp[b.value]
-    console.log(temp)
-    setTableData()
+  
   }
   const getColumns = () => {
     let temp = [
@@ -372,7 +354,7 @@ const Variations = ({ data }) => {
             />
             <div className={styles.feature_container}>
             </div>
-            {featureList?.map((item, index) => {
+            {featureList.map((item, index) => {
               return (
                 <div key={index} className={styles.feature_main}>
                   <span>
@@ -395,7 +377,7 @@ const Variations = ({ data }) => {
                         .toLowerCase()
                         .localeCompare((optionB?.label ?? "").toLowerCase())
                     }
-                    options={item.variation.map((variant)=>({label:variant.variant,value:variant.variant_id}))}
+                    options={item.variation.map((variant)=>({label:variant.variant,value:variant.variant_id,feature_id:item.value}))}
                   />
                 </div>
               );

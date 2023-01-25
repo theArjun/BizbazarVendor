@@ -21,13 +21,14 @@ const Edit = () => {
   const [active, setActive] = useState("General");
   const [features, setFeatures]=useState(''); 
   const [data, setData]=useState('');
+  const [variantFeatures,setVariantFeatures]=useState([])
   const [loading, setLoading]=useState(false);
   useEffect(() => {
    getData();
   }, []);
   // lets get all the required data  from api concurrently using Promise 
   const getData=async()=>{
-    await Promise.all([getFeatures(editID), getEditData(editID)])
+    await Promise.all([getFeatures(editID), getEditData(editID),getFeatureVariants(editID)])
   }
   // Get all edit data
   const getEditData= async (id)=>{
@@ -38,8 +39,20 @@ const Edit = () => {
     if(result.data){
         setData({...result?.data})
         setLoading(false)
-
     }
+  }
+
+  // Lets get Feature variants 
+  const getFeatureVariants=async (id)=>{
+    setLoading(true)
+    let result= await apicall({
+      url:`products/${id}/ProductVariation`
+    })
+    if(result.data){
+      setLoading(false);
+      setVariantFeatures(result.data)
+    }
+    setLoading(false);
   }
   // Lets get features from API
   const getFeatures = async (id) => {
@@ -64,7 +77,7 @@ const Edit = () => {
       case tabs[3]:
         return data && features?<EditFeatures features={features.features} selected_features={data.product_features} editID={editID} getData={getData} />:'';
       case tabs[4]:
-        return data?<EditVariations data={data}/>:'';
+        return variantFeatures.length && data?<EditVariations data={data} variations={variantFeatures}/>:'';
       case tabs[5]:
         return data?<EditSeo data={data} />:'';
       case tabs[6]:

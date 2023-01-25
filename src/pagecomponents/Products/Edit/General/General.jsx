@@ -162,6 +162,7 @@ const General = ({ editData, categories }) => {
     multiple: true,
     action: "/images/detailed/9",
     onChange(info) {
+      console.log(info)
       const { status } = info.file;
       if (status !== "uploading") {
         console.log(info.file, info.fileList);

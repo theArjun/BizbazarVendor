@@ -138,7 +138,7 @@ const ProductTable = ({
   };
 
   //  set Status of product
-  const changeProductStatus = (status) => {
+  const getProductStatus = (status) => {
     switch (status) {
       case "H":
         return "Hidden";
@@ -148,6 +148,8 @@ const ProductTable = ({
         return "Disabled";
         case "R":
           return "Requires Approval";
+        case "X":
+          return "Disapproved"
       default:
         return "Attention required"
     }
@@ -273,14 +275,17 @@ const ProductTable = ({
       key: "status",
       dataIndex: ["status", "product_id"],
       defaultFilteredValue: "Requires Approval",
-      render: (text, row) => (
-        <Dropdown menu={{ items: statusItems }}>
-          <Space onMouseOver={() => setProductId(row["product_id"])}>
-            {changeProductStatus(row["status"])}
+      render: (text, row) => (<div>{
+        row.status=='R' || row.status=='X'?getProductStatus(row.status):<Dropdown menu={{ items: statusItems }}>
+        <Space onMouseOver={() => setProductId(row["product_id"])}>
+          {getProductStatus(row["status"])}
 
-            <DownOutlined />
-          </Space>
-        </Dropdown>
+          <DownOutlined />
+        </Space>
+      </Dropdown>
+      }
+        
+        </div>
       ),
     },
   ];
