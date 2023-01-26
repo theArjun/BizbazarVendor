@@ -27,30 +27,28 @@ const Variations = ({ data, variations }) => {
   const [updated, setUpdated] = useState(false);
   const [selectVariantId, setSelectVariantId] = useState("");
   const [tableData, setTableData]=useState({})
+
   const [variant,setVariant]=useState([])
   useEffect(()=>{
-    let arr=[];
-    let t_data =Object.keys(tableData)
-     t_data.map((key)=>{
-      if(!arr.length){
-        tableData[key].map((item)=>{
-          arr.push(item)
-        })
-      }else{
-        if(arr.length>tableData[key].length){
-           
-        }else{
-          tableData[key].map((item, i)=>{
-            arr[i]={...arr[i],item}
-          })
-
+        if(Object.values(tableData).length>1){
+          setVariant(cartesianProduct([...Object.values(tableData)]))
         }
-
-      }
-     })
-     console.log(arr)
+        else{
+          if(Object.values(tableData)[0])
+          setVariant(Object.values(tableData)[0])
+        }
   },[tableData])
-
+  function cartesianProduct(arrays) {
+    return arrays.filter((el)=>el.length!=0).reduce(function(a, b) {
+      return a.map(function(x) {
+        return b.map(function(y) {
+          return x.concat(y);
+        })
+      }).reduce(function(a, b) { 
+        return a.concat(b)
+       }, []);
+    }, [[]]);
+  }
   useEffect(() => {
     setFeatures(variations.map((item) => ({
       value: item?.id,
@@ -152,13 +150,11 @@ const Variations = ({ data, variations }) => {
   }
   // on feature select
   const onFeatureSelect = (a,b) => {
-
      setFeatureList((current) => [...current,b]);
-     setTableData({...tableData,[a]:[]})
+     setTableData({...tableData,[b.value]:[]})
     const tempFeature = features.filter((item) => {
       return item.value !== a;
     });
-
     setFeatures(tempFeature);
   };
 
@@ -209,7 +205,6 @@ const Variations = ({ data, variations }) => {
     setTableData({...tableData,[b.feature_id]:[...tableData[b.feature_id],b]})
   }
   const handleVariantDeselect=(a,b)=>{
-  
   }
   const getColumns = () => {
     let temp = [
@@ -384,7 +379,7 @@ const Variations = ({ data, variations }) => {
             })}
           </div>
           <div className={styles.modal_variation_table}>
-          <ModalTable loading={loading} data={tableData}/>
+          <ModalTable loading={loading} data={variant} product_data={data}/>
           </div>
           </div>
         </Modal>
