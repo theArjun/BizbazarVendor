@@ -1,9 +1,9 @@
 import React from "react";
 import useWindowSize from "../../../../../utils/Hooks/useWindowSize";
-import { Table } from "antd";
+import { Input, Table } from "antd";
 import { useEffect } from "react";
 import { useState } from "react";
-const ModalTable = ({ data, loading, product_data }) => {
+const ModalTable = ({ data, loading, product_data, setVariationLength }) => {
   const windowSize = useWindowSize();
   const [variation, setVariation] = useState([]);
   useEffect(() => {
@@ -16,6 +16,8 @@ const ModalTable = ({ data, loading, product_data }) => {
           : "product_" + randomIntFromInterval(1000, 9999),
         price: product_data?.price,
         quantity: product_data?.amount,
+        key:i,
+        id:i
       }));
       setVariation(temp_data);
     } else {
@@ -35,12 +37,17 @@ const ModalTable = ({ data, loading, product_data }) => {
               : "product_" + randomIntFromInterval(1000, 9999),
             price: product_data?.price,
             quantity: product_data?.amount,
+            key:i,
+            id:i
           };
         }
       });
       setVariation(t_data[0] !== undefined ? t_data : "");
     }
   }, [data]);
+  useEffect(()=>{
+    setVariationLength(variation.length)
+  },[variation])
   // random number generator
   function randomIntFromInterval(min, max) {
     // min and max included
@@ -51,27 +58,69 @@ const ModalTable = ({ data, loading, product_data }) => {
       title: "FEATURES",
       dataIndex: "feature",
       key: "feature",
+      render:(feature)=>(
+        <div>
+        <b>{feature}</b>
+        </div>
+      )
     },
     {
       title: "NAME",
       dataIndex: "name",
       key: "name",
+      render:(name, row, i)=>(
+        <div>
+        <Input  value={name} onChange={(e)=>{
+          let temp=[...variation]
+          temp[i].name=e.target.value
+            setVariation(temp)
+        }}/>
+        </div>
+      )
     },
     {
       title: "CODE",
       dataIndex: "code",
       key: "code",
+      render:(code, row, i)=>(
+        <div>
+        <Input  value={code} onChange={(e)=>{
+          let temp=[...variation]
+          temp[i].code=e.target.value
+            setVariation(temp)
+        }}/>
+        </div>
+      )
     },
     {
       title: "PRICE",
       key: "price",
       dataIndex: "price",
-      render: (text) => <div>{parseFloat(text).toFixed(2)}</div>,
+      render:(price, row, i)=>(
+        <div>
+        <Input style={{width:'80px'}} type="number"  value={parseFloat(price).toFixed(2)}
+         onChange={(e)=>{
+          let temp=[...variation]
+          temp[i].price=e.target.value
+            setVariation(temp)
+         }}/>
+        </div>
+      )
     },
     {
       title: "QUANTITY",
       key: "quantity",
       dataIndex: "quantity",
+      render:(qty, row, i)=>(
+        <div>
+        <Input style={{width:'80px'}} type="number"  value={qty} 
+        onChange={(e)=>{
+          let temp=[...variation]
+          temp[i].quantity=e.target.value
+            setVariation(temp)
+        }}/>
+        </div>
+      )
     },
   ];
   return (

@@ -41,7 +41,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
   const props = {
     name: "file",
     multiple: true,
-    action: "",
+    action: "/",
     onChange(info) {
       console.log(info)
       const { status } = info.file;

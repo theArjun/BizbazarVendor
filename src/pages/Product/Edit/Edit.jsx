@@ -41,7 +41,7 @@ const Edit = () => {
         setLoading(false)
     }
   }
-
+ 
   // Lets get Feature variants 
   const getFeatureVariants=async (id)=>{
     setLoading(true)
@@ -77,7 +77,7 @@ const Edit = () => {
       case tabs[3]:
         return data && features?<EditFeatures features={features.features} selected_features={data.product_features} editID={editID} getData={getData} />:'';
       case tabs[4]:
-        return variantFeatures.length && data?<EditVariations data={data} variations={variantFeatures}/>:'';
+        return variantFeatures.length && data?<EditVariations data={data} variations={variantFeatures} getData={getData}/>:'';
       case tabs[5]:
         return data?<EditSeo data={data} />:'';
       case tabs[6]:

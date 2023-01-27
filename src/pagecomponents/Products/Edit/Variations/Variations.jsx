@@ -17,7 +17,7 @@ const status = {
 };
 let id = "";
 const { confirm } = Modal;
-const Variations = ({ data, variations }) => {
+const Variations = ({ data, variations, getData }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [features, setFeatures] = useState("");
   const [featureList, setFeatureList] = useState([]);
@@ -27,7 +27,7 @@ const Variations = ({ data, variations }) => {
   const [updated, setUpdated] = useState(false);
   const [selectVariantId, setSelectVariantId] = useState("");
   const [tableData, setTableData]=useState({})
-
+const [variationLength, setVariationLength]=useState(0)
   const [variant,setVariant]=useState([])
   useEffect(()=>{
         if(Object.values(tableData).length>1){
@@ -171,7 +171,7 @@ const Variations = ({ data, variations }) => {
       url: `product_variations_groups/${data.variation_group_id}/product_variations`,
     });
     if (result.data) {
-      setVariationData(result.data?.products);
+      setVariationData(result.data?.products?.map((el, i)=>({...el, key:i})));
       setLoading(false);
     }
     setLoading(false);
@@ -205,6 +205,7 @@ const Variations = ({ data, variations }) => {
     setTableData({...tableData,[b.feature_id]:[...tableData[b.feature_id],b]})
   }
   const handleVariantDeselect=(a,b)=>{
+    setTableData({...tableData, [b.feature_id]:[...tableData[b.feature_id].filter((el)=>el.value!==b.value)]})
   }
   const getColumns = () => {
     let temp = [
@@ -249,6 +250,9 @@ const Variations = ({ data, variations }) => {
         title: "Price",
         dataIndex: "price",
         key: "price",
+        render:(price)=>(
+          <div>{parseFloat(price).toFixed(2)}</div>
+        )
       },
       {
         title: "Quantity",
@@ -322,9 +326,12 @@ const Variations = ({ data, variations }) => {
           centered
           width={1000}
           open={modalOpen}
+          okText={variationLength!==0?`Create ${variationLength} variations`:'Create variation'}
           onCancel={() => setModalOpen(false)}
           className={styles.variation_modal}
-          okButtonProps={{}}
+          okButtonProps={{
+            disabled:variationLength!==0?false:true,
+          }}
         >
         <div className={styles.modal_body}>
           <div >
@@ -379,7 +386,7 @@ const Variations = ({ data, variations }) => {
             })}
           </div>
           <div className={styles.modal_variation_table}>
-          <ModalTable loading={loading} data={variant} product_data={data}/>
+          <ModalTable loading={loading} data={variant} product_data={data} setVariationLength={setVariationLength}/>
           </div>
           </div>
         </Modal>
