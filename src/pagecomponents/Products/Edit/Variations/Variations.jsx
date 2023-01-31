@@ -13,52 +13,52 @@ const status = {
   H: "Hidden",
   D: "Disabled",
   R: "Requires Approval",
-  X: "Disapproved"
+  X: "Disapproved",
 };
 let id = "";
 const { confirm } = Modal;
-const Variations = ({ data, variations, getData }) => {
+const Variations = ({ data, variations, variationData, setVariationData, loading }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [features, setFeatures] = useState("");
   const [featureList, setFeatureList] = useState([]);
-  const [variationData, setVariationData] = useState([]);
-  const [columns, setColumns] = useState("");
-  const [loading, setLoading] = useState(false);
   const [updated, setUpdated] = useState(false);
   const [selectVariantId, setSelectVariantId] = useState("");
-  const [tableData, setTableData]=useState({})
-const [variationLength, setVariationLength]=useState(0)
-  const [variant,setVariant]=useState([])
-  useEffect(()=>{
-        if(Object.values(tableData).length>1){
-          setVariant(cartesianProduct([...Object.values(tableData)]))
-        }
-        else{
-          if(Object.values(tableData)[0])
-          setVariant(Object.values(tableData)[0])
-        }
-  },[tableData])
+  const [tableData, setTableData] = useState({});
+  const [variationLength, setVariationLength] = useState(0);
+  const [variant, setVariant] = useState([]);
+  useEffect(() => {
+    if (Object.values(tableData).length > 1) {
+      setVariant(cartesianProduct([...Object.values(tableData)]));
+    } else {
+      if (Object.values(tableData)[0]) setVariant(Object.values(tableData)[0]);
+    }
+  }, [tableData]);
   function cartesianProduct(arrays) {
-    return arrays.filter((el)=>el.length!=0).reduce(function(a, b) {
-      return a.map(function(x) {
-        return b.map(function(y) {
-          return x.concat(y);
-        })
-      }).reduce(function(a, b) { 
-        return a.concat(b)
-       }, []);
-    }, [[]]);
+    return arrays
+      .filter((el) => el.length != 0)
+      .reduce(
+        function (a, b) {
+          return a
+            .map(function (x) {
+              return b.map(function (y) {
+                return x.concat(y);
+              });
+            })
+            .reduce(function (a, b) {
+              return a.concat(b);
+            }, []);
+        },
+        [[]]
+      );
   }
   useEffect(() => {
-    setFeatures(variations.map((item) => ({
-      value: item?.id,
-      label: item?.text,
-      variation:Object.values(item?.object?.variants)
-    })))
-    Promise.all([
-      getColumns(),
-      getProductVariationGroup(data.variation_group_id),
-    ]);
+    setFeatures(
+      variations.map((item) => ({
+        value: item?.id,
+        label: item?.text,
+        variation: Object.values(item?.object?.variants),
+      }))
+    );
   }, [updated]);
   useEffect(() => {
     id = selectVariantId;
@@ -149,9 +149,9 @@ const [variationLength, setVariationLength]=useState(0)
     });
   }
   // on feature select
-  const onFeatureSelect = (a,b) => {
-     setFeatureList((current) => [...current,b]);
-     setTableData({...tableData,[b.value]:[]})
+  const onFeatureSelect = (a, b) => {
+    setFeatureList((current) => [...current, b]);
+    setTableData({ ...tableData, [b.value]: [] });
     const tempFeature = features.filter((item) => {
       return item.value !== a;
     });
@@ -163,20 +163,6 @@ const [variationLength, setVariationLength]=useState(0)
       // do something
     }
   };
-
-  // get variation group
-  const getProductVariationGroup = async () => {
-    setLoading(true);
-    let result = await apicall({
-      url: `product_variations_groups/${data.variation_group_id}/product_variations`,
-    });
-    if (result.data) {
-      setVariationData(result.data?.products?.map((el, i)=>({...el, key:i})));
-      setLoading(false);
-    }
-    setLoading(false);
-  };
-
   //for edit option
   // Set id
   const onEditPress = async (method) => {
@@ -201,110 +187,157 @@ const [variationLength, setVariationLength]=useState(0)
       setUpdated(false);
     }
   };
-  const handleVariantSelect=(a,b)=>{
-    setTableData({...tableData,[b.feature_id]:[...tableData[b.feature_id],b]})
-  }
-  const handleVariantDeselect=(a,b)=>{
-    setTableData({...tableData, [b.feature_id]:[...tableData[b.feature_id].filter((el)=>el.value!==b.value)]})
-  }
-  const getColumns = () => {
-    let temp = [
-      {
-        title: "Name/Image",
-        dataIndex: "product",
-        key: "product",
-        render: (item, row) => (
-          <div className={styles.image_and_name}>
-            <Image
-              width={70}
-              src={
-                !row["main_pair"] ? "" : row["main_pair"].detailed.image_path
-              }
-              alt={""}
-            />
-            <p>
-              {" "}
-              <b>{row.product}</b>
-            </p>
-          </div>
-        ),
-      },
-      {
-        title: "Code",
-        dataIndex: "product_code",
-        key: "product_code",
-      },
-    ];
-    let sample = Object.values(data.variation_features).map((item, i) => ({
-      title: item.internal_name,
-      dataIndex: item.internal_name,
-      key: item.internal_name,
-      render: (text, row) => (
-        <div key={i}>{row.variation_features[item.feature_id].variant}</div>
-      ),
-    }));
-    setColumns([
-      ...temp,
-      ...sample,
-      {
-        title: "Price",
-        dataIndex: "price",
-        key: "price",
-        render:(price)=>(
-          <div>{parseFloat(price).toFixed(2)}</div>
-        )
-      },
-      {
-        title: "Quantity",
-        dataIndex: "amount",
-        key: "amount",
-      },
-      {
-        title: "Action",
-        dataIndex: "action",
-        key: "action",
-
-        render: (action, row) => (
-          <div className={styles.action_btn}>
-            <Dropdown
-              menu={{
-                items: action_items,
-              }}
-              trigger={["click"]}
-            >
-              <a href="#">
-                <AiFillSetting
-                  onClick={() => setSelectVariantId(row.product_id)}
-                  size={20}
-                  className={styles.icons}
-                />
-              </a>
-            </Dropdown>
-          </div>
-        ),
-      },
-
-      {
-        title: "Status",
-        dataIndex: "status",
-        key: "status",
-        render: (value, row) => (
-          <div>
-            <Dropdown
-              menu={{
-                items: status_items,
-              }}
-              trigger={["click"]}
-            >
-              <a onClick={() => setSelectVariantId(row.product_id)}>
-                {status[value]}
-              </a>
-            </Dropdown>
-          </div>
-        ),
-      },
-    ]);
+  const handleVariantSelect = (a, b) => {
+    setTableData({
+      ...tableData,
+      [b.feature_id]: [...tableData[b.feature_id], b],
+    });
   };
+  const handleVariantDeselect = (a, b) => {
+    setTableData({
+      ...tableData,
+      [b.feature_id]: [
+        ...tableData[b.feature_id].filter((el) => el.value !== b.value),
+      ],
+    });
+  };
+  let temp = [
+    {
+      title: "Name/Image",
+      dataIndex: "product",
+      key: "product",
+      render: (item, row) => (
+        <div className={styles.image_and_name}>
+          <Image
+            width={70}
+            src={
+              !row["main_pair"] ? "" : row["main_pair"].detailed.image_path
+            }
+            alt={""}
+          />
+          <p>
+            {" "}
+            <b>{row.product}</b>
+          </p>
+        </div>
+      ),
+    },
+    {
+      title: "Code",
+      dataIndex: "product_code",
+      key: "product_code",
+     render:(code, row,i)=>(
+      <div>
+      <Input value={code} 
+          onChange={(e) => {
+        let temp =[ ...variationData];
+        temp[i]['product_code'] = e.target.value;
+        setVariationData(temp);
+      }}/>
+      </div>
+     )
+    },
+  ];
+  let sample = Object.values(data.variation_features).map((item, i) => ({
+    title: item.internal_name,
+    dataIndex: item.internal_name,
+    key: item.internal_name,
+    render: (text, row, index) => (
+      <div key={i} style={{width:'150px'}} >
+      <Select
+      value={row.variation_features[item.feature_id].variant_id}
+      onChange={(e, values)=>{
+        let temp=[...variationData]
+        temp[index].variation_features[item.feature_id].variant_id=e
+        temp[index].variation_features[item.feature_id].variant=values.label
+        setVariationData(temp)
+      }}
+      options={Object.values(variations.filter((el)=> el.id==item.feature_id)[0].object['variants']).map((item,i)=>({label:item.variant, value:item.variant_id}))}
+    />
+      </div>
+    ),
+  }));
+  let columns=[...temp, ...sample,
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (price, row, i) => <div>
+      <Input
+      type="number"
+          value={price}
+          onChange={(e) => {
+            let temp = [...variationData];
+            temp[i].price = e.target.value;
+            setVariationData([...temp]);
+          }}
+        />
+      </div>,
+    },
+    {
+      title: "Quantity",
+      dataIndex: "amount",
+      key: "amount",
+      render:(amount, row, i)=>(
+        <React.Fragment>
+        <Input 
+        type="number"
+        value={amount} 
+        onChange={(e)=>{
+          let temp = [...variationData];
+          temp[i].amount = e.target.value;
+          setVariationData([...temp]);
+        }}
+        />
+        </React.Fragment>
+      )
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+
+      render: (action, row) => (
+        <div className={styles.action_btn}>
+          <Dropdown
+            menu={{
+              items: action_items,
+            }}
+            trigger={["click"]}
+          >
+            <a href="#">
+              <AiFillSetting
+                onClick={() => setSelectVariantId(row.product_id)}
+                size={20}
+                className={styles.icons}
+              />
+            </a>
+          </Dropdown>
+        </div>
+      ),
+    },
+
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (value, row) => (
+        <div>
+          <Dropdown
+            menu={{
+              items: status_items,
+            }}
+            trigger={["click"]}
+          >
+            <a onClick={() => setSelectVariantId(row.product_id)}>
+              {status[value]}
+            </a>
+          </Dropdown>
+        </div>
+      ),
+    },
+  
+  ]
   return (
     <div className={styles.variations}>
       <div className={styles.variations_top}>
@@ -326,81 +359,89 @@ const [variationLength, setVariationLength]=useState(0)
           centered
           width={1000}
           open={modalOpen}
-          okText={variationLength!==0?`Create ${variationLength} variations`:'Create variation'}
+          okText={
+            variationLength !== 0
+              ? `Create ${variationLength} variations`
+              : "Create variation"
+          }
           onCancel={() => setModalOpen(false)}
           className={styles.variation_modal}
           okButtonProps={{
-            disabled:variationLength!==0?false:true,
+            disabled: variationLength !== 0 ? false : true,
           }}
         >
-        <div className={styles.modal_body}>
-          <div >
-            {" "}
-            <Select
-              showSearch
-              style={{
-                width: 200,
-              }}
-              onSelect={onFeatureSelect}
-              placeholder="Search to Select"
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                (option?.label ?? "").includes(input)
-              }
-              filterSort={(optionA, optionB) =>
-                (optionA?.label ?? "")
-                  .toLowerCase()
-                  .localeCompare((optionB?.label ?? "").toLowerCase())
-              }
-              options={features}
-            />
-            <div className={styles.feature_container}>
+          <div className={styles.modal_body}>
+            <div>
+              {" "}
+              <Select
+                showSearch
+                style={{
+                  width: 200,
+                }}
+                onSelect={onFeatureSelect}
+                placeholder="Search to Select"
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  (option?.label ?? "").includes(input)
+                }
+                filterSort={(optionA, optionB) =>
+                  (optionA?.label ?? "")
+                    .toLowerCase()
+                    .localeCompare((optionB?.label ?? "").toLowerCase())
+                }
+                options={features}
+              />
+              <div className={styles.feature_container}></div>
+              {featureList.map((item, index) => {
+                return (
+                  <div key={index} className={styles.feature_main}>
+                    <span>
+                      <b>{item.label}</b>
+                    </span>
+                    <Select
+                      mode="multiple"
+                      onDropdownVisibleChange={dropdownClose}
+                      showSearch
+                      onDeselect={handleVariantDeselect}
+                      onSelect={handleVariantSelect}
+                      placeholder="Search to Select"
+                      optionFilterProp="children"
+                      style={{ width: "100%", paddingRight: "40px" }}
+                      filterOption={(input, option) =>
+                        (option?.label ?? "").includes(input)
+                      }
+                      filterSort={(optionA, optionB) =>
+                        (optionA?.label ?? "")
+                          .toLowerCase()
+                          .localeCompare((optionB?.label ?? "").toLowerCase())
+                      }
+                      options={item.variation.map((variant) => ({
+                        label: variant.variant,
+                        value: variant.variant_id,
+                        feature_id: item.value,
+                      }))}
+                    />
+                  </div>
+                );
+              })}
             </div>
-            {featureList.map((item, index) => {
-              return (
-                <div key={index} className={styles.feature_main}>
-                  <span>
-                    <b>{item.label}</b>
-                  </span>
-                  <Select
-                    mode="multiple"
-                    onDropdownVisibleChange={dropdownClose}
-                    showSearch
-                    onDeselect={handleVariantDeselect}
-                    onSelect={handleVariantSelect}
-                    placeholder="Search to Select"
-                    optionFilterProp="children"
-                    style={{ width: "100%" ,paddingRight:'40px'}}
-                    filterOption={(input, option) =>
-                      (option?.label ?? "").includes(input)
-                    }
-                    filterSort={(optionA, optionB) =>
-                      (optionA?.label ?? "")
-                        .toLowerCase()
-                        .localeCompare((optionB?.label ?? "").toLowerCase())
-                    }
-                    options={item.variation.map((variant)=>({label:variant.variant,value:variant.variant_id,feature_id:item.value}))}
-                  />
-                </div>
-              );
-            })}
-          </div>
-          <div className={styles.modal_variation_table}>
-          <ModalTable loading={loading} data={variant} product_data={data} setVariationLength={setVariationLength}/>
-          </div>
+            <div className={styles.modal_variation_table}>
+              <ModalTable
+                loading={loading}
+                data={variant}
+                product_data={data}
+                setVariationLength={setVariationLength}
+              />
+            </div>
           </div>
         </Modal>
       </div>
       <div className={styles.variations_table}>
-        {variationData ? (
           <VariationTable
             loading={loading}
             data={variationData}
             columns={columns}
           />
-        ) : (
-          ""
-        )}
       </div>
     </div>
   );
