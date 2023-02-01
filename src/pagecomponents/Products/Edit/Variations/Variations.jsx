@@ -17,6 +17,7 @@ const status = {
 };
 let id = "";
 const { confirm } = Modal;
+
 const Variations = ({ data, variations, variationData, setVariationData, loading }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [features, setFeatures] = useState("");
@@ -26,6 +27,8 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
   const [tableData, setTableData] = useState({});
   const [variationLength, setVariationLength] = useState(0);
   const [variant, setVariant] = useState([]);
+  const [save, setSave] = useState(true);
+  console.log(variationData)
   useEffect(() => {
     if (Object.values(tableData).length > 1) {
       setVariant(cartesianProduct([...Object.values(tableData)]));
@@ -53,7 +56,7 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
   }
   useEffect(() => {
     setFeatures(
-      variations.map((item) => ({
+      variations?.map((item) => ({
         value: item?.id,
         label: item?.text,
         variation: Object.values(item?.object?.variants),
@@ -233,6 +236,7 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
         let temp =[ ...variationData];
         temp[i]['product_code'] = e.target.value;
         setVariationData(temp);
+        setSave(false)
       }}/>
       </div>
      )
@@ -242,15 +246,18 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
     title: item.internal_name,
     dataIndex: item.internal_name,
     key: item.internal_name,
+    width: '15%',
     render: (text, row, index) => (
-      <div key={i} style={{width:'150px'}} >
+      <div key={i} >
       <Select
+      style={{width:'100%'}}
       value={row.variation_features[item.feature_id].variant_id}
       onChange={(e, values)=>{
         let temp=[...variationData]
         temp[index].variation_features[item.feature_id].variant_id=e
         temp[index].variation_features[item.feature_id].variant=values.label
         setVariationData(temp)
+        setSave(false)
       }}
       options={Object.values(variations.filter((el)=> el.id==item.feature_id)[0].object['variants']).map((item,i)=>({label:item.variant, value:item.variant_id}))}
     />
@@ -270,6 +277,7 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
             let temp = [...variationData];
             temp[i].price = e.target.value;
             setVariationData([...temp]);
+            setSave(false)
           }}
         />
       </div>,
@@ -287,6 +295,7 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
           let temp = [...variationData];
           temp[i].amount = e.target.value;
           setVariationData([...temp]);
+          setSave(false)
         }}
         />
         </React.Fragment>
@@ -296,8 +305,7 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
       title: "Action",
       dataIndex: "action",
       key: "action",
-
-      render: (action, row) => (
+      width:'8%',      render: (action, row) => (
         <div className={styles.action_btn}>
           <Dropdown
             menu={{
@@ -321,6 +329,7 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width:'10%',
       render: (value, row) => (
         <div>
           <Dropdown
@@ -346,6 +355,14 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
           addonBefore="Variation group"
           defaultValue={data?.variation_group_code}
         />
+        <div   style={{ float: "right" }} className={styles.right_buttons}>
+        <Button
+        disabled={save}
+        type="primary"
+        
+      >
+        Save changes
+      </Button>
         <Button
           style={{ float: "right" }}
           type="primary"
@@ -353,6 +370,8 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
         >
           Add variations
         </Button>
+        
+        </div>
         <Modal
           title="Add variation"
           maskClosable={false}

@@ -29,7 +29,7 @@ const Edit = () => {
   const [active, setActive] = useState("General");
   const [features, setFeatures] = useState("");
   const [data, setData] = useState("");
-  const [variantFeatures, setVariantFeatures] = useState([]);
+  const [variantFeatures, setVariantFeatures] = useState('');
   const [variationData, setVariationData] = useState("");
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -60,6 +60,7 @@ const Edit = () => {
         getProductVariationGroup(data?.variation_group_id);
       } else {
         setVariationData([]);
+        console.log(variationData)
       }
     }
   }, [data]);
@@ -90,9 +91,11 @@ const Edit = () => {
     });
     if (result.data) {
       setLoading(false);
-      setVariantFeatures(result.data);
+      setVariantFeatures(result?.data?.features);
+    }else{
+      setVariantFeatures([])
+      setLoading(false);
     }
-    setLoading(false);
   };
   // Lets get features from API
   const getFeatures = async (id) => {
@@ -125,7 +128,7 @@ const Edit = () => {
           ""
         );
       case tabs[4]:
-        return variantFeatures.length && variationData ? (
+        return variantFeatures && variationData ? (
           <EditVariations
             data={data}
             variations={variantFeatures}
