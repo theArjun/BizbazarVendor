@@ -7,6 +7,7 @@ import "./index.css";
 import { apicall } from "../../../../utils/apicall/apicall";
 import { AiFillSetting } from "react-icons/ai";
 import ModalTable from "./ModalContent/ModalTable";
+import { setLoading } from "../../../../redux/features/products/productSlice";
 // creating an object that is used to map status
 const status = {
   A: "Active",
@@ -18,7 +19,16 @@ const status = {
 let id = "";
 const { confirm } = Modal;
 
-const Variations = ({ data, variations, variationData, setVariationData, loading }) => {
+const Variations = ({
+  data,
+  variations,
+  variationData,
+  setVariationData,
+  setLoading,
+  loading,
+  editID,
+  getData,
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [features, setFeatures] = useState("");
   const [featureList, setFeatureList] = useState([]);
@@ -28,7 +38,13 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
   const [variationLength, setVariationLength] = useState(0);
   const [variant, setVariant] = useState([]);
   const [save, setSave] = useState(true);
-  console.log(variationData)
+  const [finalData, setFinalData] = useState({
+    product_id: editID,
+    feature_ids: {},
+    features_variants_ids: {},
+    check_all: "Y",
+    combinations_data: {},
+  });
   useEffect(() => {
     if (Object.values(tableData).length > 1) {
       setVariant(cartesianProduct([...Object.values(tableData)]));
@@ -136,14 +152,16 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
       content: message,
       async onOk() {
         try {
-          setUpdated(true);
+          setLoading(true);
           let result = await apicall({
             url: url,
             method: method,
           });
           if (result.status) {
-            setUpdated(false);
+            window.location.replace("/products/products")
+            setLoading(false);
           }
+          setLoading(false);
         } catch (e) {
           return console.log("Oops errors!");
         }
@@ -166,6 +184,21 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
       // do something
     }
   };
+  const createVariations = async (id) => {
+    setLoading(true);
+    let result = await apicall({
+      url: `products/${id}/ProductVariation`,
+      method: "post",
+      data: finalData,
+    });
+    if (result?.statusText == "Created") {
+      getData();
+      setModalOpen(false);
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+  };
   //for edit option
   // Set id
   const onEditPress = async (method) => {
@@ -176,7 +209,7 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
   };
   // update status of variant
   const updateStatus = async (status) => {
-    setUpdated(true);
+    setLoading(true);
     let res = await apicall({
       url: `products/${id}`,
       method: "put",
@@ -185,9 +218,10 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
       },
     });
     if (res.data) {
-      setUpdated(false);
+      getData();
+      setLoading(false);
     } else {
-      setUpdated(false);
+      setLoading(false);
     }
   };
   const handleVariantSelect = (a, b) => {
@@ -204,6 +238,7 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
       ],
     });
   };
+
   let temp = [
     {
       title: "Name/Image",
@@ -213,9 +248,7 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
         <div className={styles.image_and_name}>
           <Image
             width={70}
-            src={
-              !row["main_pair"] ? "" : row["main_pair"].detailed.image_path
-            }
+            src={!row["main_pair"] ? "" : row["main_pair"].detailed.image_path}
             alt={""}
           />
           <p>
@@ -229,83 +262,95 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
       title: "Code",
       dataIndex: "product_code",
       key: "product_code",
-     render:(code, row,i)=>(
-      <div>
-      <Input value={code} 
-          onChange={(e) => {
-        let temp =[ ...variationData];
-        temp[i]['product_code'] = e.target.value;
-        setVariationData(temp);
-        setSave(false)
-      }}/>
-      </div>
-     )
+      render: (code, row, i) => (
+        <div>
+          <Input
+            value={code}
+            onChange={(e) => {
+              let temp = [...variationData];
+              temp[i]["product_code"] = e.target.value;
+              setVariationData(temp);
+              setSave(false);
+            }}
+          />
+        </div>
+      ),
     },
   ];
   let sample = Object.values(data.variation_features).map((item, i) => ({
     title: item.internal_name,
     dataIndex: item.internal_name,
     key: item.internal_name,
-    width: '15%',
+    width: "15%",
     render: (text, row, index) => (
-      <div key={i} >
-      <Select
-      style={{width:'100%'}}
-      value={row.variation_features[item.feature_id].variant_id}
-      onChange={(e, values)=>{
-        let temp=[...variationData]
-        temp[index].variation_features[item.feature_id].variant_id=e
-        temp[index].variation_features[item.feature_id].variant=values.label
-        setVariationData(temp)
-        setSave(false)
-      }}
-      options={Object.values(variations.filter((el)=> el.id==item.feature_id)[0].object['variants']).map((item,i)=>({label:item.variant, value:item.variant_id}))}
-    />
+      <div key={i}>
+        <Select
+          style={{ width: "100%" }}
+          value={row.variation_features[item.feature_id].variant_id}
+          onChange={(e, values) => {
+            let temp = [...variationData];
+            temp[index].variation_features[item.feature_id].variant_id = e;
+            temp[index].variation_features[item.feature_id].variant =
+              values.label;
+            setVariationData(temp);
+            setSave(false);
+          }}
+          options={Object.values(
+            variations.filter((el) => el.id == item.feature_id)[0].object[
+              "variants"
+            ]
+          ).map((item, i) => ({ label: item.variant, value: item.variant_id }))}
+        />
       </div>
     ),
   }));
-  let columns=[...temp, ...sample,
+  let columns = [
+    ...temp,
+    ...sample,
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (price, row, i) => <div>
-      <Input
-      type="number"
-          value={price}
-          onChange={(e) => {
-            let temp = [...variationData];
-            temp[i].price = e.target.value;
-            setVariationData([...temp]);
-            setSave(false)
-          }}
-        />
-      </div>,
+      render: (price, row, i) => (
+        <div>
+          <Input
+            type="number"
+            value={parseFloat(price).toFixed(2)}
+            onChange={(e) => {
+              let temp = [...variationData];
+              temp[i].price = e.target.value;
+              setVariationData([...temp]);
+              setSave(false);
+            }}
+          />
+        </div>
+      ),
     },
     {
       title: "Quantity",
       dataIndex: "amount",
       key: "amount",
-      render:(amount, row, i)=>(
+      render: (amount, row, i) => (
         <React.Fragment>
-        <Input 
-        type="number"
-        value={amount} 
-        onChange={(e)=>{
-          let temp = [...variationData];
-          temp[i].amount = e.target.value;
-          setVariationData([...temp]);
-          setSave(false)
-        }}
-        />
+          <Input
+            type="number"
+            value={amount}
+            onChange={(e) => {
+              let temp = [...variationData];
+              temp[i].amount = e.target.value;
+              setVariationData([...temp]);
+              setSave(false);
+            }}
+          />
         </React.Fragment>
-      )
+      ),
     },
     {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      width:'8%',      render: (action, row) => (
+      width: "8%",
+      render: (action, row) => (
         <div className={styles.action_btn}>
           <Dropdown
             menu={{
@@ -329,7 +374,7 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
       title: "Status",
       dataIndex: "status",
       key: "status",
-      width:'10%',
+      width: "10%",
       render: (value, row) => (
         <div>
           <Dropdown
@@ -345,8 +390,7 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
         </div>
       ),
     },
-  
-  ]
+  ];
   return (
     <div className={styles.variations}>
       <div className={styles.variations_top}>
@@ -355,22 +399,17 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
           addonBefore="Variation group"
           defaultValue={data?.variation_group_code}
         />
-        <div   style={{ float: "right" }} className={styles.right_buttons}>
-        <Button
-        disabled={save}
-        type="primary"
-        
-      >
-        Save changes
-      </Button>
-        <Button
-          style={{ float: "right" }}
-          type="primary"
-          onClick={() => setModalOpen(true)}
-        >
-          Add variations
-        </Button>
-        
+        <div style={{ float: "right" }} className={styles.right_buttons}>
+          <Button disabled={save} type="primary">
+            Save changes
+          </Button>
+          <Button
+            style={{ float: "right" }}
+            type="primary"
+            onClick={() => setModalOpen(true)}
+          >
+            Add variations
+          </Button>
         </div>
         <Modal
           title="Add variation"
@@ -378,6 +417,7 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
           centered
           width={1000}
           open={modalOpen}
+          onOk={() => createVariations(editID)}
           okText={
             variationLength !== 0
               ? `Create ${variationLength} variations`
@@ -449,6 +489,8 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
                 loading={loading}
                 data={variant}
                 product_data={data}
+                finalData={finalData}
+                setFinalData={setFinalData}
                 setVariationLength={setVariationLength}
               />
             </div>
@@ -456,11 +498,11 @@ const Variations = ({ data, variations, variationData, setVariationData, loading
         </Modal>
       </div>
       <div className={styles.variations_table}>
-          <VariationTable
-            loading={loading}
-            data={variationData}
-            columns={columns}
-          />
+        <VariationTable
+          loading={loading}
+          data={variationData}
+          columns={columns}
+        />
       </div>
     </div>
   );

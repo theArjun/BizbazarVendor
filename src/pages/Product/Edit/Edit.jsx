@@ -33,7 +33,7 @@ const Edit = () => {
   const [variationData, setVariationData] = useState("");
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    getData();
+      getData();
   }, []);
   // lets get all the required data  from api concurrently using Promise
   const getData = async () => {
@@ -60,7 +60,6 @@ const Edit = () => {
         getProductVariationGroup(data?.variation_group_id);
       } else {
         setVariationData([]);
-        console.log(variationData)
       }
     }
   }, [data]);
@@ -134,7 +133,10 @@ const Edit = () => {
             variations={variantFeatures}
             setVariationData={setVariationData}
             variationData={variationData}
+            editID={editID}
             loading={loading}
+            setLoading={setLoading}
+            getData={getData}
           />
         ) : (
           <Skeleton active />
