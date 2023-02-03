@@ -158,7 +158,7 @@ const Variations = ({
             method: method,
           });
           if (result.status) {
-            window.location.replace("/products/products")
+            window.location.replace("/products/products");
             setLoading(false);
           }
           setLoading(false);
@@ -188,7 +188,7 @@ const Variations = ({
     setLoading(true);
     let result = await apicall({
       url: `products/${id}/ProductVariation`,
-      method: "post",
+      method: "put",
       data: finalData,
     });
     if (result?.statusText == "Created") {
@@ -238,8 +238,34 @@ const Variations = ({
       ],
     });
   };
-
-  let temp = [
+  let sample = Object.values(data.variation_features).map((item, i) => ({
+    title: item.internal_name,
+    dataIndex: item.internal_name,
+    key: item.internal_name,
+    width: "15%",
+    render: (text, row, index) => (
+      <div key={i}>
+        <Select
+          style={{ width: "100%" }}
+          value={row.variation_features[item.feature_id].variant_id}
+          onChange={(e, values) => {
+            let temp = [...variationData];
+            temp[index].variation_features[item.feature_id].variant_id = e;
+            temp[index].variation_features[item.feature_id].variant =
+              values.label;
+            setVariationData(temp);
+            setSave(false);
+          }}
+          options={Object.values(
+            variations.filter((el) => el.id == item.feature_id)[0].object[
+              "variants"
+            ]
+          ).map((item, i) => ({ label: item.variant, value: item.variant_id }))}
+        />
+      </div>
+    ),
+  }));
+  let columns = [
     {
       title: "Name/Image",
       dataIndex: "product",
@@ -276,36 +302,6 @@ const Variations = ({
         </div>
       ),
     },
-  ];
-  let sample = Object.values(data.variation_features).map((item, i) => ({
-    title: item.internal_name,
-    dataIndex: item.internal_name,
-    key: item.internal_name,
-    width: "15%",
-    render: (text, row, index) => (
-      <div key={i}>
-        <Select
-          style={{ width: "100%" }}
-          value={row.variation_features[item.feature_id].variant_id}
-          onChange={(e, values) => {
-            let temp = [...variationData];
-            temp[index].variation_features[item.feature_id].variant_id = e;
-            temp[index].variation_features[item.feature_id].variant =
-              values.label;
-            setVariationData(temp);
-            setSave(false);
-          }}
-          options={Object.values(
-            variations.filter((el) => el.id == item.feature_id)[0].object[
-              "variants"
-            ]
-          ).map((item, i) => ({ label: item.variant, value: item.variant_id }))}
-        />
-      </div>
-    ),
-  }));
-  let columns = [
-    ...temp,
     ...sample,
     {
       title: "Price",
