@@ -5,67 +5,80 @@ import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 const AdditionTable = ({ products, categories, setProducts }) => {
   const windowSize = useWindowSize();
 
-  const getStatusTag=(status)=>{
-    switch(status){
-        case 'A':
-            return <div style={{color:'green'}}>Active</div>
-        case 'D':
-            return <div style={{color:'gray'}}>Disabled</div>
-        case 'H':
-            return <div style={{color:'rgb(243, 174, 25)'}}>Hidden</div>
+  const getStatusTag = (status) => {
+    switch (status) {
+      case "A":
+        return <div style={{ color: "green" }}>Active</div>;
+      case "D":
+        return <div style={{ color: "gray" }}>Disabled</div>;
+      case "H":
+        return <div style={{ color: "rgb(243, 174, 25)" }}>Hidden</div>;
     }
-  }
-  const getCategoryName=(id)=>{
-    let name=categories.filter((item)=>item.category_id==id)
-    return name[0].category
-
-}
-const handleDelete=(index)=>{
-   let data=[...products.filter((item,i)=>i!=index)];
-      setProducts(data)
-}
+  };
+  const getCategoryName = (cats) => {
+    let temp_cats = Object.values(cats);
+    let name = categories
+      .filter((item) => temp_cats.includes(item.category_id))
+      .reduce((updater, current) => updater + ", " + current.category, "")
+      .slice(1);
+    return name;
+  };
+  const handleDelete = (index) => {
+    let data = [...products.filter((item, i) => i != index)];
+    setProducts(data);
+  };
   const columns = [
     {
       title: "Category",
-      dataIndex: "category",
+      dataIndex: "category_ids",
       key: "product",
-      render:(text)=>getCategoryName(text)
+      render: (text) => (
+        <b>
+        {
+          getCategoryName(text)
+        }
+        </b>
+       ),
     },
     {
       title: "Product name",
-      dataIndex: "name",
+      dataIndex: "product",
       key: "name",
     },
     {
       title: "Code",
-      dataIndex: "code",
+      dataIndex: "product_code",
       key: "code",
     },
     {
       title: "Price",
       key: "price",
       dataIndex: "price",
-    }, 
-     {
+    },
+    {
       title: "In stock",
       key: "stock",
-      dataIndex: "stock",
+      dataIndex: "amount",
     },
     {
       title: "Status",
       key: "status",
       dataIndex: "status",
-      render:(text)=>getStatusTag(text)
-    }, 
+      render: (text) => <b>{getStatusTag(text)}</b>,
+    },
     {
-     
       key: "status",
       dataIndex: "status",
-      render:(text, row, i)=>(
+      render: (text, row, i) => (
         <div>
-            <AiTwotoneDelete size={20} color={'rgb(231, 77, 35)'} style={{cursor:'pointer'}} onClick={()=>handleDelete(i)}/>
+          <AiTwotoneDelete
+            size={20}
+            color={"rgb(231, 77, 35)"}
+            style={{ cursor: "pointer" }}
+            onClick={() => handleDelete(i)}
+          />
         </div>
-      )
+      ),
     },
   ];
   return (

@@ -5,7 +5,7 @@ import styles from "./Product.module.css";
 import "./index.css";
 import { AiFillSetting, AiOutlinePlus } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { Col, Row, Breadcrumb, Dropdown, } from "antd";
+import { Col, Row, Breadcrumb, Dropdown } from "antd";
 import { HiChevronDown, HiPlus } from "react-icons/hi";
 import { ProductSearch, ProductTable } from "..";
 import useDebounce from "../../utils/Hooks/useDebounce";
@@ -40,7 +40,6 @@ const Products = () => {
     getProducts(sValue);
   }, [sortBy?.order, sortBy?.field]);
   const getUrl = (values) => {
-
     let newUrl = "products?is_search=Y";
     if (values?.name) {
       newUrl = newUrl + "&pname=" + values.name;
@@ -124,7 +123,8 @@ const Products = () => {
       label: (
         <a
           rel="noopener noreferrer"
-          href="/products/BulkProductAddition"
+          // href="/products/BulkProductAddition"
+          onClick={() => navigate("../products/BulkProductAddition")}
           className={styles.action_items}
         >
           Bulk product addition
@@ -173,23 +173,28 @@ const Products = () => {
           </Col>
           <Col span={8} offset={8}>
             <div className={styles.productAsset}>
-              <Dropdown menu={{ items }} className={styles.dropdown_setting} arrow
-              trigger={["click"]}>
-                  <AiFillSetting className={styles.icons1} />
+              <Dropdown
+                menu={{ items }}
+                className={styles.dropdown_setting}
+                arrow
+                trigger={["click"]}
+              >
+                <AiFillSetting className={styles.icons1} />
               </Dropdown>
-              <div   className={styles.new_add_btn}
-              onClick={() => navigate("Add Product")}>
-              <HiPlus style={{margin:0,padding:0}} size={20}
-              />
+              <div
+                className={styles.new_add_btn}
+                onClick={() => navigate("Add Product")}
+              >
+                <HiPlus style={{ margin: 0, padding: 0 }} size={20} />
               </div>
             </div>
           </Col>
         </Row>
       </div>
-      <ProductSearch data={data?data:''} setSearchValue={setSearchValue} />
+      <ProductSearch data={data ? data : ""} setSearchValue={setSearchValue} />
       <ProductTable
         handleScroll={handleScroll}
-        data={data?data:''}
+        data={data ? data : ""}
         page={page}
         setPage={setPage}
         setSortBy={setSortBy}

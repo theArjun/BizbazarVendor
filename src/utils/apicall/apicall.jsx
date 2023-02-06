@@ -7,6 +7,10 @@ export const apicall = async ({
   data = {},
   body = "",
   auth = false,
+  headers={
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": true,
+  }
 }) => {
   let finalurl = "/api/";
 
@@ -28,10 +32,7 @@ export const apicall = async ({
         username: import.meta.env.VITE_APP_USERNAME,
         password: import.meta.env.VITE_APP_PASSWORD,
       },
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": true,
-      },
+      headers:headers,
     });
   
     if (method != "get") {

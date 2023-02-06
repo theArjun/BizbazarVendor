@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Modal, Select, Input, Image, Dropdown } from "antd";
+import { Button, Modal, Select, Input, Image, Dropdown, Alert } from "antd";
 import styles from "./Variations.module.css";
 import { useEffect } from "react";
 import VariationTable from "./VariationTable";
@@ -188,7 +188,7 @@ const Variations = ({
     setLoading(true);
     let result = await apicall({
       url: `products/${id}/ProductVariation`,
-      method: "put",
+      method: "post",
       data: finalData,
     });
     if (result?.statusText == "Created") {
@@ -444,9 +444,21 @@ const Variations = ({
                     .toLowerCase()
                     .localeCompare((optionB?.label ?? "").toLowerCase())
                 }
-                options={features}
+                options={variationData.length ? "" : features}
               />
-              <div className={styles.feature_container}></div>
+              {variationData?.length ? (
+                <div
+                  className={styles.warning}
+                  style={{ marginTop: "10px", marginRight: "10px" }}
+                >
+                  <Alert
+                    message="You can add a new variation if you disband the group in the actions menu and create variations again."
+                    type="warning"
+                  />
+                </div>
+              ) : (
+                ""
+              )}
               {featureList.map((item, index) => {
                 return (
                   <div key={index} className={styles.feature_main}>
