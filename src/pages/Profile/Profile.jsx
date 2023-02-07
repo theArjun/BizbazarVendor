@@ -304,7 +304,7 @@ const Profile = () => {
               <h2 className={styles.title_header}>Shipping address</h2>{" "}
             </div>
             <Form.Item>
-              <Checkbox onChange={() => setIsShipping(!isShipping)}>
+              <Checkbox onChange={() => setIsShipping((prev)=> !prev)}>
                 Are shipping and billing addresses the same?
               </Checkbox>
             </Form.Item>

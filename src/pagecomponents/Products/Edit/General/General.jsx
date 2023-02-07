@@ -160,7 +160,7 @@ const General = ({ editData, categories }) => {
   const props = {
     name: "file",
     multiple: true,
-    action: "/images/detailed/9",
+    action:'',
     onChange(info) {
       console.log(info)
       const { status } = info.file;
