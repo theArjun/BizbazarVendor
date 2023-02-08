@@ -1,25 +1,15 @@
 import React from "react";
 import styles from "./General.module.css";
-import './index.css'
-import {
-  Button,
-  Form,
-  Input,
-  Select,
-  message,
-  Upload,
-  Checkbox,
-  Card,
-} from "antd";
+import "./index.css";
+import { Button, Form, Input, Select, message, Checkbox, Card, Skeleton } from "antd";
 import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
-import { InboxOutlined } from "@ant-design/icons";
 import { apicall } from "../../../../utils/apicall/apicall";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useState } from "react";
 import { useEffect } from "react";
-const { Dragger } = Upload;
-const General = ({ editData, categories }) => {
+import ImageUploader from "../../../../component/ImageUploader/ImageUploader";
+const General = ({ editData, categories, loading, setLoading, imageList }) => {
   // for toggling  fields button
   const [info, setInfo] = useState(true);
   const [options, setOptions] = useState(true);
@@ -28,6 +18,15 @@ const General = ({ editData, categories }) => {
   const [description, setDescription] = useState("");
   const [taxChecked, setTaxChecked] = useState(false);
   const [vatId, setVatId] = useState([]);
+  const [imageCount, setImageCount] = useState(0);
+  const [uploadedImage, setUploadedImage] = useState({
+    product_main_image_data: {},
+    type_product_main_image_detailed: {},
+    file_product_main_image_detailed: {},
+    product_add_additional_image_data: {},
+    type_product_add_additional_image_detailed: {},
+    file_product_add_additional_image_detailed: {},
+  });
   // for setting vatId
   useEffect(() => {
     if (taxChecked) {
@@ -38,11 +37,11 @@ const General = ({ editData, categories }) => {
   }, [taxChecked]);
   // for check vat and uncheck
   useEffect(() => {
-    editData?.tax_ids.map((item) => {
-      if (item == "6") {
-        setTaxChecked(true);
-      }
-    });
+      editData?.tax_ids.map((item) => {
+        if (item == "6") {
+          setTaxChecked(true);
+        }
+      });
   }, []);
   var {
     product_id,
@@ -59,7 +58,7 @@ const General = ({ editData, categories }) => {
     max_qty,
     min_qty,
     tax,
-  } = editData?editData:'';
+  } = editData ? editData : "";
   const options_t = [
     { label: "Simultaneous", value: "P" },
     { label: "Sequential", value: "S" },
@@ -77,25 +76,36 @@ const General = ({ editData, categories }) => {
     { label: "Yes", value: "B" },
     { label: "No", value: "D" },
   ];
-  const getSelectedCatLabel = () => {
-    let temp = [];
-    categories?.map((item) => {
-      category_ids.map((id) => {
-        if (item.category_id == id) {
-          temp.push({
-            label: item.category,
-            value: item.category_id,
-          });
-        }
-      });
-    });
-    return temp;
+  const getSelectedCatLabel = (ids) => {
+    
+    let temp=categories?.filter((item) => ids.includes(parseInt(item.category_id))).map((el)=>({label:el.category,value:el.category_id}));
+    return temp
   };
+  const getImage=(data)=>{
+    let main_image = data?.main_pair?.detailed?.image_path;
+    let additional_image = Object.values(data?.image_pairs).map(
+      (el, i) =>({
+        uid:`${i+1}`,
+        name:`additional_mage_${i+1}.jpg`,
+        status:'done',
+        url:el?.detailed?.image_path})
+        );
+        if(main_image){
+      return([{
+        uid:"0",
+        name:"main_image.jpg",
+        status:'done',
+        url:main_image}, ...additional_image]);
+
+    }else{
+      return([])
+    }
+    }
   // trigger while clicking  on create button if there is no any error at  client side
   const onFinish = (values) => {
     const product_data = {
       product: values.name,
-      category_ids: categoryId,
+      category_ids: values.category_ids,
       price: values.price,
       options_type: values.options,
       exceptions_type: values.exceptions,
@@ -156,27 +166,6 @@ const General = ({ editData, categories }) => {
   const onSearch = (value) => {
     console.log("search:", value);
   };
-  // this  is for upload image options
-  const props = {
-    name: "file",
-    multiple: true,
-    action:'',
-    onChange(info) {
-      console.log(info)
-      const { status } = info.file;
-      if (status !== "uploading") {
-        console.log(info.file, info.fileList);
-      }
-      if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
-    },
-  };
   // get Tax  and set value to the state
   const getTax = async () => {
     const result = await apicall({
@@ -189,7 +178,6 @@ const General = ({ editData, categories }) => {
       setVatId([...tax[0].tax_id]);
     }
   };
-
   return (
     <div className={styles.formContainer}>
       <Form
@@ -210,7 +198,7 @@ const General = ({ editData, categories }) => {
           tax: "N",
           description: full_description,
           code: product_code,
-          category: getSelectedCatLabel(),
+          category_ids:getSelectedCatLabel(category_ids),
           price: parseFloat(price).toFixed(2),
           price_action: zero_price_action,
         }}
@@ -246,7 +234,7 @@ const General = ({ editData, categories }) => {
             <Form.Item
               id="category"
               label="Categories"
-              name="category"
+              name="category_ids"
               rules={[
                 {
                   required: true,
@@ -259,9 +247,7 @@ const General = ({ editData, categories }) => {
                 mode="tags"
                 placeholder="Select a category"
                 optionFilterProp="children"
-                onSelect={onSelect}
                 onSearch={onSearch}
-                onDeselect={onDeselect}
                 filterOption={(input, option) =>
                   (option?.label ?? "")
                     .toLowerCase()
@@ -299,16 +285,16 @@ const General = ({ editData, categories }) => {
                 onChange={setDescription}
               />
             </Form.Item>
-            <Form.Item label="Images" name="image">
-              <Dragger {...props}>
-                <p className="ant-upload-drag-icon">
-                  <InboxOutlined />
-                </p>
-                <p className="ant-upload-text">
-                  Click or drag file to this area to upload
-                </p>
-              </Dragger>
-            </Form.Item>
+           <ImageUploader
+              message={message}
+              uploadedImage={uploadedImage}
+              setUploadedImage={setUploadedImage}
+              imageCount={imageCount}
+              setImageCount={setImageCount}
+              Form={Form}
+              imageList={getImage(editData)}
+            />
+           
           </Card>
         </div>
         <div className={styles.options}>

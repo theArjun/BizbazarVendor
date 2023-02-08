@@ -1,38 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import styles from "./AdditionField.module.css";
 import "./index.css";
-import {
-  Form,
-  Input,
-  Select,
-  Card,
-  Upload,
-  message,
-  Button,
-  Modal,
-} from "antd";
+import { Form, Input, Select, Card, message, Button } from "antd";
 import { AiOutlineCaretDown, AiOutlineCaretRight } from "react-icons/ai";
-import { apicall } from "../../../../utils/apicall/apicall";
-import { PlusOutlined } from "@ant-design/icons";
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
+import ImageUploader from "../../../../component/ImageUploader/ImageUploader";
 
-let imageCount = 0;
 const AdditionField = ({ categories, products, setProducts }) => {
   const [moreOpen, setMoreOpen] = useState(true);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [upload, setUpload] = useState(true);
-  const [previewImage, setPreviewImage] = useState("");
-  const [previewTitle, setPreviewTitle] = useState("");
-  const [fileList, setFileList] = useState([]);
   const [count, setCount] = useState(0);
+  const [imageCount, setImageCount] = useState(0);
   const [uploadedImage, setUploadedImage] = useState({
     product_main_image_data: {},
     type_product_main_image_detailed: {},
@@ -56,7 +34,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
       },
     ]);
     setCount(count + 1);
-    imageCount = 0;
+    setImageCount(0);
   };
   // throw message while error occured at client side
   const onFinishFailed = (errorInfo) => {
@@ -76,108 +54,15 @@ const AdditionField = ({ categories, products, setProducts }) => {
       value: "H",
     },
   ];
-
-  let insertImage = async (e) => {
-    let image_type = e.target.files[0].name.split(".").pop();
-    if (image_type === "jpeg" || image_type === "png" || image_type === "jpg") {
-      imageCount++;
-      let formData = new FormData();
-      await formData.append("file[]", e.target.files[0]);
-      let result = await apicall({
-        method: "post",
-        url: "ImageUploads",
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "Access-Control-Allow-Origin": true,
-        },
-      });
-      if (result?.status == 201) {
-        if (imageCount <= 1) {
-          setUploadedImage({
-            ...uploadedImage,
-            product_main_image_data: {
-              0: {
-                detailed_alt: "",
-                type: "M",
-                object_id: "1",
-                position: "0",
-                is_new: "Y",
-              },
-            },
-            type_product_main_image_detailed: { 0: "uploaded" },
-            file_product_main_image_detailed: {
-              0: result?.data?.path,
-            },
-          });
-        } else {
-          let temp = { ...uploadedImage };
-          temp.product_add_additional_image_data[imageCount - 1] = {
-            detailed_alt: "",
-            type: "A",
-            object_id: "1",
-            position: String(imageCount - 1),
-            is_new: "Y",
-          };
-          temp.type_product_add_additional_image_detailed[imageCount - 1] =
-            "uploaded";
-          temp.file_product_add_additional_image_detailed[imageCount - 1] =
-            result?.data?.path;
-          setUploadedImage({ ...temp });
-        }
+  const getCategories=(a)=>{
+    let temp={}
+      if(a){
+       a?.map((el, i)=>{
+        temp[i]=el
+       })
       }
-    }
-  };
-
-  const getCategories = (a) => {
-    let temp = {};
-    if (a) {
-      a?.map((el, i) => {
-        temp[i] = el;
-      });
-    }
-    return temp;
-  };
-  const handleCancel = () => setPreviewOpen(false);
-  const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-    setPreviewTitle(
-      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
-    );
-  };
-  const handleChange = ({ fileList: newFileList }) => {
-    if (upload) {
-      setFileList(newFileList);
-    }
-  };
-  const beforeUpload = (file) => {
-    let file_type = file.name.split(".").pop();
-    const isJpgOrPng =
-      file_type === "jpeg" || file_type === "png" || file_type === "jpg";
-    if (!isJpgOrPng) {
-      setUpload(false);
-      message.error("You can only upload JPG/PNG file!");
-    } else {
-      setUpload(true);
-    }
-    return false;
-  };
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </div>
-  );
+      return temp
+  }
   return (
     <div>
       <Card>
@@ -341,37 +226,14 @@ const AdditionField = ({ categories, products, setProducts }) => {
               <ReactQuill theme="snow" />
             </Form.Item>
             <div></div>
-            <Form.Item
-              label="Images"
-              name="image"
-              style={{ width: "100%" }}
-              onChange={insertImage}
-            >
-              <Upload
-                action="#"
-                listType="picture-card"
-                fileList={fileList}
-                onPreview={handlePreview}
-                onChange={handleChange}
-                beforeUpload={beforeUpload}
-              >
-                {fileList.length >= 8 ? null : uploadButton}
-              </Upload>
-              <Modal
-                open={previewOpen}
-                title={previewTitle}
-                footer={null}
-                onCancel={handleCancel}
-              >
-                <img
-                  alt="example"
-                  style={{
-                    width: "100%",
-                  }}
-                  src={previewImage}
-                />
-              </Modal>
-            </Form.Item>
+            <ImageUploader
+              message={message}
+              uploadedImage={uploadedImage}
+              setUploadedImage={setUploadedImage}
+              imageCount={imageCount}
+              setImageCount={setImageCount}
+              Form={Form}
+            />
           </div>
         </Form>
       </Card>

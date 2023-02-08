@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Edit.module.css";
-import { Breadcrumb, Skeleton, Spin } from "antd";
+import { Breadcrumb, Skeleton } from "antd";
 import {
   EditFeatures,
   EditGeneral,
@@ -29,11 +29,11 @@ const Edit = () => {
   const [active, setActive] = useState("General");
   const [features, setFeatures] = useState("");
   const [data, setData] = useState("");
-  const [variantFeatures, setVariantFeatures] = useState('');
+  const [variantFeatures, setVariantFeatures] = useState("");
   const [variationData, setVariationData] = useState("");
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-      getData();
+    getData();
   }, []);
   // lets get all the required data  from api concurrently using Promise
   const getData = async () => {
@@ -91,8 +91,8 @@ const Edit = () => {
     if (result.data) {
       setLoading(false);
       setVariantFeatures(result?.data?.features);
-    }else{
-      setVariantFeatures([])
+    } else {
+      setVariantFeatures([]);
       setLoading(false);
     }
   };
@@ -159,7 +159,12 @@ const Edit = () => {
         return <div>Product bundles</div>;
       default:
         return categories && data ? (
-          <EditGeneral editData={data ? data : ""} categories={categories} />
+          <EditGeneral
+            editData={data}
+            loading={loading}
+            setLoading={setLoading}
+            categories={categories}
+          />
         ) : (
           <Skeleton active />
         );
