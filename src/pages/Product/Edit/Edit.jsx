@@ -31,6 +31,7 @@ const Edit = () => {
   const [data, setData] = useState("");
   const [variantFeatures, setVariantFeatures] = useState("");
   const [variationData, setVariationData] = useState("");
+  const [seoPath, setSeoPath] = useState("");
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     getData();
@@ -41,6 +42,7 @@ const Edit = () => {
       getFeatures(editID),
       getEditData(editID),
       getFeatureVariants(editID),
+      getSeoPath(editID)
     ]);
   };
   // Get all edit data
@@ -109,6 +111,18 @@ const Edit = () => {
       setFeatures("");
     }
   };
+
+  // get SEO path 
+  const getSeoPath= async(product_id)=>{
+    let result= await apicall({
+      url:`products/${product_id}/ProductSeo`,
+
+    })
+
+    if(result?.data){
+      setSeoPath(result.data?.prefix)
+    }
+  }
   const getContainerFromTab = () => {
     switch (active) {
       case tabs[1]:
@@ -142,7 +156,7 @@ const Edit = () => {
           <Skeleton active />
         );
       case tabs[5]:
-        return data ? <EditSeo data={data} /> : "";
+        return data ? <EditSeo data={data} seoPath={seoPath} /> : "";
       case tabs[6]:
         return data ? (
           <EditQuantityDiscount

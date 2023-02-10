@@ -42,7 +42,7 @@ const Products = () => {
   const getUrl = (values) => {
     let newUrl = "products?is_search=Y";
     if (values?.name) {
-      newUrl = newUrl + "&pname=" + values.name;
+      newUrl = newUrl + "&q=" + values.name;
     }
     if (values?.cid) {
       newUrl = newUrl + "&cid=" + values.cid;

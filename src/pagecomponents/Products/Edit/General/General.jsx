@@ -9,12 +9,11 @@ import "react-quill/dist/quill.snow.css";
 import { useState } from "react";
 import { useEffect } from "react";
 import ImageUploader from "../../../../component/ImageUploader/ImageUploader";
-const General = ({ editData, categories, loading, setLoading, imageList }) => {
+const General = ({ editData, categories, loading, setLoading, }) => {
   // for toggling  fields button
   const [info, setInfo] = useState(true);
   const [options, setOptions] = useState(true);
   const [pricing, setPricing] = useState(true);
-  const [categoryId, setCategoryId] = useState([...editData?.category_ids]);
   const [description, setDescription] = useState("");
   const [taxChecked, setTaxChecked] = useState(false);
   const [vatId, setVatId] = useState([]);
@@ -105,7 +104,7 @@ const General = ({ editData, categories, loading, setLoading, imageList }) => {
   const onFinish = (values) => {
     const product_data = {
       product: values.name,
-      category_ids: values.category_ids,
+      category_ids: values.category_ids[0]?.value?category_ids:values.category_ids,
       price: values.price,
       options_type: values.options,
       exceptions_type: values.exceptions,
@@ -118,7 +117,6 @@ const General = ({ editData, categories, loading, setLoading, imageList }) => {
       tracking: values.track_inventory,
       tax_ids: vatId,
     };
-    // console.log(product_data);
     const timeOutId = setTimeout(async () => {
       1;
       // perform api call to retrieve data
@@ -142,26 +140,7 @@ const General = ({ editData, categories, loading, setLoading, imageList }) => {
     }));
     return temp;
   };
-  //  run code while selecting categories
-  const onSelect = (value) => {
-    const temp = [...categoryId];
-    categories?.map((item) => {
-      if (item.category_id == value) {
-        temp.push(parseInt(value));
-      }
-    });
-    setCategoryId(temp);
-  };
-  //  run code while Deselecting categories
-  const onDeselect = (value) => {
-    const temp = [...categoryId];
-    categories?.map((item) => {
-      if (item.category_id == value) {
-        temp.pop(parseInt(value));
-      }
-    });
-    setCategoryId(temp);
-  };
+  
   // this function is for category search
   const onSearch = (value) => {
     console.log("search:", value);
@@ -178,6 +157,7 @@ const General = ({ editData, categories, loading, setLoading, imageList }) => {
       setVatId([...tax[0].tax_id]);
     }
   };
+
   return (
     <div className={styles.formContainer}>
       <Form

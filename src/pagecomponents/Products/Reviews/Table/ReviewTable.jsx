@@ -1,22 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { Table, Dropdown, Image, Skeleton } from "antd";
 import styles from "./Table.module.css";
-import { apicall } from "../../../../utils/apicall/apicall";
-import { AiFillEdit, AiFillSetting } from "react-icons/ai";
-import {
-  // handleEditData,
-  loadTableData,
-  setSelectedProductId,
-} from "../../../../redux/features/products/productSlice";
+import { AiFillStar } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
-const ReviewTable = ({ loading, handleScroll }) => {
-  const dispatch = useDispatch();
-  const data = useSelector((state) => state.product.products);
-  const [productId, setProductId] = useState("");
+const ReviewTable = ({ loading, handleScroll, reviews }) => {
   const navigate = useNavigate();
   const windowSize = useWindowSize();
+  console.log(reviews);
   useEffect(() => {
     document
       .querySelector("#product > div > div.ant-table-body")
@@ -28,101 +19,144 @@ const ReviewTable = ({ loading, handleScroll }) => {
         ?.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
-  // Set id
-  const setSelectedRow = async (id, method) => {
-    setProductId(id);
-    window.localStorage.setItem("productRowId", JSON.stringify(id));
-    var result = await apicall({
-      url: `products/${id}`,
-    });
-    // dispatch(handleEditData(result.data));
-    if (method === "detail") {
-      navigate("Edit Product");
+  // get ratings 
+  const getRating=(rate)=>{
+    switch(rate){
+      case '1':
+        return(
+          <div>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar  size={18}/>
+          <AiFillStar  size={18}/>
+          <AiFillStar  size={18}/>
+          <AiFillStar  size={18}/>
+          </div>
+        )
+      case '2':
+        return(
+          <div>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar  size={18}/>
+          <AiFillStar  size={18}/>
+          <AiFillStar  size={18}/>
+          </div>
+        )
+
+      case '3':
+        return(
+          <div>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar size={18}/>
+          <AiFillStar size={18}/>
+          </div>
+        )
+
+      case '4':
+        return(
+          <div>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar size={18}/>
+          </div>
+        )
+      case '5':
+        return(
+          <div>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          <AiFillStar size={18} color="#ffbd3d"/>
+          </div>
+        )
+      default:
+        return(
+          <div>
+          <AiFillStar size={18}/>
+          <AiFillStar size={18}/>
+          <AiFillStar size={18}/>
+          <AiFillStar size={18}/>
+          <AiFillStar size={18}/>
+          </div>
+        )
     }
+   
+  }
+  // getting time and date
+  const getTimeAndDate = (timeStamp) => {
+    const date = new Date(parseInt(timeStamp * 1000));
+    const monthyear = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    });
+
+    const time = date.toLocaleString("en-US", {
+      hour: "2-digit",
+      minute: "numeric",
+    });
+    return monthyear + ", " + time;
   };
-  const items = [
-    {
-      key: "1",
-      label: (
-        <a
-          rel="noopener noreferrer"
-          href="#"
-          onClick={() => navigate("Edit Product")}
-        >
-          Edit <AiFillEdit />
-        </a>
-      ),
-    },
-  ];
   const columns = [
     {
-      title: "Rating/Message/Customer",
-      dataIndex: ["product_id", "product", "product_code", "main_pair"],
-      data: "data",
+      title: "Image",
+      dataIndex: "images",
+      key: "image",
+      width: "100px",
+      render: (image) => (
+        <React.Fragment>
+          {Object.values(image)?.map((el, i) => {
+            return <Image key={i} width={50} src={el?.detailed?.image_path} />;
+          })}
+        </React.Fragment>
+      ),
+    },
+    {
+      title: "Rating/Customer",
+      dataIndex: "rating_value",
       key: "product",
-      render: (text, row) => (
-        <div className={styles.product_info}>
-          <Image
-            width={70}
-            src={!row["main_pair"] ? "" : row["main_pair"].detailed.image_path}
-            alt={""}
-          />
-          <div className={styles.product_name}>
-            <a
-              href="#"
-              onClick={() => setSelectedRow(row["product_id"], "detail")}
-            >
-              {" "}
-              <strong>{row["product"]}</strong>
-            </a>
-            <small>{row["product_code"]}</small>
+      render: (rating, row) => (
+        <div className={styles.rating}>
+          <div style={{ margin: 0, display:'flex' }} onClick={()=>navigate(`../Products/Reviews/${row.product_review_id}`)}>
+            <a>{`Review #${row.product_review_id}`}</a>
+            &nbsp; &nbsp; {getRating(rating)}
           </div>
+          <p style={{ margin: 0 }}>{row?.user_data?.name}</p>
         </div>
       ),
     },
-    {
-      title: "Advantages",
-      dataIndex: "Advantages",
-      key: "advantages",
-    },
-    {
-      title: "Disadvantages",
-      dataIndex: "disadvantages",
-      key: "disadvantages",
-    },
+
     {
       title: "Helpfulness",
       dataIndex: "helpfulness",
       key: "helpfulness",
+      render: (text) => (
+        <React.Fragment>
+          <span style={{ color: "green" }}>{text.vote_up}</span>/
+          <span style={{ color: "red" }}>{text.vote_down}</span>
+        </React.Fragment>
+      ),
     },
     {
       title: "Status",
       key: "status",
       dataIndex: "status",
-      render: (id) => (
-        <div
-          className={styles.product_action}
-          onClick={() => setSelectedRow(id)}
-        >
-          <p>{"Status"}</p>
-          <Dropdown
-            menu={{
-              items,
-            }}
-            placement="bottom"
-            arrow
-            trigger={["click"]}
-          >
-            <AiFillSetting size={20} className={styles.icons} />
-          </Dropdown>
+      render: (status) => (
+        <div style={status === "A" ? { color: "green" } : { color: "red" }}>
+          {status === "A" ? "Approved" : "Not Approved"}
         </div>
       ),
     },
     {
       title: "Date",
       key: "date",
-      dataIndex: "date",
-      render: (date) => <div>{date}</div>,
+      dataIndex: "product_review_timestamp",
+      render: (date) => getTimeAndDate(date),
     },
   ];
   return (
@@ -131,8 +165,39 @@ const ReviewTable = ({ loading, handleScroll }) => {
         id="product"
         loading={loading}
         columns={columns}
-        dataSource={data}
+        dataSource={reviews}
         pagination={false}
+        expandable={{
+          expandedRowRender: (record) => (
+            <div>
+              <p
+                style={{
+                  margin: 0,
+                }}
+              >
+                Comment:
+                {" " + record.message.comment}
+              </p>{" "}
+              <p
+                style={{
+                  margin: 0,
+                }}
+              >
+                Advantages:
+                {" " + record.message.disadvantages}
+              </p>{" "}
+              <p
+                style={{
+                  margin: 0,
+                }}
+              >
+                Disadvantages:
+                {" " + record.message.disadvantages}
+              </p>
+            </div>
+          ),
+          rowExpandable: (record) => record.message,
+        }}
         scroll={{
           y: windowSize.height > 670 ? 300 : 200,
           x: 1000,

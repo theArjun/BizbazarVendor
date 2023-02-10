@@ -33,6 +33,7 @@ const AddProduct = lazy(() => import("./pages/Product/AddProduct/AddProduct"));
 const Edit = lazy(() => import("./pages/Product/Edit/Edit"));
 
 const Reviews = lazy(() => import("./pages/Product/Reviews/Reviews"));
+const ReviewDetail = lazy(() => import("./pages/Product/Reviews/ReviewDetail"));
 
 const CustomerCommunication = lazy(() =>
   import("./pages/MessageCenter/CustomerCommunication/CustomerCommunication")
@@ -192,6 +193,15 @@ function App() {
               </SuspenseWrapper>
             }
             path="/products/Reviews"
+          ></Route>
+           {/** product Reviews Detail */}
+          <Route
+            element={
+              <SuspenseWrapper>
+                <ReviewDetail />
+              </SuspenseWrapper>
+            }
+            path="/products/Reviews/:id"
           ></Route>
           {/**Message Center */}
           {/**Customer Commnunications */}

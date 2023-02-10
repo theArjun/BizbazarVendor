@@ -12,7 +12,6 @@
 .openSearch {
   display: block;
   margin-bottom: 10px;
-
 }
 .closeSearch {
   display: none;
@@ -30,12 +29,84 @@
   margin-bottom: 10px;
 }
 .search_btn:hover {
-    background: linear-gradient(
-        118deg,
-        #c2bee6,
-        rgba(218, 218, 219, 0.7)
-      ) !important;
+  background: linear-gradient(
+    118deg,
+    #c2bee6,
+    rgba(218, 218, 219, 0.7)
+  ) !important;
+}
+.forMargin {
+  margin: 0 10px;
+}
+.main_container {
+  display: flex;
+  position: relative;
+  overflow: auto;
+}
+.review_section {
+  width: 70%;
+}
+.product_section{
+  width: 30%;
+}
+.review_detail_container * {
+  font-weight: 500;
+  font-size: medium;
+  /* color: #3e3e3f; */
+}
+.ReviewItem {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+.reply_body {
+  margin: 15px 30px;
+  font-weight: 500;
+  font-size: medium;
+}
+.reply_btn {
+  float: right;
+  margin-top: 10px;
+}
+.product_details{
+  margin-top: 40px;
+}
+.image_container{
+  display: flex;
+  justify-content: center;
+}
+.product_wrapper{
+  height: calc(100vh - 225px);
+}
+.product_description{
+  display: flex;
+  flex-direction: column;
+}
+.customer_info{
+  margin-top: 40px;
+}
+
+@media (max-width: 800px) {
+  .review_section {
+    width: 60%;
   }
-.forMargin{
-    margin: 0 10px;
+  .product_section{
+    width: 40%;
+  }
+}
+@media (max-width: 500px) {
+  .review_section {
+    width: 100%;
+  }
+  .main_container{
+
+    flex-direction:column;
+  }
+  .product_section{
+    margin-top: 10px;
+    width: 100%;
+  }
+  .product_wrapper{
+    height: fit-content;
+  }
 }
