@@ -9,19 +9,52 @@ const getBase64 = (file) =>
     reader.onload = () => resolve(reader.result);
     reader.onerror = (error) => reject(error);
   });
-const ImageUploader = ({
+const ImageUploaderForEdit = ({
   message,
   uploadedImage,
   setUploadedImage,
   imageCount,
   Form,
   setImageCount,
+  imageList,
+  finalImages,
+  setFinalImages
 }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [upload, setUpload] = useState(true);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
-  const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList] = useState(imageList ? [...imageList] : []);
+
+  useEffect(()=>{
+    setFinalImages(imageList)
+    let temp={...uploadedImage}
+    setImageCount(imageList?.length+1)
+    imageList?.map((el,i)=>{
+        temp.removed_image_pair_ids[i]=''
+       if(i===0){
+        temp.product_main_image_data[el?.pair_id]={
+            "detailed_alt": "",
+            "type": "M",
+            "object_id": el.uid,
+            "pair_id": el.pair_id,
+            "position": i,
+            "is_new": "N"
+        }
+       }else{
+        temp.product_additional_image_data[el?.pair_id]={
+            "detailed_alt": "",
+            "type": "A",
+            "object_id": el.uid,
+            "pair_id": el.pair_id,
+            "position": i,
+            "is_new": "N"
+        }
+       }
+    })
+    setUploadedImage(temp);
+    
+  },[])
   let insertImage = async (e) => {
     let image_type = e.target.files[0].name.split(".").pop();
     if (image_type === "jpeg" || image_type === "png" || image_type === "jpg") {
@@ -104,6 +137,13 @@ const ImageUploader = ({
   };
   const onRemove = (a) => {
     let temp_upload_data = { ...uploadedImage };
+    let temp_final_image=[...finalImages]
+    // set final image List
+    if(temp_final_image.length){
+        temp_upload_data.removed_image_pair_ids[a.uid]=a.pair_id
+        let remove_images= temp_final_image.filter((el, i)=> el.uid!==a.uid)
+        setFinalImages(remove_images)
+    }
     if (a.uid === temp_upload_data.product_main_image_data["0"]?.object_id) {
       if (temp_upload_data.product_add_additional_image_data["1"]) {
         Object.values(temp_upload_data.product_add_additional_image_data).map(
@@ -230,4 +270,4 @@ const ImageUploader = ({
   );
 };
 
-export default ImageUploader;
+export default ImageUploaderForEdit;

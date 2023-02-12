@@ -3,7 +3,7 @@ import styles from "./Search.module.css";
 import { Card, Form, Input, Button,Select} from "antd";
 import { AiFillStar } from "react-icons/ai";
 import "./index.css";
-const Search = () => {
+const Search = ({setSearchValue}) => {
   const [form] = Form.useForm();
   const onFinish = (values) => {
     console.log("Success:", values);
@@ -13,14 +13,8 @@ const Search = () => {
     console.log("Failed:", errorInfo);
   };
   const onValueChange=(a, values)=>{
-    console.log(values)
+    setSearchValue(values)
   }
-  const onChange = (value) => {
-    console.log(`selected ${value}`);
-  };
-  const onSearch = (value) => {
-    console.log('search:', value);
-  };
   return (
     <div className={styles.container}>
       <Card bordered={true}>
@@ -46,23 +40,9 @@ const Search = () => {
               <Input type="text" />
             </Form.Item>
             <Form.Item
-              id="advantages"
-              label="Advantages"
-              name="advantages"
-            >
-              <Input type="text" />
-            </Form.Item>
-            <Form.Item
-              id="disadvantages"
-              label="Disadvantages"
-              name="disadvantages"
-            >
-              <Input type="text" />
-            </Form.Item>
-            <Form.Item
-              id="comment"
-              label="Comment"
-              name="comment"
+              id="message"
+              label="Message"
+              name="message"
             >
               <Input type="text" />
             </Form.Item>
@@ -73,11 +53,8 @@ const Search = () => {
               style={{width:'130px'}}
             >
             <Select
-            showSearch
             placeholder="Select Rating"
             optionFilterProp="children"
-            onChange={onChange}
-            onSearch={onSearch}
             filterOption={(input, option) =>
               (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
             }
@@ -135,50 +112,32 @@ const Search = () => {
             ]}
           />
           </Form.Item>
-            <div>
-              <label>Helpfulness</label>
-              <div className={styles.price_container}>
-                <Form.Item
-                  id="help_from"
-                  name="help_from"
-                  style={{ width: "80px" }}
-                >
-                  <Input type="number" />
-                </Form.Item>{" "}
-
-               <Form.Item>-</Form.Item>
-                <Form.Item
-                  id="help_to"
-                  name="help_to"
-                  style={{ width: "80px" }}
-                >
-                  <Input type="number" />
-                </Form.Item>
-              </div>
-            </div>
             <Form.Item
               id="photo"
               label="With photo"
               name="photo"
+              style={{width:'130px'}}
             >
             <Select
-            showSearch
             placeholder="With photo"
             optionFilterProp="children"
-            onChange={onChange}
-            onSearch={onSearch}
             filterOption={(input, option) =>
               (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
             }
             options={[
               {
-                value: 'with_photo',
+                value: '',
+                label: 'All',
+              },
+              {
+                value: '1',
                 label: 'With photo',
               },
               {
-                value: 'without_photo',
+                value: '0',
                 label: 'Without photo',
               },
+             
             ]}
           />
           </Form.Item>

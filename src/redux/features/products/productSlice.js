@@ -18,7 +18,7 @@ export const productSlice = createSlice({
       if (action.payload) {
         let data = action.payload.map((item, index) => ({
           ...item,
-          key: index,
+          key: parseInt(item.product_id),
         }));
         state.products = data;
       }

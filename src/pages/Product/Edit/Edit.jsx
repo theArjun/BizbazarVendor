@@ -178,6 +178,7 @@ const Edit = () => {
             loading={loading}
             setLoading={setLoading}
             categories={categories}
+            getData={getData}
           />
         ) : (
           <Skeleton active />

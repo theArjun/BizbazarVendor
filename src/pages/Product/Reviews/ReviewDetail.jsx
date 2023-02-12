@@ -31,7 +31,7 @@ const ReviewDetail = () => {
     return <Spin />;
   }
   return (
-    <div className={styles.review_detail}>
+    <div className={styles.container}>
       <Typography.Title
         level={3}
         style={{
@@ -41,21 +41,23 @@ const ReviewDetail = () => {
         {`Reviews #${param.id}`}
       </Typography.Title>
       <div className={styles.main_container}>
-        <Card className={styles.review_section}>
-          {review ? <ReviewDescription data={review} /> : ""}
-
-          <div className={styles.reply_section}>
-            <div className={styles.reply_body}>
-              <div className={styles.reply_text}> Reply:</div>
-              <div className={styles.reply_box}>
-                <TextArea rows={5} />
-              </div>
-              <div className={styles.reply_btn}>
-                <Button type="primary">Add reply</Button>
-              </div>
+      <div className={styles.review_section}>
+      <div className={styles.review_description}>
+      {review ? <ReviewDescription data={review} /> : ""}
+      
+      </div>
+        <div className={styles.reply_section}>
+          <div className={styles.reply_body}>
+            <div className={styles.reply_text}> Reply:</div>
+            <div className={styles.reply_box}>
+              <TextArea rows={5} />
+            </div>
+            <div className={styles.reply_btn}>
+              <Button type="primary">Add reply</Button>
             </div>
           </div>
-        </Card>
+        </div>
+      </div>
         <div className={styles.product_section}>
           {review ? <ProductDetail data={review} /> : ""}
         </div>
@@ -68,9 +70,7 @@ export default ReviewDetail;
 
 const ProductDetail = ({ data }) => {
     const {Text}= Typography;
-    console.log(data)
   return (
-    <Card>
       <div className={styles.product_wrapper}>
         <div className={styles.review_status}>
           <Typography.Title
@@ -126,7 +126,7 @@ const ProductDetail = ({ data }) => {
           </div>
         </div>
       </div>
-    </Card>
+    
   );
 };
 const ReviewDescription = ({ data }) => {
@@ -213,18 +213,17 @@ const ReviewDescription = ({ data }) => {
     return monthyear + ", " + time;
   };
   return (
-    <React.Fragment>
-      <Card className={styles.review_detail_container}>
+    <React.Fragment >
         <div className={styles.ReviewItem}>
           <div>Rating:</div>&nbsp;&nbsp;{" "}
           <span>{getRating(data?.rating_value)}</span>
         </div>
         <div className={styles.ReviewItem}>
-          <span>Date:</span>&nbsp;&nbsp;{" "}
+          <div>Date:</div>&nbsp;&nbsp;{" "}
           <span>{getTimeAndDate(data?.product_review_timestamp)}</span>
         </div>
         <div className={styles.ReviewItem}>
-          <span>Helpfulness:</span>&nbsp;&nbsp;{" "}
+          <div>Helpfulness:</div>&nbsp;&nbsp;{" "}
           <span>
             {" "}
             <AiFillLike />{" "}
@@ -238,28 +237,27 @@ const ReviewDescription = ({ data }) => {
           </span>
         </div>
         <div className={styles.ReviewItem}>
-          <span>Advantages:</span>&nbsp;&nbsp;{" "}
+          <div>Advantages:</div>&nbsp;&nbsp;{" "}
           <span>{data?.message?.advantages}</span>
         </div>
         <div className={styles.ReviewItem}>
-          <span>Disadvantages:</span>&nbsp;&nbsp;{" "}
+          <div>Disadvantages:</div>&nbsp;&nbsp;{" "}
           <span>{data?.message?.disadvantages}</span>
         </div>
         <div className={styles.ReviewItem}>
-          <span>Comment:</span>&nbsp;&nbsp;{" "}
+          <div>Comment:</div>&nbsp;&nbsp;{" "}
           <span>{data?.message?.comment}</span>
         </div>
         <div className={styles.ReviewItem}>
-          <span>Customer photos:</span>&nbsp;&nbsp;
+          <div>Customer photos:</div>&nbsp;&nbsp;
           <div>
             {Object.values(data?.images)?.map((el, i) => {
               return (
-                <Image key={i} src={el?.detailed?.image_path} width={120} />
+                <Image key={i} src={el?.detailed?.image_path} width={100} />
               );
             })}
           </div>
         </div>
-      </Card>
     </React.Fragment>
   );
 };

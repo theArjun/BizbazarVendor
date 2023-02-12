@@ -7,7 +7,6 @@ import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 const ReviewTable = ({ loading, handleScroll, reviews }) => {
   const navigate = useNavigate();
   const windowSize = useWindowSize();
-  console.log(reviews);
   useEffect(() => {
     document
       .querySelector("#product > div > div.ant-table-body")

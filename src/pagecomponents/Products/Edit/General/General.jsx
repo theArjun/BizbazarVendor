@@ -1,15 +1,24 @@
 import React from "react";
 import styles from "./General.module.css";
 import "./index.css";
-import { Button, Form, Input, Select, message, Checkbox, Card, Skeleton } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Select,
+  message,
+  Checkbox,
+  Card,
+  Skeleton,
+} from "antd";
 import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
 import { apicall } from "../../../../utils/apicall/apicall";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useState } from "react";
 import { useEffect } from "react";
-import ImageUploader from "../../../../component/ImageUploader/ImageUploader";
-const General = ({ editData, categories, loading, setLoading, }) => {
+import ImageUploaderForEdit from "../../../../component/ImageUploader/ImageUploaderForEdit";
+const General = ({ editData, categories, getData }) => {
   // for toggling  fields button
   const [info, setInfo] = useState(true);
   const [options, setOptions] = useState(true);
@@ -18,6 +27,7 @@ const General = ({ editData, categories, loading, setLoading, }) => {
   const [taxChecked, setTaxChecked] = useState(false);
   const [vatId, setVatId] = useState([]);
   const [imageCount, setImageCount] = useState(0);
+  const [finalImages, setFinalImages]=useState([]);
   const [uploadedImage, setUploadedImage] = useState({
     product_main_image_data: {},
     type_product_main_image_detailed: {},
@@ -25,7 +35,15 @@ const General = ({ editData, categories, loading, setLoading, }) => {
     product_add_additional_image_data: {},
     type_product_add_additional_image_detailed: {},
     file_product_add_additional_image_detailed: {},
+    removed_image_pair_ids:{},
+    product_main_image_data:{},
+    product_additional_image_data:{}
   });
+  // create upload image
+   useEffect(()=>{
+    console.log('final image ---', finalImages)
+    console.log('upload image ---', uploadedImage)
+   },[finalImages])
   // for setting vatId
   useEffect(() => {
     if (taxChecked) {
@@ -36,11 +54,11 @@ const General = ({ editData, categories, loading, setLoading, }) => {
   }, [taxChecked]);
   // for check vat and uncheck
   useEffect(() => {
-      editData?.tax_ids.map((item) => {
-        if (item == "6") {
-          setTaxChecked(true);
-        }
-      });
+    editData?.tax_ids.map((item) => {
+      if (item == "6") {
+        setTaxChecked(true);
+      }
+    });
   }, []);
   var {
     product_id,
@@ -76,55 +94,74 @@ const General = ({ editData, categories, loading, setLoading, }) => {
     { label: "No", value: "D" },
   ];
   const getSelectedCatLabel = (ids) => {
-    
-    let temp=categories?.filter((item) => ids.includes(parseInt(item.category_id))).map((el)=>({label:el.category,value:el.category_id}));
-    return temp
+    let temp = categories
+      ?.filter((item) => ids.includes(parseInt(item.category_id)))
+      .map((el) => ({ label: el.category, value: el.category_id }));
+    return temp;
   };
-  const getImage=(data)=>{
-    let main_image = data?.main_pair?.detailed?.image_path;
-    let additional_image = Object.values(data?.image_pairs).map(
-      (el, i) =>({
-        uid:`${i+1}`,
-        name:`additional_mage_${i+1}.jpg`,
-        status:'done',
-        url:el?.detailed?.image_path})
-        );
-        if(main_image){
-      return([{
-        uid:"0",
-        name:"main_image.jpg",
-        status:'done',
-        url:main_image}, ...additional_image]);
-
-    }else{
-      return([])
+  const getImage = (data) => {
+    let main_image = data?.main_pair;
+    let additional_image = Object.values(data?.image_pairs).map((el, i) => ({
+      uid: `${i + 1}`,
+      name: `additional_mage_${i + 1}.jpg`,
+      status: "done",
+      url: el?.detailed?.image_path,
+      pair_id:el?.pair_id
+    }));
+    if (Object.keys(main_image).length) {
+      return [
+        {
+          uid: "0",
+          name: "main_image.jpg",
+          status: "done",
+          url: main_image?.detailed?.image_path,
+          pair_id:main_image?.pair_id
+        },
+        ...additional_image,
+      ];
+    } else {
+      return [];
     }
-    }
+  };
   // trigger while clicking  on create button if there is no any error at  client side
   const onFinish = (values) => {
-    const product_data = {
-      product: values.name,
-      category_ids: values.category_ids[0]?.value?category_ids:values.category_ids,
-      price: values.price,
-      options_type: values.options,
-      exceptions_type: values.exceptions,
-      product_code: values.code,
-      min_qty: values.min_qty,
-      full_description: values.description,
-      max_qty: values.max_qty,
-      zero_price_action: values.price_action,
-      amount: values.stock,
-      tracking: values.track_inventory,
-      tax_ids: vatId,
-    };
+    let available_image_prepare= {...uploadedImage}
+    if(finalImages.length){
+      finalImages.map((el, i)=>{
+        if(i===0){
+          available_image_prepare.product_main_image_data[el.pair_id]={
+            "detailed_alt": "",
+            "type": "M",
+            "object_id": el.uid,
+            "pair_id": el.pair_id,
+            "position": i,
+            "is_new": "N"
+          }
+        }else{
+          available_image_prepare.product_additional_image_data[el?.pair_id]={
+            "detailed_alt": "",
+            "type": "A",
+            "object_id": el.uid,
+            "pair_id": el.pair_id,
+            "position": i,
+            "is_new": "N"
+        }
+        }
+      })
+    }
+    const final_data= {...values, ...available_image_prepare, product_id:product_id, tax_ids: vatId, category_ids: values.category_ids[0]?.value
+      ? category_ids
+      : values.category_ids, }
     const timeOutId = setTimeout(async () => {
-      1;
       // perform api call to retrieve data
-      const result = await apicall({
+       let result =await apicall({
         method: "put",
-        url: `products/${product_id}`,
-        data: { ...product_data },
+        url: `VendorProducts/${product_id}`,
+        data: { ...final_data },
       });
+      if(result?.data){
+        getData()
+      }
     }, 500);
     return () => clearTimeout(timeOutId);
   };
@@ -140,7 +177,7 @@ const General = ({ editData, categories, loading, setLoading, }) => {
     }));
     return temp;
   };
-  
+
   // this function is for category search
   const onSearch = (value) => {
     console.log("search:", value);
@@ -166,21 +203,20 @@ const General = ({ editData, categories, loading, setLoading, }) => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
         initialValues={{
-          name: product,
-          track_inventory: tracking,
-          available_qty: 1,
-          exceptions: exceptions_type,
+          product: product,
+          tracking: tracking,
+          available_qty: amount,
+          exceptions_type: exceptions_type,
           max_qty: max_qty,
           min_qty: min_qty,
-          options: options_type,
-          price_action: price_action,
-          stock: amount,
+          options_type: options_type,
+          zero_price_action: zero_price_action,
+          amount: amount,
           tax: "N",
-          description: full_description,
-          code: product_code,
-          category_ids:getSelectedCatLabel(category_ids),
+          full_description: full_description,
+          product_code: product_code,
+          category_ids: getSelectedCatLabel(category_ids),
           price: parseFloat(price).toFixed(2),
-          price_action: zero_price_action,
         }}
       >
         <Form.Item style={{ float: "right" }} name="submit_btn">
@@ -201,7 +237,7 @@ const General = ({ editData, categories, loading, setLoading, }) => {
           >
             <Form.Item
               label="Name"
-              name="name"
+              name="product"
               rules={[
                 {
                   required: true,
@@ -251,7 +287,7 @@ const General = ({ editData, categories, loading, setLoading, }) => {
             </Form.Item>
             <Form.Item
               label="Full description"
-              name="description"
+              name="full_description"
               rules={[
                 {
                   required: true,
@@ -265,7 +301,7 @@ const General = ({ editData, categories, loading, setLoading, }) => {
                 onChange={setDescription}
               />
             </Form.Item>
-           <ImageUploader
+            <ImageUploaderForEdit
               message={message}
               uploadedImage={uploadedImage}
               setUploadedImage={setUploadedImage}
@@ -273,8 +309,10 @@ const General = ({ editData, categories, loading, setLoading, }) => {
               setImageCount={setImageCount}
               Form={Form}
               imageList={getImage(editData)}
+              finalImages={finalImages}
+              setFinalImages={setFinalImages}
+              
             />
-           
           </Card>
         </div>
         <div className={styles.options}>
@@ -292,7 +330,7 @@ const General = ({ editData, categories, loading, setLoading, }) => {
               options ? styles.options_container : styles.close_container
             }
           >
-            <Form.Item label="Options type" name="options">
+            <Form.Item label="Options type" name="options_type">
               <Select
                 style={{
                   width: 300,
@@ -304,7 +342,7 @@ const General = ({ editData, categories, loading, setLoading, }) => {
               />
             </Form.Item>
 
-            <Form.Item label="Exceptions type" name="exceptions">
+            <Form.Item label="Exceptions type" name="exceptions_type">
               <Select
                 style={{
                   width: 300,
@@ -330,14 +368,14 @@ const General = ({ editData, categories, loading, setLoading, }) => {
               pricing ? styles.pricing_container : styles.close_container
             }
           >
-            <Form.Item label="CODE" name="code">
+            <Form.Item label="CODE" name="product_code">
               <Input type="text" />
             </Form.Item>
-            <Form.Item label="In stock" name="stock" style={{ width: 200 }}>
+            <Form.Item label="In stock" name="amount" style={{ width: 200 }}>
               <Input type="number" />
             </Form.Item>
 
-            <Form.Item label="Zero price action" name="price_action">
+            <Form.Item label="Zero price action" name="zero_price_action">
               <Select
                 //   onChange={onSecondCityChange}
                 options={price_action.map((price_action) => ({
@@ -348,7 +386,7 @@ const General = ({ editData, categories, loading, setLoading, }) => {
             </Form.Item>
             <Form.Item
               label="Track inventory"
-              name="track_inventory"
+              name="tracking"
               extra="When inventory is tracked, the number of products in stock will
             decrease after each purchase."
             >
