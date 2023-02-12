@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Edit.module.css";
-import { Breadcrumb, Skeleton, Spin } from "antd";
+import { Breadcrumb, Skeleton } from "antd";
 import {
   EditFeatures,
   EditGeneral,
@@ -29,8 +29,9 @@ const Edit = () => {
   const [active, setActive] = useState("General");
   const [features, setFeatures] = useState("");
   const [data, setData] = useState("");
-  const [variantFeatures, setVariantFeatures] = useState([]);
+  const [variantFeatures, setVariantFeatures] = useState("");
   const [variationData, setVariationData] = useState("");
+  const [seoPath, setSeoPath] = useState("");
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     getData();
@@ -41,6 +42,7 @@ const Edit = () => {
       getFeatures(editID),
       getEditData(editID),
       getFeatureVariants(editID),
+      getSeoPath(editID)
     ]);
   };
   // Get all edit data
@@ -90,9 +92,11 @@ const Edit = () => {
     });
     if (result.data) {
       setLoading(false);
-      setVariantFeatures(result.data);
+      setVariantFeatures(result?.data?.features);
+    } else {
+      setVariantFeatures([]);
+      setLoading(false);
     }
-    setLoading(false);
   };
   // Lets get features from API
   const getFeatures = async (id) => {
@@ -107,6 +111,18 @@ const Edit = () => {
       setFeatures("");
     }
   };
+
+  // get SEO path 
+  const getSeoPath= async(product_id)=>{
+    let result= await apicall({
+      url:`products/${product_id}/ProductSeo`,
+
+    })
+
+    if(result?.data){
+      setSeoPath(result.data?.prefix)
+    }
+  }
   const getContainerFromTab = () => {
     switch (active) {
       case tabs[1]:
@@ -125,19 +141,22 @@ const Edit = () => {
           ""
         );
       case tabs[4]:
-        return variantFeatures.length && variationData ? (
+        return variantFeatures && variationData ? (
           <EditVariations
             data={data}
             variations={variantFeatures}
             setVariationData={setVariationData}
             variationData={variationData}
+            editID={editID}
             loading={loading}
+            setLoading={setLoading}
+            getData={getData}
           />
         ) : (
           <Skeleton active />
         );
       case tabs[5]:
-        return data ? <EditSeo data={data} /> : "";
+        return data ? <EditSeo data={data} seoPath={seoPath} /> : "";
       case tabs[6]:
         return data ? (
           <EditQuantityDiscount
@@ -154,7 +173,13 @@ const Edit = () => {
         return <div>Product bundles</div>;
       default:
         return categories && data ? (
-          <EditGeneral editData={data ? data : ""} categories={categories} />
+          <EditGeneral
+            editData={data}
+            loading={loading}
+            setLoading={setLoading}
+            categories={categories}
+            getData={getData}
+          />
         ) : (
           <Skeleton active />
         );

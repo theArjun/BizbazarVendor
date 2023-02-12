@@ -7,6 +7,10 @@ export const apicall = async ({
   data = {},
   body = "",
   auth = false,
+  headers={
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": true,
+  }
 }) => {
   let finalurl = "/api/";
 
@@ -28,18 +32,23 @@ export const apicall = async ({
         username: import.meta.env.VITE_APP_USERNAME,
         password: import.meta.env.VITE_APP_PASSWORD,
       },
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": true,
-      },
+      headers:headers,
     });
-    // console.log(result);
+  
     if (method != "get") {
-      notification.success({
-        message: "Sucessfully Done",
-      });
-    }
+      if(result?.data?.result?.product_ids=='No new products were created'){
+        notification.error({
+          message: result?.data?.result?.product_ids,
+        });
+      }else{
+        notification.success({
+          message: "Sucessfully Done",
+        });
 
+      }
+
+      
+    }
     return result;
   } catch (error) {
     if (method != "get") {

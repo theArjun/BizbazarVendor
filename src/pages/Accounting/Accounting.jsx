@@ -63,7 +63,7 @@ let user= JSON.parse(localStorage.getItem('userinfo'));
         url:getUrl(values)
       });
       if(result.data){
-        setData(result.data)
+        setData(result.data.map((item, index)=>({...item, key:index})))
         setLoading(false)
       }
       setLoading(false)
@@ -87,8 +87,25 @@ const getWithdrawInformation= async(values)=>{
   };
   const [form] = Form.useForm();
   const onFinish = async (values) => {
-    localStorage.setItem("login", true);
-    navigate("/");
+    let payment_data={
+      payment:{
+        amount:values.amount,
+        comments:values.comments,
+        vendor:user.id
+      }
+    }
+
+ let result= await apicall({
+    url:`BizbazarAccounting`,
+    method:'post',
+    data:payment_data
+  })
+  if(result.status==201){
+    setOpen(false)
+    getAccountingInformation();
+    getWithdrawInformation();
+    getStatus();
+  }
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -132,7 +149,7 @@ const getWithdrawInformation= async(values)=>{
           </div>
           <div>
             <div
-              type="primary"
+              
               onClick={showModal}
               className={styles.new_add_btn}
             >
@@ -169,7 +186,7 @@ const getWithdrawInformation= async(values)=>{
                 <Form.Item
                   // id="req"
                   label="Payment amount"
-                  name="payment_amt"
+                  name="amount"
                  
                   rules={[
                     {
@@ -195,7 +212,7 @@ const getWithdrawInformation= async(values)=>{
                   name="submit"
                  
                 >
-                 <Button primary type="primary" htmlType="submit" style={{float:'right'}}>Create</Button>
+                 <Button type="primary" htmlType="submit" style={{float:'right'}}>Create</Button>
                 </Form.Item>
               </Form>
             </Modal>

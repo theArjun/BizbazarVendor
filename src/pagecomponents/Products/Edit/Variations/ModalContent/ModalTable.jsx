@@ -3,7 +3,7 @@ import useWindowSize from "../../../../../utils/Hooks/useWindowSize";
 import { Input, Table } from "antd";
 import { useEffect } from "react";
 import { useState } from "react";
-const ModalTable = ({ data, loading, product_data, setVariationLength }) => {
+const ModalTable = ({ data, loading, product_data, setVariationLength, finalData, setFinalData}) => {
   const windowSize = useWindowSize();
   const [variation, setVariation] = useState([]);
   useEffect(() => {
@@ -18,9 +18,55 @@ const ModalTable = ({ data, loading, product_data, setVariationLength }) => {
     }
   }, [data]);
   useEffect(() => {
+    if(variation.length){
+      prepareData(variation)
     setVariationLength(variation.length);
-  }, [variation]);
-
+  }}, [variation]);
+const prepareData=(finalVariations=[])=>{
+      let temp={...finalData}
+      let ids={}
+      let variant_ids={}
+      let combine_data={}
+        Object.keys(finalVariations[0].ids).map((id, i)=>{
+          ids[i]=id
+          let v_ids={}
+          finalVariations.map((el, index)=>{
+            // to check the duplicate values 
+            if(!Object.values(v_ids).includes(el['ids'][id])){
+              v_ids[index]=el['ids'][id]
+            }
+          })
+          variant_ids[id]=v_ids
+        })
+        finalVariations.map((item, index)=>{
+          let object_name=''
+          Object.values(item['ids']).map((id,i)=>{
+            object_name=object_name+"_"+id
+          })
+          if(index===0){
+          combine_data[object_name.slice(1)]={
+              active:1,
+              product_name:item.name,
+              product_code:item.code,
+              product_price:item.price,
+              product_amount:item.quantity
+              }
+          }
+          else{
+            combine_data[object_name.slice(1)]={
+              active:1,
+              product_name:item.name,
+              product_code:item.code,
+              product_price:item.price,
+              product_amount:item.quantity
+              }
+          }
+        })
+        temp.feature_ids={...ids}
+        temp.features_variants_ids={...variant_ids}
+        temp.combinations_data={...combine_data}
+      setFinalData({...temp})
+}
   const getSingleFeature = (data) => {
     return data?.map((item, i) => ({
       name: product_data?.product,
@@ -31,6 +77,8 @@ const ModalTable = ({ data, loading, product_data, setVariationLength }) => {
       price: product_data?.price,
       quantity: product_data?.amount,
       key: i,
+      feature_id:item.feature_id,
+      variant_id:item.value,
       ids: { [item?.feature_id]: item?.value },
     }));
   };

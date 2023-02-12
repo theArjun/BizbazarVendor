@@ -5,6 +5,9 @@
     width: fit-content;
     cursor: pointer;
 }
+.right_buttons > *{
+    margin: 0 5px;
+}
 .modal_body{
    height: 450px;
    overflow-y: scroll;

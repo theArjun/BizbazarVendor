@@ -4,15 +4,13 @@ import { Form, Button, Input, Card, Typography } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { apicall } from "../../../../utils/apicall/apicall";
 const {Text}=Typography;
-const Seo = ({ data }) => {
-  const value = "https://";
+const Seo = ({ data, seoPath }) => {
   const onFinish = (values) => {
     updateSEO(data?.product_id, values);
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-  const onValueChange = (a, b) => {};
   const updateSEO = async (id, values) => {
    const result= await apicall({
       url: `products/${id}`,
@@ -20,7 +18,7 @@ const Seo = ({ data }) => {
       method: "put",
     });
     if(result.data){
-      window.location.reload();
+      // window.location.reload();
     }
   };
   return (
@@ -36,7 +34,6 @@ const Seo = ({ data }) => {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
-        onValuesChange={onValueChange}
       >
         <Form.Item style={{ float: "right" }}>
           <Button type="primary" htmlType="submit">
@@ -49,8 +46,9 @@ const Seo = ({ data }) => {
           <div className={styles.seo_card}>
             <div className={styles.seo_card_left}>
               <h3>SEO</h3>
-              <Form.Item name="seo_name" label="SEO name">
-                <Input addonBefore={value} />
+              <Form.Item  name="seo_name" label="SEO name">
+              <Input addonBefore={seoPath} />
+              
               </Form.Item>
               <h3>Meta data </h3>
               <Form.Item name="page_title" label="Page title">

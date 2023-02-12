@@ -2,23 +2,39 @@ import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import styles from "./AdditionField.module.css";
-import { Form, Input, Select, Card, Upload,message, Button } from "antd";
-import { InboxOutlined } from "@ant-design/icons";
+import "./index.css";
+import { Form, Input, Select, Card, message, Button } from "antd";
 import { AiOutlineCaretDown, AiOutlineCaretRight } from "react-icons/ai";
-import { useEffect } from "react";
-const { Dragger } = Upload;
+import ImageUploader from "../../../../component/ImageUploader/ImageUploader";
+
 const AdditionField = ({ categories, products, setProducts }) => {
-  const [moreOpen, setMoreOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(true);
   const [count, setCount] = useState(0);
-  const [formData, setFormData]=useState(new FormData())
+  const [imageCount, setImageCount] = useState(0);
+  const [uploadedImage, setUploadedImage] = useState({
+    product_main_image_data: {},
+    type_product_main_image_detailed: {},
+    file_product_main_image_detailed: {},
+    product_add_additional_image_data: {},
+    type_product_add_additional_image_detailed: {},
+    file_product_add_additional_image_detailed: {},
+  });
   let cats = categories.map((item) => ({
     label: item.category,
     value: item.category_id,
   }));
   const onFinish = (values) => {
-    
-    setProducts([...products, { ...values, key: count }]);
+    setProducts([
+      ...products,
+      {
+        ...values,
+        ...uploadedImage,
+        key: count,
+        category_ids: getCategories(values.category),
+      },
+    ]);
     setCount(count + 1);
+    setImageCount(0);
   };
   // throw message while error occured at client side
   const onFinishFailed = (errorInfo) => {
@@ -38,26 +54,15 @@ const AdditionField = ({ categories, products, setProducts }) => {
       value: "H",
     },
   ];
-  const props = {
-    name: "file",
-    multiple: true,
-    action: "/",
-    onChange(info) {
-      console.log(info)
-      const { status } = info.file;
-      if (status !== "uploading") {
-        console.log(info.file, info.fileList);
+  const getCategories=(a)=>{
+    let temp={}
+      if(a){
+       a?.map((el, i)=>{
+        temp[i]=el
+       })
       }
-      if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
-    },
-  };
+      return temp
+  }
   return (
     <div>
       <Card>
@@ -77,6 +82,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
             <Form.Item
               label="Category"
               name="category"
+              style={{ width: "150px" }}
               rules={[
                 {
                   required: true,
@@ -86,6 +92,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
             >
               <Select
                 showSearch
+                mode="tags"
                 placeholder="Select a category"
                 optionFilterProp="children"
                 filterOption={(input, option) =>
@@ -99,7 +106,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
             <Form.Item
               id="req"
               label="Product name"
-              name="name"
+              name="product"
               rules={[
                 {
                   required: true,
@@ -111,7 +118,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
             </Form.Item>
             <Form.Item
               label="Code"
-              name="code"
+              name="product_code"
               style={{ width: "80px" }}
               rules={[
                 {
@@ -150,7 +157,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
             </Form.Item>
             <Form.Item
               label="In stock"
-              name="stock"
+              name="amount"
               style={{ width: "80px" }}
               rules={[
                 {
@@ -173,7 +180,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
                 options={status_items}
               />
             </Form.Item>
-            <Form.Item label="More" name="more">
+            <Form.Item label="More">
               {!moreOpen ? (
                 <AiOutlineCaretRight
                   color={"#7367f0"}
@@ -189,7 +196,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
               )}
             </Form.Item>
             <div className={styles.action_buttons}>
-              <Form.Item name="add">
+              <Form.Item>
                 <Button
                   type="primary"
                   style={{ marginTop: "25px" }}
@@ -208,20 +215,25 @@ const AdditionField = ({ categories, products, setProducts }) => {
             <Form.Item
               style={{ width: "100%" }}
               label="Full description"
-              name="description"
+              name="full_description"
+              rules={[
+                {
+                  required: true,
+                  message: "The Field is Mandatory",
+                },
+              ]}
             >
               <ReactQuill theme="snow" />
             </Form.Item>
-            <Form.Item label="Images" name="image" style={{ width: "100%" }} >
-              <Dragger {...props}>
-                <p className="ant-upload-drag-icon">
-                  <InboxOutlined />
-                </p>
-                <p className="ant-upload-text">
-                  Click or drag file to this area to upload
-                </p>
-              </Dragger>
-            </Form.Item>
+            <div></div>
+            <ImageUploader
+              message={message}
+              uploadedImage={uploadedImage}
+              setUploadedImage={setUploadedImage}
+              imageCount={imageCount}
+              setImageCount={setImageCount}
+              Form={Form}
+            />
           </div>
         </Form>
       </Card>

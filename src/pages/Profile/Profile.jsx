@@ -13,45 +13,39 @@ import {
   Checkbox,
   Card,
   Skeleton,
-  notification,
 } from "antd";
 import { useState, useEffect } from "react";
 import { apicall } from "../../utils/apicall/apicall";
 const Profile = () => {
-  const userInfo=JSON.parse(localStorage.getItem('userinfo'));
+  const userInfo = JSON.parse(localStorage.getItem("userinfo"));
   const [pradesh, setPradesh] = useState("");
   const [cities, setCities] = useState([]);
   const [isShipping, setIsShipping] = useState(false);
-  const [vendorData, setVendorData] = useState("");
+  const [vendorData, setVendorData] = useState({});
   const [loading, setLoading] = useState(false);
   const [confirm, setConfirm] = useState("");
   const provinces = [];
   const navigate = useNavigate();
-  const [api, contextHolder] = notification.useNotification();
   for (var key in states) {
     provinces.push(key);
   }
-  // This is used to alert user for any <information></information>
-  const openNotificationWithIcon = (type, message) => {
-    api[type]({
-      message: message,
-      placement: "bottomRight",
-    });
-  };
+  useEffect(() => {
+    console.log(vendorData);
+  }, [vendorData]);
   useEffect(() => {
     getVendorInformation();
   }, []);
   const getVendorInformation = async () => {
     setLoading(true);
     const result = await apicall({
-      url:`users/${userInfo.user_id}`
-      
+      url: `VendorProfile/${userInfo.user_id}?details=1`,
     });
     if (result.data) {
-      setVendorData(result.data);
-      setPradesh(result?.data?.state)
+      setLoading(false);
+      setVendorData(result.data.data);
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   };
   // console.log(states)
   useEffect(() => {
@@ -63,17 +57,40 @@ const Profile = () => {
     });
     setCities(demo);
   }, [pradesh]);
-  const handleValueChange=(a,values)=>{
-        if(values.password===''){
-          setConfirm('')
-        }
-        if(values.c_password===''){
-          setConfirm('')
-        }
-  }
+  const handleValueChange = (a, values) => {
+    console.log(values);
+    if (values.t_password === "") {
+      setConfirm("");
+    }
+    if (values.c_password === "") {
+      setConfirm("");
+    }
+  };
   const onFinish = async (values) => {
-    const data = { ...values };
-    data.company = values.firstname + " " + values.lastname;
+    const data = {
+      user_data:{
+        ...values,
+        "company_id": userInfo.id,
+       
+
+      }
+     ,
+     ship_to_another: 1,
+      notify_customer: "Y",
+      user_id: userInfo.user_id,
+      selected_section: "general",
+      user_type: "V",
+    };
+    if(isShipping){
+      data.user_data={
+        ...data.user_data,
+        s_address:values.b_address,
+        s_city:values.b_city,
+        s_country:values.b_country,
+        s_state:values.b_state,
+        s_zipcode:values.b_zipcode
+      }
+    }
     if (values.password?.length > 0 && values?.password?.length < 8) {
       setConfirm("Password should at least 8 character!");
     } else {
@@ -82,21 +99,15 @@ const Profile = () => {
       } else {
         setConfirm("");
         const result = await apicall({
-          url: `users/${userInfo.user_id}`,
+          url: `VendorProfile/${userInfo.user_id}?details=1`,
           data: data,
           method: "put",
         });
+
         if (result.data) {
-          // Seccess message
-          openNotificationWithIcon(
-            "success",
-            "Your changes saved successfully!"
-          );
           setTimeout(() => {
             navigate("/");
           }, 2000);
-        } else {
-          openNotificationWithIcon("error", "Failed to save your changes!");
         }
       }
     }
@@ -112,7 +123,6 @@ const Profile = () => {
   }
   return (
     <div className={styles.container}>
-      {contextHolder}
       <div className={styles.breadcrumb_create_btn}>
         <div className="breadcrumb">
           <Breadcrumb>
@@ -135,12 +145,16 @@ const Profile = () => {
             phone: vendorData?.phone,
             firstname: vendorData?.firstname,
             lastname: vendorData?.lastname,
-            country: vendorData?.country,
-            state: vendorData?.state,
-            city: vendorData?.city,
-            password:vendorData?.password,
-            b_address: vendorData?.address,
-            b_zipcode: vendorData?.zipcode,
+            b_country: vendorData?.b_country,
+            b_state: vendorData?.b_state,
+            b_city: vendorData?.b_city,
+            b_address: vendorData?.b_address,
+            b_zipcode: vendorData?.b_zipcode,
+            s_country: vendorData?.s_country,
+            s_state: vendorData?.s_state,
+            s_city: vendorData?.s_city,
+            s_address: vendorData?.s_address,
+            s_zipcode: vendorData?.s_zipcode,
           }}
         >
           <Form.Item style={{ float: "right" }} name="submit_btn">
@@ -201,14 +215,14 @@ const Profile = () => {
               <div className={styles.name_container}>
                 <Form.Item
                   label="Password"
-                  name="password"
+                  name="t_password"
                   style={{
                     width: "100%",
                   }}
                   rules={[
                     {
                       required: true,
-                      message: '',
+                      message: "",
                     },
                   ]}
                 >
@@ -246,10 +260,10 @@ const Profile = () => {
               <h2 className={styles.title_header}>Billing address</h2>
             </div>
             <Card className={styles.options_container}>
-            <Form.Item label="Address" name="b_address">
-            <Input type="address" />
-          </Form.Item>
-              <Form.Item label="Country" name="country">
+              <Form.Item label="Address" name="b_address">
+                <Input type="address" />
+              </Form.Item>
+              <Form.Item label="Country" name="b_country">
                 <Select
                   onSearch={onSearch}
                   showSearch
@@ -260,7 +274,7 @@ const Profile = () => {
                 />
               </Form.Item>
 
-              <Form.Item label="State/Province" name="state">
+              <Form.Item label="State/Province" name="b_state">
                 <Select
                   onSelect={onSelect}
                   //   onChange={onSecondCityChange}
@@ -270,7 +284,7 @@ const Profile = () => {
                   }))}
                 />
               </Form.Item>
-              <Form.Item label="City" name="city">
+              <Form.Item label="City" name="b_city">
                 <Select
                   showSearch
                   // //   onChange={onSecondCityChange}
@@ -281,8 +295,8 @@ const Profile = () => {
                 />
               </Form.Item>
               <Form.Item label="Zip/postal code" name="b_zipcode">
-              <Input type="text" vlaue="" pattern="\d*" />
-            </Form.Item>
+                <Input type="text" vlaue="" pattern="\d*" />
+              </Form.Item>
             </Card>
           </div>
           <div className={styles.pricing}>
@@ -290,17 +304,20 @@ const Profile = () => {
               <h2 className={styles.title_header}>Shipping address</h2>{" "}
             </div>
             <Form.Item>
-              <Checkbox onChange={() => setIsShipping(!isShipping)}>
+              <Checkbox onChange={() => setIsShipping((prev)=> !prev)}>
                 Are shipping and billing addresses the same?
               </Checkbox>
             </Form.Item>
             <Card className={!isShipping ? "" : styles.area_disabled}>
-              <Form.Item label="Address" name={isShipping?'b_address':'s_address'}>
+              <Form.Item
+                label="Address"
+                name={isShipping ? "b_address" : "s_address"}
+              >
                 <Input type="address" />
               </Form.Item>
               <Form.Item
                 label="Country"
-                name={isShipping ? "country" : "s_country"}
+                name={isShipping ? "b_country" : "s_country"}
               >
                 <Select
                   onSearch={onSearch}
@@ -314,7 +331,7 @@ const Profile = () => {
 
               <Form.Item
                 label="State/Province"
-                name={isShipping ? "state" : "s_state"}
+                name={isShipping ? "b_state" : "s_state"}
               >
                 <Select
                   onSelect={onSelect}
@@ -325,7 +342,7 @@ const Profile = () => {
                   }))}
                 />
               </Form.Item>
-              <Form.Item label="City" name={isShipping ? "city" : "s_city"}>
+              <Form.Item label="City" name={isShipping ? "b_city" : "s_city"}>
                 <Select
                   showSearch
                   options={cities.map((city) => ({
@@ -334,7 +351,10 @@ const Profile = () => {
                   }))}
                 />
               </Form.Item>
-              <Form.Item label="Zip/postal code" name={isShipping?'b_zipcode':'s_zipcode'}>
+              <Form.Item
+                label="Zip/postal code"
+                name={isShipping ? "b_zipcode" : "s_zipcode"}
+              >
                 <Input type="text" vlaue="" pattern="\d*" />
               </Form.Item>
             </Card>
