@@ -9,6 +9,7 @@ import {
   EditSeo,
   EditShipping,
   EditVariations,
+  ParticularReview,
 } from "../..";
 import { useSelector } from "react-redux";
 import cx from "classnames";
@@ -22,6 +23,7 @@ const tabs = [
   "SEO",
   "Quantity discounts",
   "Product bundles",
+  "Reviews"
 ];
 const Edit = () => {
   const categories = useSelector((state) => state.product.categories);
@@ -31,6 +33,7 @@ const Edit = () => {
   const [data, setData] = useState("");
   const [variantFeatures, setVariantFeatures] = useState("");
   const [variationData, setVariationData] = useState("");
+  const [reviews, setReviews]=useState([])
   const [seoPath, setSeoPath] = useState("");
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -42,7 +45,8 @@ const Edit = () => {
       getFeatures(editID),
       getEditData(editID),
       getFeatureVariants(editID),
-      getSeoPath(editID)
+      getSeoPath(editID),
+      getParticularReview(editID)
     ]);
   };
   // Get all edit data
@@ -123,6 +127,18 @@ const Edit = () => {
       setSeoPath(result.data?.prefix)
     }
   }
+  // get particular review
+  const getParticularReview= async (id)=>{
+    setLoading(true)
+      let result= await apicall({
+        url:`ProductReview?product_id=${id}`
+      })
+      if(result?.data){
+        setReviews(Object.values(result.data.reviews).map((el,i)=>({...el, key:i})))
+        setLoading(false)
+      }
+      setLoading(false)
+  }
   const getContainerFromTab = () => {
     switch (active) {
       case tabs[1]:
@@ -171,6 +187,8 @@ const Edit = () => {
         );
       case tabs[7]:
         return <div>Product bundles</div>;
+      case tabs[8]:
+        return <ParticularReview reviews={reviews} loading={loading}/>
       default:
         return categories && data ? (
           <EditGeneral

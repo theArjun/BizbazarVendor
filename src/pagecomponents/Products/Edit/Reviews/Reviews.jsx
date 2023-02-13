@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Table, Dropdown, Image, Skeleton } from "antd";
-import styles from "./Table.module.css";
+import React, { useEffect } from "react";
+import styles from "./Reviews.module.css";
+import { Table, Image } from "antd";
 import { AiFillStar } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
-import Typography from "antd/es/typography/Typography";
-const ReviewTable = ({ loading, handleScroll, reviews }) => {
+const Reviews = ({ loading, handleScroll, reviews }) => {
+  console.log(reviews);
   const navigate = useNavigate();
   const windowSize = useWindowSize();
   useEffect(() => {
@@ -164,7 +164,7 @@ const ReviewTable = ({ loading, handleScroll, reviews }) => {
     },
   ];
   return (
-    <div>
+    <div className={styles.container}>
       <Table
         id="product"
         loading={loading}
@@ -179,7 +179,7 @@ const ReviewTable = ({ loading, handleScroll, reviews }) => {
                   margin: 0,
                 }}
               >
-                <b>Comment:</b>
+                <b>Comment: </b>
                 {" " + record.message.comment}
               </p>{" "}
               <p
@@ -195,7 +195,7 @@ const ReviewTable = ({ loading, handleScroll, reviews }) => {
                   margin: 0,
                 }}
               >
-                <b>Disadvantages: </b>
+                <b>Disadvantages:</b>
                 {" " + record.message.disadvantages}
               </p>
             </div>
@@ -211,4 +211,4 @@ const ReviewTable = ({ loading, handleScroll, reviews }) => {
   );
 };
 
-export default ReviewTable;
+export default Reviews;
