@@ -80,6 +80,9 @@ const AdditionField = React.lazy(() =>
 const AdditionTable = React.lazy(() =>
   import("../pagecomponents/Products/BulkAddition/AdditionTable/AdditionTable")
 );
+const ParticularReview = React.lazy(() =>
+  import("../pagecomponents/Products/Edit/Reviews/Reviews")
+);
 
 export {
   ProductTable,
@@ -108,5 +111,6 @@ export {
   AdminCommunicationSearch,
   AdminCommunicationTable,
   AdditionField,
-  AdditionTable
+  AdditionTable,
+  ParticularReview
 };

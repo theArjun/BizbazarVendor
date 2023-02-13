@@ -39,11 +39,6 @@ const General = ({ editData, categories, getData }) => {
     product_main_image_data:{},
     product_additional_image_data:{}
   });
-  // create upload image
-   useEffect(()=>{
-    console.log('final image ---', finalImages)
-    console.log('upload image ---', uploadedImage)
-   },[finalImages])
   // for setting vatId
   useEffect(() => {
     if (taxChecked) {
@@ -74,6 +69,7 @@ const General = ({ editData, categories, getData }) => {
     tracking,
     max_qty,
     min_qty,
+    list_price,
     tax,
   } = editData ? editData : "";
   const options_t = [
@@ -217,6 +213,7 @@ const General = ({ editData, categories, getData }) => {
           product_code: product_code,
           category_ids: getSelectedCatLabel(category_ids),
           price: parseFloat(price).toFixed(2),
+          list_price: parseFloat(list_price).toFixed(2)
         }}
       >
         <Form.Item style={{ float: "right" }} name="submit_btn">
@@ -280,6 +277,19 @@ const General = ({ editData, categories, getData }) => {
                 {
                   required: true,
                   message: "Please  enter product price!",
+                },
+              ]}
+            >
+              <Input type="number" />
+            </Form.Item> 
+            <Form.Item
+              label="List price (रु)"
+              name="list_price"
+              style={{ width: 300 }}
+              rules={[
+                {
+                  required: true,
+                  message: "Please  enter product list price!",
                 },
               ]}
             >
