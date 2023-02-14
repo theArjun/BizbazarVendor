@@ -1,43 +1,103 @@
-import React from "react";
+import React,{useEffect} from "react";
 import styles from "./Promotions.module.css";
-import { Breadcrumb, Button, Table } from "antd";
+import { Breadcrumb, Button, Table, Select, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
-
+import { useState } from "react";
+import {apicall} from '../../utils/apicall/apicall'
+import Spinner from "../../component/Spinner/Spinner";
+import useWindowSize from "../../utils/Hooks/useWindowSize";
 function Promotions() {
+  const [promotions, setPromotions]=useState([])
+  const [loading, setLoading]=useState(false)
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const navigate = useNavigate();
+  const windowSize= useWindowSize();
+  useEffect(() => {
+  getPromotions()
+  }, []);
+  //  lets get promotions from API 
+  const getPromotions= async ()=>{
+        setLoading(true)
+        let result= await  apicall({
+          url:`Promotions`
+        })
+        if(result?.data){
+          let data=[...result.data.promotions]
+            setPromotions(data.map((el,i)=>({...el, key:i})))
+            setLoading(false)
+            
+        }
+        setLoading(false)
+  }
+  // lets get status 
+  const getStatus=(status)=>{
+    switch(status){
+      case 'A':
+        return 'Active'
+      case 'D':
+        return 'Disabled'
+      case 'H':
+        return 'Hidden'
+      default:
+        return 'Unidentified'
+    }
+  }
+  // lets handle the select status change 
+  const handleStatusChange= async()=>{
+
+  }
   const columns = [
     {
-      title: "Full Name",
-      width: 100,
-      dataIndex: "name",
+      title: "Name",
       key: "name",
-      fixed: "left",
+      dataIndex:'name',
+      render:(name, row)=>(
+        <React.Fragment>
+        <a onClick={()=>navigate('../Marketing/Promotions/'+row?.promotion_id)} className={styles.promotion_name}>{name}</a>
+        </React.Fragment>
+      )
     },
     {
-      title: "Age",
-      width: 100,
-      dataIndex: "age",
-      key: "age",
-      fixed: "left",
+      title: "Stop other rules",
+      dataIndex: "stop_other_rules",
+      key: "rules",
+      render:(text)=>(
+        text=='N'?'No':'Yes'
+      )
     },
 
     {
-      title: "Column 4",
-      dataIndex: "address",
+      title: "Priority",
+      dataIndex: "priority",
       key: "4",
-      width: 150,
     },
     {
-      title: "Column 5",
-      dataIndex: "address",
+      title: "Zone",
+      dataIndex: "zone",
       key: "5",
-      width: 150,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "5",
+      render:(status)=>(
+          <a>
+          {getStatus(status)}
+          </a>
+      )
     },
   ];
-
-  const data = [];
-
-  const navigate = useNavigate();
-
+  const onSelectChange = (newSelectedRowKeys) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  const hasSelected = selectedRowKeys.length > 0;
+if(loading){
+  return <Spinner/>
+}
   return (
     <div className={styles.container}>
       <div className={styles.breadcumb}>
@@ -46,11 +106,43 @@ function Promotions() {
           <Breadcrumb.Item>
             <a href="">Promotions</a>
           </Breadcrumb.Item>
-          <Breadcrumb.Item>Promotions</Breadcrumb.Item>
         </Breadcrumb>
       </div>
       <div className={styles.container}>
-        <Table pagination={false} columns={columns} dataSource={data} />
+      <div className={styles.action_buttons}>
+      <Button  disabled={!hasSelected} loading={loading}>
+          Delete
+        </Button>
+        <Select
+        disabled={!hasSelected}
+        defaultValue='Status'
+      style={{
+        width: 170,
+      }}
+      onChange={handleStatusChange}
+      options={[
+        {
+          label: 'Change to Active',
+          value: 'A',
+        },
+        {
+          label: 'Change to Hidden',
+          value: 'H',
+        },
+        {
+          label: 'Change to Disabled',
+          value: 'D',
+        },
+      ]}
+    />
+      </div>
+        <Table rowSelection={rowSelection}
+         pagination={false} columns={columns}
+          dataSource={promotions}
+          scroll={{
+            y: windowSize.height > 670 ? 300 : 200,
+            x: 700,
+          }} />
       </div>
       <Button
         className={styles.buttonAddCatalog}

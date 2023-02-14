@@ -1,26 +1,33 @@
 import React, { useState } from "react";
 import styles from "./AddCatalogPromotion.module.css";
 import cx from "classnames";
-import General from "../../pagecomponents/Marketing/AddCatalogPromotion/General/General";
-import Conditions from "../../pagecomponents/Marketing/AddCatalogPromotion/Conditions/Conditions";
-import Bonuses from "../../pagecomponents/Marketing/AddCatalogPromotion/Bonuses/Bonuses";
-
+import { CatalogPromotionBonuses, CatalogPromotionConditions, CatalogPromotionGeneral } from "..";
+import { Breadcrumb } from "antd"; 
 function AddCatalogPromotion() {
   const [activeTab, setActiveTab] = useState("General");
 
   const getDivision = () => {
     switch (activeTab) {
       case "General":
-        return <General />;
+        return <CatalogPromotionGeneral />;
       case "Conditions":
-        return <Conditions />;
+        return <CatalogPromotionConditions />;
 
       default:
-        return <Bonuses />;
+        return <CatalogPromotionBonuses />;
     }
   };
 
   return (
+    <React.Fragment>
+    <div className={styles.breadcumb}>
+      <Breadcrumb>
+        <Breadcrumb.Item>Marketing</Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <a href="">Add Catalog Promotion</a>
+        </Breadcrumb.Item>
+      </Breadcrumb>
+    </div>
     <div className={styles.container}>
       <div className={styles.tabWrapper}>
         {["General", "Conditions", "Bonuses"].map((dat, i) => (
@@ -38,6 +45,7 @@ function AddCatalogPromotion() {
       </div>
       <div className={styles.tabcontain}>{getDivision()}</div>
     </div>
+    </React.Fragment>
   );
 }
 

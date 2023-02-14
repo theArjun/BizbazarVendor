@@ -8,6 +8,7 @@ import TextArea from "antd/es/input/TextArea";
 const ReviewDetail = () => {
   const [review, setReview] = useState("");
   const [loading, setLoading] = useState(false);
+  const [replyMessage, setReplyMessage]=useState('');
   const param = useParams("id");
   useEffect(() => {
     getReviewData();
@@ -21,12 +22,30 @@ const ReviewDetail = () => {
     if (result?.data) {
       setLoading(false);
       setReview(result?.data?.reviews[param.id]);
+      setReplyMessage(result?.data?.reviews[param.id]?.reply?.reply)
     } else {
       setLoading(false);
       setReview({});
     }
   };
-
+// submit message 
+ const submitMessage= async ()=>{
+    let finalData={
+      "product_review_data": {
+        "product_review_id": param.id,
+        "reply": replyMessage
+    }
+    }
+    let result=await apicall({
+      method:'put',
+      url:`ProductReview/${param.id}`,
+      data:finalData
+    })
+    if(result?.data){
+      getReviewData();
+    }
+    
+ }
   if (loading) {
     return <Spin />;
   }
@@ -50,10 +69,10 @@ const ReviewDetail = () => {
           <div className={styles.reply_body}>
             <div className={styles.reply_text}> Reply:</div>
             <div className={styles.reply_box}>
-              <TextArea rows={5} />
+              <TextArea value={replyMessage} onChange={(e)=>setReplyMessage(e.target.value)} rows={5} />
             </div>
             <div className={styles.reply_btn}>
-              <Button type="primary">Add reply</Button>
+              <Button type="primary" onClick={submitMessage}>{review?.reply?.reply?'Update reply':'Add reply'}</Button>
             </div>
           </div>
         </div>
@@ -215,15 +234,15 @@ const ReviewDescription = ({ data }) => {
   return (
     <React.Fragment >
         <div className={styles.ReviewItem}>
-          <div>Rating:</div>&nbsp;&nbsp;{" "}
-          <span>{getRating(data?.rating_value)}</span>
+          <div>Rating:</div>
+          <div>{getRating(data?.rating_value)}</div>
         </div>
         <div className={styles.ReviewItem}>
-          <div>Date:</div>&nbsp;&nbsp;{" "}
+          <div>Date:</div>
           <span>{getTimeAndDate(data?.product_review_timestamp)}</span>
         </div>
         <div className={styles.ReviewItem}>
-          <div>Helpfulness:</div>&nbsp;&nbsp;{" "}
+          <div>Helpfulness:</div>
           <span>
             {" "}
             <AiFillLike />{" "}
@@ -237,19 +256,19 @@ const ReviewDescription = ({ data }) => {
           </span>
         </div>
         <div className={styles.ReviewItem}>
-          <div>Advantages:</div>&nbsp;&nbsp;{" "}
+          <div>Advantages:</div>
           <span>{data?.message?.advantages}</span>
         </div>
         <div className={styles.ReviewItem}>
-          <div>Disadvantages:</div>&nbsp;&nbsp;{" "}
+          <div>Disadvantages:</div>
           <span>{data?.message?.disadvantages}</span>
         </div>
         <div className={styles.ReviewItem}>
-          <div>Comment:</div>&nbsp;&nbsp;{" "}
+          <div>Comment:</div>
           <span>{data?.message?.comment}</span>
         </div>
         <div className={styles.ReviewItem}>
-          <div>Customer photos:</div>&nbsp;&nbsp;
+          <div>Customer photos:</div>
           <div>
             {Object.values(data?.images)?.map((el, i) => {
               return (

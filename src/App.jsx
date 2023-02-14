@@ -51,6 +51,7 @@ const AdminCommunication = lazy(() =>
 );
 
 const Promotions = lazy(() => import("./pages/Promotions/Promotions"));
+const ExplorePromotion = lazy(() => import("./pages/Promotions/ExplorePromotion"));
 
 const ProductBundles = lazy(() =>
   import("./pages/ProductBundles/ProductBundles")
@@ -258,6 +259,14 @@ function App() {
               </SuspenseWrapper>
             }
             path="/Marketing/Promotions"
+          ></Route>
+          <Route
+            element={
+              <SuspenseWrapper>
+                <ExplorePromotion />
+              </SuspenseWrapper>
+            }
+            path="/Marketing/Promotions/:id"
           ></Route>
           {/**Product Bundles*/}
           <Route

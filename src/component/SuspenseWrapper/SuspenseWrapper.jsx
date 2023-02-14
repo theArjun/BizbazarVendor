@@ -1,8 +1,9 @@
 import React, { lazy, Suspense } from "react";
 import { Space, Spin } from "antd";
+import Spinner from "../Spinner/Spinner";
 
 const SuspenseWrapper = (props) => {
-  return <Suspense fallback={<Loading />}>{props.children}</Suspense>;
+  return <Suspense fallback={<Spinner />}>{props.children}</Suspense>;
 };
 
 export default SuspenseWrapper;
