@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Space, Table, Dropdown, Image, message, Button, Modal } from "antd";
+import { Space, Table, Dropdown, Image, Button, Modal } from "antd";
 import styles from "./Table.module.css";
 import { DownOutlined } from "@ant-design/icons";
 import { apicall } from "../../../utils/apicall/apicall";
@@ -159,9 +159,7 @@ const ProductTable = ({
       key: "1",
       label: (
         <a
-          rel="noopener noreferrer"
-          href="#"
-          onClick={() => navigate("Edit Product")}
+          onClick={() => navigate("../Products/Products/Edit Product/"+productId)}
         >
           Edit <AiFillEdit />
         </a>
@@ -198,10 +196,8 @@ const ProductTable = ({
           />
           <div className={styles.product_name}>
             <a
-              href="#"
-              onClick={() => setSelectedRow(row["product_id"], "detail")}
+              onClick={() => navigate(`../Products/Products/Edit Product/`+row?.product_id)}
             >
-              {" "}
               <strong>
                 {row["product"]?.length > 15
                   ? row["product"].substring(0, 15) + "..."

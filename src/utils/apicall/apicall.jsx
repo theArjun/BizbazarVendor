@@ -57,6 +57,6 @@ export const apicall = async ({
         description: error.message,
       });
     }
-    return error.message;
+    return error.response.status;
   }
 };

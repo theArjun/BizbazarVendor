@@ -184,7 +184,7 @@ function App() {
                 <Edit />
               </SuspenseWrapper>
             }
-            path="/products/Products/Edit Product"
+            path="/products/Products/Edit Product/:id"
           ></Route>
           {/** product Reviews */}
           <Route
@@ -381,8 +381,9 @@ function App() {
               subTitle="Sorry, you are not authorized to access this page."
               extra={<a href="/">Back Home</a>}
             />
+            
           }
-        />
+        ></Route>
       </Routes>
     </Router>
   );
