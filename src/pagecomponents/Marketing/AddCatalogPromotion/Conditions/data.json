@@ -1,0 +1,180 @@
+{
+    "condition_items":[
+        {
+          "label": "Product price",
+          "value": "product_price"
+        },
+        {
+          "label": "Products",
+          "value": "products"
+        },
+        {
+          "label": "Categories",
+          "value": "categories"
+        },
+        {
+          "label": "Purchased Products",
+          "value": "purchased_products"
+        },
+        {
+          "label": "Users",
+          "value": "users"
+        },
+        {
+          "label": "Product feature",
+          "value": "product_feature"
+        },
+    
+        {
+          "label": "User group",
+          "value": "user_group"
+        },
+        {
+          "label": "Customer is subscribed",
+          "value": "is_subscribed"
+        },
+        {
+          "label": "Customer comes by affiliate link",
+          "value": "comes_by_affiliate"
+        },
+        {
+          "label": "Points on user account ",
+          "value": "points_on_user_account"
+        }
+      ],
+  "product_price": [
+    {
+      "label": "equal",
+      "value": "equal"
+    },
+    {
+      "label": "not equal",
+      "value": "not_equal"
+    },
+    {
+      "label": "equal or less",
+      "value": "equal_or_less"
+    },
+    {
+      "label": "equal or greater",
+      "value": "equal_or_greater"
+    },
+    {
+      "label": "less",
+      "value": "less"
+    },
+    {
+      "label": "greater",
+      "value": "greater"
+    }
+  ],
+  "categories":[
+    {
+        "label": "in",
+        "value": "in"
+      },
+      {
+        "label": "not in",
+        "value": "not_in"
+      }
+  ],
+  "product_features":[
+    {
+        "label": "equal",
+        "value": "equal"
+      },
+      {
+        "label": "not equal",
+        "value": "not_equal"
+      },
+      {
+        "label": "equal or less",
+        "value": "equal_or_less"
+      },
+      {
+        "label": "equal or greater",
+        "value": "equal_or_greater"
+      },
+      {
+        "label": "less",
+        "value": "less"
+      },
+      {
+        "label": "greater",
+        "value": "greater"
+      },
+      {
+        "label": "in",
+        "value": "in"
+      },
+      {
+        "label": "not in",
+        "value": "not_in"
+      },
+      {
+        "label": "contains",
+        "value": "contains"
+      },
+      {
+        "label": "does not contains",
+        "value": "does_not_contains"
+      }
+  ],
+  "user_group_condition":[
+    {
+        "label": "equal",
+        "value": "equal"
+      },
+      {
+        "label": "not equal",
+        "value": "not_equal"
+      }
+  ],
+  "user_group":[
+    {
+        "label": "Guest",
+        "value": "guest"
+      },
+      {
+        "label": "Registered user",
+        "value": "registered_user"
+      }
+  ],
+  "is_subscribed":[
+    {
+        "label": "Yes",
+        "value": "Y"
+      },
+      {
+        "label": "No",
+        "value": "N"
+      }
+  ],
+  "points_on_user_account":[
+    {
+        "label": "equal",
+        "value": "equal"
+      },
+      {
+        "label": "not equal",
+        "value": "not_equal"
+      },
+      {
+        "label": "equal or less",
+        "value": "equal_or_less"
+      },
+      {
+        "label": "equal or greater",
+        "value": "equal_or_greater"
+      },
+      {
+        "label": "less",
+        "value": "less"
+      },
+      {
+        "label": "greater",
+        "value": "greater"
+      }
+  ]
+
+}

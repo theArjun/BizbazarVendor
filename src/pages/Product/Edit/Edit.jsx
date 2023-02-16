@@ -102,6 +102,7 @@ const Edit = () => {
       url: `products/${id}/ProductVariation`,
     });
     if (result.data) {
+      console.log(result.data)
       setLoading(false);
       setVariantFeatures(result?.data?.features);
     } else {

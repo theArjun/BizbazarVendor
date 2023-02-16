@@ -73,7 +73,7 @@ const Variations = ({
   }
   useEffect(() => {
     setFeatures(
-      variations?.map((item) => ({
+      variations?.filter((el)=>!el?.children)?.map((item) => ({
         value: item?.id,
         label: item?.text,
         variation: Object.values(item?.object?.variants),

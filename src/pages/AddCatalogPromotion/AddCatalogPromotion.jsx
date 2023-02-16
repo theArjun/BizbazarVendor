@@ -1,17 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./AddCatalogPromotion.module.css";
 import cx from "classnames";
 import { CatalogPromotionBonuses, CatalogPromotionConditions, CatalogPromotionGeneral } from "..";
 import { Breadcrumb } from "antd"; 
 function AddCatalogPromotion() {
   const [activeTab, setActiveTab] = useState("General");
-
+  const [conditions,setConditions]=useState({conditions:{ "set": "all",
+  "set_value": 1, conditions:{}},count:1})
   const getDivision = () => {
     switch (activeTab) {
       case "General":
         return <CatalogPromotionGeneral />;
       case "Conditions":
-        return <CatalogPromotionConditions />;
+        return <CatalogPromotionConditions conditions={conditions} setConditions={setConditions} />;
 
       default:
         return <CatalogPromotionBonuses />;
