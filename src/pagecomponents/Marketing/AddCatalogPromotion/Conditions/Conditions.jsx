@@ -4,22 +4,22 @@ import styles from "./Conditions.module.css";
 import ConditionTable from "./Table/ConditionTable";
 import { useState } from "react";
 import data from "./data.json";
-function Conditions({ conditions, setConditions }) {
+function Conditions({
+  conditions,
+  setConditions,
+  setConditionValues,
+  conditionValues,
+}) {
   const [currentCondition, setCurrentCondition] = useState("");
-  const [conditionData, setConditionData]=useState([])
-  // set table data 
-  useEffect(()=>{
-    setConditionData(Object.values(conditions.conditions.conditions))
-  },[conditions])
   const handleTextChange = (a, b) => {
-    let temp_condition = { ...conditions };
-    temp_condition.conditions.set = b.value;
-    setConditions(temp_condition);
+    let temp_condition = { ...conditionValues };
+    temp_condition.set = b.value;
+    setConditionValues(temp_condition);
   };
   const handleTextValueChange = (a, b) => {
-    let temp_condition = { ...conditions };
-    temp_condition.conditions.set_value = b.value;
-    setConditions(temp_condition);
+    let temp_condition = { ...conditionValues };
+    temp_condition.set_value = b.value;
+    setConditionValues(temp_condition);
   };
   // handleCondition select change
   const handleConditionSelectChange = (a, b) => {
@@ -47,8 +47,16 @@ function Conditions({ conditions, setConditions }) {
                 options={data.product_price}
               />
             </Form.Item>
-            <Form.Item name="product_price_condition_value">
-              <Input />
+            <Form.Item
+              rules={[
+                {
+                  required: true,
+                  message: "",
+                },
+              ]}
+              name="product_price_condition_value"
+            >
+              <Input type="number" />
             </Form.Item>
           </div>
         );
@@ -301,7 +309,7 @@ function Conditions({ conditions, setConditions }) {
                 },
               ]}
             >
-              <Input />
+              <Input type="number" />
             </Form.Item>
           </div>
         );
@@ -317,14 +325,110 @@ function Conditions({ conditions, setConditions }) {
 
   // form submit function
   const onFinish = (values) => {
-    let temp={...conditions}
-        temp.conditions.conditions[conditions.count]={
-          condition:values.condition,
-          operator:values.product_price_condition,
-          values:values.product_price_condition_value
-        }
-        temp.count=temp.count+1;
-        setConditions(temp)
+    let data = [...conditions];
+    switch (values.condition) {
+      case "product_price":
+        data = [
+          ...conditions,
+          {
+            condition: values.condition,
+            operator: values.product_price_condition,
+            values: values.product_price_condition_value,
+          },
+        ];
+        break;
+      case "products":
+        data = [
+          ...conditions,
+          {
+            condition: values.condition,
+            operator: values.products_condition,
+            values: "data",
+          },
+        ];
+        break;
+      case "categories":
+        data = [
+          ...conditions,
+          {
+            condition: values.condition,
+            operator: values.categories_condition,
+            values: "data",
+          },
+        ];
+        break;
+      case "purchased_products":
+        data = [
+          ...conditions,
+          {
+            condition: values.condition,
+            operator: values.purchased_products_condition,
+            values: "data",
+          },
+        ];
+        break;
+      case "users":
+        data = [
+          ...conditions,
+          {
+            condition: values.condition,
+            operator: values.users_condition,
+            values: "data",
+          },
+        ];
+        break;
+      case "product_feature":
+        data = [
+          ...conditions,
+          {
+            condition: values.condition,
+            operator: values.product_feature_condition,
+            values: values.product_feature_variant,
+            feature: values.product_feature,
+          },
+        ];
+        break;
+      case "user_group":
+        data = [
+          ...conditions,
+          {
+            condition: values.condition,
+            operator: values.user_group_condition,
+            values: values.user_group,
+          },
+        ];
+        break;
+      case "is_subscribed":
+        data = [
+          ...conditions,
+          {
+            condition: values.condition,
+            values: values.is_subscribed,
+          },
+        ];
+        break;
+      case "comes_by_affiliate":
+        data = [
+          ...conditions,
+          {
+            condition: values.condition,
+            operator: values.comes_by_affiliate,
+            values: "data",
+          },
+        ];
+        break;
+      case "points_on_user_account":
+        data = [
+          ...conditions,
+          {
+            condition: values.condition,
+            operator: values.points_on_user_account_condition,
+            values: values.points_on_user_account_value,
+          },
+        ];
+        break;
+    }
+    setConditions(data);
   };
   return (
     <div className={styles.container}>
@@ -401,7 +505,10 @@ function Conditions({ conditions, setConditions }) {
             </div>
           </Form>
           <div className={styles.condition_table}>
-            <ConditionTable conditions={conditionData} />
+            <ConditionTable
+              conditions={conditions.map((el, i) => ({ ...el, key: i }))}
+              setConditions={setConditions}
+            />
           </div>
         </div>
       </div>

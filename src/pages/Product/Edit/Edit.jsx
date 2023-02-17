@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./Edit.module.css";
 import { Breadcrumb, Result, Skeleton } from "antd";
 import { useParams } from "react-router-dom";
+import Spinner from '../../../component/Spinner/Spinner'
 import {
   EditFeatures,
   EditGeneral,
@@ -118,22 +119,27 @@ const Edit = () => {
       url: `products/${id}/ProductFeature`,
     });
     if (result.data) {
+      setLoading(false)
       setFeatures(result.data);
     } else {
+      setLoading(false)
       setFeatures("");
     }
   };
 
   // get SEO path 
   const getSeoPath= async(product_id)=>{
+    setLoading(true)
     let result= await apicall({
       url:`products/${product_id}/ProductSeo`,
 
     })
 
     if(result?.data){
+      setLoading(false)
       setSeoPath(result.data?.prefix)
     }
+    setLoading(false)
   }
   // get particular review
   const getParticularReview= async (id)=>{
@@ -177,7 +183,7 @@ const Edit = () => {
             getData={getData}
           />
         ) : (
-          <Skeleton active />
+          ''
         );
       case tabs[5]:
         return data ? <EditSeo data={data} seoPath={seoPath} /> : "";
@@ -207,7 +213,7 @@ const Edit = () => {
             getData={getData}
           />
         ) : (
-          <Skeleton active />
+         ''
         );
     }
   };
@@ -218,6 +224,11 @@ const Edit = () => {
               subTitle="Sorry, Requested product does not found !"
               extra={<a href="/">Back Home</a>}
     />)
+  }
+  if(loading){
+    return (
+      <Spinner/>
+    )
   }
   return (
     <div className={styles.container}>

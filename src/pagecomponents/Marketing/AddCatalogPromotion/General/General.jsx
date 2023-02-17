@@ -23,7 +23,7 @@ const beforeUpload = (file) => {
   return isJpgOrPng && isLt2M;
 };
 
-function General() {
+function General({ setGeneralData, generalData }) {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState();
   const handleChange = (info) => {
@@ -59,15 +59,42 @@ function General() {
           Name<label>*</label>:
         </div>
 
-        <Input className={styles.nameInput} type="text" />
+        <Input
+          className={styles.nameInput}
+          type="text"
+          value={generalData.name}
+          onChange={(e) => {
+            let data = { ...generalData };
+            data.name = e.target.value;
+            setGeneralData(data);
+          }}
+        />
       </label>
       <label className={styles.label}>
         <div>Detailed description:</div>
-        <ReactQuill className={styles.inputQuill} theme="snow" />
+        <ReactQuill
+          className={styles.inputQuill}
+          theme="snow"
+          value={generalData.detailed_description}
+          onChange={(e) => {
+            let data = { ...generalData };
+            data.detailed_description = e.target.value;
+            setGeneralData(data);
+          }}
+        />
       </label>
       <label className={styles.label}>
         <div>Short description:</div>
-        <ReactQuill className={styles.inputQuill} theme="snow" />
+        <ReactQuill
+          className={styles.inputQuill}
+          value={generalData.short_description}
+          theme="snow"
+          onChange={(e) => {
+            let data = { ...generalData };
+            data.short_description = e.target.value;
+            setGeneralData(data);
+          }}
+        />
       </label>
       <label className={styles.label}>
         <div>Image :</div>
@@ -99,7 +126,11 @@ function General() {
       </label>
       <label className={styles.label}>
         <div>Available from:</div>
-        <input className={styles.checkbox} type="date" />
+        <input className={styles.checkbox} type="date" value={generalData.from_date} onChange={(e) => {
+          let data = { ...generalData };
+          data.from_date = e.target.value;
+          setGeneralData(data);
+        }} />
       </label>
       <label className={styles.label}>
         <div>Available to:</div>
