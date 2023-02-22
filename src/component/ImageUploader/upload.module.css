@@ -1,0 +1,7 @@
+
+.close_upload > span > div >div:nth-child(2) {
+    display: none;
+}
+.open_upload > span > div >div:nth-child(2) {
+    display: inline-block;
+}

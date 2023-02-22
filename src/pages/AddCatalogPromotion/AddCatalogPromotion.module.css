@@ -35,3 +35,9 @@
 .tabcontain {
   padding: 20px;
 }
+.breadcumb{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}

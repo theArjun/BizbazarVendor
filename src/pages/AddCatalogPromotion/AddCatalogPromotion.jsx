@@ -6,21 +6,24 @@ import {
   CatalogPromotionConditions,
   CatalogPromotionGeneral,
 } from "..";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Button } from "antd";
+import { apicall } from "../../utils/apicall/apicall";
 function AddCatalogPromotion() {
   const [activeTab, setActiveTab] = useState("General");
   const [bonuses, setBonuses] = useState([]);
   const [conditions, setConditions] = useState([]);
+  const [image, setImage] = useState("");
+  const [loading, setLoading] = useState(false);
   const [generalData, setGeneralData] = useState({
-    zone:"",
-    name:"",
-    detailed_description:"",
-    short_description:"",
-    from_date:'getDate()',
-    to_date: 'getDate()',
-    priority: "",
-    stop_other_rules:"",
-    status:""
+    zone: "",
+    name: "",
+    detailed_description: "",
+    short_description: "",
+    from_date: 0,
+    to_date: 0,
+    priority: 0,
+    stop_other_rules: "N",
+    status: "A",
   });
   const [conditionValues, setConditionValues] = useState({
     set: "all",
@@ -29,7 +32,14 @@ function AddCatalogPromotion() {
   const getDivision = () => {
     switch (activeTab) {
       case "General":
-        return <CatalogPromotionGeneral generalData={generalData} setGeneralData={setGeneralData} />;
+        return (
+          <CatalogPromotionGeneral
+            image={image}
+            setImage={setImage}
+            generalData={generalData}
+            setGeneralData={setGeneralData}
+          />
+        );
       case "Conditions":
         return (
           <CatalogPromotionConditions
@@ -46,7 +56,75 @@ function AddCatalogPromotion() {
         );
     }
   };
+  const createPromotion = async () => {
+    setLoading(true);
+    const formData = new FormData();
+    // append to form data
+    formData.append("file", image);
+    let image_data = {
+      promo_main_image_data: {
+        0: {
+          pair_id: "",
+          type: "M",
+          object_id: "0",
+          image_alt: "",
+        },
+      },
+      file_promo_main_image_icon: {
+        0: "promo_main",
+      },
+      type_promo_main_image_icon: {
+        0: "local",
+      },
+      is_high_res_promo_main_image_icon: {
+        0: "N",
+      },
+    };
+    // for preparing condition data
+    let temp_conditions = conditions.reduce((update, current, i) => {
+      update[i] = { ...current };
+      return update;
+    }, {});
+    // for preparing bonuses data
+    let temp_bonuses = bonuses.reduce((update, current, i) => {
+      update[i] = { ...current };
+      return update;
+    }, {});
+    let prepareData = {
+      ...generalData,
+      bonuses: { ...temp_bonuses },
+      conditions: {
+        ...conditionValues,
+        conditions: { ...temp_conditions },
+      },
+    };
+    if (image) {
+      console.log(
+        "🚀 ~ file: AddCatalogPromotion.jsx:91 ~ createPromotion ~ image",
+        image
+      );
+      prepareData = { ...prepareData, ...image_data };
+      console.log(
+        "🚀 ~ file: AddCatalogPromotion.jsx:92 ~ createPromotion ~ prepareData",
+        prepareData
+      );
+    }
+    formData.append("promotion_data", prepareData);
+    console.log(
+      "🚀 ~ file: AddCatalogPromotion.jsx:96 ~ createPromotion ~ formData",
+      prepareData
+    );
+    let result = await apicall({
+      url: "Promotions",
+      method: "post",
+      body: formData,
+    });
 
+    if (result) {
+      setLoading(false);
+    }
+    setLoading(false);
+  };
   return (
     <React.Fragment>
       <div className={styles.breadcumb}>
@@ -56,6 +134,9 @@ function AddCatalogPromotion() {
             <a href="">Add Catalog Promotion</a>
           </Breadcrumb.Item>
         </Breadcrumb>
+        <Button loading={loading} onClick={createPromotion} type="primary">
+          Create promotion
+        </Button>
       </div>
       <div className={styles.container}>
         <div className={styles.tabWrapper}>
