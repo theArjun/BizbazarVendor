@@ -45,18 +45,24 @@ const ReturnRequests = lazy(() =>
   import("./pages/Orders/ReturnRequests/ReturnRequests")
 );
 const Products = lazy(() => import("./pages/Product/Products"));
+const BulkAddition = lazy(() => import("./pages/Product/BulkAddition/BulkAddition"));
 
 const AddProduct = lazy(() => import("./pages/Product/AddProduct/AddProduct"));
 
 const Edit = lazy(() => import("./pages/Product/Edit/Edit"));
 
 const Reviews = lazy(() => import("./pages/Product/Reviews/Reviews"));
+const ReviewDetail = lazy(() => import("./pages/Product/Reviews/ReviewDetail"));
 
 const CustomerCommunication = lazy(() =>
   import("./pages/MessageCenter/CustomerCommunication/CustomerCommunication")
 );
 const CustomerMessages = lazy(() =>
   import("./pages/MessageCenter/CustomerMessages/CustomerMessages")
+);
+
+const AdminMessages = lazy(() =>
+  import("./pages/MessageCenter/AdminMessage/AdminMessages")
 );
 
 const AdminCommunication = lazy(() =>
@@ -183,6 +189,15 @@ function App() {
             }
             path="/products/Products/Add Product"
           ></Route>{" "}
+        {  /*Bulk Product addition  */}
+          <Route
+            element={
+              <SuspenseWrapper>
+                <BulkAddition />
+              </SuspenseWrapper>
+            }
+            path="/products/BulkProductAddition"
+          ></Route>{" "}
           {/** product edit  */}
           <Route
             element={
@@ -201,6 +216,15 @@ function App() {
             }
             path="/products/Reviews"
           ></Route>
+           {/** product Reviews Detail */}
+          <Route
+            element={
+              <SuspenseWrapper>
+                <ReviewDetail />
+              </SuspenseWrapper>
+            }
+            path="/products/Reviews/:id"
+          ></Route>
           {/**Message Center */}
           {/**Customer Commnunications */}
           <Route
@@ -209,16 +233,17 @@ function App() {
                 <CustomerCommunication />
               </SuspenseWrapper>
             }
-            path="/Message Center/Customer Commnunications"
+            path="/Message Center/Customer Communications"
           ></Route>
           <Route
-            element={
-              <SuspenseWrapper>
-                <CustomerMessages />
-              </SuspenseWrapper>
-            }
-            path="/Message Center/Customer Commnunications/CustomerMessage/:id"
-          ></Route>
+          element={
+            <SuspenseWrapper>
+              <CustomerMessages />
+            </SuspenseWrapper>
+          }
+          path="/Message Center/Customer Communications/CustomerMessage/:id"
+        ></Route>
+        
           {/**Admins Communications*/}
           <Route
             element={
@@ -228,6 +253,15 @@ function App() {
             }
             path="/Message Center/Admins Communications"
           ></Route>
+
+          <Route
+          element={
+            <SuspenseWrapper>
+              <AdminMessages />
+            </SuspenseWrapper>
+          }
+          path="/Message Center/Admins Communications/AdminMessage/:id"
+        ></Route>
           {/**Marketing*/}
           {/**Promotions*/}
           {/**Add Catalog Promotion */}

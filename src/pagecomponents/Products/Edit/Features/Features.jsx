@@ -4,169 +4,126 @@ import { Form, Button, Card, Input, Select } from "antd";
 import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
 import { apicall } from "../../../../utils/apicall/apicall";
 import { useEffect } from "react";
-const Features = ({ features }) => {
-  const [brands, setBrands] = useState("");
-  const [colors, setColors] = useState("");
-  const [size, setSize] = useState("");
-  const [electro, setElectro] = useState(false);
-  const [electronics, setElectronics] = useState();
-  const [electItems, setElectItems] = useState();
-  const [gExport, setGexport] = useState(false);
-  const [items, setItems]=useState()
-  const onFinish = (values) => {
-    // console.log("Success:", values);
-    //  console.log(features);
-    getExportItems();
-
+const Features = ({ features, selected_features, editID,getData }) => {
+  const [insertFeature, setInsertFeature] = useState({
+    product_features: selected_features,
+  });
+  const onFinish = async (values) => {
+   let result= await apicall({
+      url: `products/${editID}`,
+      data: insertFeature,
+      method: "put",
+    });
+    if(result.data){
+      getData();
+    }
   };
-  useEffect(() => {
-    getElectronics();
-  }, []);
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
   const onValueChange = (a, b) => {
-    console.log(b);
+    let key = Object.keys(a);
   };
-  //  run code while selecting categories
-  const onSelect = (value) => {};
-  //  run code while Deselecting categories
-  const onDeselect = (value) => {};
-  // Getting colors
-  const getColors = async () => {
-    var c_colors = [];
-    //call api to retrieve all colors
-    const result = await apicall({
-      url: "vendors/62/features/549/",
-    });
-    if (result?.data) {
-      const data = { ...result.data.variants };
-      const keys = [...Object.keys(data)];
-      keys.map((item) => {
-        c_colors.push({
-          label: data[item]?.variant,
-          value: data[item]?.variant_id,
-        });
+  // handle select change
+  const handleSelectChange = (a, b) => {
+    if (b) {
+      setInsertFeature({
+        product_features: {
+          ...insertFeature["product_features"],
+          [b.feature]: {
+            feature_type: b.type,
+            value: "Feature updated",
+            variant_id: b.value,
+          },
+        },
       });
-      setColors(c_colors);
-    } else {
-      setColors("");
     }
   };
-  // Lets get brands from API
-  const getBrands = async () => {
-    var c_brands = [];
-    //call api to retrieve all brands
-    const result = await apicall({
-      url: "vendors/62/features/18/",
-    });
-    if (result?.data) {
-      const data = { ...result.data.variants };
-      const keys = [...Object.keys(data)];
-      keys.map((item) => {
-        c_brands.push({
-          label: data[item]?.variant,
-          value: data[item]?.variant_id,
-        });
-      });
-      setBrands(c_brands);
-    } else {
-      setBrands("");
-    }
+  // function  for getting extra features
+  const getExtraFeatures = () => {
+    let extra_features = features.filter((item) => item.feature_type == "G");
+    return (
+      <div key={"this is features"}>
+        {extra_features.map((extra, i) => {
+          return (
+            <div key={i}>
+              <h3>{extra.description}</h3>
+              <Card>
+                {Object.values(extra.subfeatures).map((subfeature, index) => {
+                  return (
+                    <div key={index}>
+                      <Form.Item
+                        name={subfeature?.description}
+                        label={subfeature?.description}
+                      >
+                        <Select
+                          showSearch
+                          defaultValue={selected_features[subfeature?.feature_id]?.variant_id}
+                          onChange={handleSelectChange}
+                          optionFilterProp="children"
+                          filterOption={(input, option) =>
+                            (option?.label ?? "")
+                              .toLowerCase()
+                              .includes(input.toLowerCase())
+                          }
+                          options={
+                            subfeature.variants
+                              ? Object.values(subfeature.variants).map(
+                                  (variant) => ({
+                                    label: variant.variant,
+                                    value: variant.variant_id,
+                                    feature: subfeature.feature_id,
+                                    type:variant.feature_type
+                                    
+                                  })
+                                )
+                              : []
+                          }
+                        />
+                      </Form.Item>
+                    </div>
+                  );
+                })}
+              </Card>
+            </div>
+          );
+        })}
+      </div>
+    );
   };
-  // Lets get brands from API
-  const getSize = async () => {
-    var c_size = [];
-    //call api to retrieve all brands
-    const result = await apicall({
-      url: "vendors/62/features/563/",
-    });
-    if (result?.data) {
-      const data = { ...result.data.variants };
-      const keys = [...Object.keys(data)];
-      keys.map((item) => {
-        c_size.push({
-          label: data[item]?.variant,
-          value: data[item]?.variant_id,
-        });
-      });
-      setSize(c_size);
-    } else {
-      setSize("");
-    }
+  //  Function for getting main features
+  const getMainFeatures = () => {
+    let m_features = features.filter((item, i) => item.feature_type == "S");
+    return (
+      <Card>
+        {m_features.map((item, index) => {
+          return (
+            <div key={index}>
+              <Form.Item name={item?.internal_name} label={item?.internal_name}>
+                <Select
+                  onChange={handleSelectChange}
+                  showSearch
+                  optionFilterProp="children"
+                  defaultValue={selected_features[item?.feature_id]?.variant_id}
+                  filterOption={(input, option) =>
+                    (option?.label ?? "")
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  options={Object.values(item.variants).map((variant) => ({
+                    label: variant.variant,
+                    value: variant.variant_id,
+                    feature: item.feature_id,
+                    type:variant.feature_type
+                  }))}
+                />
+              </Form.Item>
+            </div>
+          );
+        })}
+      </Card>
+    );
   };
-  // Lets get only electronics features
-  const getElectronics = () => {
-    var temp = [];
-    const data = { ...features?.features };
-    const keys = Object.keys(data);
-    keys.map((item, i) => {
-      if (data[item]?.parent_id == "14") {
-        temp.push(data[item]);
-      }
-    });
-    setElectronics(temp);
-  };
-  // lets get Electronics items according to electronic category
-  const getElectItems = async (id) => {
-    var temp = [];
-    const result = await apicall({
-      url: `/vendors/62/features/${id}`,
-    });
-    if (result?.data) {
-      const data = { ...result.data.variants };
-      const keys = [...Object.keys(data)];
-      keys.map((item) => {
-        temp.push({
-          label: data[item]?.variant,
-          value: data[item]?.variant_id,
-        });
-      });
-      setElectItems(temp);
-    } else {
-      setElectItems("");
-    }
-  };
-
-  // Here we get  google export items 
-  const getExportItems= ()=>{
-    const data = [ ...features?.features ];
-    var element= data.filter((item, i) => {
-      return(item.parent_id=='550')
-    }).map( (item, index)=>{
-      return (
-        <Form.Item key={index} name={item?.description} label={item?.description} onClick={()=>getExportSubItems(item.feature_id)}>
-        <Select
-        showSearch
-        placeholder={`Select `+item?.description}
-        optionFilterProp="children"
-        onSelect={onSelect}
-        onDeselect={onDeselect}
-        filterOption={(input, option) =>
-          (option?.label ?? "")
-            .toLowerCase()
-            .includes(input.toLowerCase())
-        }
-        options={items}
-      />
-        </Form.Item>
-      )
-    }
-    )
-     return(element)
-  }
-  // get export sub items 
-  const getExportSubItems= async (id)=>{
-     const result= await apicall({
-      url:`vendors/62/features/${id}`
-     })
- const temp = Object.values(result.data.variants).map((dat,i)=>({
-    label: dat.variant,
-    value:dat.variant_id
-  }))
-  setItems(temp);
- 
-  }
   return (
     <div className={styles.feature_container}>
       <Form
@@ -184,95 +141,8 @@ const Features = ({ features }) => {
         </Form.Item>
         <br />
         <br />
-        <Card className={styles.first_card}>
-          <Form.Item label="Brand" name="brand" onClick={() => getBrands()}>
-            <Select
-              showSearch
-              placeholder="Select a brand"
-              optionFilterProp="children"
-              onSelect={onSelect}
-              onDeselect={onDeselect}
-              filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-              options={brands}
-            />
-          </Form.Item>
-
-          <Form.Item label="Color" name="color" onClick={() => getColors()}>
-            <Select
-              showSearch
-              placeholder="Select a brand"
-              optionFilterProp="children"
-              onSelect={onSelect}
-              onDeselect={onDeselect}
-              filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-              options={colors}
-            />
-          </Form.Item>
-
-          <Form.Item label="Size" name="size" onClick={() => getSize()}>
-            <Select
-              showSearch
-              placeholder="Select a size"
-              optionFilterProp="children"
-              onSelect={onSelect}
-              onDeselect={onDeselect}
-              filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-              options={size}
-            />
-          </Form.Item>
-        </Card>
-        <div
-          className={styles.electronics_title}
-          onClick={() => setElectro(!electro)}
-        >
-          <h3 className={styles.electronics}>Electronics</h3>
-          {electro ? <AiFillCaretRight /> : <AiFillCaretDown />}
-        </div>
-        <Card className={electro ? styles.close_electro : ""}>
-          {electronics?.map((item, index) => {
-            return (
-              <Form.Item name={item.internal_name} key={index} label={item.internal_name} onClick={()=>getElectItems(item.feature_id)}>
-              <Select
-              showSearch
-              placeholder={`Select a `+item.internal_name}
-              optionFilterProp="children"
-              onSelect={onSelect}
-              onDeselect={onDeselect}
-              filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
-              }
-              options={electItems}
-            />
-              </Form.Item>
-            );
-          })}
-        </Card>
-        <div
-        className={styles.export_title}
-        onClick={() => setGexport(!gExport)}
-      >
-        <h3 className={styles.export}>Google export features</h3>
-        {gExport ? <AiFillCaretRight /> : <AiFillCaretDown />}
-      </div>
-      <Card className={gExport ? styles.close_electro :styles.export}>
-      {
-        getExportItems()
-      }
-      </Card>
+        {getMainFeatures()}
+        <div>{getExtraFeatures()}</div>
       </Form>
     </div>
   );

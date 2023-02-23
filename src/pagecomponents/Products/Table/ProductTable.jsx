@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Space, Table, Dropdown, Image } from "antd";
+import { Space, Table, Dropdown, Image, message, Button, Modal } from "antd";
 import styles from "./Table.module.css";
 import { DownOutlined } from "@ant-design/icons";
 import { apicall } from "../../../utils/apicall/apicall";
-import {
-  AiFillEdit,
-  AiFillDelete,
-  AiFillSetting,
-  AiOutlineBars,
-} from "react-icons/ai";
-import {
-  loadTableData,
-  setSelectedProductId,
-} from "../../../redux/features/products/productSlice";
+import { AiFillEdit, AiFillDelete, AiFillSetting } from "react-icons/ai";
+import { loadTableData } from "../../../redux/features/products/productSlice";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../utils/Hooks/useWindowSize";
+const { confirm } = Modal;
 const ProductTable = ({
   setPage,
   setLoading,
@@ -28,8 +21,6 @@ const ProductTable = ({
   const data = useSelector((state) => state.product.products);
   const [productId, setProductId] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [deleteIds, setDeleteIds] = useState();
-  const [option, setOption] = useState(false);
   const navigate = useNavigate();
   const windowSize = useWindowSize();
   useEffect(() => {
@@ -43,50 +34,59 @@ const ProductTable = ({
         ?.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
+
+  // delete confirmation
+  function showConfirm(title, message = "", id) {
+    confirm({
+      title: title,
+      content: message,
+      async onOk() {
+        try {
+          deleteProduct(id);
+        } catch (e) {
+          return console.log("Oops errors!");
+        }
+      },
+      onCancel() {},
+    });
+  }
   // Delete data
   const deleteProduct = async (id) => {
+    setLoading(true);
     // perform api call to retrieve data
     if (id) {
       var result = await apicall({
         method: "delete",
         url: `products/${id}`,
       });
-      location.reload();
-    }
-  };
-  // for toggling delete icon
-  useEffect(() => {
-    if (deleteIds?.length) {
-      setOption(true);
-    } else {
-      setOption(false);
-    }
-  }, [deleteIds]);
-  //This  is for product deletion of multiple products
-  const deleteSelectedProduct = async (products) => {
-    setLoading(true);
-    const deleted = [];
-    if (products.length) {
-      products.map(async (id, index) => {
-        var result = await apicall({
-          method: "delete",
-          url: `products/${id}`,
-        });
-        if (result?.status == "204") {
-          deleted.push(index);
-          if (deleted.length == products.length) {
-            await getProducts();
-            setSelectedRowKeys([]);
-            setDeleteIds([]);
-          }
-        } else {
-          setSelectedRowKeys([]);
-          setDeleteIds([]);
-        }
-      });
+
+      if (result.status == "204") {
+        setLoading(false);
+        getProducts();
+      }
+      setLoading(false);
     }
   };
 
+  //This  is for product deletion of multiple products
+  const deleteSelectedProduct = async (ids) => {
+    setLoading(true);
+    let final_delete_ids = { product_ids: {} };
+    ids?.map((id, i) => {
+      final_delete_ids.product_ids[i] = id;
+    });
+    let result = await apicall({
+      url: `BulkProducts`,
+      method: "delete",
+      data: final_delete_ids,
+    });
+    if (result.statusText == "OK") {
+      setSelectedRowKeys([]);
+      getProducts();
+      setLoading(false);
+    }
+    setLoading(false);
+  };
   // Set id
   const setSelectedRow = async (id, method) => {
     setProductId(id);
@@ -98,7 +98,6 @@ const ProductTable = ({
 
   //UpdateProduct status
   const updateProductStatus = async (id, status) => {
-    console.log(productId);
     const timeOutId = setTimeout(async () => {
       const result = await apicall({
         method: "put",
@@ -111,14 +110,14 @@ const ProductTable = ({
         const allData = await apicall({
           url: `products/`,
         });
-        await dispatch(loadTableData(allData.data.products));
+        await dispatch(loadTableData(allData?.data?.products));
       }
     }, 500);
     return () => clearTimeout(timeOutId);
   };
 
   //  set Status of product
-  const changeProductStatus = (status) => {
+  const getProductStatus = (status) => {
     switch (status) {
       case "H":
         return "Hidden";
@@ -126,27 +125,14 @@ const ProductTable = ({
         return "Active";
       case "D":
         return "Disabled";
+      case "R":
+        return "Requires Approval";
+      case "X":
+        return "Disapproved";
       default:
-        return "Attention required"
+        return "Attention required";
     }
   };
-  const selectOpt = [
-    {
-      key: "1",
-      label: (
-        <a
-          rel="noopener noreferrer"
-          href="#"
-          className={styles.action_items}
-          onClick={() => deleteSelectedProduct(deleteIds)}
-        >
-          Delete
-          <AiFillDelete />
-        </a>
-      ),
-    },
-  ];
-
   //  console.log(data)
   const statusItems = [
     {
@@ -188,7 +174,7 @@ const ProductTable = ({
           rel="noopener noreferrer"
           href="#"
           className={styles.action_items}
-          onClick={() => deleteProduct(productId)}
+          onClick={() => showConfirm("Are you sure to delete?", "", productId)}
         >
           Delete
           <AiFillDelete />
@@ -269,24 +255,26 @@ const ProductTable = ({
       dataIndex: ["status", "product_id"],
       defaultFilteredValue: "Requires Approval",
       render: (text, row) => (
-        <Dropdown menu={{ items: statusItems }}>
-          <Space onMouseOver={() => setProductId(row["product_id"])}>
-            {changeProductStatus(row["status"])}
+        <div>
+          {row.status == "R" || row.status == "X" ? (
+            getProductStatus(row.status)
+          ) : (
+            <Dropdown menu={{ items: statusItems }}>
+              <Space onMouseOver={() => setProductId(row["product_id"])}>
+                {getProductStatus(row["status"])}
 
-            <DownOutlined />
-          </Space>
-        </Dropdown>
+                <DownOutlined />
+              </Space>
+            </Dropdown>
+          )}
+        </div>
       ),
     },
   ];
-  const onSelectChange = (newSelectedRowKeys, product) => {
-    const ids = [];
-    product.map((item, index) => {
-      ids.push(item?.product_id);
-    });
-    setDeleteIds(ids);
+  const onSelectChange = (newSelectedRowKeys) => {
     setSelectedRowKeys(newSelectedRowKeys);
   };
+  const hasSelected = selectedRowKeys.length > 0;
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
@@ -295,7 +283,7 @@ const ProductTable = ({
       Table.SELECTION_INVERT,
       Table.SELECTION_NONE,
       {
-        product_id: "odd",
+        key: "odd",
         text: "Select Odd Row",
         onSelect: (changableRowKeys) => {
           let newSelectedRowKeys = [];
@@ -331,17 +319,14 @@ const ProductTable = ({
 
   return (
     <div>
-      <div className={!option ? styles.openDelete : ""}>
-        <Dropdown
-          menu={{
-            items: selectOpt,
-          }}
-          placement="left"
-          arrow
-          trigger={["click"]}
+      <div style={{ backgroundColor: "white", padding: "10px" }}>
+        <Button
+          type="primary"
+          onClick={() => deleteSelectedProduct(selectedRowKeys)}
+          disabled={!hasSelected}
         >
-          <AiOutlineBars className={styles.selectBar} />
-        </Dropdown>
+          Delete
+        </Button>
       </div>
       <Table
         id="product"
@@ -352,7 +337,7 @@ const ProductTable = ({
         pagination={false}
         onChange={onChange}
         scroll={{
-          y: windowSize.height > 670 ? 300 : 200,
+          y: windowSize.height > 670 ? 450 : 200,
           x: 1000,
         }}
       />

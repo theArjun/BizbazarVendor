@@ -17,16 +17,33 @@
 }
 .icons1 {
   font-size: 24px;
-  /* margin: 0 0.1em; */
   opacity: 0.6;
-  margin-left: 10px;
+  padding:2px 5px;
+
 }
 .save_btn {
   margin-left: 10px;
   outline: none;
 }
-
-
+.new_add_btn{
+  font-size: 16px;
+  /* padding: 0 0px !important; */
+  padding: 5px 6px;
+  padding-bottom: 0px;
+  margin: 0 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  background: linear-gradient(
+    118deg,
+    #7367f0,
+    rgba(115, 103, 240, 0.7)
+  ) !important;
+  color: white !important;
+}
+.new_add_btn:hover{
+  background: #b4b0ea;
+}
 .icons:hover {
   background-color: rgba(128, 128, 128, 0.445);
   cursor: pointer;
@@ -46,7 +63,7 @@
   transition:all 0.5s ease;
 }
 .dropdown_setting:hover{
-  border: 1px solid gray;
+  background-color: #b4b0ea;
   border-radius: 5px;
   transition:all 0.5s ease;
 }

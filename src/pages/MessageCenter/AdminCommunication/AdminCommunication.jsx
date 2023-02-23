@@ -4,6 +4,15 @@ import styles from './AdminCommunication.module.css'
 import { Breadcrumb, Modal, Form, Input, Button } from 'antd'
 import { HiPlus } from 'react-icons/hi'
 const {TextArea}=Input;
+const data= [
+  {
+    image:'https://www.digitaltrends.com/wp-content/uploads/2021/11/macbook-pro-2021-16.jpg',
+    id:'Thread$3',
+    message:'Is this product available at your store?',
+    customer:'Avinash KC',
+    date:'1672831913'
+  }
+]
 const AdminCommunication = () => {
   const [open, setOpen] = useState(false);
 
@@ -97,7 +106,7 @@ const AdminCommunication = () => {
           </Modal>
     </div>
     <AdminCommunicationSearch/>
-    <AdminCommunicationTable/>
+    <AdminCommunicationTable data= {data}/>
     </div>
   )
 }

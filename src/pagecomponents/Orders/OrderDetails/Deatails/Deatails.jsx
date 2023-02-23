@@ -10,6 +10,11 @@ function Deatails({ orderDetail, statusModalOpen, setStatusModalOpen }) {
   const midTab = ["General", "Add On", "Promotion"];
 
   const [active, setActive] = useState("General");
+  const [updateState,setUpdateState]=useState({})
+
+  // console.log(updateState);
+
+
   const getContainerFromTab = () => {
     switch (active) {
       case "Add On":
@@ -18,14 +23,16 @@ function Deatails({ orderDetail, statusModalOpen, setStatusModalOpen }) {
         return <>Promotion</>;
 
       default:
-        return <Midcontain orderDetail={orderDetail} />;
+        return <Midcontain setUpdateState={setUpdateState}  orderDetail={orderDetail} />;
     }
   };
+
+  const [updateApi,setUpdateApi]=useState(false)
 
   return (
     <div className={styles.container}>
       <div className={styles.leftContain}>
-        <LeftContain orderDetail={orderDetail} />
+        <LeftContain  orderDetail={orderDetail} />
       </div>
       <div className={styles.midcontain}>
         <div className={styles.tabContainer}>
@@ -46,12 +53,13 @@ function Deatails({ orderDetail, statusModalOpen, setStatusModalOpen }) {
       </div>
       <div className={styles.rightContain}>
         <RightContain
+        setUpdateState={setUpdateState}
           orderDetail={orderDetail}
           statusModalOpen={statusModalOpen}
           setStatusModalOpen={setStatusModalOpen}
         />
       </div>
-      <Button className={styles.savebutton}>Save</Button>
+      <Button className={styles.savebutton} onClick={()=>setUpdateApi((dat)=>!dat)}>Save</Button>
     </div>
   );
 }

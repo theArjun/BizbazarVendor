@@ -1,8 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { Card, Form, Input, Button, Image } from "antd";
-import { HiArrowCircleLeft } from "react-icons/hi";
-import { AiOutlineSend } from "react-icons/ai";
 import styles from "./CustomerMessages.module.css";
 import { useState } from "react";
 import { useEffect } from "react";

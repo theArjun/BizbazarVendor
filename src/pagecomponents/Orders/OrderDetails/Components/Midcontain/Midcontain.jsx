@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./Midcontain.module.css";
 import { Image, Input } from "antd";
 
-function Midcontain({ orderDetail }) {
+function Midcontain({ orderDetail,setUpdateState }) {
   const { TextArea } = Input;
   // console.log(orderDetail);
   return (
@@ -58,11 +58,11 @@ function Midcontain({ orderDetail }) {
       <div className={styles.notes}>
         <div>
           <div>Staff notes</div>
-          <TextArea />
+          <TextArea onChange={(a)=>setUpdateState((prev)=>({...prev,staffnotes:a.target.value}))} />
         </div>
         <div>
           <div>Customer notes</div>
-          <TextArea />
+          <TextArea  onChange={(a)=>setUpdateState((prev)=>({...prev,customernotes:a.target.value}))}/>
         </div>
       </div>
     </div>

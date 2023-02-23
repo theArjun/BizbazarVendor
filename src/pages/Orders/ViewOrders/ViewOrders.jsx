@@ -25,7 +25,6 @@ const ViewOrders = () => {
   const [sortColum, setSortingColum] = useState("");
   const [bottom, setBottom] = useState(false);
   const a = Object.values(sValue).join("");
-
   useEffect(() => {
     document
       .querySelector("#hello > div > div.ant-table-body")

@@ -1,0 +1,21 @@
+.search_inputs{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.search_inputs > *{
+    margin: 0 5px;
+}
+.image_and_desc{
+    display: flex;
+    flex-wrap: wrap;
+}
+.image_and_desc > *{
+    margin: 5px 10px;
+}
+.more_btn{
+    cursor: pointer;
+}
+.image_and_desc_close{
+    display: none;
+}

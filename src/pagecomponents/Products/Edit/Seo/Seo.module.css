@@ -17,6 +17,12 @@
    margin: 0;
    padding: 0;
 }
+.seo_card_left >div>div>div>div>div> span{
+    overflow-x: scroll;
+} 
+/* .seo_card_left >div>div>div>div>div> span >span>input{
+    width: 100px !important;
+}  */
 @media (max-width: 718px) {
     .seo_card {
    display: block;

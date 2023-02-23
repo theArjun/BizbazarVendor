@@ -1,14 +1,18 @@
-import { Dropdown, Input, Menu, Tag } from "antd";
+import { Dropdown, Input, Menu, Tag,Select } from "antd";
 import React, { useEffect, useState } from "react";
 import OrderStatusModal from "../../../../../component/OrderStatusModal/OrderStatusModal";
 import { apicall } from "../../../../../utils/apicall/apicall";
 import styles from "./RightContain.module.css";
 
-function RightContain({ orderDetail, statusModalOpen, setStatusModalOpen }) {
+function RightContain({ orderDetail, statusModalOpen, setStatusModalOpen,setUpdateState }) {
   const [status, setStatus] = useState([]);
+  const [manager,setManager]=useState([])
+  const [carrier,setCarrier]=useState([])
 
   useEffect(() => {
     getStatus();
+    getManager();
+    getCarrier()
   }, []);
 
   const getStatus = async () => {
@@ -17,6 +21,24 @@ function RightContain({ orderDetail, statusModalOpen, setStatusModalOpen }) {
     });
     setStatus(result.data.statuses);
   };
+
+  const getManager=async()=>{
+    const result = await apicall({
+      url: "VendorManager",
+    });
+    setManager(result.data.vendormanagers);
+    
+  }
+
+  const getCarrier=async()=>{
+    const result = await apicall({
+      url: "VendorCarrier",
+    });
+    setCarrier(Object.values(result.data.carriers)
+      
+      );
+    
+  }
 
   const menu = (filterStatus, objId) => (
     <Menu
@@ -75,10 +97,38 @@ function RightContain({ orderDetail, statusModalOpen, setStatusModalOpen }) {
         Method {orderDetail?.payment_method?.payment}{" "}
         {orderDetail?.payment_method?.description}
       </div>
-      <div>
+      <div style={{display:"flex"}}>
         {" "}
         <lable className={styles.label}>Manager</lable> <br />
-        <Input />
+        <Select
+        onChange={(a)=>setUpdateState((prev)=>({...prev,trackingNumber:a.target.value}))} 
+       
+        style={{ width: "100%",marginLeft:"10px" }}
+        dropdownMatchSelectWidth={false}
+        // placement={placement}
+        options={
+          manager.map((dat)=>(
+          {
+            value:dat.id,
+            label:dat.text
+          }
+          ))
+        //   [
+        //   {
+        //     value: 'HangZhou',
+        //     label: 'HangZhou #310000',
+        //   },
+        //   {
+        //     value: 'NingBo',
+        //     label: 'NingBo #315000',
+        //   },
+        //   {
+        //     value: 'WenZhou',
+        //     label: 'WenZhou #325000',
+        //   },
+        // ]
+      }
+      />
       </div>
       <div>
         {orderDetail?.issuer_data?.firstname}{" "}
@@ -94,6 +144,24 @@ function RightContain({ orderDetail, statusModalOpen, setStatusModalOpen }) {
           <div>Method : {dat?.shipping}</div>
         </>
       ))}
+      <div style={{display:"flex"}}>
+      <div>Tracking Number </div><Input onChange={(a)=>setUpdateState((prev)=>({...prev,trackingNumber:a.target.value}))}  style={{height:"2.5em"}}/>
+      </div>
+      <div style={{display:"flex"}}>
+      <div style={{marginRight:"10px"}}>Carrier  </div>    <Select
+        // defaultValue="HangZhou"
+        style={{ width: 120 }}
+        dropdownMatchSelectWidth={false}
+        // placement={placement}
+        onChange={(a)=>setUpdateState((prev)=>({...prev,carrier:a.target.value}))} 
+        options={
+          carrier.map((dat)=>({
+            label:dat.name,
+            value:dat.name
+          }))
+      }
+      />
+      </div>
       <OrderStatusModal
         statusModalOpen={statusModalOpen}
         setStatusModalOpen={setStatusModalOpen}
