@@ -6,16 +6,17 @@ import {
   CatalogPromotionConditions,
   CatalogPromotionGeneral,
 } from "..";
-import { Breadcrumb, Button } from "antd";
+import { Breadcrumb, Button, message } from "antd";
 import { apicall } from "../../utils/apicall/apicall";
 function AddCatalogPromotion() {
+ 
   const [activeTab, setActiveTab] = useState("General");
   const [bonuses, setBonuses] = useState([]);
   const [conditions, setConditions] = useState([]);
   const [image, setImage] = useState("");
   const [loading, setLoading] = useState(false);
   const [generalData, setGeneralData] = useState({
-    zone: "",
+    "zone": "catalog",
     name: "",
     detailed_description: "",
     short_description: "",
@@ -57,74 +58,88 @@ function AddCatalogPromotion() {
     }
   };
   const createPromotion = async () => {
-    setLoading(true);
-    const formData = new FormData();
-    // append to form data
-    formData.append("file", image);
-    let image_data = {
-      promo_main_image_data: {
-        0: {
-          pair_id: "",
-          type: "M",
-          object_id: "0",
-          image_alt: "",
+    if(generalData.name){
+      setLoading(true);
+      const formData = new FormData();
+      let image_data = {
+        promo_main_image_data: {
+          0: {
+            pair_id: "",
+            type: "M",
+            object_id: "0",
+            image_alt: "",
+          },
         },
-      },
-      file_promo_main_image_icon: {
-        0: "promo_main",
-      },
-      type_promo_main_image_icon: {
-        0: "local",
-      },
-      is_high_res_promo_main_image_icon: {
-        0: "N",
-      },
-    };
-    // for preparing condition data
-    let temp_conditions = conditions.reduce((update, current, i) => {
-      update[i] = { ...current };
-      return update;
-    }, {});
-    // for preparing bonuses data
-    let temp_bonuses = bonuses.reduce((update, current, i) => {
-      update[i] = { ...current };
-      return update;
-    }, {});
-    let prepareData = {
-      ...generalData,
-      bonuses: { ...temp_bonuses },
-      conditions: {
-        ...conditionValues,
-        conditions: { ...temp_conditions },
-      },
-    };
-    if (image) {
-      console.log(
-        "🚀 ~ file: AddCatalogPromotion.jsx:91 ~ createPromotion ~ image",
-        image
-      );
-      prepareData = { ...prepareData, ...image_data };
-      console.log(
-        "🚀 ~ file: AddCatalogPromotion.jsx:92 ~ createPromotion ~ prepareData",
-        prepareData
-      );
-    }
-    formData.append("promotion_data", prepareData);
-    console.log(
-      "🚀 ~ file: AddCatalogPromotion.jsx:96 ~ createPromotion ~ formData",
-      prepareData
-    );
-    let result = await apicall({
-      url: "Promotions",
-      method: "post",
-      body: formData,
-    });
-
-    if (result) {
+        file_promo_main_image_icon: {
+          0: "promo_main",
+        },
+        type_promo_main_image_icon: {
+          0: "local",
+        },
+        is_high_res_promo_main_image_icon: {
+          0: "N",
+        },
+      };
+      // for preparing condition data
+      let temp_conditions = conditions.reduce((update, current, i) => {
+        update[i+1] = { ...current };
+        return update;
+      }, {});
+      // for preparing bonuses data
+      let temp_bonuses = bonuses.reduce((update, current, i) => {
+        update[i] = { ...current };
+        return update;
+      }, {});
+      let prepareData = {
+        promotion_id:0,
+        promotion_data:{
+          ...generalData,
+          from_date:formatDate(generalData.from_date),
+          to_date:formatDate(generalData.to_date),
+          bonuses: { ...temp_bonuses },
+          conditions: {
+            ...conditionValues,
+            conditions: { ...temp_conditions },
+          },
+        }
+      };
+      if (image) {
+        // append to form data
+         formData.append("file", image);
+        prepareData = { ...prepareData, ...image_data };
+        formData.append("promotion_data", JSON.stringify(prepareData));
+      }else{
+        formData.append("promotion_data", JSON.stringify(prepareData));
+        console.log("🚀 ~ file: AddCatalogPromotion.jsx:111 ~ createPromotion ~ prepareData:", prepareData)
+      }
+      let result = await apicall({
+        url: "Promotions",
+        method: "post",
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "Access-Control-Allow-Origin": true,
+        },
+      });
+  
+      if (result) {
+        setLoading(false);
+      }
       setLoading(false);
+    }else{
+
+      message.error("Name is necessary to create a promotion.")
     }
-    setLoading(false);
   };
+  // formatting date
+  const formatDate=(date)=>{
+    if(date){
+      let date_arr=date.split('-')
+      let new_date= `${date_arr[2]}/${date_arr[1]}/${date_arr[0]}`;
+      return new_date;
+    }
+    return;
+  }
   return (
     <React.Fragment>
       <div className={styles.breadcumb}>

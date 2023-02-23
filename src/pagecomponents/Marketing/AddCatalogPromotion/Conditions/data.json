@@ -2,7 +2,7 @@
     "condition_items":[
         {
           "label": "Product price",
-          "value": "product_price"
+          "value": "price"
         },
         {
           "label": "Products",
@@ -22,50 +22,50 @@
         },
         {
           "label": "Product feature",
-          "value": "product_feature"
+          "value": "feature"
         },
     
         {
           "label": "User group",
-          "value": "user_group"
+          "value": "usergroup"
         },
         {
           "label": "Customer is subscribed",
-          "value": "is_subscribed"
+          "value": "subscribed"
         },
         {
           "label": "Customer comes by affiliate link",
-          "value": "comes_by_affiliate"
+          "value": "affiliate_link"
         },
         {
           "label": "Points on user account ",
-          "value": "points_on_user_account"
+          "value": "reward_points"
         }
       ],
   "product_price": [
     {
       "label": "equal",
-      "value": "equal"
+      "value": "eq"
     },
     {
       "label": "not equal",
-      "value": "not_equal"
+      "value": "neq"
     },
     {
       "label": "equal or less",
-      "value": "equal_or_less"
+      "value": "lte"
     },
     {
       "label": "equal or greater",
-      "value": "equal_or_greater"
+      "value": "gte"
     },
     {
       "label": "less",
-      "value": "less"
+      "value": "lt"
     },
     {
       "label": "greater",
-      "value": "greater"
+      "value": "gt"
     }
   ],
   "categories":[
@@ -75,33 +75,33 @@
       },
       {
         "label": "not in",
-        "value": "not_in"
+        "value": "nin"
       }
   ],
   "product_features":[
     {
         "label": "equal",
-        "value": "equal"
+        "value": "eq"
       },
       {
         "label": "not equal",
-        "value": "not_equal"
+        "value": "neq"
       },
       {
         "label": "equal or less",
-        "value": "equal_or_less"
+        "value": "lte"
       },
       {
         "label": "equal or greater",
-        "value": "equal_or_greater"
+        "value": "gte"
       },
       {
         "label": "less",
-        "value": "less"
+        "value": "lt"
       },
       {
         "label": "greater",
-        "value": "greater"
+        "value": "gt"
       },
       {
         "label": "in",
@@ -109,71 +109,71 @@
       },
       {
         "label": "not in",
-        "value": "not_in"
+        "value": "nin"
       },
       {
         "label": "contains",
-        "value": "contains"
+        "value": "cont"
       },
       {
         "label": "does not contains",
-        "value": "does_not_contains"
+        "value": "ncont"
       }
   ],
   "user_group_condition":[
     {
         "label": "equal",
-        "value": "equal"
+        "value": "eq"
       },
       {
         "label": "not equal",
-        "value": "not_equal"
+        "value": "neq"
       }
   ],
   "user_group":[
     {
         "label": "Guest",
-        "value": "guest"
+        "value": 1
       },
       {
         "label": "Registered user",
-        "value": "registered_user"
+        "value": 2
       }
   ],
   "is_subscribed":[
     {
         "label": "Yes",
-        "value": "Y"
+        "value": "subscribed"
       },
       {
         "label": "No",
-        "value": "N"
+        "value": "notsubscribed"
       }
   ],
   "points_on_user_account":[
     {
         "label": "equal",
-        "value": "equal"
+        "value": "eq"
       },
       {
         "label": "not equal",
-        "value": "not_equal"
+        "value": "neq"
       },
       {
         "label": "equal or less",
-        "value": "equal_or_less"
+        "value": "lte"
       },
       {
         "label": "equal or greater",
-        "value": "equal_or_greater"
+        "value": "gte"
       },
       {
         "label": "less",
-        "value": "less"
+        "value": "lt"
       },
       {
         "label": "greater",
-        "value": "greater"
+        "value": "gt"
       }
   ]
 

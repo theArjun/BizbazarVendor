@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Button, Select, Form, Input } from "antd";
 import styles from "./Conditions.module.css";
 import ConditionTable from "./Table/ConditionTable";
@@ -28,7 +28,7 @@ function Conditions({
   // lets create a function to get particular condition UI
   const getConditionByConditionName = (condition) => {
     switch (condition) {
-      case "product_price":
+      case "price":
         return (
           <div className={styles.particular_condition}>
             <Form.Item
@@ -126,7 +126,7 @@ function Conditions({
             <Button type="primary">Add users</Button>
           </div>
         );
-      case "product_feature":
+      case "feature":
         return (
           <div className={styles.particular_condition}>
             <Form.Item
@@ -201,7 +201,7 @@ function Conditions({
             <Button type="primary">Add categories</Button>
           </div>
         );
-      case "user_group":
+      case "usergroup":
         return (
           <div className={styles.particular_condition}>
             <Form.Item
@@ -238,7 +238,7 @@ function Conditions({
             </Form.Item>
           </div>
         );
-      case "is_subscribed":
+      case "subscribed":
         return (
           <div className={styles.particular_condition}>
             <Form.Item
@@ -259,7 +259,7 @@ function Conditions({
             </Form.Item>
           </div>
         );
-      case "comes_by_affiliate":
+      case "affiliate_link":
         return (
           <div className={styles.particular_condition}>
             <Form.Item
@@ -281,7 +281,7 @@ function Conditions({
             <Button type="primary">Add plan</Button>
           </div>
         );
-      case "points_on_user_account":
+      case "reward_points":
         return (
           <div className={styles.particular_condition}>
             <Form.Item
@@ -325,15 +325,16 @@ function Conditions({
 
   // form submit function
   const onFinish = (values) => {
+    console.log(values)
     let data = [...conditions];
     switch (values.condition) {
-      case "product_price":
+      case "price":
         data = [
           ...conditions,
           {
             condition: values.condition,
             operator: values.product_price_condition,
-            values: values.product_price_condition_value,
+            value: values.product_price_condition_value,
           },
         ];
         break;
@@ -343,7 +344,7 @@ function Conditions({
           {
             condition: values.condition,
             operator: values.products_condition,
-            values: "data",
+            value: "data",
           },
         ];
         break;
@@ -353,7 +354,7 @@ function Conditions({
           {
             condition: values.condition,
             operator: values.categories_condition,
-            values: "data",
+            value: "data",
           },
         ];
         break;
@@ -363,7 +364,7 @@ function Conditions({
           {
             condition: values.condition,
             operator: values.purchased_products_condition,
-            values: "data",
+            value: "data",
           },
         ];
         break;
@@ -373,57 +374,57 @@ function Conditions({
           {
             condition: values.condition,
             operator: values.users_condition,
-            values: "data",
+            value: "data",
           },
         ];
         break;
-      case "product_feature":
+      case "feature":
         data = [
           ...conditions,
           {
             condition: values.condition,
             operator: values.product_feature_condition,
-            values: values.product_feature_variant,
+            value: values.product_feature_variant,
             feature: values.product_feature,
           },
         ];
         break;
-      case "user_group":
+      case "usergroup":
         data = [
           ...conditions,
           {
             condition: values.condition,
             operator: values.user_group_condition,
-            values: values.user_group,
+            value: values.user_group,
           },
         ];
         break;
-      case "is_subscribed":
+      case "subscribed":
         data = [
           ...conditions,
           {
             condition: values.condition,
-            values: values.is_subscribed,
+            value: values.is_subscribed,
           },
         ];
         break;
-      case "comes_by_affiliate":
+      case "affiliate_link":
         data = [
           ...conditions,
           {
             condition: values.condition,
             operator: values.comes_by_affiliate,
-            values: "data",
+            value: "data",
           },
         ];
         break;
-      case "points_on_user_account":
+      case "reward_points":
         data = [
           ...conditions,
           {
             condition: values.condition,
             operator: values.points_on_user_account_condition,
-            values: values.points_on_user_account_value,
+            value: values.points_on_user_account_value,
           },
         ];
         break;
@@ -437,7 +438,7 @@ function Conditions({
           <div className={styles.condition_body_header_text}>
             If{" "}
             <Select
-              defaultValue="all"
+              defaultValue={conditionValues?.set}
               onChange={handleTextChange}
               style={{
                 width: 70,
@@ -456,7 +457,7 @@ function Conditions({
             />{" "}
             of these conditions are{" "}
             <Select
-              defaultValue="true"
+              defaultValue={conditionValues?.set_value}
               onChange={handleTextValueChange}
               style={{
                 width: 80,

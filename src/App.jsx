@@ -76,6 +76,7 @@ const Seller = lazy(() => import("./pages/Seller/Seller"));
 const ResetPassword = lazy(() => import("./pages/Resetpassword/ResetPassword"));
 
 function App() {
+
   const dispatch = useDispatch();
   dispatch(loadTableData);
   useEffect(() => {

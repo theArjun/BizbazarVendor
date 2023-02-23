@@ -5,27 +5,36 @@ import { AdminPromotion, VendorPromotion } from "..";
 import Spinner from "../../component/Spinner/Spinner";
 import { apicall } from "../../utils/apicall/apicall";
 const ExplorePromotion = () => {
-  const user= JSON.parse(localStorage.getItem('userinfo'))
+  const user = JSON.parse(localStorage.getItem("userinfo"));
   const param = useParams("id");
   const [promotion, setPromotion] = useState({});
   const [loading, setLoading] = useState(false);
   const [pageStatus, setPageStatus] = useState("");
   useEffect(() => {
-    getPromotion(param.id);
+    getData()
   }, []);
+
+  const getData=()=>{
+    getPromotion(param.id);
+  }
   const getPromotion = async (id) => {
-    setLoading(true);
-    let result = await apicall({
-      url: `Promotions?promotion_id=${id}&extend[]=get_images&expand=1`,
-    });
-    if (result?.data?.promotions.length==0) {
-      setPageStatus(result);
-    }
-    if (result?.data) {
+    try {
+      setLoading(true);
+      let result = await apicall({
+        url: `Promotions?promotion_id=${id}&extend[]=get_images&expand=1`,
+      });
+      if (result?.data) {
+        setPromotion(result?.data?.promotions[0]);
+        setLoading(false);
+        if (result?.data?.promotions.length == 0) {
+          setPageStatus(result);
+        }
+      }
+      setLoading(false)
+    } catch (e) {
       setLoading(false);
-      setPromotion(result.data?.promotions[0])
+      message.error("something went wrong, ", e.message);
     }
-    setLoading(false);
   };
   // for page not found
   if (pageStatus) {
@@ -42,14 +51,17 @@ const ExplorePromotion = () => {
   if (loading) {
     return <Spinner />;
   }
-  if(promotion?.company_id==user.id){
-    return(
-      <VendorPromotion data={promotion}/>
-    )
+  if (promotion?.company_id == user.id) {
+    return (
+      <VendorPromotion
+        data={promotion}
+        loading={loading}
+        setLoading={setLoading}
+        getData={getData}
+      />
+    );
   }
-  return(
-    <AdminPromotion data={promotion}/>
-  );
+  return <AdminPromotion data={promotion} />;
 };
 
 export default ExplorePromotion;

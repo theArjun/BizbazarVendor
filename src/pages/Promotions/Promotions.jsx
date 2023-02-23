@@ -39,7 +39,7 @@ function Promotions() {
       case 'H':
         return 'Hidden'
       default:
-        return 'Unidentified'
+        return 'Pending'
     }
   }
   // lets handle the select status change 
