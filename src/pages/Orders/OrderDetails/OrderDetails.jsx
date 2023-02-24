@@ -5,11 +5,14 @@ import { apicall } from "../../../utils/apicall/apicall";
 import styles from "./OrderDetails.module.css";
 import { Breadcrumb } from "antd";
 import Deatails from "./../../../pagecomponents/Orders/OrderDetails/Deatails/Deatails";
+import { Alert, Space, Spin } from 'antd';
 
 function OrderDetails() {
   const param = useParams();
   const [orderDetail, setOrderDetails] = useState({});
   const [loading, setLoading] = useState(false);
+  const [referesh,setRefresh]=useState(false)
+
 
   const [statusModalOpen, setStatusModalOpen] = useState({
     open: false,
@@ -23,12 +26,12 @@ function OrderDetails() {
     }
 
     getOrderDetails();
-  }, [statusModalOpen.open]);
+  }, [statusModalOpen.open,referesh]);
 
   const getOrderDetails = async () => {
     setLoading(true);
     const result = await apicall({
-      url: "orders/" + param.id,
+      url: "VendorOrder/" + param.id,
     });
 
     setOrderDetails(result.data);
@@ -49,6 +52,8 @@ function OrderDetails() {
         <Breadcrumb.Item>View Orders</Breadcrumb.Item>
       </Breadcrumb>
       <Deatails
+      referesh={referesh}
+      setRefresh={setRefresh}
         orderDetail={orderDetail}
         statusModalOpen={statusModalOpen}
         setStatusModalOpen={setStatusModalOpen}
