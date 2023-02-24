@@ -11,6 +11,9 @@ import { saveCategories } from "./redux/features/products/productSlice";
 import { apicall } from "./utils/apicall/apicall";
 import { Button, Result } from "antd";
 import PublicRoute from "./utils/PublicRoute";
+
+import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
+
 const Home = lazy(() => import("./pages/Home/Home"));
 const ProductCountReport = lazy(() =>
   import("./pages/Reports/ProductCountReport/ProductCountReport")
@@ -51,6 +54,7 @@ const AdminCommunication = lazy(() =>
 );
 
 const Promotions = lazy(() => import("./pages/Promotions/Promotions"));
+const ExplorePromotion = lazy(() => import("./pages/Promotions/ExplorePromotion"));
 
 const ProductBundles = lazy(() =>
   import("./pages/ProductBundles/ProductBundles")
@@ -74,7 +78,10 @@ const Seller = lazy(() => import("./pages/Seller/Seller"));
 
 const ResetPassword = lazy(() => import("./pages/Resetpassword/ResetPassword"));
 
+export const queryClient = new QueryClient()
+
 function App() {
+
   const dispatch = useDispatch();
   dispatch(loadTableData);
   useEffect(() => {
@@ -91,6 +98,7 @@ function App() {
   };
 
   return (
+    <QueryClientProvider client={queryClient}>
     <Router>
       <Routes>
         <Route element={<PrivateRoutes />}>
@@ -183,7 +191,7 @@ function App() {
                 <Edit />
               </SuspenseWrapper>
             }
-            path="/products/Products/Edit Product"
+            path="/products/Products/Edit Product/:id"
           ></Route>
           {/** product Reviews */}
           <Route
@@ -258,6 +266,14 @@ function App() {
               </SuspenseWrapper>
             }
             path="/Marketing/Promotions"
+          ></Route>
+          <Route
+            element={
+              <SuspenseWrapper>
+                <ExplorePromotion />
+              </SuspenseWrapper>
+            }
+            path="/Marketing/Promotions/:id"
           ></Route>
           {/**Product Bundles*/}
           <Route
@@ -372,10 +388,12 @@ function App() {
               subTitle="Sorry, you are not authorized to access this page."
               extra={<a href="/">Back Home</a>}
             />
+            
           }
-        />
+        ></Route>
       </Routes>
     </Router>
+    </QueryClientProvider>
   );
 }
 

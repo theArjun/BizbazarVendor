@@ -1,0 +1,26 @@
+{
+    "bonus_items":[
+        {
+            "label": "Product discount",
+            "value": "product_discount"
+          }
+      ],
+      "bonus_conditions":[
+        {
+            "label": "to percentage of the original price",
+            "value": "to_percentage"
+          },
+          {
+            "label": "by percentage of the original price",
+            "value": "by_percentage"
+          },
+          {
+            "label": "to fixed amount",
+            "value": "to_fixed"
+          },
+          {
+            "label": "by fixed amount",
+            "value": "by_fixed"
+          }
+      ]
+}

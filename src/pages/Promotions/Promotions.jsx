@@ -1,43 +1,148 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./Promotions.module.css";
-import { Breadcrumb, Button, Table } from "antd";
+import { Breadcrumb, Button, Table, Select } from "antd";
 import { useNavigate } from "react-router-dom";
-
+import { useState } from "react";
+import { apicall } from "../../utils/apicall/apicall";
+import {
+  useDeletePromotions,
+  useChangePromotionStatus,
+} from "../../apis/PromotionApi";
+import Spinner from "../../component/Spinner/Spinner";
+import useWindowSize from "../../utils/Hooks/useWindowSize";
 function Promotions() {
+  const [promotions, setPromotions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const { isLoading, mutate, isError } = useDeletePromotions();
+  const { isLoading: isStatusChange, mutate: mutateStatus } =
+    useChangePromotionStatus();
+  const navigate = useNavigate();
+  const windowSize = useWindowSize();
+  useEffect(() => {
+    getPromotions();
+  }, []);
+  //  lets get promotions from API
+  const getPromotions = async () => {
+    setLoading(true);
+    let result = await apicall({
+      url: `Promotions`,
+    });
+    if (result?.data) {
+      let data = [...result.data.promotions];
+      setPromotions(data.map((el, i) => ({ ...el, key: el?.promotion_id })));
+      setLoading(false);
+    }
+    setLoading(false);
+  };
+  // lets delete promotions
+  const deletePromotions = () => {
+    let promotion_ids = selectedRowKeys.reduce((updater, current, i) => {
+      updater[i] = current;
+      return updater;
+    }, {});
+    let delete_data = {
+      promotion_ids: {
+        ...promotion_ids,
+      },
+    };
+    // call mutation here to delete promotions
+    mutate(delete_data, {
+      onSuccess: (response) => {
+        getPromotions();
+        console.log(response, "promotion updated success");
+      },
+      onError: (error) => {
+        console.log("error on updating promotion, ", error);
+      },
+    });
+  };
+  // change status of promotion
+  const changeStatus = (status) => {
+    let status_data = {
+      table_name: "promotions",
+      status: status,
+      id_name: "promotion_id",
+      ids: selectedRowKeys,
+    };
+    mutateStatus(status_data, {
+      onSuccess: (response) => {
+        getPromotions();
+        console.log(response, "promotion updated success");
+      },
+      onError: (error) => {
+        console.log("error on updating promotion, ", error);
+      },
+    });
+    
+  };
+  // lets get status
+  const getStatus = (status) => {
+    switch (status) {
+      case "A":
+        return "Active";
+      case "D":
+        return "Disabled";
+      case "H":
+        return "Hidden";
+      default:
+        return "Pending";
+    }
+  };
+  // lets handle the select status change
   const columns = [
     {
-      title: "Full Name",
-      width: 100,
-      dataIndex: "name",
+      title: "Name",
       key: "name",
-      fixed: "left",
+      dataIndex: "name",
+      render: (name, row) => (
+        <React.Fragment>
+          <a
+            onClick={() =>
+              navigate("../Marketing/Promotions/" + row?.promotion_id)
+            }
+            className={styles.promotion_name}
+          >
+            {name}
+          </a>
+        </React.Fragment>
+      ),
     },
     {
-      title: "Age",
-      width: 100,
-      dataIndex: "age",
-      key: "age",
-      fixed: "left",
+      title: "Stop other rules",
+      dataIndex: "stop_other_rules",
+      key: "rules",
+      render: (text) => (text == "N" ? "No" : "Yes"),
     },
 
     {
-      title: "Column 4",
-      dataIndex: "address",
+      title: "Priority",
+      dataIndex: "priority",
       key: "4",
-      width: 150,
     },
     {
-      title: "Column 5",
-      dataIndex: "address",
+      title: "Zone",
+      dataIndex: "zone",
       key: "5",
-      width: 150,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "5",
+      render: (status) => <a>{getStatus(status)}</a>,
     },
   ];
-
-  const data = [];
-
-  const navigate = useNavigate();
-
+  const onSelectChange = (newSelectedRowKeys) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  const hasSelected = selectedRowKeys.length > 0;
+  if (loading || isLoading || isStatusChange) {
+    return <Spinner />;
+  }
   return (
     <div className={styles.container}>
       <div className={styles.breadcumb}>
@@ -46,11 +151,50 @@ function Promotions() {
           <Breadcrumb.Item>
             <a href="">Promotions</a>
           </Breadcrumb.Item>
-          <Breadcrumb.Item>Promotions</Breadcrumb.Item>
         </Breadcrumb>
       </div>
       <div className={styles.container}>
-        <Table pagination={false} columns={columns} dataSource={data} />
+        <div className={styles.action_buttons}>
+          <Button
+            disabled={!hasSelected}
+            loading={loading}
+            onClick={deletePromotions}
+          >
+            Delete
+          </Button>
+          <Select
+            disabled={!hasSelected}
+            defaultValue="Status"
+            style={{
+              width: 170,
+            }}
+            onChange={changeStatus}
+            options={[
+              {
+                label: "Change to Active",
+                value: "A",
+              },
+              {
+                label: "Change to Hidden",
+                value: "H",
+              },
+              {
+                label: "Change to Disabled",
+                value: "D",
+              },
+            ]}
+          />
+        </div>
+        <Table
+          rowSelection={rowSelection}
+          pagination={false}
+          columns={columns}
+          dataSource={promotions}
+          scroll={{
+            y: windowSize.height > 670 ? 300 : 200,
+            x: 700,
+          }}
+        />
       </div>
       <Button
         className={styles.buttonAddCatalog}
