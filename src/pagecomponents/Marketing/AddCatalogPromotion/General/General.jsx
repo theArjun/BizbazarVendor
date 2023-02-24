@@ -6,7 +6,24 @@ import "react-quill/dist/quill.snow.css";
 import { message } from "antd";
 import ImageUploaderForPromotion from "../../../../component/ImageUploader/ImageUploaderForPromotion";
 
-function General({ setGeneralData, generalData, image, setImage }) {
+function General({ data, setGeneralData, generalData, image, setImage }) {
+
+   //function to get image
+   const getImage = (image) => {
+    if(!!image){
+      return [
+        {
+          uid: "0",
+          name: "main_image.jpg",
+          status: "done",
+          url: image?.icon?.image_path,
+          pair_id:image?.pair_id
+        }
+      ];
+    }else{
+      return [];
+    }
+  };
   return (
     <div className={styles.container}>
       <label className={styles.label}>
@@ -53,7 +70,7 @@ function General({ setGeneralData, generalData, image, setImage }) {
       </label>
       <label className={styles.label}>
         <div>Image :</div>
-       <ImageUploaderForPromotion image={image} setImage={setImage} message={message}/>
+       <ImageUploaderForPromotion image={image} setImage={setImage} imageList={getImage(data?.image)} message={message}/>
       </label>
       <label className={styles.label}>
         <div>Available from:</div>

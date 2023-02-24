@@ -1,69 +1,118 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import styles from "./Promotions.module.css";
-import { Breadcrumb, Button, Table, Select, Spin } from "antd";
+import { Breadcrumb, Button, Table, Select } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import {apicall} from '../../utils/apicall/apicall'
+import { apicall } from "../../utils/apicall/apicall";
+import {
+  useDeletePromotions,
+  useChangePromotionStatus,
+} from "../../apis/PromotionApi";
 import Spinner from "../../component/Spinner/Spinner";
 import useWindowSize from "../../utils/Hooks/useWindowSize";
 function Promotions() {
-  const [promotions, setPromotions]=useState([])
-  const [loading, setLoading]=useState(false)
-  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const [promotions, setPromotions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const { isLoading, mutate, isError } = useDeletePromotions();
+  const { isLoading: isStatusChange, mutate: mutateStatus } =
+    useChangePromotionStatus();
   const navigate = useNavigate();
-  const windowSize= useWindowSize();
+  const windowSize = useWindowSize();
   useEffect(() => {
-  getPromotions()
+    getPromotions();
   }, []);
-  //  lets get promotions from API 
-  const getPromotions= async ()=>{
-        setLoading(true)
-        let result= await  apicall({
-          url:`Promotions`
-        })
-        if(result?.data){
-          let data=[...result.data.promotions]
-            setPromotions(data.map((el,i)=>({...el, key:i})))
-            setLoading(false)
-            
-        }
-        setLoading(false)
-  }
-  // lets get status 
-  const getStatus=(status)=>{
-    switch(status){
-      case 'A':
-        return 'Active'
-      case 'D':
-        return 'Disabled'
-      case 'H':
-        return 'Hidden'
-      default:
-        return 'Pending'
+  //  lets get promotions from API
+  const getPromotions = async () => {
+    setLoading(true);
+    let result = await apicall({
+      url: `Promotions`,
+    });
+    if (result?.data) {
+      let data = [...result.data.promotions];
+      setPromotions(data.map((el, i) => ({ ...el, key: el?.promotion_id })));
+      setLoading(false);
     }
-  }
-  // lets handle the select status change 
-  const handleStatusChange= async()=>{
-
-  }
+    setLoading(false);
+  };
+  // lets delete promotions
+  const deletePromotions = () => {
+    let promotion_ids = selectedRowKeys.reduce((updater, current, i) => {
+      updater[i] = current;
+      return updater;
+    }, {});
+    let delete_data = {
+      promotion_ids: {
+        ...promotion_ids,
+      },
+    };
+    // call mutation here to delete promotions
+    mutate(delete_data, {
+      onSuccess: (response) => {
+        getPromotions();
+        console.log(response, "promotion updated success");
+      },
+      onError: (error) => {
+        console.log("error on updating promotion, ", error);
+      },
+    });
+  };
+  // change status of promotion
+  const changeStatus = (status) => {
+    let status_data = {
+      table_name: "promotions",
+      status: status,
+      id_name: "promotion_id",
+      ids: selectedRowKeys,
+    };
+    mutateStatus(status_data, {
+      onSuccess: (response) => {
+        getPromotions();
+        console.log(response, "promotion updated success");
+      },
+      onError: (error) => {
+        console.log("error on updating promotion, ", error);
+      },
+    });
+    
+  };
+  // lets get status
+  const getStatus = (status) => {
+    switch (status) {
+      case "A":
+        return "Active";
+      case "D":
+        return "Disabled";
+      case "H":
+        return "Hidden";
+      default:
+        return "Pending";
+    }
+  };
+  // lets handle the select status change
   const columns = [
     {
       title: "Name",
       key: "name",
-      dataIndex:'name',
-      render:(name, row)=>(
+      dataIndex: "name",
+      render: (name, row) => (
         <React.Fragment>
-        <a onClick={()=>navigate('../Marketing/Promotions/'+row?.promotion_id)} className={styles.promotion_name}>{name}</a>
+          <a
+            onClick={() =>
+              navigate("../Marketing/Promotions/" + row?.promotion_id)
+            }
+            className={styles.promotion_name}
+          >
+            {name}
+          </a>
         </React.Fragment>
-      )
+      ),
     },
     {
       title: "Stop other rules",
       dataIndex: "stop_other_rules",
       key: "rules",
-      render:(text)=>(
-        text=='N'?'No':'Yes'
-      )
+      render: (text) => (text == "N" ? "No" : "Yes"),
     },
 
     {
@@ -80,11 +129,7 @@ function Promotions() {
       title: "Status",
       dataIndex: "status",
       key: "5",
-      render:(status)=>(
-          <a>
-          {getStatus(status)}
-          </a>
-      )
+      render: (status) => <a>{getStatus(status)}</a>,
     },
   ];
   const onSelectChange = (newSelectedRowKeys) => {
@@ -95,9 +140,9 @@ function Promotions() {
     onChange: onSelectChange,
   };
   const hasSelected = selectedRowKeys.length > 0;
-if(loading){
-  return <Spinner/>
-}
+  if (loading || isLoading || isStatusChange) {
+    return <Spinner />;
+  }
   return (
     <div className={styles.container}>
       <div className={styles.breadcumb}>
@@ -109,40 +154,47 @@ if(loading){
         </Breadcrumb>
       </div>
       <div className={styles.container}>
-      <div className={styles.action_buttons}>
-      <Button  disabled={!hasSelected} loading={loading}>
-          Delete
-        </Button>
-        <Select
-        disabled={!hasSelected}
-        defaultValue='Status'
-      style={{
-        width: 170,
-      }}
-      onChange={handleStatusChange}
-      options={[
-        {
-          label: 'Change to Active',
-          value: 'A',
-        },
-        {
-          label: 'Change to Hidden',
-          value: 'H',
-        },
-        {
-          label: 'Change to Disabled',
-          value: 'D',
-        },
-      ]}
-    />
-      </div>
-        <Table rowSelection={rowSelection}
-         pagination={false} columns={columns}
+        <div className={styles.action_buttons}>
+          <Button
+            disabled={!hasSelected}
+            loading={loading}
+            onClick={deletePromotions}
+          >
+            Delete
+          </Button>
+          <Select
+            disabled={!hasSelected}
+            defaultValue="Status"
+            style={{
+              width: 170,
+            }}
+            onChange={changeStatus}
+            options={[
+              {
+                label: "Change to Active",
+                value: "A",
+              },
+              {
+                label: "Change to Hidden",
+                value: "H",
+              },
+              {
+                label: "Change to Disabled",
+                value: "D",
+              },
+            ]}
+          />
+        </div>
+        <Table
+          rowSelection={rowSelection}
+          pagination={false}
+          columns={columns}
           dataSource={promotions}
           scroll={{
             y: windowSize.height > 670 ? 300 : 200,
             x: 700,
-          }} />
+          }}
+        />
       </div>
       <Button
         className={styles.buttonAddCatalog}

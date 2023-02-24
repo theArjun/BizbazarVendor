@@ -7,16 +7,17 @@ import { apicall } from "../../utils/apicall/apicall";
 const ExplorePromotion = () => {
   const user = JSON.parse(localStorage.getItem("userinfo"));
   const param = useParams("id");
-  const [promotion, setPromotion] = useState({});
+  const [promotion, setPromotion] = useState('');
   const [loading, setLoading] = useState(false);
   const [pageStatus, setPageStatus] = useState("");
+  const [renderCount, setRenderCount] = useState(1);
   useEffect(() => {
-    getData()
+    getData();
   }, []);
 
-  const getData=()=>{
+  const getData = () => {
     getPromotion(param.id);
-  }
+  };
   const getPromotion = async (id) => {
     try {
       setLoading(true);
@@ -30,7 +31,7 @@ const ExplorePromotion = () => {
           setPageStatus(result);
         }
       }
-      setLoading(false)
+      setLoading(false);
     } catch (e) {
       setLoading(false);
       message.error("something went wrong, ", e.message);
@@ -53,12 +54,14 @@ const ExplorePromotion = () => {
   }
   if (promotion?.company_id == user.id) {
     return (
-      <VendorPromotion
+      promotion?<VendorPromotion
         data={promotion}
         loading={loading}
         setLoading={setLoading}
         getData={getData}
-      />
+        renderCount={renderCount}
+        setRenderCount={setRenderCount}
+      />:<Spinner/>
     );
   }
   return <AdminPromotion data={promotion} />;

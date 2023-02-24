@@ -12,19 +12,18 @@ const getBase64 = (file) =>
 const ImageUploaderForPromotion = ({
   message,
   image,
-  setImage
+  setImage,
+  imageList
   }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [upload, setUpload] = useState(true);
-  const [uploadBtn, setUploadBtn] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
-  const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList] = useState(imageList.length?[...imageList]:[]);
   let insertImage =  (e) => {
     let image_type = e.target.files[0].name.split(".").pop();
     if (image_type === "jpeg" || image_type === "png" || image_type === "jpg") {
       setImage(e.target.files[0])
-     setUploadBtn(true)
     }
   };
   const handleCancel = () => setPreviewOpen(false);
@@ -57,7 +56,6 @@ const ImageUploaderForPromotion = ({
   };
   const onRemove = (a) => {
     setImage('')
-   setUploadBtn(false)
   };
   const uploadButton = (
     <div >
@@ -75,7 +73,7 @@ const ImageUploaderForPromotion = ({
     <React.Fragment>
     <Form>
     <Form.Item name="image" onChange={insertImage}>
-    <div className={ uploadBtn?styles.close_upload:styles.open_upload}>
+    <div className={ fileList?.length?styles.close_upload:styles.open_upload}>
       <Upload
         action="#"
         listType="picture-card"

@@ -3,10 +3,11 @@ import styles from "./Promotion.module.css";
 import cx from "classnames";
 import { Breadcrumb, Button, message } from "antd";
 import General from "../AddCatalogPromotion/General/General";
+import { useUpdatePromotion } from "../../../apis/PromotionApi";
 import Conditions from "../AddCatalogPromotion/Conditions/Conditions";
 import Bonuses from "../AddCatalogPromotion/Bonuses/Bonuses";
-import { apicall } from "../../../utils/apicall/apicall";
-const VendorPromotion = ({ data, loading, setLoading, getData }) => {
+import Spinner from "../../../component/Spinner/Spinner";
+const VendorPromotion = ({ data, getData, loading, setLoading }) => {
   const [activeTab, setActiveTab] = useState("General");
   const [bonuses, setBonuses] = useState([]);
   const [conditions, setConditions] = useState([]);
@@ -16,8 +17,8 @@ const VendorPromotion = ({ data, loading, setLoading, getData }) => {
     name: "",
     detailed_description: "",
     short_description: "",
-    from_date: '',
-    to_date: '',
+    from_date: "",
+    to_date: "",
     priority: 0,
     stop_other_rules: "N",
     status: "A",
@@ -26,6 +27,7 @@ const VendorPromotion = ({ data, loading, setLoading, getData }) => {
     set: "all",
     set_value: 1,
   });
+  const { isLoading, mutate, isError } = useUpdatePromotion();
   const getDivision = () => {
     switch (activeTab) {
       case "General":
@@ -35,6 +37,7 @@ const VendorPromotion = ({ data, loading, setLoading, getData }) => {
             setImage={setImage}
             generalData={generalData}
             setGeneralData={setGeneralData}
+            data={data}
           />
         );
       case "Conditions":
@@ -53,16 +56,15 @@ const VendorPromotion = ({ data, loading, setLoading, getData }) => {
   };
   const getTimeAndDate = (timeStamp) => {
     const date = new Date(parseInt(timeStamp) * 1000);
-    var month =String( date.getUTCMonth() + 1).padStart(2, '0'); //months from 1-12
-    var day = String(date.getUTCDate()).padStart(2, '0');
+    var month = String(date.getUTCMonth() + 1).padStart(2, "0"); //months from 1-12
+    var day = String(date.getUTCDate()).padStart(2, "0");
     var year = date.getUTCFullYear();
-    let new_date= `${year}-${month}-${day}`
+    let new_date = `${year}-${month}-${day}`;
     return new_date;
   };
-  const savePromotion = async () => {
+  const savePromotion = () => {
     try {
       if (generalData.name) {
-        setLoading(true);
         const formData = new FormData();
         let image_data = {
           promo_main_image_data: {
@@ -97,8 +99,8 @@ const VendorPromotion = ({ data, loading, setLoading, getData }) => {
           promotion_id: data?.promotion_id,
           promotion_data: {
             ...generalData,
-            from_date:formatDate(generalData.from_date),
-            to_date:formatDate(generalData.to_date),
+            from_date: formatDate(generalData.from_date),
+            to_date: formatDate(generalData.to_date),
             bonuses: { ...temp_bonuses },
             conditions: {
               ...conditionValues,
@@ -114,27 +116,21 @@ const VendorPromotion = ({ data, loading, setLoading, getData }) => {
         } else {
           formData.append("promotion_data", JSON.stringify(prepareData));
         }
-        let result = await apicall({
-          url: "Promotions",
-          method: "post",
-          data: formData,
-          headers: {
-            "Content-Type": "multipart/form-data",
-            "Access-Control-Allow-Origin": true,
+        // Lets update promotion through mutate
+        mutate(formData, {
+          onSuccess: (response) => {
+            getData();
+            console.log(response, "promotion updated success");
+          },
+          onError: (error) => {
+            console.log("error on updating promotion, ", error);
           },
         });
-
-        if (result) {
-          getData();
-          setLoading(false);
-        }
-        setLoading(false);
       } else {
         message.error("Name is necessary to create a promotion.");
       }
     } catch (e) {
       console.log(e.message);
-      message.error("something went wrong!", e.message);
     }
   };
   // to display data
@@ -156,7 +152,11 @@ const VendorPromotion = ({ data, loading, setLoading, getData }) => {
     setGeneralData(temp);
   };
   const getConditions = (c_data) => {
-    setConditions(Object.values(c_data?.conditions?.conditions));
+    setConditions(
+      !c_data?.conditions.length
+        ? []
+        : Object.values(c_data?.conditions?.conditions)
+    );
   };
   const getConditionValues = (c_data) => {
     let temp = { ...conditionValues };
@@ -165,17 +165,18 @@ const VendorPromotion = ({ data, loading, setLoading, getData }) => {
     setConditionValues(temp);
   };
   const getBonuses = (b_data) => {
-    setBonuses(Object.values(b_data?.bonuses));
+    setBonuses(!b_data?.bonuses.length ? [] : Object.values(b_data?.bonuses));
   };
   // formatting date
-  const formatDate=(date)=>{
-    if(date){
-      let date_arr=date.split('-')
-      let new_date= `${date_arr[2]}/${date_arr[1]}/${date_arr[0]}`;
+  const formatDate = (date) => {
+    if (date) {
+      let date_arr = date.split("-");
+      let new_date = `${date_arr[2]}/${date_arr[1]}/${date_arr[0]}`;
       return new_date;
     }
     return;
-  }
+  };
+  if (isLoading) return <Spinner />;
   return (
     <React.Fragment>
       <div className={styles.breadcumb}>
@@ -185,7 +186,7 @@ const VendorPromotion = ({ data, loading, setLoading, getData }) => {
             <a href="">Edit Catalog Promotion</a>
           </Breadcrumb.Item>
         </Breadcrumb>
-        <Button loading={loading} onClick={savePromotion} type="primary">
+        <Button onClick={savePromotion} type="primary">
           Save changes
         </Button>
       </div>
