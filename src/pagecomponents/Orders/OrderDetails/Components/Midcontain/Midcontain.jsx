@@ -58,11 +58,11 @@ function Midcontain({ orderDetail,setUpdateState,updateState }) {
       <div className={styles.notes}>
         <div>
           <div>Staff notes</div>
-          <TextArea  value={updateState.staffnotes || orderDetail?.details } onChange={(a)=>setUpdateState((prev)=>({...prev,staffnotes:a.target.value}))} />
+          <TextArea  defaultValue={updateState.staffnotes || orderDetail?.details||"" } onChange={(a)=>setUpdateState((prev)=>({...prev,staffnotes:a.target.value}))} />
         </div>
         <div>
           <div>Customer notes</div>
-          <TextArea value={updateState.customernotes || orderDetail?.notes}   onChange={(a)=>setUpdateState((prev)=>({...prev,customernotes:a.target.value}))}/>
+          <TextArea defaultValue={updateState.customernotes || orderDetail?.notes||""}   onChange={(a)=>setUpdateState((prev)=>({...prev,customernotes:a.target.value}))}/>
         </div>
       </div>
     </div>

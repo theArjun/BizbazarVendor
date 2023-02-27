@@ -42,12 +42,7 @@ function RightContain({ orderDetail, statusModalOpen, setStatusModalOpen,setUpda
         value:dat[0]
       })));
     }
-   
-    
-    // setCarrier(Object.values(result.data.carriers)
-      
-      // );
-    
+ 
   }
 
   const menu = (filterStatus, objId) => (
