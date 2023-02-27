@@ -98,7 +98,7 @@ const element = myWindow.document.querySelector("tbody");
 const doc = new jsPDF('p', 'mm', dat===2?'a5':"a4");
 
 
-setTimeout(() => {
+// setTimeout(() => {
   html2canvas(element,{
     useCORS: true,allowTaint: true}).then(canvas => {
    
@@ -109,11 +109,11 @@ setTimeout(() => {
     doc.save('output.pdf');
  
  
-}, 1000).then(()=>{
+}, 200).then(()=>{
   myWindow.close();
 });
   
-}, 1000);
+// }, 1000);
 
   
     
