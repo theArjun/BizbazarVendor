@@ -35,9 +35,15 @@
   .tabcontain {
     padding: 20px;
   }
-  .breadcumb{
+  .breadcrumb{
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+  }
+  .top_section{
+    font-weight: 400;
+  }
+  .top_section > div{
+    font-size: 25px;
   }

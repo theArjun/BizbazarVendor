@@ -63,8 +63,10 @@ const ExplorePromotion = () => {
         setRenderCount={setRenderCount}
       />:<Spinner/>
     );
+  }else{
+
+    return <AdminPromotion data={promotion} />;
   }
-  return <AdminPromotion data={promotion} />;
 };
 
 export default ExplorePromotion;
