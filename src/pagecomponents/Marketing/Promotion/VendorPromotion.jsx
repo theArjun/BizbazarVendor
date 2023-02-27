@@ -179,7 +179,7 @@ const VendorPromotion = ({ data, getData, loading, setLoading }) => {
   if (isLoading) return <Spinner />;
   return (
     <React.Fragment>
-      <div className={styles.breadcumb}>
+      <div className={styles.breadcrumb}>
         <Breadcrumb>
           <Breadcrumb.Item>Marketing</Breadcrumb.Item>
           <Breadcrumb.Item>
