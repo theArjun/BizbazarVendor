@@ -13,7 +13,9 @@ const ImageUploaderForPromotion = ({
   message,
   image,
   setImage,
-  imageList
+  imageList,
+  deleteImage,
+  setDeleteImage
   }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [upload, setUpload] = useState(true);
@@ -55,6 +57,12 @@ const ImageUploaderForPromotion = ({
     return false;
   };
   const onRemove = (a) => {
+    if(deleteImage){
+      let delete_image={...deleteImage}
+      delete_image.image_id=a?.image_id;
+      delete_image.pair_id=a?.pair_id;
+      setDeleteImage(delete_image)
+    }
     setImage('')
   };
   const uploadButton = (

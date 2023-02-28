@@ -3,38 +3,24 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AdminPromotion, VendorPromotion } from "..";
 import Spinner from "../../component/Spinner/Spinner";
-import { apicall } from "../../utils/apicall/apicall";
+import { useGetPromotionById } from "../../apis/PromotionApi";
 const ExplorePromotion = () => {
   const user = JSON.parse(localStorage.getItem("userinfo"));
   const param = useParams("id");
   const [promotion, setPromotion] = useState('');
-  const [loading, setLoading] = useState(false);
   const [pageStatus, setPageStatus] = useState("");
-  const [renderCount, setRenderCount] = useState(1);
+  const {isLoading, isError, data}=useGetPromotionById(param.id)
   useEffect(() => {
-    getData();
-  }, []);
-
-  const getData = () => {
-    getPromotion(param.id);
-  };
-  const getPromotion = async (id) => {
+    getPromotion()
+  }, [data]);
+  const getPromotion =async  () => {
     try {
-      setLoading(true);
-      let result = await apicall({
-        url: `Promotions?promotion_id=${id}&extend[]=get_images&expand=1`,
-      });
-      if (result?.data) {
-        setPromotion(result?.data?.promotions[0]);
-        setLoading(false);
-        if (result?.data?.promotions.length == 0) {
-          setPageStatus(result);
-        }
+      if (data?.data?.promotions.length == 0) {
+        setPageStatus(data?.status);
       }
-      setLoading(false);
+      setPromotion(data?.data?.promotions[0])
     } catch (e) {
-      setLoading(false);
-      message.error("something went wrong, ", e.message);
+      console.log("something went wrong, ", e);
     }
   };
   // for page not found
@@ -49,24 +35,19 @@ const ExplorePromotion = () => {
     );
   }
   // for page loading
-  if (loading) {
+  if (isLoading) {
     return <Spinner />;
   }
   if (promotion?.company_id == user.id) {
     return (
       promotion?<VendorPromotion
         data={promotion}
-        loading={loading}
-        setLoading={setLoading}
-        getData={getData}
-        renderCount={renderCount}
-        setRenderCount={setRenderCount}
       />:<Spinner/>
     );
   }else{
-
-    return <AdminPromotion data={promotion} />;
+    return promotion?<AdminPromotion data={promotion} />:<Spinner/>;
   }
+  
 };
 
 export default ExplorePromotion;

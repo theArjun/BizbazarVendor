@@ -1,39 +1,45 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styles from "./Promotions.module.css";
 import { Breadcrumb, Button, Table, Select } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { apicall } from "../../utils/apicall/apicall";
+import { useQueryClient } from "@tanstack/react-query";
 import {
+  useGetPromotions,
   useDeletePromotions,
   useChangePromotionStatus,
 } from "../../apis/PromotionApi";
 import Spinner from "../../component/Spinner/Spinner";
 import useWindowSize from "../../utils/Hooks/useWindowSize";
 function Promotions() {
-  const [promotions, setPromotions] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const { isLoading, mutate, isError } = useDeletePromotions();
   const { isLoading: isStatusChange, mutate: mutateStatus } =
     useChangePromotionStatus();
+  const {
+    isLoading: isPromotionLoading,
+    data: promotionData,
+    isError: isPromotionError,
+    error: promotionError,
+  } = useGetPromotions();
   const navigate = useNavigate();
   const windowSize = useWindowSize();
-  useEffect(() => {
-    getPromotions();
-  }, []);
+  const queryClient = useQueryClient();
   //  lets get promotions from API
-  const getPromotions = async () => {
-    setLoading(true);
-    let result = await apicall({
-      url: `Promotions`,
-    });
-    if (result?.data) {
-      let data = [...result.data.promotions];
-      setPromotions(data.map((el, i) => ({ ...el, key: el?.promotion_id })));
-      setLoading(false);
+  const getPromotions = () => {
+    try {
+      if (isPromotionError) {
+        console.log(promotionError);
+        return [];
+      }
+      if (isPromotionLoading) {
+        return [];
+      }
+      let data = [...promotionData?.data?.promotions];
+      return data.map((el, i) => ({ ...el, key: el?.promotion_id }));
+    } catch (e) {
+      console.log("error on getting promotions", e.message);
     }
-    setLoading(false);
   };
   // lets delete promotions
   const deletePromotions = () => {
@@ -49,7 +55,7 @@ function Promotions() {
     // call mutation here to delete promotions
     mutate(delete_data, {
       onSuccess: (response) => {
-        getPromotions();
+        queryClient.invalidateQueries(["promotions"]);
         console.log(response, "promotion updated success");
       },
       onError: (error) => {
@@ -67,14 +73,13 @@ function Promotions() {
     };
     mutateStatus(status_data, {
       onSuccess: (response) => {
-        getPromotions();
+        queryClient.invalidateQueries(["promotions"]);
         console.log(response, "promotion updated success");
       },
       onError: (error) => {
         console.log("error on updating promotion, ", error);
       },
     });
-    
   };
   // lets get status
   const getStatus = (status) => {
@@ -140,7 +145,7 @@ function Promotions() {
     onChange: onSelectChange,
   };
   const hasSelected = selectedRowKeys.length > 0;
-  if (loading || isLoading || isStatusChange) {
+  if (isLoading || isStatusChange) {
     return <Spinner />;
   }
   return (
@@ -155,11 +160,7 @@ function Promotions() {
       </div>
       <div className={styles.container}>
         <div className={styles.action_buttons}>
-          <Button
-            disabled={!hasSelected}
-            loading={loading}
-            onClick={deletePromotions}
-          >
+          <Button disabled={!hasSelected} onClick={deletePromotions}>
             Delete
           </Button>
           <Select
@@ -188,8 +189,9 @@ function Promotions() {
         <Table
           rowSelection={rowSelection}
           pagination={false}
+          loading={isPromotionLoading}
           columns={columns}
-          dataSource={promotions}
+          dataSource={getPromotions()}
           scroll={{
             y: windowSize.height > 670 ? 300 : 200,
             x: 700,

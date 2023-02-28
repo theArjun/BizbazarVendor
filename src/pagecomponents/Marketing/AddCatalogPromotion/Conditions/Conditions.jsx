@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Select, Form, Input } from "antd";
 import styles from "./Conditions.module.css";
 import ConditionTable from "./Table/ConditionTable";
 import { useState } from "react";
 import data from "./data.json";
+import { useGetPromotionProducts } from "../../../../apis/PromotionApi";
+import AddModal from "../../../../component/AddModal/AddModal";
+import Spinner from "../../../../component/Spinner/Spinner";
 function Conditions({
   conditions,
   setConditions,
@@ -11,6 +14,14 @@ function Conditions({
   conditionValues,
 }) {
   const [currentCondition, setCurrentCondition] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [cdata, setCData]=useState([])
+  const [ids, setIds]=useState([])
+  const [condition, setCondition]=useState('')
+  const {isLoading:isProductLoading, data:productData, isError}=useGetPromotionProducts();
+  useEffect(()=>{
+    // setData(productData?.data?.products)
+  },[productData])
   const handleTextChange = (a, b) => {
     let temp_condition = { ...conditionValues };
     temp_condition.set = b.value;
@@ -79,7 +90,9 @@ function Conditions({
                 options={data.categories}
               />
             </Form.Item>
-            <Button type="primary">Add products</Button>
+            <Button type="primary" onClick={() => setConditionValue('products')}>
+              Add products
+            </Button>
           </div>
         );
       case "purchased_products":
@@ -322,10 +335,25 @@ function Conditions({
         );
     }
   };
-
+// handle condition values 
+const setConditionValue= (condition)=>{
+    switch(condition){
+      case 'products':
+        let temp=[...productData?.data?.products]
+        setCData(temp?.map((el, i)=>({id:el?.product_id, name:el?.product, code:el?.product_code, quantity:el?.amount, status:el?.status})))
+        setCondition(condition)
+        setModalOpen(true)
+        break;
+      case 'categories':
+          setCData(productData?.data?.products)
+          setCondition(condition)
+          setModalOpen(true)
+          break;
+    }
+}
   // form submit function
   const onFinish = (values) => {
-    console.log(values)
+    console.log(values);
     let data = [...conditions];
     switch (values.condition) {
       case "price":
@@ -512,6 +540,7 @@ function Conditions({
             />
           </div>
         </div>
+        <AddModal setModalOpen={setModalOpen} modalOpen={modalOpen} condition_data={cdata} ids={ids} setIds={setIds}/>
       </div>
     </div>
   );
