@@ -12,6 +12,24 @@ import { apicall } from "./utils/apicall/apicall";
 import { Button, Result } from "antd";
 import PublicRoute from "./utils/PublicRoute";
 
+const ViewRateAreas = lazy(() =>
+  import("./pages/Setting/ShippingMethod/ViewRateAreas/ViewRateAreas")
+);
+
+const CouponVoucherReport = lazy(() =>
+  import("./pages/Reports/CouponVoucherReport/CouponVoucherReport")
+);
+
+const VendorTransactionDetails = lazy(() =>
+  import("./pages/Reports/VendorTransactionDetails/VendorTransactionDetails")
+);
+
+const OrderDetailsReport = lazy(() =>
+  import("./pages/Reports/OrderDetailsReport/OrderDetailsReport")
+);
+
+const GiftCards = lazy(() => import("./pages/Reports/GiftCards/GiftCards"));
+
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 
 const Home = lazy(() => import("./pages/Home/Home"));
@@ -77,6 +95,9 @@ const Profile = lazy(() => import("./pages/Profile/Profile"));
 const Seller = lazy(() => import("./pages/Seller/Seller"));
 
 const ResetPassword = lazy(() => import("./pages/Resetpassword/ResetPassword"));
+const ViewShippingMethod = lazy(() =>
+  import("./pages/Setting/ViewShippingMethod/ViewShippingMethod")
+);
 
 export const queryClient = new QueryClient()
 
@@ -303,6 +324,24 @@ function App() {
             }
             path="/Setting/Shipping Methods"
           ></Route>
+          {/**View Shipping Methods*/}
+          <Route
+            element={
+              <SuspenseWrapper>
+                <ViewShippingMethod />
+              </SuspenseWrapper>
+            }
+            path="/Setting/Shipping Methods/:id"
+          ></Route>
+          {/**View Rate Areas*/}
+          <Route
+            element={
+              <SuspenseWrapper>
+                <ViewRateAreas />
+              </SuspenseWrapper>
+            }
+            path="/Setting/Rate Areas/:id"
+          ></Route>
           {/**Logos And Styles*/}
           <Route
             element={<>Logos And Styles</>}
@@ -321,20 +360,39 @@ function App() {
             path="/Reports/Account Orders Details"
           ></Route>
           {/**Gift Cards*/}
-          <Route element={<>Gift Cards</>} path="/Reports/Gift Cards"></Route>
+          <Route
+            element={
+              <SuspenseWrapper>
+                <GiftCards />
+              </SuspenseWrapper>
+            }
+            path="/Reports/Gift Cards"
+          ></Route>
           {/**Order Details*/}
           <Route
-            element={<>Order Details</>}
+            element={
+              <SuspenseWrapper>
+                <OrderDetailsReport />
+              </SuspenseWrapper>
+            }
             path="/Reports/Order Details"
           ></Route>
           {/**Vendor Transaction Details*/}
           <Route
-            element={<>Vendor Transaction Details</>}
+            element={
+              <SuspenseWrapper>
+                <VendorTransactionDetails />
+              </SuspenseWrapper>
+            }
             path="/Reports/Vendor Transaction Details"
           ></Route>
           {/**Coupon Voucher Report*/}
           <Route
-            element={<>Coupon Voucher Report</>}
+            element={
+              <SuspenseWrapper>
+                <CouponVoucherReport />
+              </SuspenseWrapper>
+            }
             path="/Reports/Coupon Voucher Report"
           ></Route>
           {/**Product Count Reports*/}

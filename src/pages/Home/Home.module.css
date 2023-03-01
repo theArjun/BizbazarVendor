@@ -80,6 +80,18 @@
   justify-content: center;
   margin-top: 1em;
 }
+@media (max-width: 780px) {
+  .cardIcon {
+    padding: 7px;
+  }
+  .cardTitle {
+    font-size: 12px;
+    line-height: 13px;
+  }
+  .cardValue {
+    font-size: 18px !important;
+  }
+}
 
 .cardWrapper {
   width: 100%;

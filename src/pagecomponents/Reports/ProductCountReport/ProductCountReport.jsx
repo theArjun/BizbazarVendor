@@ -83,7 +83,6 @@ function ProductCountReport() {
         dataSource={report}
         rowKey={"company_id"}
         scroll={{
-          // y: 240,
           x: 1000,
         }}
       />

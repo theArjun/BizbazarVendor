@@ -5,9 +5,11 @@ import { Dropdown, Menu, Table } from "antd";
 import { apicall } from "../../../utils/apicall/apicall";
 import { Tag } from "antd";
 import OrderStatusModal from "../../../component/OrderStatusModal/OrderStatusModal";
+import { useNavigate } from "react-router-dom";
 
 function RecentOrders({ order, status, statusModalOpen, setStatusModalOpen }) {
   const [activeTab, setActiveTab] = useState("");
+  const navigate = useNavigate();
 
   const menu = (filterStatus, objId) => (
     <Menu
@@ -47,7 +49,6 @@ function RecentOrders({ order, status, statusModalOpen, setStatusModalOpen }) {
     {
       title: "Order Id",
       dataIndex: "order_id",
-      // key: "order_id",
       render: (text, dat) => (
         <div
           style={{ color: "blue", cursor: "pointer" }}
@@ -61,7 +62,6 @@ function RecentOrders({ order, status, statusModalOpen, setStatusModalOpen }) {
     {
       title: "User name",
       dataIndex: "firstname",
-      // key: "firstname",
       render: (text, dat) => (
         <div>
           {text} {dat.lastname}

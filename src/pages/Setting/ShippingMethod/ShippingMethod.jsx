@@ -1,92 +1,83 @@
-import { Table } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import styles from "./ShippingMethod.module.css";
+import cx from "classnames";
+import RateAreas from "./../../../pagecomponents/Setting/ShippingMethod/RateAreas/RateAreas";
+import ShippingMethod from "./../../../pagecomponents/Setting/ShippingMethod/ShippingMethod/ShippingMethod";
+import StoresAndPickup from "./../../../pagecomponents/Setting/ShippingMethod/StoresAndPickup/StoresAndPickup";
 import { apicall } from "../../../utils/apicall/apicall";
 
-function ShippingMethod() {
-  const [shipments, setShipments] = useState([]);
-  const [status, setStatus] = useState([]);
+const tabs = ["Shipping Method", "Rate Areas", "Stores And pickup Points"];
 
-  useEffect(() => {
-    getStatus();
+function ShippingMethodPage() {
+  const [active, setActive] = useState("Shipping Method");
+  const [bottom, setBottom] = useState(false);
+
+  const [shipings, setShippings] = React.useState([]);
+
+  const page = React.useRef(1);
+
+  React.useEffect(() => {
+    getShiippingMethod();
   }, []);
 
-  const getStatus = async () => {
+  const getShiippingMethod = async () => {
     const result = await apicall({
-      url: "statuses",
+      url: "shippings?" + `&page=${page.current}&items_per_page=${50}`,
     });
-    // console.log(result.data.statuses);
-    setStatus(result.data.statuses);
+
+    setShippings(result.data.shippings);
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
+  React.useEffect(() => {
+    if (shipings.length < 50) {
+      return;
+    }
+    if (!bottom) {
+      return;
+    }
+    page.current = page.current + 1;
+    getMoreShiippingMethod();
+  }, [bottom]);
 
-  const getData = async () => {
+  const getMoreShiippingMethod = async () => {
     const result = await apicall({
-      url: "shipments",
+      url: "shippings?" + `&page=${page.current}&items_per_page=${50}`,
     });
-    const result1 = await apicall({
-      url: "shippings",
-    });
-    console.log(result.data.shipments);
-    console.log(result1.data.shippings);
 
-    // setShipments(result.data.shippings);
+    setShippings((dat) => [...dat, ...result.data.shippings]);
   };
 
-  const columns = [
-    {
-      title: "POS",
-      dataIndex: "company_id",
-      render: (text) => <>{text}</>,
-    },
-    {
-      title: "Name",
-      dataIndex: "shipping",
-    },
-    {
-      title: "DELIVERY TIME",
-      dataIndex: "delivery_time",
-    },
-    {
-      title: "WEIGHT LIMIT (KG)",
-      dataIndex: "name",
-
-      render: (text, dat) => (
-        <a>
-          {dat.min_weight}-{dat.max_weight}
-        </a>
-      ),
-    },
-    {
-      title: "STATUS",
-      dataIndex: "status",
-    },
-  ];
-  const data = [
-    {
-      key: "1",
-      name: "John Brown",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-      tags: ["nice", "developer"],
-    },
-  ];
-
+  const getContainerFromTab = () => {
+    switch (active) {
+      case "Shipping Method":
+        return <ShippingMethod shipings={shipings} setBottom={setBottom} />;
+      case "Rate Areas":
+        return <RateAreas />;
+      default:
+        return <StoresAndPickup />;
+    }
+  };
   return (
     <div>
-      <Table
-        pagination={false}
-        columns={columns}
-        dataSource={shipments}
-        scroll={{
-          y: 240,
-          x: 1000,
-        }}
-      />
+      <div className={styles.tabContainer}>
+        <div className={styles.left}>
+          {tabs.map((dat, i) => (
+            <div
+              className={cx(
+                styles.button,
+                active === dat ? styles.bgColor : null
+              )}
+              key={i}
+              onClick={() => setActive(dat)}
+            >
+              {dat}
+            </div>
+          ))}
+        </div>
+      </div>
+      {getContainerFromTab()}
     </div>
   );
 }
 
-export default ShippingMethod;
+export default ShippingMethodPage;
