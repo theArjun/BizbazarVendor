@@ -4,6 +4,7 @@ import { Modal, Input, Image, Checkbox, Table, InputNumber } from "antd";
 import { apicall } from "../../utils/apicall/apicall";
 import useDebounce from "../../utils/Hooks/useDebounce";
 import useWindowSize from "../../utils/Hooks/useWindowSize";
+
 const AddModal = ({ modalOpen, setModalOpen, condition_data, ids, setIds }) => {
   const [productList, setProductList] = useState([]);
   const [data, setData] = useState([]);
@@ -21,7 +22,19 @@ const AddModal = ({ modalOpen, setModalOpen, condition_data, ids, setIds }) => {
       document.removeEventListener("click", handleClick);
     };
   }, []);
-
+useEffect(()=>{
+  
+  let only_ids=productList.reduce((updater, current)=>{
+   updater=updater+','+current.id;
+    return updater;
+  },"")
+  setIds(only_ids.slice(1))
+},[productList])
+useEffect(()=>{
+    if(!ids){
+      setProductList([])
+    }
+},[ids])
   const getUrl = (search) => {
     return (
       "products?is_search=Y" +
@@ -113,7 +126,6 @@ const AddModal = ({ modalOpen, setModalOpen, condition_data, ids, setIds }) => {
       render: (status) => <div>{getProductStatus(status)}</div>,
     },
   ];
-
   return (
     <Modal
       title="Add products"
@@ -157,7 +169,7 @@ const AddModal = ({ modalOpen, setModalOpen, condition_data, ids, setIds }) => {
         <div></div>
         <div className={styles.tableContain}>
           <Table
-            rowKey={"product_id"}
+            rowKey={"id"}
             dataSource={productList}
             columns={columns}
             pagination={false}
