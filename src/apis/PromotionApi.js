@@ -56,5 +56,24 @@ export const useGetPromotionProducts = () =>
   useQuery({
     queryKey: ["promotion_products"],
     queryFn: () => apicall({ url: `VendorProducts?get_short_list_only=1` }),
-    
+  });
+export const useGetPromotionCategories = () =>
+  useQuery({
+    queryKey: ["promotion_categories"],
+    queryFn: () =>
+      apicall({
+        url: `categories`,
+      }),
+  });
+
+  export const useGetPromotionUsers = () =>
+  useQuery({
+    queryKey: ["promotion_users"],
+    queryFn: () =>
+      apicall({
+        url: `users`,
+      }),
+      onError:(error)=>{
+        console.log('Error occured', error)
+      },
   });

@@ -133,11 +133,11 @@
   "user_group":[
     {
         "label": "Guest",
-        "value": 1
+        "value": "1"
       },
       {
         "label": "Registered user",
-        "value": 2
+        "value": "2"
       }
   ],
   "is_subscribed":[
