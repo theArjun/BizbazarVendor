@@ -1,0 +1,53 @@
+.relative {
+    position: relative;
+  }
+  
+  .absolute {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 1;
+    background-color: white;
+    width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    z-index: 1;
+    padding: 10px;
+    height: fit-content;
+    max-height: 50vh;
+    overflow-y: scroll;
+  }
+  
+  .tableRow {
+    display: flex;
+    margin: 10px 0;
+  }
+  .tableRow1 {
+    display: flex;
+    margin: 10px 0;
+    justify-content: space-between;
+  }
+  
+  .tableRow:hover {
+    background-color: rgba(0, 0, 255, 0.264);
+    color: blanchedalmond;
+  }
+  
+  .checkbox {
+    margin: auto 10px;
+  }
+  
+  .tableContain {
+    margin-top: 10px;
+  }
+  .tableContain >div >div >div >div >div >div >table{
+    width: inherit;
+  }
+  
+  .remove {
+    cursor: pointer;
+  }
+  .product_name > *{
+    margin: 0;
+    padding:0;
+  }
+  
