@@ -52,9 +52,10 @@
   font-size: medium;
 }
 .ReviewItem {
-  display: flex;
-  align-items: center;
-  margin: 10px 0;
+  display: grid;
+  justify-items: start;
+  margin: 15px 0;
+  grid-template-columns: 150px 1fr;
 }
 .ReviewItem >span {
   font-weight: 400;
@@ -64,6 +65,11 @@
   font-size: medium;
   margin-bottom: 0px;
   margin-top: auto;
+}
+.reply_box >textarea{
+  font-weight: 400;
+  font-size: medium;
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
 }
 .reply_btn {
   float: right;
@@ -99,5 +105,10 @@
   .product_section{
     margin-top: 10px;
     width: inherit;
+  }
+}
+@media (max-width: 1200px) {
+  .ReviewItem{
+    grid-template-columns: 1fr;
   }
 }

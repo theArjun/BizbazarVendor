@@ -7,7 +7,7 @@ import "./index.css";
 import { apicall } from "../../../../utils/apicall/apicall";
 import { AiFillSetting } from "react-icons/ai";
 import ModalTable from "./ModalContent/ModalTable";
-import { setLoading } from "../../../../redux/features/products/productSlice";
+import { useNavigate } from "react-router-dom";
 // creating an object that is used to map status
 const status = {
   A: "Active",
@@ -45,6 +45,7 @@ const Variations = ({
     check_all: "Y",
     combinations_data: {},
   });
+  const navigate= useNavigate();
   useEffect(() => {
     if (Object.values(tableData).length > 1) {
       setVariant(cartesianProduct([...Object.values(tableData)]));
@@ -72,7 +73,7 @@ const Variations = ({
   }
   useEffect(() => {
     setFeatures(
-      variations?.map((item) => ({
+      variations?.filter((el)=>!el?.children)?.map((item) => ({
         value: item?.id,
         label: item?.text,
         variation: Object.values(item?.object?.variants),
@@ -103,7 +104,7 @@ const Variations = ({
   // action_items
   const action_items = [
     {
-      label: <a onClick={() => onEditPress("detail")}>Edit</a>,
+      label: <a onClick={() => onEditPress(id)}>Edit</a>,
       key: "0",
     },
     {
@@ -201,11 +202,9 @@ const Variations = ({
   };
   //for edit option
   // Set id
-  const onEditPress = async (method) => {
-    window.localStorage.setItem("productRowId", JSON.stringify(id));
-    if (method === "detail") {
+  const onEditPress = async (v_id) => {
+    navigate("../Products/Products/Edit Product/"+v_id)
       location.reload();
-    }
   };
   // update status of variant
   const updateStatus = async (status) => {
@@ -407,6 +406,7 @@ const Variations = ({
             Add variations
           </Button>
         </div>
+        <div></div>
         <Modal
           title="Add variation"
           maskClosable={false}
@@ -423,7 +423,7 @@ const Variations = ({
           className={styles.variation_modal}
           okButtonProps={{
             disabled: variationLength !== 0 ? false : true,
-          }}
+           }} 
         >
           <div className={styles.modal_body}>
             <div>

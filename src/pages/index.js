@@ -83,6 +83,23 @@ const AdditionTable = React.lazy(() =>
 const ParticularReview = React.lazy(() =>
   import("../pagecomponents/Products/Edit/Reviews/Reviews")
 );
+const CatalogPromotionGeneral = React.lazy(() =>
+  import("../pagecomponents/Marketing/AddCatalogPromotion/General/General")
+);
+const CatalogPromotionBonuses = React.lazy(() =>
+  import("../pagecomponents/Marketing/AddCatalogPromotion/Bonuses/Bonuses")
+);
+const CatalogPromotionConditions = React.lazy(() =>
+  import("../pagecomponents/Marketing/AddCatalogPromotion/Conditions/Conditions")
+);
+const AdminPromotion = React.lazy(() =>
+  import("../pagecomponents/Marketing/Promotion/AdminPromotion")
+);
+const VendorPromotion = React.lazy(() =>
+  import("../pagecomponents/Marketing/Promotion/VendorPromotion")
+);
+
+
 
 export {
   ProductTable,
@@ -112,5 +129,10 @@ export {
   AdminCommunicationTable,
   AdditionField,
   AdditionTable,
-  ParticularReview
+  ParticularReview,
+  CatalogPromotionBonuses,
+  CatalogPromotionConditions,
+  CatalogPromotionGeneral,
+  AdminPromotion,
+  VendorPromotion
 };
