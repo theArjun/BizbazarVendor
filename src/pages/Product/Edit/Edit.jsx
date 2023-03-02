@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Edit.module.css";
-import { Breadcrumb, Skeleton } from "antd";
+import { Breadcrumb, Result, Skeleton } from "antd";
+import { useParams } from "react-router-dom";
+import Spinner from '../../../component/Spinner/Spinner'
 import {
   EditFeatures,
   EditGeneral,
@@ -27,26 +29,27 @@ const tabs = [
 ];
 const Edit = () => {
   const categories = useSelector((state) => state.product.categories);
-  const editID = JSON.parse(window.localStorage.getItem("productRowId"));
   const [active, setActive] = useState("General");
   const [features, setFeatures] = useState("");
+  const [pageStatus, setPageStatus] = useState("");
   const [data, setData] = useState("");
   const [variantFeatures, setVariantFeatures] = useState("");
   const [variationData, setVariationData] = useState("");
   const [reviews, setReviews]=useState([])
   const [seoPath, setSeoPath] = useState("");
   const [loading, setLoading] = useState(false);
+  const param=useParams('id')
   useEffect(() => {
     getData();
   }, []);
   // lets get all the required data  from api concurrently using Promise
   const getData = async () => {
     await Promise.all([
-      getFeatures(editID),
-      getEditData(editID),
-      getFeatureVariants(editID),
-      getSeoPath(editID),
-      getParticularReview(editID)
+      getFeatures(param.id),
+      getEditData(param.id),
+      getFeatureVariants(param.id),
+      getSeoPath(param.id),
+      getParticularReview(param.id)
     ]);
   };
   // Get all edit data
@@ -59,6 +62,11 @@ const Edit = () => {
       setData({ ...result?.data });
       setLoading(false);
     }
+    if(result===404){
+      setPageStatus(result)
+    }
+    setLoading(false)
+    
   };
   useEffect(() => {
     if (data) {
@@ -95,6 +103,7 @@ const Edit = () => {
       url: `products/${id}/ProductVariation`,
     });
     if (result.data) {
+      console.log(result.data)
       setLoading(false);
       setVariantFeatures(result?.data?.features);
     } else {
@@ -110,22 +119,27 @@ const Edit = () => {
       url: `products/${id}/ProductFeature`,
     });
     if (result.data) {
+      setLoading(false)
       setFeatures(result.data);
     } else {
+      setLoading(false)
       setFeatures("");
     }
   };
 
   // get SEO path 
   const getSeoPath= async(product_id)=>{
+    setLoading(true)
     let result= await apicall({
       url:`products/${product_id}/ProductSeo`,
 
     })
 
     if(result?.data){
+      setLoading(false)
       setSeoPath(result.data?.prefix)
     }
+    setLoading(false)
   }
   // get particular review
   const getParticularReview= async (id)=>{
@@ -150,7 +164,7 @@ const Edit = () => {
           <EditFeatures
             features={features.features}
             selected_features={data.product_features}
-            editID={editID}
+            editID={param.id}
             getData={getData}
           />
         ) : (
@@ -163,13 +177,13 @@ const Edit = () => {
             variations={variantFeatures}
             setVariationData={setVariationData}
             variationData={variationData}
-            editID={editID}
+            editID={param.id}
             loading={loading}
             setLoading={setLoading}
             getData={getData}
           />
         ) : (
-          <Skeleton active />
+          ''
         );
       case tabs[5]:
         return data ? <EditSeo data={data} seoPath={seoPath} /> : "";
@@ -199,10 +213,23 @@ const Edit = () => {
             getData={getData}
           />
         ) : (
-          <Skeleton active />
+         ''
         );
     }
   };
+  if(pageStatus){
+    return(<Result
+    status="404"
+              title="404"
+              subTitle="Sorry, Requested product does not found !"
+              extra={<a href="/">Back Home</a>}
+    />)
+  }
+  if(loading){
+    return (
+      <Spinner/>
+    )
+  }
   return (
     <div className={styles.container}>
       <div className={styles.breadcrumb_create_btn}>

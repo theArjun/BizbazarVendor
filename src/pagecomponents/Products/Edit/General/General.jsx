@@ -272,7 +272,7 @@ const General = ({ editData, categories, getData }) => {
             <Form.Item
               label="Price (रु)"
               name="price"
-              style={{ width: 300 }}
+              style={{ maxWidth: 300 }}
               rules={[
                 {
                   required: true,
@@ -285,7 +285,7 @@ const General = ({ editData, categories, getData }) => {
             <Form.Item
               label="List price (रु)"
               name="list_price"
-              style={{ width: 300 }}
+              style={{ maxWidth: 300 }}
               rules={[
                 {
                   required: true,
@@ -342,8 +342,9 @@ const General = ({ editData, categories, getData }) => {
           >
             <Form.Item label="Options type" name="options_type">
               <Select
+              className={styles.input_reduce_width}
                 style={{
-                  width: 300,
+                  maxWidth: 300,
                 }}
                 options={options_t.map((option) => ({
                   label: option.label,
@@ -355,7 +356,7 @@ const General = ({ editData, categories, getData }) => {
             <Form.Item label="Exceptions type" name="exceptions_type">
               <Select
                 style={{
-                  width: 300,
+                  maxWidth: 300,
                 }}
                 //   onChange={onSecondCityChange}
                 options={exception_t.map((exception) => ({
@@ -402,7 +403,7 @@ const General = ({ editData, categories, getData }) => {
             >
               <Select
                 style={{
-                  width: 300,
+                  maxWidth: 300,
                 }}
                 options={track_inventory.map((track) => ({
                   label: track.label,
@@ -414,7 +415,7 @@ const General = ({ editData, categories, getData }) => {
               label="Minimum quantity to buy per product"
               name="min_qty"
               style={{
-                width: 400,
+                maxWidth: 400,
               }}
             >
               <Input type="number" />
@@ -423,7 +424,7 @@ const General = ({ editData, categories, getData }) => {
               label="Maximum quantity to buy per product"
               name="max_qty"
               style={{
-                width: 400,
+                maxWidth: 400,
               }}
             >
               <Input type="number" />
@@ -432,7 +433,7 @@ const General = ({ editData, categories, getData }) => {
               label="No of available quantities"
               name="available_qty"
               style={{
-                width: 400,
+                maxWidth: 400,
               }}
             >
               <Input type="number" />

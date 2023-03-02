@@ -20,3 +20,9 @@
   top: 0;
   right: 0;
 }
+.promotion_name{
+  font-weight: 500;
+}
+.action_buttons > *{
+margin:0 5px;
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./AddProduct.module.css";
-import './index.css'
+import "./index.css";
 import {
   Breadcrumb,
   Button,
@@ -18,11 +18,12 @@ import "react-quill/dist/quill.snow.css";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ImageUploader from "../../../component/ImageUploader/ImageUploader";
+import { useAddProduct } from "../../../apis/ProductApi";
+import Spinner from "../../../component/Spinner/Spinner";
 const AddProduct = () => {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   // for toggling  fields button
   const [info, setInfo] = useState(true);
-  const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState(true);
   const [pricing, setPricing] = useState(true);
   const [categories, setCategories] = useState([]);
@@ -30,6 +31,7 @@ const AddProduct = () => {
   const [taxChecked, setTaxChecked] = useState(false);
   const [vatId, setVatId] = useState([]);
   const [imageCount, setImageCount] = useState(0);
+  const { isLoading, mutate, isError } = useAddProduct();
   const [uploadedImage, setUploadedImage] = useState({
     product_main_image_data: {},
     type_product_main_image_detailed: {},
@@ -65,23 +67,24 @@ const AddProduct = () => {
   }, [taxChecked]);
   // trigger while clicking  on create button if there is no any error at  client side
   const onFinish = async (values) => {
-    const product_data = {"products_data":[{
-     ...values,
-      category_ids: getCategories(values.category),
-      tax_ids: vatId,
-      ...uploadedImage
-    }]}
-
-    let result = await apicall({
-      method: "post",
-      url: "BulkProducts",
-      data: product_data,
+    const product_data = {
+      products_data: [
+        {
+          ...values,
+          category_ids: getCategories(values.category),
+          tax_ids: vatId,
+          ...uploadedImage,
+        },
+      ],
+    };
+    mutate(product_data, {
+      onSuccess: (response) => {
+        console.log(response, "is-product-created");
+      },
+      onError: (error) => {
+        console.log(error, "adding-product-error");
+      },
     });
-    if (result.status == 201) {
-      setLoading(false);
-      navigate('/Products/Products')
-    }
-    setLoading(false);
   };
   // throw message while error occured at client side
   const onFinishFailed = (errorInfo) => {
@@ -93,39 +96,41 @@ const AddProduct = () => {
     const result = await apicall({
       url: `categories`,
     });
-    let category= result.data.categories.map((item, index) => ({
+    let category = result.data.categories.map((item, index) => ({
       label: item.category,
       value: item.category_id,
-      id:item.category_id
+      id: item.category_id,
     }));
     setCategories(category);
   };
-  const getCategories=(a)=>{
-    let temp={}
-      if(a){
-       a?.map((el, i)=>{
-        temp[i]=el
-       })
-      }
-      return temp
-  }
+  const getCategories = (a) => {
+    let temp = {};
+    if (a) {
+      a?.map((el, i) => {
+        temp[i] = el;
+      });
+    }
+    return temp;
+  };
   // this function is for category search
   const onSearch = (value) => {
     console.log("search:", value);
   };
-    // get Tax  and set value to the state
-    const getTax = async () => {
-      const result = await apicall({
-        url: "taxes",
+  // get Tax  and set value to the state
+  const getTax = async () => {
+    const result = await apicall({
+      url: "taxes",
+    });
+    if (result.data) {
+      let tax = result?.data?.taxes?.filter((item) => {
+        return item.tax === "VAT";
       });
-      if (result.data) {
-        let tax = result?.data?.taxes?.filter((item) => {
-          return item.tax === "VAT";
-        });
-        setVatId([...tax[0].tax_id]);
-      }
-    };
-  
+      setVatId([...tax[0].tax_id]);
+    }
+  };
+
+  if (isLoading) return <Spinner />;
+
   return (
     <div className={styles.container}>
       <div className={styles.breadcrumb_create_btn}>
@@ -157,12 +162,11 @@ const AddProduct = () => {
             options_type: "P",
             zero_price_action: "R",
             stock: 1,
-            amount:1
-            
+            amount: 1,
           }}
         >
           <Form.Item style={{ float: "right" }}>
-            <Button loading={loading} type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit">
               Create
             </Button>
           </Form.Item>
@@ -227,7 +231,7 @@ const AddProduct = () => {
                 ]}
               >
                 <Input type="number" />
-              </Form.Item> 
+              </Form.Item>
               <Form.Item
                 label="List price (रु)"
                 name="list_price"
@@ -258,12 +262,12 @@ const AddProduct = () => {
                 />
               </Form.Item>
               <ImageUploader
-              message={message}
-              uploadedImage={uploadedImage}
-              setUploadedImage={setUploadedImage}
-              imageCount={imageCount}
-              setImageCount={setImageCount}
-              Form={Form}
+                message={message}
+                uploadedImage={uploadedImage}
+                setUploadedImage={setUploadedImage}
+                imageCount={imageCount}
+                setImageCount={setImageCount}
+                Form={Form}
               />
             </Card>
           </div>
@@ -320,13 +324,16 @@ const AddProduct = () => {
                 pricing ? styles.pricing_container : styles.close_container
               }
             >
-              <Form.Item label="CODE" name="product_code"
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter product name!",
-                },
-              ]}>
+              <Form.Item
+                label="CODE"
+                name="product_code"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter product name!",
+                  },
+                ]}
+              >
                 <Input type="text" />
               </Form.Item>
               <Form.Item label="In stock" name="amount" style={{ width: 200 }}>
@@ -342,8 +349,12 @@ const AddProduct = () => {
                   }))}
                 />
               </Form.Item>
-              <Form.Item label="Track inventory" name="tracking" extra="When inventory is tracked, the number of products in stock
-              will decrease after each purchase.">
+              <Form.Item
+                label="Track inventory"
+                name="tracking"
+                extra="When inventory is tracked, the number of products in stock
+              will decrease after each purchase."
+              >
                 <Select
                   style={{
                     width: 300,
@@ -382,8 +393,12 @@ const AddProduct = () => {
                 <Input type="number" />
               </Form.Item>
               <Form.Item label="Taxes" valuePropName="yes" name="tax">
-                <Checkbox checked={taxChecked}
-                onChange={(e) => setTaxChecked(e.target.checked)}>VAT</Checkbox>
+                <Checkbox
+                  checked={taxChecked}
+                  onChange={(e) => setTaxChecked(e.target.checked)}
+                >
+                  VAT
+                </Checkbox>
               </Form.Item>
             </Card>
           </div>
