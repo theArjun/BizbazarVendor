@@ -8,11 +8,13 @@ import { Button, Dropdown } from "antd";
 import { apicall } from "../../../../utils/apicall/apicall";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { useNavigate } from "react-router-dom";
 // import jsPDF from "jspdf";
 
 function Deatails({ orderDetail, statusModalOpen, setStatusModalOpen,referesh,setRefresh }) {
   const midTab = ["General", "Add On", "Promotion"];
   const contentRef = useRef(null);
+  const navigate=useNavigate()
 
   const [active, setActive] = useState("General");
   const [updateState,setUpdateState]=useState({})
@@ -94,34 +96,21 @@ myWindow.document.write(result.data);
 
 const element = myWindow.document.querySelector("tbody");
 
-
 const doc = new jsPDF('p', 'mm', dat===2?'a5':"a4");
-
-
-// setTimeout(() => {
   html2canvas(element,{
-    useCORS: true,allowTaint: true}).then(canvas => {
-   
+    useCORS: true,allowTaint: true}).then(canvas => { 
     const imgData = canvas.toDataURL('image/png');
     doc.addImage(imgData, 'PNG', 4, 4, dat===2?150:200, dat===2?230:240);
-
-   
     doc.save('output.pdf');
- 
- 
-}, 200).then(()=>{
+}, 100).then(()=>{
   myWindow.close();
 });
-  
-// }, 1000);
-
-  
-    
-    
-    
 
 
+  }
 
+  const tweakInvoice=async()=>{
+    navigate("/TweakAndInvoice/"+orderDetail.order_id)
   }
 
 
@@ -136,7 +125,7 @@ const doc = new jsPDF('p', 'mm', dat===2?'a5':"a4");
     {
       key: '2',
       label: (
-        <div>Tweak and send invoice</div>
+        <div onClick={tweakInvoice}>Tweak and send invoice</div>
       ),
     },
     {

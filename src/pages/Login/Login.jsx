@@ -30,6 +30,7 @@ function Login() {
         user_type: "V",
       },
     });
+    console.log(result.data.key);
     if (result.status === 201) {
       handlelogin(result.data);
       navigate("/");

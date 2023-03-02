@@ -12,6 +12,7 @@ import { apicall } from "./utils/apicall/apicall";
 import { Button, Result } from "antd";
 import PublicRoute from "./utils/PublicRoute";
 
+
 const ViewRateAreas = lazy(() =>
   import("./pages/Setting/ShippingMethod/ViewRateAreas/ViewRateAreas")
 );
@@ -95,6 +96,8 @@ const ResetPassword = lazy(() => import("./pages/Resetpassword/ResetPassword"));
 const ViewShippingMethod = lazy(() =>
   import("./pages/Setting/ViewShippingMethod/ViewShippingMethod")
 );
+
+const Tweak =lazy(()=>import("./pages/Orders/Tweak/Tweak")) 
 
 function App() {
   const dispatch = useDispatch();
@@ -402,6 +405,14 @@ function App() {
               </SuspenseWrapper>
             }
             path="/Orders/orders details/:id"
+          ></Route>
+          <Route
+            element={
+              <SuspenseWrapper>
+                <Tweak />
+              </SuspenseWrapper>
+            }
+            path="/TweakAndInvoice/:id"
           ></Route>
         </Route>
         <Route element={<PublicRoute />}>
