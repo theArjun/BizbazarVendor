@@ -11,6 +11,7 @@ import { saveCategories } from "./redux/features/products/productSlice";
 import { apicall } from "./utils/apicall/apicall";
 import { Button, Result } from "antd";
 import PublicRoute from "./utils/PublicRoute";
+const Tweak = lazy(() => import("./pages/Orders/Tweak/Tweak"));
 
 const ViewRateAreas = lazy(() =>
   import("./pages/Setting/ShippingMethod/ViewRateAreas/ViewRateAreas")
@@ -107,7 +108,7 @@ const ViewShippingMethod = lazy(() =>
   import("./pages/Setting/ViewShippingMethod/ViewShippingMethod")
 );
 
-const Tweak = lazy(() => import("./pages/Orders/Tweak/Tweak"));
+export const queryClient = new QueryClient();
 
 function App() {
   const dispatch = useDispatch();
@@ -432,6 +433,7 @@ function App() {
               path="/TweakAndInvoice/:id"
             ></Route>
           </Route>
+
           <Route element={<PublicRoute />}>
             <Route
               element={
