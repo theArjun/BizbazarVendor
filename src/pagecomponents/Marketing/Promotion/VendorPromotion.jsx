@@ -171,7 +171,7 @@ const VendorPromotion = ({ data }) => {
   };
   const getConditions = (c_data) => {
     setConditions(
-      !c_data?.conditions.length
+      c_data?.conditions.length
         ? []
         : Object.values(c_data?.conditions?.conditions)
     );

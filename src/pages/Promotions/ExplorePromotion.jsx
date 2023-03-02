@@ -45,7 +45,7 @@ const ExplorePromotion = () => {
       />:<Spinner/>
     );
   }else{
-    return promotion?<AdminPromotion data={promotion} />:<Spinner/>;
+    return promotion?<AdminPromotion data={promotion} loading={isLoading}/>:<Spinner/>;
   }
   
 };

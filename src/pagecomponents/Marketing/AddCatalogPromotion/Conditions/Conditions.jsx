@@ -11,6 +11,8 @@ import {
 } from "../../../../apis/PromotionApi";
 import AddModal from "../../../../component/AddModal/AddModal";
 import Spinner from "../../../../component/Spinner/Spinner";
+import { useGetFeatures} from "../../../../apis/FeatureApis";
+import { apicall } from "../../../../utils/apicall/apicall";
 const condition_features = {
   PRODUCT_PRICE: "price",
   PRODUCTS: "products",
@@ -33,18 +35,26 @@ function Conditions({
   const [modalOpen, setModalOpen] = useState(false);
   const [cdata, setCData] = useState([]);
   const [ids, setIds] = useState('');
+  const [features, setFeatures]=useState([])
+  const [variants,setVariants]=useState([])
+  const [variantName,setVariantName]=useState('')
   const {
+    isLoading:productLoading,
     data: productData,
     isError,
   } = useGetPromotionProducts();
-  const { data: categoryData, isError: categoryError } =
+  const { data: categoryData, isError: categoryError, isLoading:categoryLoading } =
     useGetPromotionCategories();
-    const { data: usersData, isError: userError } =
+    const { data: usersData, isError: userError, isLoading:usersLoading } =
     useGetPromotionUsers();
-  useEffect(() => {
-    // setData(productData?.data?.products)
-    console.log("🚀 ~ file: Conditions.jsx:48 ~ conditions:", conditions)
-  }, [conditions]);
+    const {isLoading:featureLoading,data:featureData}=useGetFeatures();
+  useEffect(()=>{
+    if(featureData){
+      let temp_features=[...featureData?.data?.features]
+       let feature_data=temp_features?.map((item, i)=>({label:item?.description, value:item?.feature_id}))
+       setFeatures(feature_data)
+    }
+  },[featureData])
   const handleTextChange = (a, b) => {
     let temp_condition = { ...conditionValues };
     temp_condition.set = b.value;
@@ -60,6 +70,21 @@ function Conditions({
     setIds('')
     setCurrentCondition(b.value);
   };
+  const handleProductFeatureSelect= async (id)=>{
+    setVariants([])
+    try{
+      let result = await apicall({
+        url:`features/${id}`
+      })
+      if(result?.data){
+        let temp_variants= Object.values(result?.data?.variants)?.map((item, i)=>({label:item?.variant,value:item?.variant_id}))
+        setVariants(temp_variants)
+      }
+    }
+    catch(e){
+      console.log(e.message)
+    }
+  }
   // lets create a function to get particular condition UI
   const getConditionByConditionName = (condition) => {
     switch (condition) {
@@ -179,10 +204,11 @@ function Conditions({
               ]}
             >
               <Select
+              onSelect={handleProductFeatureSelect}
                 style={{
                   width: 200,
                 }}
-                options={data.categories}
+                options={features}
               />
             </Form.Item>
             <Form.Item
@@ -211,10 +237,11 @@ function Conditions({
               ]}
             >
               <Select
+              onSelect={(a,b)=>setVariantName(b.label)}
                 style={{
                   width: 200,
                 }}
-                options={data.categories}
+                options={variants}
               />
             </Form.Item>
           </div>
@@ -425,7 +452,6 @@ function Conditions({
   };
   // form submit function
   const onFinish = (values) => {
-    console.log(values)
     let data = [...conditions];
     switch (values.condition) {
       case condition_features.PRODUCT_PRICE:
@@ -485,7 +511,8 @@ function Conditions({
             condition: values.condition,
             operator: values.product_feature_condition,
             value: values.product_feature_variant,
-            feature: values.product_feature,
+            condition_element:values.product_feature,
+            value_name:variantName
           },
         ];
         break;
@@ -608,6 +635,7 @@ function Conditions({
             <ConditionTable
               conditions={conditions.map((el, i) => ({ ...el, key: i }))}
               setConditions={setConditions}
+              loading={productLoading || categoryLoading || usersLoading || featureLoading }
               productData={productData?.data?.products}
               categoryData={categoryData?.data?.categories}
               userData={usersData?.data?.users}

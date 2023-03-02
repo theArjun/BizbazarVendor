@@ -1,41 +1,41 @@
 import React, { useState } from "react";
 import styles from "./Promotion.module.css";
-import { Breadcrumb, Button, Table } from "antd";
+import { Breadcrumb, Button, Table, } from "antd";
 import ProductModal from "./ProductModal/ProductModal";
 import useWindowSize from "../../../utils/Hooks/useWindowSize";
-const AdminPromotion = ({ data }) => {
+import { useGetPromotionProducts } from "../../../apis/PromotionApi";
+const AdminPromotion = ({ data , loading}) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const windowSize= useWindowSize()
+  const windowSize = useWindowSize();
+  const { isLoading: productLoading, data: productData } =
+    useGetPromotionProducts();
+  const prepareData = (ids = "") => {
+    try {
+      let product_ids = String(ids);
+      let arr_ids = product_ids.slice(9).split(",");
+      let products = productData?.data?.products?.filter((item, i) => arr_ids.includes(String(item?.product_id))
+      );
+     return products
+    } catch (err) {
+      console.log("Error  has occured", err);
+    }
+  };
   const columns = [
-    {
-      title: "",
-      dataIndex: "image_pair",
-      render:(image, row)=>(
-        <div>
-        <Image src={row?.main_pair?.detailed?.image_path}  width={50}/>
-        </div>
-      )
-    },
     {
       title: "Name/Code",
       dataIndex: "name",
-      render:(text, row)=>(
+      render: (text, row) => (
         <>
-        <div className={styles.product_name}>
-        <h4>{row?.product}</h4>
-        <p>{row?.product_code}</p>
-        </div>
+          <div className={styles.product_name}>
+            <h4>{row?.product}</h4>
+            <p>{row?.product_code}</p>
+          </div>
         </>
-        
-      )
+      ),
     },
     {
       title: "Price",
       dataIndex: "price",
-    },
-    {
-      title: "List price",
-      dataIndex: "list_price",
     },
     {
       title: "Quantity",
@@ -55,9 +55,6 @@ const AdminPromotion = ({ data }) => {
             <a href="">Edit Catalog Promotion</a>
           </Breadcrumb.Item>
         </Breadcrumb>
-        <Button onClick={""} type="primary">
-          Save changes
-        </Button>
       </div>
       <div className={styles.top_section}>
         <div className={styles.promotion_name}>
@@ -71,22 +68,26 @@ const AdminPromotion = ({ data }) => {
             {" "}
             Add products
           </Button>
-
         </div>
         <div className={styles.tableContain}>
-        <Table
-           rowKey={"product_id"}
-          dataSource={[]}
-          columns={columns}
-          pagination={false}
-          scroll={{
-            y: windowSize.height > 670 ? 300 : 200,
-            x: 1000,
-          }}
-        />
+          <Table
+            loading={productLoading || loading}
+            rowKey={"product_id"}
+            dataSource={prepareData(data?.conditions_hash)}
+            columns={columns}
+            pagination={false}
+            scroll={{
+              y: windowSize.height > 670 ? 300 : 200,
+              x: 1000,
+            }}
+          />
+        </div>
       </div>
-      </div>
-      <ProductModal modalOpen={modalOpen} setModalOpen={setModalOpen} />
+      <ProductModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        productData={productData?.data?.products}
+      />
     </div>
   );
 };

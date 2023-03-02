@@ -82,17 +82,18 @@ const ImageUploaderForPromotion = ({
     <Form>
     <Form.Item name="image" onChange={insertImage}>
     <div className={ fileList?.length?styles.close_upload:styles.open_upload}>
-      <Upload
-        action="#"
-        listType="picture-card"
-        fileList={fileList}
-        onPreview={handlePreview}
-        onChange={handleChange}
-        beforeUpload={beforeUpload}
-        onRemove={onRemove}
-      >
-        {fileList.length >= 8 ? null : uploadButton}
-      </Upload>
+    <Upload
+      action="#"
+      listType="picture-card"
+      fileList={fileList}
+      onPreview={handlePreview}
+      onChange={handleChange}
+      beforeUpload={beforeUpload}
+      onRemove={onRemove}
+    >
+      {fileList.length >= 8 ? null : uploadButton}
+    </Upload>
+ 
       <Modal
         open={previewOpen}
         title={previewTitle}

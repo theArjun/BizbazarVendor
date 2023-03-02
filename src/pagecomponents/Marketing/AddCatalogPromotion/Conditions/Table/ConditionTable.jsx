@@ -2,12 +2,25 @@ import React from "react";
 import { Table } from "antd";
 import { AiTwotoneDelete } from "react-icons/ai";
 import useWindowSize from "../../../../../utils/Hooks/useWindowSize";
+const getOperatorName={
+  "eq":"Equal",
+  "neq":"Not equal",
+  "lte":"Equal or less",
+  "gte":"Equal or greater",
+  "lt":"Less",
+  "gt":"Greater",
+  "in":"In",
+  "nin":"Not in",
+  "cont":"Contains",
+  "ncont":"Does not contains"
+}
 const ConditionTable = ({
   conditions,
   setConditions,
   userData,
   productData,
   categoryData,
+  loading
 }) => {
   const windowSize = useWindowSize();
 
@@ -16,8 +29,8 @@ const ConditionTable = ({
     setConditions(data);
   };
 
-  const getNames = (ids, condition) => {
-    let product_ids = ids.split(",");
+  const getNames = (ids, condition, variant_name) => {
+    let product_ids = String(ids).split(",");
     switch (condition) {
       case "products":
         let product_name = productData
@@ -26,7 +39,7 @@ const ConditionTable = ({
             updater = updater + ", " + current?.product;
             return updater;
           }, "");
-        return product_name.slice(1);
+        return product_name?.slice(1);
       case "purchased_products":
         let product_purchased_name = productData
           ?.filter((product) => product_ids.includes(product?.product_id))
@@ -34,7 +47,7 @@ const ConditionTable = ({
             updater = updater + ", " + current?.product;
             return updater;
           }, "");
-        return product_purchased_name.slice(1);
+        return product_purchased_name?.slice(1);
       case "categories":
           let category_name = categoryData
             ?.filter((product) => product_ids.includes(product?.category_id))
@@ -42,7 +55,7 @@ const ConditionTable = ({
               updater = updater + ", " + current?.category;
               return updater;
             }, "");
-          return category_name.slice(1);
+          return category_name?.slice(1);
       case "users":
             let users_name = userData
               ?.filter((product) => product_ids.includes(product?.user_id))
@@ -50,13 +63,15 @@ const ConditionTable = ({
                 updater = updater + ", " + current?.firstname+' '+current?.lastname;
                 return updater;
               }, "");
-            return users_name.slice(1);
+            return users_name?.slice(1);
 
       case "usergroup":
         if(ids==='1'){
           return 'Guest'
         }
         return "Registered user"
+      case 'feature':
+        return variant_name
       default:
         return ids
       
@@ -68,6 +83,7 @@ const ConditionTable = ({
       dataIndex: "operator",
       key: "operator",
       width: 200,
+      render:(operator)=>getOperatorName[operator]
     },
     {
       title: "Condition",
@@ -79,7 +95,7 @@ const ConditionTable = ({
       title: "Values",
       dataIndex: "value",
       key: "values",
-      render: (ids, row) => getNames(ids, row?.condition),
+      render: (ids, row) => getNames(ids, row?.condition, row?.value_name),
     },
     {
       title: "Action",
@@ -102,6 +118,7 @@ const ConditionTable = ({
   return (
     <div>
       <Table
+      loading={loading}
         id="product"
         columns={columns}
         dataSource={conditions}

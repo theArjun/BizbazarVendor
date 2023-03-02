@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./ProductModal.module.css";
-import { Modal, Input, Image, Checkbox, Table, InputNumber } from "antd";
-import { apicall } from "../../../../utils/apicall/apicall";
+import { Modal, Input, Image, Checkbox, Table } from "antd";
 import useDebounce from "../../../../utils/Hooks/useDebounce";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
-const ProductModal = ({ modalOpen, setModalOpen }) => {
+const ProductModal = ({ modalOpen, setModalOpen, productData }) => {
   const [productList, setProductList] = useState([]);
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
@@ -21,28 +20,15 @@ const ProductModal = ({ modalOpen, setModalOpen }) => {
       document.removeEventListener("click", handleClick);
     };
   }, []);
-
-  const getUrl = (search) => {
-    return (
-      "products?is_search=Y" +
-      "&pname=" +
-      search +
-      `&page=${1}&items_per_page=${50}`
-    );
-  };
-
   const getProducts = async () => {
-    const result = await apicall({
-      url: getUrl(),
-    });
-    setData(result.data.products);
+    setData(productData);
   };
 
   useDebounce(
     () => {
       getProducts();
     },
-    1200,
+    100,
     [search]
   );
 
@@ -64,11 +50,6 @@ const ProductModal = ({ modalOpen, setModalOpen }) => {
       temp = temp.filter((dat, i) => dat.product_id != object.product_id);
       setProductList(temp);
     }
-  };
-  const removeFromList = (object) => {
-    let temp = [...productList];
-    temp = temp.filter((dat, i) => dat.product_id != object.product_id);
-    setProductList(temp);
   };
 //  set Status of product
 const getProductStatus = (status) => {
@@ -95,15 +76,7 @@ const getProductStatus = (status) => {
     return false;
   };
   const columns = [
-    {
-      title: "",
-      dataIndex: "image_pair",
-      render:(image, row)=>(
-        <div>
-        <Image src={row?.main_pair?.detailed?.image_path}  width={50}/>
-        </div>
-      )
-    },
+    
     {
       title: "Name/Code",
       dataIndex: "name",
@@ -120,10 +93,6 @@ const getProductStatus = (status) => {
     {
       title: "Price",
       dataIndex: "price",
-    },
-    {
-      title: "List price",
-      dataIndex: "list_price",
     },
     {
       title: "Quantity",
