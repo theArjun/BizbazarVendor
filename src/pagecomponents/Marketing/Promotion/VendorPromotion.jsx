@@ -3,15 +3,24 @@ import styles from "./Promotion.module.css";
 import cx from "classnames";
 import { Breadcrumb, Button, message } from "antd";
 import General from "../AddCatalogPromotion/General/General";
-import { useUpdatePromotion } from "../../../apis/PromotionApi";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  useUpdatePromotion,
+  useDeletePromotionImage,
+} from "../../../apis/PromotionApi";
 import Conditions from "../AddCatalogPromotion/Conditions/Conditions";
 import Bonuses from "../AddCatalogPromotion/Bonuses/Bonuses";
 import Spinner from "../../../component/Spinner/Spinner";
-const VendorPromotion = ({ data, getData, loading, setLoading }) => {
+const VendorPromotion = ({ data }) => {
   const [activeTab, setActiveTab] = useState("General");
   const [bonuses, setBonuses] = useState([]);
   const [conditions, setConditions] = useState([]);
   const [image, setImage] = useState("");
+  const [deleteImage, setDeleteImage] = useState({
+    image_id: "",
+    pair_id: "",
+    object_type: "promotion",
+  });
   const [generalData, setGeneralData] = useState({
     zone: "catalog",
     name: "",
@@ -28,6 +37,8 @@ const VendorPromotion = ({ data, getData, loading, setLoading }) => {
     set_value: 1,
   });
   const { isLoading, mutate, isError } = useUpdatePromotion();
+  const { mutateAsync: deleteImageMutate } = useDeletePromotionImage();
+  const queryClient=useQueryClient();
   const getDivision = () => {
     switch (activeTab) {
       case "General":
@@ -38,6 +49,8 @@ const VendorPromotion = ({ data, getData, loading, setLoading }) => {
             generalData={generalData}
             setGeneralData={setGeneralData}
             data={data}
+            deleteImage={deleteImage}
+            setDeleteImage={setDeleteImage}
           />
         );
       case "Conditions":
@@ -116,11 +129,16 @@ const VendorPromotion = ({ data, getData, loading, setLoading }) => {
         } else {
           formData.append("promotion_data", JSON.stringify(prepareData));
         }
+        // delete promotion image
+        if (deleteImage.image_id) {
+          deleteImageMutate(deleteImage, {
+            onSuccess: (res) => console.log("image deleted successfully"),
+          });
+        }
         // Lets update promotion through mutate
         mutate(formData, {
           onSuccess: (response) => {
-            getData();
-            console.log(response, "promotion updated success");
+            queryClient.invalidateQueries(['single_promotion',data?.promotion_id])
           },
           onError: (error) => {
             console.log("error on updating promotion, ", error);
