@@ -31,3 +31,9 @@
 .midContainer::-webkit-scrollbar {
   display: none !important;
 }
+
+@media (max-width: 1400px) {
+  .container {
+    padding-top: 54px;
+  }
+}

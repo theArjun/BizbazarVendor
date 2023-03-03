@@ -183,7 +183,11 @@ const Home = () => {
         <div className={styles.leftContainer}>
           <AnalyticsCard>
             <div className={styles.cardWrapperAd}>
-              <Button type="primary" onClick={() => setOpen(true)}>
+              <Button
+                style={{ width: "80%" }}
+                type="primary"
+                onClick={() => setOpen(true)}
+              >
                 Contact Administration
               </Button>
             </div>
@@ -206,7 +210,7 @@ const Home = () => {
                   }}
                 >
                   {dat.icon}
-                  {/* <AiOutlinePlus style={{ color: "#865be9" }} /> */}
+              
                 </div>
                 <div className={styles.cardValue}>{dat.data}</div>
 

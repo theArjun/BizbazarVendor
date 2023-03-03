@@ -1,0 +1,41 @@
+.container {
+    height: 80vh;
+    overflow: scroll;
+    position: relative;
+    background-color: white;
+    border-radius: 5px;
+    padding: 20px;
+
+  }
+  .container::-webkit-scrollbar{
+    display: none;
+  }
+  
+  .title{
+    margin: 10px 0;
+    width: 100%;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .section{
+    width: 100%;
+    margin: 15px 0;
+    display: grid;
+    grid-template-columns: 150px 1fr;
+  }
+
+  .red{
+    color:red
+  }
+
+  .section >label{
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .errorSection{
+    width: 100%;
+    color: red;
+    /* text-align: center; */
+    margin-left: 10%;
+  }
