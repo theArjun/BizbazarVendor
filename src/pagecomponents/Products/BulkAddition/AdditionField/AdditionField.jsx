@@ -82,7 +82,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
             <Form.Item
               label="Category"
               name="category"
-              style={{ width: "150px" }}
+              style={{ width: "200px" }}
               rules={[
                 {
                   required: true,
@@ -119,7 +119,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
             <Form.Item
               label="Code"
               name="product_code"
-              style={{ width: "80px" }}
+              style={{ minWidth: "80px" }}
               rules={[
                 {
                   required: true,
@@ -132,7 +132,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
             <Form.Item
               label="Price"
               name="price"
-              style={{ width: "80px" }}
+              style={{ minWidth: "80px" }}
               rules={[
                 {
                   required: true,
@@ -145,7 +145,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
             <Form.Item
               label="List price"
               name="list_price"
-              style={{ width: "80px" }}
+              style={{ minWidth: "80px" }}
               rules={[
                 {
                   required: true,
@@ -158,7 +158,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
             <Form.Item
               label="In stock"
               name="amount"
-              style={{ width: "80px" }}
+              style={{ minWidth: "80px" }}
               rules={[
                 {
                   required: true,

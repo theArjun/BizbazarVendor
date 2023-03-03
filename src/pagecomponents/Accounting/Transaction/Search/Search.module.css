@@ -1,12 +1,16 @@
 .container{
     margin-top: 10px;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 .search_inputs{
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     flex-wrap: wrap;
+}
+.search_inputs > *{
+  margin:0 5px
 }
 .price_container{
     display: flex;
@@ -41,9 +45,6 @@ input[type=number] {
   justify-content: space-between;
   flex-wrap: wrap;
 }
-.right_card{
-  width: 50%;
-}
 .title > h3{
   padding:0;
   margin:0;
@@ -63,5 +64,8 @@ input[type=number] {
 @media (max-width: 799px) {
   .right_card {
     display: none;
+  }
+  .container{
+    grid-template-columns: 1fr;
   }
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Modal, Select, Input, Image, Dropdown, Alert } from "antd";
+import { Button, Modal, Select, Input, Image, Dropdown, Alert, Tag } from "antd";
 import styles from "./Variations.module.css";
 import { useEffect } from "react";
 import VariationTable from "./VariationTable";
@@ -101,6 +101,23 @@ const Variations = ({
       key: "2",
     },
   ];
+  //  set Status of product
+  const getProductStatus = (status) => {
+    switch (status) {
+      case "H":
+        return <Tag color="purple">Hidden</Tag>;
+      case "A":
+        return <Tag color="green">Active</Tag>;
+      case "D":
+        return <Tag color="orange">Disabled</Tag>;
+      case "R":
+        return <Tag color="red">Requires Approval</Tag>;
+      case "X":
+        return <Tag color="magenta">Disapproved</Tag>;
+      default:
+        return "Attention required";
+    }
+  };
   // action_items
   const action_items = [
     {
@@ -378,9 +395,9 @@ const Variations = ({
             }}
             trigger={["click"]}
           >
-            <a onClick={() => setSelectVariantId(row.product_id)}>
-              {status[value]}
-            </a>
+            <div onClick={() => setSelectVariantId(row.product_id)}>
+              {getProductStatus(value)}
+            </div>
           </Dropdown>
         </div>
       ),

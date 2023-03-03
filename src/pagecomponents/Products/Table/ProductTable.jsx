@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Space, Table, Dropdown, Image, Button, Modal } from "antd";
+import { Space, Table, Dropdown, Image, Button, Modal, Tag } from "antd";
 import styles from "./Table.module.css";
 import { DownOutlined } from "@ant-design/icons";
 import { apicall } from "../../../utils/apicall/apicall";
@@ -120,15 +120,15 @@ const ProductTable = ({
   const getProductStatus = (status) => {
     switch (status) {
       case "H":
-        return "Hidden";
+        return <Tag color="purple">Hidden</Tag>;
       case "A":
-        return "Active";
+        return <Tag color="green">Active</Tag>;
       case "D":
-        return "Disabled";
+        return <Tag color="orange">Disabled</Tag>;
       case "R":
-        return "Requires Approval";
+        return <Tag color="red">Requires Approval</Tag>;
       case "X":
-        return "Disapproved";
+        return <Tag color="magenta">Disapproved</Tag>;
       default:
         return "Attention required";
     }
@@ -258,8 +258,6 @@ const ProductTable = ({
             <Dropdown menu={{ items: statusItems }}>
               <Space onMouseOver={() => setProductId(row["product_id"])}>
                 {getProductStatus(row["status"])}
-
-                <DownOutlined />
               </Space>
             </Dropdown>
           )}
@@ -333,7 +331,7 @@ const ProductTable = ({
         pagination={false}
         onChange={onChange}
         scroll={{
-          y: windowSize.height > 670 ? 450 : 200,
+          y: windowSize.height > 670 ? 400 : 200,
           x: 1000,
         }}
       />

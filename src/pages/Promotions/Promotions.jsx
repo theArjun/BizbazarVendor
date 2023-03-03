@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./Promotions.module.css";
-import { Breadcrumb, Button, Table, Select } from "antd";
+import { Breadcrumb, Button, Table, Select, Tag } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -39,6 +39,19 @@ function Promotions() {
       return data.map((el, i) => ({ ...el, key: el?.promotion_id }));
     } catch (e) {
       console.log("error on getting promotions", e.message);
+    }
+  };
+  //  set Status of product
+  const getPromotionStatus = (status) => {
+    switch (status) {
+      case "H":
+        return <Tag color="purple">Hidden</Tag>;
+      case "A":
+        return <Tag color="green">Active</Tag>;
+      case "D":
+        return <Tag color="orange">Disabled</Tag>;
+      default:
+        return  <Tag color="magenta">Pending</Tag>;
     }
   };
   // lets delete promotions
@@ -81,19 +94,6 @@ function Promotions() {
       },
     });
   };
-  // lets get status
-  const getStatus = (status) => {
-    switch (status) {
-      case "A":
-        return "Active";
-      case "D":
-        return "Disabled";
-      case "H":
-        return "Hidden";
-      default:
-        return "Pending";
-    }
-  };
   // lets handle the select status change
   const columns = [
     {
@@ -134,7 +134,7 @@ function Promotions() {
       title: "Status",
       dataIndex: "status",
       key: "5",
-      render: (status) => <a>{getStatus(status)}</a>,
+      render: (status) => <a>{getPromotionStatus(status)}</a>,
     },
   ];
   const onSelectChange = (newSelectedRowKeys) => {

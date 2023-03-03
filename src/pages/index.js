@@ -98,6 +98,12 @@ const AdminPromotion = React.lazy(() =>
 const VendorPromotion = React.lazy(() =>
   import("../pagecomponents/Marketing/Promotion/VendorPromotion")
 );
+const SellerGeneral = React.lazy(() =>
+  import("../pagecomponents/Seller/General/General")
+);
+const SellerDescription = React.lazy(() =>
+  import("../pagecomponents/Seller/Description/Description")
+);
 
 
 
@@ -134,5 +140,7 @@ export {
   CatalogPromotionConditions,
   CatalogPromotionGeneral,
   AdminPromotion,
-  VendorPromotion
+  VendorPromotion,
+  SellerGeneral,
+  SellerDescription
 };

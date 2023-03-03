@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { AdditionField, AdditionTable } from "../..";
 import { apicall } from "../../../utils/apicall/apicall";
+import Spinner from "../../../component/Spinner/Spinner";
 const BulkAddition = () => {
   const categories = useSelector((state) => state.product.categories);
   const [products, setProducts] = useState([]);
@@ -69,7 +70,7 @@ const BulkAddition = () => {
           products={products}
         />
       ) : (
-        <Skeleton active />
+        <Spinner />
       )}
       <div>
         {categories ? (
