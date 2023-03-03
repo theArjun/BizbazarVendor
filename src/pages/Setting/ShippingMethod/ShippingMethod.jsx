@@ -22,7 +22,7 @@ function ShippingMethodPage() {
 
   const getShiippingMethod = async () => {
     const result = await apicall({
-      url: "shippings?" + `&page=${page.current}&items_per_page=${50}`,
+      url: "/ShippingMethod?" + `page=${page.current}&items_per_page=${50}`,
     });
 
     setShippings(result.data.shippings);

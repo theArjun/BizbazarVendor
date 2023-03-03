@@ -91,10 +91,10 @@ function ShippingMethod({ shipings, setBottom }) {
         columns={columns}
         rowKey={"shipping_id"}
         pagination={false}
-        // scroll={{
-        //   y: windowSize.height > 670 ? 450 : 300,
-        //   x: 1000,
-        // }}
+        scroll={{
+          y: windowSize.height > 670 ? 450 : 300,
+          x: 1000,
+        }}
       />
       <Button className={styles.button} onClick={() => setOpen(true)}>
         Create
