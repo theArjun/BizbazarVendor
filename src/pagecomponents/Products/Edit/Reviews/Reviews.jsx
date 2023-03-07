@@ -4,8 +4,7 @@ import { Table, Image } from "antd";
 import { AiFillStar } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
-const Reviews = ({ loading, handleScroll, reviews }) => {
-  console.log(reviews);
+const Reviews = ({ handleScroll, reviews }) => {
   const navigate = useNavigate();
   const windowSize = useWindowSize();
   useEffect(() => {
@@ -167,7 +166,6 @@ const Reviews = ({ loading, handleScroll, reviews }) => {
     <div className={styles.container}>
       <Table
         id="product"
-        loading={loading}
         columns={columns}
         dataSource={reviews}
         pagination={false}

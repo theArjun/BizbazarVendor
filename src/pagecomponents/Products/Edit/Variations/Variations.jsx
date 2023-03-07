@@ -5,17 +5,10 @@ import { useEffect } from "react";
 import VariationTable from "./VariationTable";
 import "./index.css";
 import { apicall } from "../../../../utils/apicall/apicall";
+import { useQueryClient } from "@tanstack/react-query";
 import { AiFillSetting } from "react-icons/ai";
 import ModalTable from "./ModalContent/ModalTable";
 import { useNavigate } from "react-router-dom";
-// creating an object that is used to map status
-const status = {
-  A: "Active",
-  H: "Hidden",
-  D: "Disabled",
-  R: "Requires Approval",
-  X: "Disapproved",
-};
 let id = "";
 const { confirm } = Modal;
 
@@ -27,7 +20,7 @@ const Variations = ({
   setLoading,
   loading,
   editID,
-  getData,
+ 
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [features, setFeatures] = useState("");
@@ -45,6 +38,7 @@ const Variations = ({
     check_all: "Y",
     combinations_data: {},
   });
+  const queryClient=useQueryClient();
   const navigate= useNavigate();
   useEffect(() => {
     if (Object.values(tableData).length > 1) {
@@ -176,12 +170,12 @@ const Variations = ({
             method: method,
           });
           if (result.status) {
-            window.location.replace("/products/products");
+            queryClient.invalidateQueries(['single_product', editID])
             setLoading(false);
           }
           setLoading(false);
         } catch (e) {
-          return console.log("Oops errors!");
+          return console.log("Oops errors!", e.message);
         }
       },
       onCancel() {},
@@ -210,7 +204,7 @@ const Variations = ({
       data: finalData,
     });
     if (result?.statusText == "Created") {
-      getData();
+     queryClient.invalidateQueries(['single_product', editID])
       setModalOpen(false);
       setLoading(false);
     } else {
@@ -234,7 +228,7 @@ const Variations = ({
       },
     });
     if (res.data) {
-      getData();
+      queryClient.invalidateQueries(['single_product', editID])
       setLoading(false);
     } else {
       setLoading(false);

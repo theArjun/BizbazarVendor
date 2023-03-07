@@ -3,8 +3,13 @@ import styles from "./Seo.module.css";
 import { Form, Button, Input, Card, Typography } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { apicall } from "../../../../utils/apicall/apicall";
-const {Text}=Typography;
+import { useUpdateSeoPath } from "../../../../apis/ProductApi";
+import { useQueryClient } from "@tanstack/react-query";
+import Spinner from "../../../../component/Spinner/Spinner";
+const { Text } = Typography;
 const Seo = ({ data, seoPath }) => {
+  const {isLoading, mutate}=useUpdateSeoPath()
+  const queryClient=useQueryClient();
   const onFinish = (values) => {
     updateSEO(data?.product_id, values);
   };
@@ -12,17 +17,16 @@ const Seo = ({ data, seoPath }) => {
     console.log("Failed:", errorInfo);
   };
   const updateSEO = async (id, values) => {
-   const result= await apicall({
-      url: `products/${id}`,
-      data: values,
-      method: "put",
+    // mutate update function 
+    mutate({data:values, id:id},{
+      onSuccess:(res)=> queryClient.invalidateQueries(['single_product',String(data?.product_id)]),
     });
-    if(result.data){
-      // window.location.reload();
-    }
   };
+  if(isLoading){
+    return <Spinner/>
+  }
   return (
-    <div className={styles.seo}>
+    <div className={styles.seo} key={data?.product_id}>
       <Form
         name="basic"
         initialValues={{
@@ -46,9 +50,8 @@ const Seo = ({ data, seoPath }) => {
           <div className={styles.seo_card}>
             <div className={styles.seo_card_left}>
               <h3>SEO</h3>
-              <Form.Item  name="seo_name" label="SEO name">
-              <Input addonBefore={seoPath} />
-              
+              <Form.Item name="seo_name" label="SEO name">
+                <Input addonBefore={seoPath} />
               </Form.Item>
               <h3>Meta data </h3>
               <Form.Item name="page_title" label="Page title">
@@ -64,15 +67,30 @@ const Seo = ({ data, seoPath }) => {
             <div className={styles.seo_card_right}>
               <h3>Google rich snippets preview</h3>
               <div className={styles.google_preview}>
-                <h4 style={{color:'#1677ff'}}>
-                  {data?.page_title?data.page_title:data.product}
+                <h4 style={{ color: "#1677ff" }}>
+                  {data?.page_title ? data.page_title : data.product}
                 </h4>
-                <Text type="success" >https://dev.bizbazar.com.np/acme/</Text>
+                <Text type="success">https://dev.bizbazar.com.np/acme/</Text>
                 <div>
-                <Text >{'रु'+Number.parseFloat(data?.price).toFixed(2)}</Text>-
-                <Text>{data?.amount<=0?<span style={{color:'red'}}>Out of stock</span>:<span style={{color:'green'}}>In stock</span>}</Text>
+                  <Text>
+                    {"रु" + Number.parseFloat(data?.price).toFixed(2)}
+                  </Text>
+                  -
+                  <Text>
+                    {data?.amount <= 0 ? (
+                      <span style={{ color: "red" }}>Out of stock</span>
+                    ) : (
+                      <span style={{ color: "green" }}>In stock</span>
+                    )}
+                  </Text>
                 </div>
-                <Text type="secondary">{data?.meta_description?data.meta_description:data.full_description.replace(/<[^>]*>?/gm, '').substring(0,150)+'...'}</Text>
+                <Text type="secondary">
+                  {data?.meta_description
+                    ? data?.meta_description
+                    : data?.full_description
+                        .replace(/<[^>]*>?/gm, "")
+                        .substring(0, 150) + "..."}
+                </Text>
               </div>
             </div>
           </div>

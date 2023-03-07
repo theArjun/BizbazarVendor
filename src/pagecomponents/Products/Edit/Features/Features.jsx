@@ -1,22 +1,20 @@
 import React, { useState } from "react";
 import styles from "./Features.module.css";
 import { Form, Button, Card, Input, Select } from "antd";
-import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
-import { apicall } from "../../../../utils/apicall/apicall";
-import { useEffect } from "react";
-const Features = ({ features, selected_features, editID,getData }) => {
+import { useQueryClient } from "@tanstack/react-query";
+import { useUpdateProduct } from "../../../../apis/ProductApi";
+import Spinner from "../../../../component/Spinner/Spinner";
+const Features = ({ features, selected_features, editID }) => {
   const [insertFeature, setInsertFeature] = useState({
     product_features: selected_features,
   });
-  const onFinish = async (values) => {
-   let result= await apicall({
-      url: `products/${editID}`,
-      data: insertFeature,
-      method: "put",
-    });
-    if(result.data){
-      getData();
-    }
+  const queryClient=useQueryClient();
+  const {isLoading, mutateAsync}=useUpdateProduct()
+  const onFinish = (values) => {
+    let final_features={product_id:editID, ...insertFeature}
+   mutateAsync(final_features,{
+    onSuccess:()=>queryClient.invalidateQueries(['single_product',String(editID)])
+   })
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -124,8 +122,12 @@ const Features = ({ features, selected_features, editID,getData }) => {
       </Card>
     );
   };
+  if(isLoading){
+    return <Spinner/>
+  }
   return (
     <div className={styles.feature_container}>
+    {isLoading?<Spinner/>:''}
       <Form
         name="features"
         initialValues={{}}

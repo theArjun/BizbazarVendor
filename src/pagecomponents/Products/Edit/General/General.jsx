@@ -9,7 +9,6 @@ import {
   message,
   Checkbox,
   Card,
-  Skeleton,
 } from "antd";
 import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
 import { apicall } from "../../../../utils/apicall/apicall";
@@ -18,7 +17,10 @@ import "react-quill/dist/quill.snow.css";
 import { useState } from "react";
 import { useEffect } from "react";
 import ImageUploaderForEdit from "../../../../component/ImageUploader/ImageUploaderForEdit";
-const General = ({ editData, categories, getData }) => {
+import { useQueryClient } from "@tanstack/react-query";
+import { useUpdateProduct } from "../../../../apis/ProductApi";
+import Spinner from "../../../../component/Spinner/Spinner";
+const General = ({ editData, categories, getData}) => {
   // for toggling  fields button
   const [info, setInfo] = useState(true);
   const [options, setOptions] = useState(true);
@@ -27,7 +29,7 @@ const General = ({ editData, categories, getData }) => {
   const [taxChecked, setTaxChecked] = useState(false);
   const [vatId, setVatId] = useState([]);
   const [imageCount, setImageCount] = useState(0);
-  const [finalImages, setFinalImages]=useState([]);
+  const [finalImages, setFinalImages] = useState([]);
   const [uploadedImage, setUploadedImage] = useState({
     product_main_image_data: {},
     type_product_main_image_detailed: {},
@@ -35,10 +37,12 @@ const General = ({ editData, categories, getData }) => {
     product_add_additional_image_data: {},
     type_product_add_additional_image_detailed: {},
     file_product_add_additional_image_detailed: {},
-    removed_image_pair_ids:{},
-    product_main_image_data:{},
-    product_additional_image_data:{}
+    removed_image_pair_ids: {},
+    product_main_image_data: {},
+    product_additional_image_data: {},
   });
+  const { isLoading, mutate } = useUpdateProduct();
+  const queryClient = useQueryClient();
   // for setting vatId
   useEffect(() => {
     if (taxChecked) {
@@ -49,7 +53,7 @@ const General = ({ editData, categories, getData }) => {
   }, [taxChecked]);
   // for check vat and uncheck
   useEffect(() => {
-    editData?.tax_ids.map((item) => {
+    editData?.tax_ids?.map((item) => {
       if (item == "6") {
         setTaxChecked(true);
       }
@@ -91,19 +95,19 @@ const General = ({ editData, categories, getData }) => {
   ];
   const getSelectedCatLabel = (ids) => {
     let temp = categories
-      ?.filter((item) => ids.includes(parseInt(item.category_id)))
+      ?.filter((item) => ids?.includes(parseInt(item.category_id)))
       .map((el) => ({ label: el.category, value: el.category_id }));
     return temp;
   };
   const getImage = (data) => {
-    let main_image = data?.main_pair;
-    let additional_image = Object.values(data?.image_pairs).map((el, i) => ({
+    let main_image = data?.main_pair?data.main_pair:{};
+    let additional_image = data?.image_pairs?Object.values(data?.image_pairs)?.map((el, i) => ({
       uid: `${i + 1}`,
       name: `additional_mage_${i + 1}.jpg`,
       status: "done",
       url: el?.detailed?.image_path,
-      pair_id:el?.pair_id
-    }));
+      pair_id: el?.pair_id,
+    })):{}
     if (Object.keys(main_image).length) {
       return [
         {
@@ -111,7 +115,7 @@ const General = ({ editData, categories, getData }) => {
           name: "main_image.jpg",
           status: "done",
           url: main_image?.detailed?.image_path,
-          pair_id:main_image?.pair_id
+          pair_id: main_image?.pair_id,
         },
         ...additional_image,
       ];
@@ -121,45 +125,47 @@ const General = ({ editData, categories, getData }) => {
   };
   // trigger while clicking  on create button if there is no any error at  client side
   const onFinish = (values) => {
-    let available_image_prepare= {...uploadedImage}
-    if(finalImages.length){
-      finalImages.map((el, i)=>{
-        if(i===0){
-          available_image_prepare.product_main_image_data[el.pair_id]={
-            "detailed_alt": "",
-            "type": "M",
-            "object_id": el.uid,
-            "pair_id": el.pair_id,
-            "position": i,
-            "is_new": "N"
-          }
-        }else{
-          available_image_prepare.product_additional_image_data[el?.pair_id]={
-            "detailed_alt": "",
-            "type": "A",
-            "object_id": el.uid,
-            "pair_id": el.pair_id,
-            "position": i,
-            "is_new": "N"
+    let available_image_prepare = { ...uploadedImage };
+    if (finalImages.length) {
+      finalImages.map((el, i) => {
+        if (i === 0) {
+          available_image_prepare.product_main_image_data[el.pair_id] = {
+            detailed_alt: "",
+            type: "M",
+            object_id: el.uid,
+            pair_id: el.pair_id,
+            position: i,
+            is_new: "N",
+          };
+        } else {
+          available_image_prepare.product_additional_image_data[el?.pair_id] = {
+            detailed_alt: "",
+            type: "A",
+            object_id: el.uid,
+            pair_id: el.pair_id,
+            position: i,
+            is_new: "N",
+          };
         }
-        }
-      })
-    }
-    const final_data= {...values, ...available_image_prepare, product_id:product_id, tax_ids: vatId, category_ids: values.category_ids[0]?.value
-      ? category_ids
-      : values.category_ids, }
-    const timeOutId = setTimeout(async () => {
-      // perform api call to retrieve data
-       let result =await apicall({
-        method: "put",
-        url: `VendorProducts/${product_id}`,
-        data: { ...final_data },
       });
-      if(result?.data){
+    }
+    const final_data = {
+      ...values,
+      ...available_image_prepare,
+      product_id: product_id,
+      tax_ids: vatId,
+      category_ids: values.category_ids[0]?.value
+        ? category_ids
+        : values.category_ids,
+    };
+
+    // lets update the product
+    mutate(final_data, {
+      onSuccess: (response) => {
+        queryClient.invalidateQueries(["single_product", String(product_id)]);
         getData()
-      }
-    }, 500);
-    return () => clearTimeout(timeOutId);
+      },
+    });
   };
   // throw message while error occured at client side
   const onFinishFailed = (errorInfo) => {
@@ -190,7 +196,9 @@ const General = ({ editData, categories, getData }) => {
       setVatId([...tax[0].tax_id]);
     }
   };
-
+  if(isLoading){
+    return <Spinner/>
+  }
   return (
     <div className={styles.formContainer}>
       <Form
@@ -213,7 +221,7 @@ const General = ({ editData, categories, getData }) => {
           product_code: product_code,
           category_ids: getSelectedCatLabel(category_ids),
           price: parseFloat(price).toFixed(2),
-          list_price: parseFloat(list_price).toFixed(2)
+          list_price: parseFloat(list_price).toFixed(2),
         }}
       >
         <Form.Item style={{ float: "right" }} name="submit_btn">
@@ -281,7 +289,7 @@ const General = ({ editData, categories, getData }) => {
               ]}
             >
               <Input type="number" />
-            </Form.Item> 
+            </Form.Item>
             <Form.Item
               label="List price (रु)"
               name="list_price"
@@ -321,7 +329,6 @@ const General = ({ editData, categories, getData }) => {
               imageList={getImage(editData)}
               finalImages={finalImages}
               setFinalImages={setFinalImages}
-              
             />
           </Card>
         </div>
@@ -342,7 +349,7 @@ const General = ({ editData, categories, getData }) => {
           >
             <Form.Item label="Options type" name="options_type">
               <Select
-              className={styles.input_reduce_width}
+                className={styles.input_reduce_width}
                 style={{
                   maxWidth: 300,
                 }}

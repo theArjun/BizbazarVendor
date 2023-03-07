@@ -1,0 +1,45 @@
+/*! CSS Used from: https://dev.bizbazar.com.np/var/cache/misc/assets/design/backend/css/standalone.f095632daa7f70598fe8bdec0fb0db8b_62.css?1677750978 */
+@media print{
+    *{text-shadow:none!important;color:#000!important;background:transparent!important;box-shadow:none!important;}
+    p,h3{orphans:3;widows:3;}
+    h3{page-break-after:avoid;}
+    }
+    p{margin:0 0 13px;}
+    strong{font-weight:bold;}
+    h3{margin:13px 0;font-family:inherit;font-weight:700;line-height:26px;color:inherit;text-rendering:optimizelegibility;}
+    h3{line-height:52px;}
+    h3{font-size:26.25px;}
+    li{line-height:26px;}
+    ul.inline > li{display:inline-block;*display:inline;*zoom:1;padding-left:5px;padding-right:5px;}
+    :focus{outline:none;}
+    *,:after,:before{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;}
+    strong{font-weight:bold;}
+    .vendor-plans-item{width:210px;background:#fbfbfb;vertical-align:top;margin-right:15px;margin-bottom:15px;border:1px solid #f0f0f0;padding:0;cursor:pointer;transition:all 200ms;}
+    .vendor-plans-item:hover{border-color:#dedede;}
+    .vendor-plan-content{padding:7px 14px;}
+    .vendor-plan-header{font-weight:normal;}
+    .vendor-plan-price{font-size:25px;font-weight:normal;text-transform:uppercase;display:inline-block;margin:10px;}
+    .vendor-plan-params{padding:15px 0px;}
+    .vendor-plan-params p{margin:5px 0;font-size:14px;}
+
+    .plan_card{
+        width: 250px;
+        display: flex;
+        background-color: white;
+        justify-content: center;
+        border-radius: 10px;
+        height: 400px;
+        cursor: pointer;
+        border:1px solid transparent;
+        transition: all 0.5s ease ;
+    }
+    .plan_card:hover{
+        border:1px solid green;
+        box-shadow: 0 0 50px #ccc;
+        transition: all 0.5s ease ;
+    }
+    .selected{
+        border:1px solid #7367f0;
+        box-shadow: 0 0 50px #ccc;
+
+    }

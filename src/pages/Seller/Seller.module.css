@@ -46,3 +46,23 @@
   position: relative;
   background-color: rgb(232, 229, 229);
 }
+.tab_body{
+  display: grid;
+  grid-template-columns: 1fr  300px;
+}
+.tab_body_right{
+  margin-left: 10px;
+  border-radius: 10px;
+  background-color: white;
+  padding: 10px;
+}
+.menu_list > div{
+  cursor: pointer;
+  width: fit-content;
+  /* display: flex;
+  flex-direction: row; */
+}
+.menu_list > div:hover{
+  text-decoration: underline;
+
+}

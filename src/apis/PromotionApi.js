@@ -50,6 +50,7 @@ export const useGetPromotionById = (id) =>
       apicall({
         url: `Promotions?promotion_id=${id}&extend[]=get_images&expand=1`,
       }),
+      onSuccess:(res)=>console.log(id)
   });
 
 export const useGetPromotionProducts = () =>

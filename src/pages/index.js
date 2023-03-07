@@ -104,6 +104,15 @@ const SellerGeneral = React.lazy(() =>
 const SellerDescription = React.lazy(() =>
   import("../pagecomponents/Seller/Description/Description")
 );
+const SellerTermsAndConditions = React.lazy(() =>
+  import("../pagecomponents/Seller/TermsAndConditions/TermsAndConditions")
+);
+const SellerPlan = React.lazy(() =>
+  import("../pagecomponents/Seller/Plan/Plan")
+);
+const SellerLogos = React.lazy(() =>
+  import("../pagecomponents/Seller/Logos/Logos")
+);
 
 
 
@@ -142,5 +151,8 @@ export {
   AdminPromotion,
   VendorPromotion,
   SellerGeneral,
-  SellerDescription
+  SellerDescription,
+  SellerTermsAndConditions,
+  SellerPlan,
+  SellerLogos
 };

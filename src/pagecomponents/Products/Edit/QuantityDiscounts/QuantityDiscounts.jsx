@@ -3,7 +3,10 @@ import styles from "./QuantityDiscount.module.css";
 import { Form, Card, Input, Select, Button, Table } from "antd";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useUpdateDiscounts } from "../../../../apis/ProductApi";
 import { apicall } from "../../../../utils/apicall/apicall";
+import Spinner from "../../../../component/Spinner/Spinner";
 const userGroup = {
   0: "All",
   1: "Guest",
@@ -20,6 +23,8 @@ const QuantityDiscounts = ({
   const [type, setType] = useState("A");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [deleteDiscount, setDeleteDiscount] = useState([]);
+  const {isLoading:discountLoading, mutate:discountMutate}=useUpdateDiscounts()
+  const queryClient=useQueryClient();
   const windowSize = useWindowSize();
   let discounts = price_data?.prices;
   const onFinish = (values) => {
@@ -54,17 +59,14 @@ const QuantityDiscounts = ({
   }, [price_data]);
 
   // Update Quantity discount
-  const updateDiscount = async (id, values) => {
-    setLoading(true);
-    const result = await apicall({
-      url: `products/${id}`,
-      method: "put",
-      data: values,
-    });
-    if (result.data) {
-      getData();
-      setSelectedRowKeys([]);
-    }
+  const updateDiscount = (id, values) => {
+    discountMutate({data:values, id:id},{
+      onSuccess:(res)=>{
+        queryClient.invalidateQueries(['single_product',id])
+        setSelectedRowKeys([]);
+      },
+      onError:(error)=> console.log('Something went wrong,', error)
+    })
   };
   const onValueChange = (a) => {
     // console.log(values)
@@ -134,6 +136,9 @@ const QuantityDiscounts = ({
       dataIndex: "user_group",
     },
   ];
+  if(discountLoading){
+    return <Spinner/>
+  }
   return (
     <div className={styles.quantity_discount}>
       <Card>
