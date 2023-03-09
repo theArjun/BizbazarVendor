@@ -1,143 +1,222 @@
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import styles from "./EditShipping.module.css";
 import { Checkbox, Modal, Input, Radio } from "antd";
 import { Select } from "antd";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { message, Upload } from "antd";
 
-const getBase64 = (img, callback) => {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result));
-  reader.readAsDataURL(img);
+import { message, Upload } from "antd";
+import { apicall } from "../../../../utils/apicall/apicall";
+
+import ImgCrop from 'antd-img-crop';
+
+
+function EditShipping({id, openEdit, setOpenEdit }) {
+  const [carrier, setCarrier] = useState([]);
+  const [infoData,setInfoData]=useState({})
+const [loading,setLoading]=useState(false)
+const [singleShipment,setSingleShipment]=useState({})
+
+const [fileList, setFileList] = useState([
+ 
+]);
+  
+useEffect(()=>{
+  getCarrier()
+},[])
+
+useEffect(()=>{
+  getSingleShipment()
+},[id])
+
+
+const getSingleShipment=async()=>{
+  setLoading(true)
+
+  const result = await apicall({
+    url:"ShippingMethod/"+id,
+  });
+  if (result.status===200) { 
+    setSingleShipment(result.data)
+  }
+  setLoading(false)
+
+}
+
+const getCarrier=async()=>{
+  const result = await apicall({
+    url: "VendorCarrier",
+  });
+  if (result.status===200) {
+    setCarrier(Object.entries(result.data.carriers).map(dat=>({
+      label:dat[1]?.name,
+      value:dat[0]
+    })));
+  }
+
+}
+
+
+const onChange = ({ fileList: newFileList }) => {
+  console.log(newFileList[0]?.originFileObj
+    );
+  setFileList(newFileList);
 };
+
+const onPreview = async (file) => {
+  let src = file.url;
+  if (!src) {
+    src = await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file.originFileObj);
+      reader.onload = () => resolve(reader.result);
+    });
+  }
+  const image = new Image();
+  image.src = src;
+  const imgWindow = window.open(src);
+  imgWindow?.document.write(image.outerHTML);
+};
+
 const beforeUpload = (file) => {
-  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
-    message.error("You can only upload JPG/PNG file!");
+    message.error('You can only upload JPG/PNG file!');
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
-    message.error("Image must smaller than 2MB!");
+    message.error('Image must smaller than 2MB!');
   }
   return isJpgOrPng && isLt2M;
 };
 
-function EditShipping({ openEdit, setOpenEdit }) {
-  const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState();
-  const handleChange = (info) => {
-    if (info.file.status === "uploading") {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === "done") {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, (url) => {
-        setLoading(false);
-        setImageUrl(url);
-      });
-    }
-  };
 
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </div>
-  );
+
+  
+
+
+  
 
   return (
     <Modal
-      centered
-      open={openEdit}
-      onOk={() => setOpenEdit(false)}
-      onCancel={() => setOpenEdit(false)}
-      width={1000}
-    >
-      <div className={styles.container}>
-        <div className={styles.title}>Edit Shipping Method</div>
+    centered
+    open={openEdit}
+    onOk={() => setOpenEdit(false)}
+    onCancel={() => setOpenEdit(false)}
+    width={1000}
+  >
+    {loading?<>...loading</>:
+         <div className={styles.container}>
         <h3>Information</h3>
+
+
+        <div>
+
+        </div>
         <div className={styles.section}>
           <label>Rate Calculation</label>{" "}
           <Select
-            defaultValue="lucy"
-            style={{ width: 120 }}
-            onChange={handleChange}
+          placeholder="Rate Calculation"
+            style={{ width: 150 }}
+            value={infoData?.rateCalculation|| singleShipment?.rate_calculation}
+             onChange={(e)=>setInfoData(dat=>({
+              ...dat,
+              rateCalculation:e
+
+             }))}
+
+
             options={[
               {
-                value: "jack",
-                label: "Jack",
-              },
-              {
-                value: "lucy",
-                label: "Lucy",
-              },
-              {
-                value: "disabled",
+                value: "Manual ",
                 disabled: true,
-                label: "Disabled",
+                label: "Manual ",
               },
               {
-                value: "Yiminghe",
-                label: "yiminghe",
+                value: "M",
+                label: "By customer's address",
               },
+              {
+                value: "N",
+                label: "By Pickup Location",
+              },
+              {
+                value: "non Manual",
+                disabled: true,
+                label: "Non Manual ",
+              },
+             
+            ...carrier
             ]}
           />
+
+
+          
         </div>
         <div className={styles.section}>
           <label>
             Name<span className={styles.red}> *</span> :
           </label>{" "}
-          <Input placeholder="Basic usage" />
+          <Input placeholder="Name" value={infoData?.name||singleShipment?.shipping}   onChange={(e)=>setInfoData(dat=>({
+              ...dat,
+            name:e.target.value
+
+             }))} />
         </div>
         <div className={styles.section}>
           <label>Status :</label>{" "}
           <div style={{ display: "flex" }}>
-            <Radio defaultChecked={false} disabled={false}>
+          <Radio.Group va  onChange={(e)=>setInfoData(dat=>({
+              ...dat,
+            status:e.target.value
+
+             }))} 
+          value={infoData?.status||singleShipment?.status}
+          >
+            <Radio  
+           value={"A"}
+             >
+              Active
+            </Radio>
+            <Radio value={"D"} >
               Disabled
             </Radio>
-            <Radio defaultChecked disabled={false}>
-              Disabled
-            </Radio>
+            </Radio.Group>
             <div />
           </div>
         </div>
         <div className={styles.section}>
           <label>Icon :</label>
-          <Upload
-            name="avatar"
-            listType="picture-card"
-            className="avatar-uploader"
-            showUploadList={false}
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-            beforeUpload={beforeUpload}
-            onChange={handleChange}
-          >
-            {imageUrl ? (
-              <img
-                src={imageUrl}
-                alt="avatar"
-                style={{
-                  width: "100%",
-                }}
-              />
-            ) : (
-              uploadButton
-            )}
-          </Upload>
+          <ImgCrop rotate>
+      <Upload
+        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        listType="picture-card"
+        fileList={fileList}
+        onChange={onChange}
+        onPreview={onPreview}
+        beforeUpload={beforeUpload}
+      >
+        {fileList.length < 1 && '+ Upload'}
+      </Upload>
+    </ImgCrop>
+        
         </div>
         <div className={styles.section}>
-          <label>Delevery Time:</label>{" "}
+          <label>Delivery Time:</label>{" "}
           <div>
-            <Input placeholder="Basic usage" style={{ width: "100px" }} />
+            <Input   placeholder="Delivery Time" value={infoData?.time||singleShipment?.delivery_time} style={{ width: "150px" }}
+            onChange={(e)=>
+              setInfoData(dat=>({
+              ...dat,
+            time:e.target.value
+
+             }))
+       
+            
+            }
+            
+            />
             <br />
             The delivery time appears next to the name of the shipping method.
             If you use realtime shipping rate calculation, your shipping service
@@ -146,63 +225,138 @@ function EditShipping({ openEdit, setOpenEdit }) {
           </div>
         </div>
         <span></span>
-        {/* <div className={styles.errorSection}>It is Mandatory</div> */}
         <div className={styles.section}>
           <div>Detailed description:</div>
-          <ReactQuill className={styles.inputQuill} theme="snow" />
+          <ReactQuill className={styles.inputQuill} theme="snow"
+
+          value={infoData?.description||singleShipment?.description}
+          
+          onChange={(e)=>
+            setInfoData(dat=>({
+            ...dat,
+            description:e
+
+           }))
+          
+          }
+          />
         </div>
         <h3>Ability</h3>
         <div className={styles.section}>
           <label>User Group :</label>{" "}
           <div style={{ display: "flex" }}>
-            <Checkbox>All </Checkbox> <Checkbox>Guest </Checkbox>{" "}
-            <Checkbox>Registered </Checkbox>
+            
+              <Radio.Group va  onChange={(e)=>setInfoData(dat=>({
+              ...dat,
+              usergroup:e.target.value
+
+             }))} 
+             value={infoData?.usergroup||singleShipment?.usergroup_ids}
+          >
+            <Radio  
+           value={"0"}
+             >
+              All
+            </Radio>
+            <Radio value={"1"} >
+              Guest
+            </Radio>
+            <Radio value={"2"} >
+              Registered
+            </Radio>
+            </Radio.Group>
+
+
+            
             <div />
           </div>
         </div>
         <div className={styles.section}>
           <label>Owner :</label>{" "}
           <div style={{ display: "flex" }}>
-            Butwal
+          {JSON.parse(localStorage.getItem("userinfo"))?.name}
             <div />
           </div>
         </div>
         <div className={styles.section}>
           <label>Weight:</label>{" "}
           <div>
-            <Input placeholder="Min" style={{ width: "100px" }} />-{" "}
-            <Input placeholder="Max" style={{ width: "100px" }} />
+            <Input placeholder="Min" style={{ width: "100px" }} 
+            value={infoData?.min||singleShipment?.min_weight}
+            onChange={(e)=>
+              setInfoData(dat=>({
+              ...dat,
+              min:e.target.value
+            
+             }))
+            }
+            
+            />-{" "}
+            <Input placeholder="Max" style={{ width: "100px" }}
+             value={infoData?.max||singleShipment?.max_weight}
+              onChange={(e)=>
+                setInfoData(dat=>({
+                ...dat,
+                max:e.target.value
+              
+               }))
+              }
+            />
           </div>
         </div>
 
         <div className={styles.section}>
           <label>Allowed Payment :</label>{" "}
           <div style={{ display: "flex" }}>
-            <Checkbox>Connect Credit card</Checkbox>
-            <Checkbox>IMEPay </Checkbox>
-            <Checkbox>Khalti </Checkbox>
-            <Checkbox>PAY BY CARD (DEBIT/CREDIT/PREPAID) </Checkbox>
-            <Checkbox>IMEPay </Checkbox>
-            <Checkbox> Phone ordering </Checkbox>
-            <Checkbox> Money Order </Checkbox>
-            <Checkbox> C.O.D </Checkbox>
+
+
+          <Checkbox.Group 
+options={['Connect Credit card', 'IMEPay', 'Khalti','PAY BY CARD',
+
+"IMEPay"," Phone ordering ","Money Order ","C.O.D"
+]}
+
+onChange={(e)=>
+  setInfoData(dat=>({
+  ...dat,
+  allowedPayment:e
+
+ }))}
+  />
+
+           
             <div />
           </div>
         </div>
         <div className={styles.section}>
           <label>Method:</label>{" "}
           <div style={{ display: "flex" }}>
-            <Checkbox> Purchase Order</Checkbox>
-            <Checkbox> Personal Check </Checkbox>
-            <Checkbox> Government Check </Checkbox>
-            <Checkbox> Traveller's Check </Checkbox>
+        
+            <div />
+
+          <Checkbox.Group 
+options={["Purchase Order","Personal Check"," Government Check"," Traveller's Check "]}
+
+onChange={(e)=>
+  setInfoData(dat=>({
+  ...dat,
+  method:e
+
+ }))}
+  />
 
             <div />
           </div>
         </div>
-      </div>
+     
+     
+     
+     
+</div>}
     </Modal>
   );
 }
 
 export default EditShipping;
+
+

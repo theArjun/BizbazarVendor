@@ -16,7 +16,7 @@ const Accounting = () => {
   const [loading, setLoading]=useState(false)
   const [withdrawData,setWithdrawData]=useState('')
 // getting userInformation
-let user= JSON.parse(localStorage.getItem('userinfo'));
+let user= JSON.parse(localstorage.getItem('userinfo'));
   // Lets get Accounting data through api
   useEffect(()=>{
     getAccountingInformation();

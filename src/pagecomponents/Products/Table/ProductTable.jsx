@@ -90,7 +90,7 @@ const ProductTable = ({
   // Set id
   const setSelectedRow = async (id, method) => {
     setProductId(id);
-    window.localStorage.setItem("productRowId", JSON.stringify(id));
+    window.localstorage.setItem("productRowId", JSON.stringify(id));
     if (method === "detail") {
       navigate("Edit Product");
     }
