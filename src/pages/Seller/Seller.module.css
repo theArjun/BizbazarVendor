@@ -48,7 +48,8 @@
 }
 .tab_body{
   display: grid;
-  grid-template-columns: 1fr  300px;
+  grid-template-columns: 1fr  250px;
+  margin:10px 0;
 }
 .tab_body_right{
   margin-left: 10px;
@@ -65,4 +66,19 @@
 .menu_list > div:hover{
   text-decoration: underline;
 
+}
+.tab_body_right > div > div > h4{
+    font-weight: 500;
+}
+.statistic_list > div{
+  display: flex;
+  justify-content: space-between;
+}
+@media ( max-width:768px){
+  .tab_body{
+    grid-template-columns: 1fr;
+  }
+  .tab_body_right{
+    display: none;
+  }
 }

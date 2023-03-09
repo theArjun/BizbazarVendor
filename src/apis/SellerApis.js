@@ -4,10 +4,10 @@ const { id } = JSON.parse(window.localStorage.getItem("userinfo"));
 export const useGetSellerInformation = () =>
   useQuery({
     queryKey: ["seller_information"],
-    queryFn: () => apicall({ url: `vendors/${id}` }),
+    queryFn: () => apicall({ url: `Companies` }),
     onError: (err) => console.log(err),
   });
 export const useUpdateSeller = () =>
   useMutation((data) =>
-    apicall({ url: `vendors/${id}`, method: "put", data: data })
+    apicall({ url: `Companies`, method: "post", data: data })
   );

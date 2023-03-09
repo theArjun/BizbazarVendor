@@ -3,7 +3,7 @@ import styles from './TermsAndConditions.module.css'
 import ReactQuill from 'react-quill'
 import "react-quill/dist/quill.snow.css";
 import { Form } from 'antd';
-const TermsAndConditions = () => {
+const TermsAndConditions = ({sellerData, setSellerData}) => {
   return (
     <div className={styles.terms_condition}>
     <div className={styles.terms_condition_body}>
@@ -14,7 +14,12 @@ const TermsAndConditions = () => {
       >
       <ReactQuill
         theme="snow"
-        value={''}
+        value={sellerData?.terms}
+        onChange={(value)=>{
+          let data={...sellerData}
+          data.terms=value
+          setSellerData(data)
+        }}
         // onChange={setDescription}
       />
       </Form.Item>

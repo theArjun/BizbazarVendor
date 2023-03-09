@@ -1,24 +1,38 @@
 import React from "react";
 import styles from "./PlanCard.module.css";
-const PlanCard = ({selected}) => {
+const PlanCard = ({ selected, plan, changed, setChanged }) => {
   return (
-    <div className={`${styles.plan_card} + ${selected?styles.selected:''}`}>
+    <div
+      className={`${styles.plan_card} + ${selected ? styles.selected : ""} + ${
+        changed ? styles.changed : ""
+      }`}
+      onClick={() => setChanged(plan?.plan_id)}
+    >
       <div className="vendor-plans-item  " data-ca-plan-id="7">
         <div className="vendor-plan-content">
-          <h3 className="vendor-plan-header">Account plan</h3>
+          <h3 className="vendor-plan-header">{plan?.plan}</h3>
 
-          <span className="vendor-plan-price">Free</span>
-          <span className="vendor-plan-price-period">/&nbsp;Month</span>
+          <span className="vendor-plan-price">
+            {plan?.price === "0.00" ? "Free" : "रु" + plan?.price}
+          </span>
+          <span className="vendor-plan-price-period">
+            /&nbsp;{plan?.periodicity}
+          </span>
+          <div></div>
           <div className="vendor-plan-params">
             <p>
-              <strong>Unlimited</strong> products
+              {plan?.products_limit === "0"
+                ? "Unlimited products"
+                : Math.floor(plan?.products_limit) + " products"}
             </p>
             <p>
-              <strong>Unlimited</strong> revenue
+              {plan?.revenue_limit === "0.00"
+                ? "Unlimited revenue"
+                : Math.floor(plan?.revenue_limit) + " revenue"}
             </p>
             <p>Vendor microstore</p>
             <p>
-              Transaction fee: <strong> 10%</strong>
+              Transaction fee: <strong> {Math.floor(plan?.commission)}%</strong>
             </p>
           </div>
         </div>

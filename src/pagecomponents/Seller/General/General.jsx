@@ -1,62 +1,45 @@
 import React, { useState, useEffect } from "react";
 import styles from "./General.module.css";
-import { Form, Select, Button, Input, Card, Radio } from "antd";
-import { countries } from "../../../pages/Profile/countries";
-import states from "../../../pages/Profile/state.json";
-import { useQueryClient } from "@tanstack/react-query";
-import { useUpdateSeller } from "../../../apis/SellerApis";
-import Spinner from "../../../component/Spinner/Spinner";
-const General = ({ vendorData }) => {
-  const [cities, setCities] = useState([]);
-  const [pradesh, setPradesh] = useState("");
+import { Select, Input, Card, Radio, Form } from "antd";
+const General = ({
+  vendorData,
+  countries,
+  states,
+  handleFormSubmit,
+  handleFinishFailed,
+  setGeneral,
+  form
+}) => {
+  const [state, setState] = useState("");
   const [location, setLocation] = useState("");
-  const {isLoading, mutate}=useUpdateSeller();
-  const queryClient= useQueryClient()
-  const provinces = [];
-  for (var key in states) {
-    provinces.push(key);
-  }
-  // console.log(states)
   useEffect(() => {
-    var demo = [];
-    states[pradesh]?.map((item) => {
-      item.cities.map((city) => {
-        demo.push(city);
-      });
-    });
-    setCities(demo);
-  }, [pradesh]);
-  const onFinish = (values) => {
-   try{
-    mutate(values,{
-      onSuccess:(response)=>{
-        queryClient.invalidateQueries(['seller_information'])
-      }, 
-      onError:(error)=>{
-        console.log(error.message)
-      }
-    })
-
-   }catch(err){
-    console.log(err)
-   }
-  };
+    getStates(vendorData?.country);
+  }, [vendorData]);
   const onSearch = (value) => {
     console.log("search:", value);
   };
-  const onSelect = (value) => {
-    setPradesh(value);
+  const getStates = (value) => {
+    setState([]);
+    let temp_states = states[value];
+    if (temp_states) {
+      setState(
+        temp_states.map((el, i) => ({ label: el?.state, value: el?.code }))
+      );
+    }
   };
-  if(isLoading){
-    return <Spinner/>
+  const onValueChanges=(a,values)=>{
+   setGeneral(values)
   }
   return (
     <div className={styles.container_general}>
       <div className={styles.formContainer}>
         <Form
-          layout="vertical"
+        layout="vertical"
+        form={form}
           name="basic"
-          onFinish={onFinish}
+          onFinish={handleFormSubmit}
+          onFinishFailed={handleFinishFailed}
+          onValuesChange={onValueChanges}
           autoComplete="off"
           initialValues={{
             email: vendorData?.email,
@@ -71,13 +54,8 @@ const General = ({ vendorData }) => {
             address: vendorData?.address,
           }}
         >
-          <Form.Item style={{ float: "right" }} name="submit_btn">
-            <Button type="primary" htmlType="submit">
-              Save Changes
-            </Button>
-          </Form.Item>
           <div className={styles.information}>
-            <div className="information_title" onClick={() => setInfo(!info)}>
+            <div className="information_title">
               <h2 className={styles.title_header}>Information</h2>
             </div>
             <Card className={styles.information_container}>
@@ -94,13 +72,11 @@ const General = ({ vendorData }) => {
                   },
                 ]}
               >
-                <Input />
+                <Input value={vendorData?.company} />
               </Form.Item>
 
               <Form.Item label="Status" name="status">
-                <Radio
-                checked={vendorData?.status === "A" ? true : false}
-                >
+                <Radio checked={vendorData?.status === "A" ? true : false}>
                   Active
                 </Radio>
               </Form.Item>
@@ -123,7 +99,8 @@ const General = ({ vendorData }) => {
                 rules={[
                   {
                     required: true,
-                    message: "Please enter your email!",
+                    type: "email",
+                    message: "The input is not valid E-mail!",
                   },
                 ]}
               >
@@ -141,39 +118,41 @@ const General = ({ vendorData }) => {
               >
                 <Input type="number" />
               </Form.Item>
-              <Form.Item label="Address" name="s_address">
+              <Form.Item label="Address" name="address">
                 <Input type="address" />
               </Form.Item>
-              <Form.Item label="Country" name="country">
+              <Form.Item
+                label="Country"
+                name="country"
+                rules={[
+                  {
+                    required: true,
+                    message: "",
+                  },
+                ]}
+              >
                 <Select
+                  onSelect={getStates}
                   onSearch={onSearch}
                   showSearch
-                  options={countries.map((option) => ({
-                    label: option.name,
-                    value: option.code,
-                  }))}
+                  options={countries}
                 />
               </Form.Item>
 
-              <Form.Item label="State/Province" name="state">
-                <Select
-                  onSelect={onSelect}
-                  //   onChange={onSecondCityChange}
-                  options={provinces.map((province) => ({
-                    label: province,
-                    value: province,
-                  }))}
-                />
+              <Form.Item
+                label="State/Province"
+                name="state"
+                rules={[
+                  {
+                    required: true,
+                    message: "",
+                  },
+                ]}
+              >
+                <Select onSearch={onSearch} showSearch options={state} />
               </Form.Item>
               <Form.Item label="City" name="city">
-                <Select
-                  showSearch
-                  // //   onChange={onSecondCityChange}
-                  options={cities.map((city) => ({
-                    label: city,
-                    value: city,
-                  }))}
-                />
+                <Input type="address" />
               </Form.Item>
               <Form.Item label="Zip/postal code" name="zipcode">
                 <Input type="text" vlaue="" pattern="\d*" />
