@@ -1,11 +1,19 @@
 .container {
-    height: 80vh;
-    overflow: scroll;
-    position: relative;
-    background-color: white;
+    height: 70vh; 
+  overflow: scroll; 
+  background-color: white;
+
     border-radius: 5px;
     padding: 20px;
+    margin-top: 40px;
 
+  }
+  .wrap{
+    position: relative;
+    height: 70vh;
+ 
+
+    /* background-color: brown; */
   }
   .container::-webkit-scrollbar{
     display: none;
@@ -39,3 +47,16 @@
     /* text-align: center; */
     margin-left: 10%;
   }
+
+  .button{
+position: absolute;
+right: 0;
+top: -40px;
+  }
+
+  .button1{
+    position: absolute;
+    right: 80px;
+    top: -40px;
+      }
+    
