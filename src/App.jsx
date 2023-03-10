@@ -107,6 +107,9 @@ const ResetPassword = lazy(() => import("./pages/Resetpassword/ResetPassword"));
 const ViewShippingMethod = lazy(() =>
   import("./pages/Setting/ViewShippingMethod/ViewShippingMethod")
 );
+const LogosAndStyles = lazy(() =>
+  import("./pages/Setting/LogosAndStyle/LogosAndStyle")
+);
 
 export const queryClient = new QueryClient();
 
@@ -350,7 +353,7 @@ function App() {
             ></Route>
             {/**Logos And Styles*/}
             <Route
-              element={<>Logos And Styles</>}
+              element={<LogosAndStyles/>}
               path="/Setting/Logos And Styles"
             ></Route>
             {/**Files*/}

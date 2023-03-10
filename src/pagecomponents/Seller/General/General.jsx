@@ -87,7 +87,8 @@ const General = ({
                 rules={[
                   {
                     required: true,
-                    message: "Please enter your phone!",
+                    len:10,
+                    message: "Phone number should must have 10 digit",
                   },
                 ]}
               >
@@ -112,24 +113,27 @@ const General = ({
                 rules={[
                   {
                     required: true,
-                    message: "Please enter your email!",
+                    message: "Please enter your tax!",
                   },
                 ]}
               >
                 <Input type="number" />
               </Form.Item>
-              <Form.Item label="Address" name="address">
-                <Input type="address" />
+              <Form.Item label="Address" name="address"
+              
+              rules={[
+                {
+                  required: true,
+                  message: "",
+                },
+              ]}
+              >
+                <Input type="address"
+                 />
               </Form.Item>
               <Form.Item
                 label="Country"
                 name="country"
-                rules={[
-                  {
-                    required: true,
-                    message: "",
-                  },
-                ]}
               >
                 <Select
                   onSelect={getStates}
@@ -142,16 +146,17 @@ const General = ({
               <Form.Item
                 label="State/Province"
                 name="state"
-                rules={[
-                  {
-                    required: true,
-                    message: "",
-                  },
-                ]}
               >
                 <Select onSearch={onSearch} showSearch options={state} />
               </Form.Item>
-              <Form.Item label="City" name="city">
+              <Form.Item label="City" name="city"
+              rules={[
+                {
+                  required: true,
+                  message: "",
+                },
+              ]}
+              >
                 <Input type="address" />
               </Form.Item>
               <Form.Item label="Zip/postal code" name="zipcode">

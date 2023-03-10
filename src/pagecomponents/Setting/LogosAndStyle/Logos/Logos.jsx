@@ -1,7 +1,7 @@
 import styles from "./Logos.module.css";
 import { Input } from "antd";
 import { AiFillMessage } from "react-icons/ai";
-import ImageUploaderForPromotion from "../../../component/ImageUploader/ImageUploaderForPromotion";
+import ImageUploaderForPromotion from "../../../../component/ImageUploader/ImageUploaderForPromotion";
 const Logos = ({sellerData, logoData, setLogoData, customerImage, setCustomerImage, invoiceImage, setInvoiceImage}) => {
   const getImage = (image) => {
     if (!!image) {
@@ -14,20 +14,18 @@ const Logos = ({sellerData, logoData, setLogoData, customerImage, setCustomerIma
           image_id: image?.logo_id,
         },
       ];
-    } else {
-      return [];
     }
   };
   return (
     <div className={styles.logos}>
       <div className={styles.logo_container}>
         <div className={styles.logo_title}>
-          <h4>Logo for the customer area</h4>
+          <h4>Site logo</h4>
         </div>
         <div className={styles.logo_image}>
           {" "}
           <ImageUploaderForPromotion
-            imageList={getImage(sellerData?.logos?.theme)}
+            imageList={getImage(sellerData?.theme)}
             image={customerImage}
             setImage={setCustomerImage}
             logoData={logoData}
@@ -50,12 +48,12 @@ const Logos = ({sellerData, logoData, setLogoData, customerImage, setCustomerIma
       <div></div>
       <div className={styles.logo_container}>
         <div className={styles.logo_title}>
-          <h4>Logo for invoices</h4>
+          <h4>Email logo</h4>
         </div>
         <div className={styles.logo_image}>
           {" "}
           <ImageUploaderForPromotion
-          imageList={getImage(sellerData?.logos?.mail)}
+          imageList={getImage(sellerData?.mail)}
             image={invoiceImage}
             setImage={setInvoiceImage}
             logoData={logoData}

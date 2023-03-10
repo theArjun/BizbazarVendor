@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Edit.module.css";
-import { Breadcrumb, Result, Skeleton } from "antd";
+import { Breadcrumb, Result, Form } from "antd";
 import { useParams } from "react-router-dom";
 import Spinner from '../../../component/Spinner/Spinner'
-import { useSelector } from "react-redux";
 import { useGetProductById, useGetProductFeatures, useGetProductReviews, useGetSeoPath } from "../../../apis/ProductApi";
 import { useGetCategories } from "../../../apis/CategoryApi";
 import cx from "classnames";
@@ -45,6 +44,7 @@ const Edit = () => {
   const [variantFeatures, setVariantFeatures] = useState("");
   const [variationData, setVariationData] = useState("");
   const [loading, setLoading] = useState(false);
+  const [form]=Form.useForm()
   useEffect(() => {
     getData();
   }, []);
@@ -190,6 +190,7 @@ const Edit = () => {
             categories={getCategories()}
             getData={getProductDetail}
             key={editData}
+            form={form}
           />
         )
     }

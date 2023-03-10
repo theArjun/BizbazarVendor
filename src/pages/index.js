@@ -113,6 +113,9 @@ const SellerPlan = React.lazy(() =>
 const SellerLogos = React.lazy(() =>
   import("../pagecomponents/Seller/Logos/Logos")
 );
+const Logos = React.lazy(() =>
+  import("../pagecomponents/Setting/LogosAndStyle/Logos/Logos")
+);
 
 
 
@@ -154,5 +157,6 @@ export {
   SellerDescription,
   SellerTermsAndConditions,
   SellerPlan,
-  SellerLogos
+  SellerLogos,
+  Logos
 };

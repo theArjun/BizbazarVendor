@@ -1,0 +1,17 @@
+.container {
+    /* background-color: var(--theme-page-background-sub); */
+    width: 100%;
+    height: 100%;
+    /* box-shadow: var(--box-shadow); */
+    /* padding: 2px 4px; */
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .breadcrumb_create_btn{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }

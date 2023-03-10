@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styles from "./Seller.module.css";
 import cx from "classnames";
 import Spinner from "../../component/Spinner/Spinner";
-import { Breadcrumb, Button, message, Form } from "antd";
+import { Breadcrumb, Button, message, Form, Modal } from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
@@ -17,22 +17,24 @@ import {
   useGetSellerInformation,
   useUpdateSeller,
 } from "../../apis/SellerApis";
-import { current } from "@reduxjs/toolkit";
 const tabs = ["General", "Description", "Logos", "TermsAndConditions", "Plan"];
 const Seller = () => {
   const [active, setActive] = useState("General");
   const [sellerData, setSellerData] = useState({});
   const [plans, setPlans] = useState([]);
-  const [general, setGeneral] = useState({});
+  const [general, setGeneral] = useState('');
   const [logoData, setLogoData] = useState({
+    removed_image_pair_ids: { },
     logotypes_image_data: {
-      theme: { type: "M", object_id: 239, image_alt: "" },
-      mail: { type: "M", object_id: 240, image_alt: "" },
+      theme: { type: "M", object_id: "", image_alt: "" },
+      mail: { type: "M", object_id: "", image_alt: "" },
     },
     file_logotypes_image_icon: { theme: "", mail: "" },
     type_logotypes_image_icon: { theme: "local", mail: "local" },
     is_high_res_logotypes_image_icon: { theme: "N", mail: "N" },
   });
+  const [customerImage, setCustomerImage] = useState("");
+  const [invoiceImage, setInvoiceImage] = useState("");
   const [changed, setChanged] = useState("");
   const { data, isLoading } = useGetSellerInformation();
   const formData = new FormData();
@@ -40,52 +42,131 @@ const Seller = () => {
   const [form] = Form.useForm();
   const { isLoading: updateLoading, mutate } = useUpdateSeller();
   const queryClient = useQueryClient();
+  const { confirm } = Modal;
   useEffect(() => {
     setPlans(data?.data?.plans);
     setSellerData(data?.data?.company_data);
     setLogo();
-    console.log("hello")
   }, [data]);
   const handleFinish = (values) => {
-    console.log(values);
+    // console.log(values);
   };
+  // set logo data 
   const setLogo = () => {
     let temp = { ...logoData };
     temp.logotypes_image_data.theme.image_alt =
       data?.data?.company_data?.logos?.theme?.image?.alt;
     temp.logotypes_image_data.mail.image_alt =
       data?.data?.company_data?.logos?.mail?.image?.alt;
+    temp.logotypes_image_data.theme.object_id =
+      data?.data?.company_data?.logos?.theme?.logo_id;
+    temp.logotypes_image_data.mail.object_id =
+      data?.data?.company_data?.logos?.mail?.logo_id;
     setLogoData(temp);
   };
-
   const handleFinishFailed = () => {};
+// show
+function showConfirm() {
+  confirm({
+    title: "Change plan!",
+    content: "Do you want to change your plan?",
+    onOk() {
+    handleFormSubmit()
+    },
+    onCancel() {},
+  });
+}
+  // validate email
+  const validateEmail=(email)=>{
+    let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    if (email.match(regex)) 
+      return true; 
+     else 
+      return false;
+  } 
+  const validatePhone=(phone)=>{
+    if (phone.length===10) 
+      return true; 
+     else 
+      return false;
+  }
   // handle form submit
   const handleFormSubmit = () => {
     let temp = { ...sellerData };
-    let logos={...logoData}
-    console.log("🚀 ~ file: Seller.jsx:76 ~ handleFormSubmit ~ finalData:", logos)
+    let logos = { ...logoData };
     delete temp.logos;
-    let finalData = {
-      ...logos,
-      company_id: sellerData?.company_id,
-      company_data: {
-        ...temp,
-        ...general,
-        plan_id: changed ? changed : sellerData?.plan_id,
-      },
-    };
-    formData.append("company_data", JSON.stringify(finalData));
-    try {
-      mutate(formData, {
-        onSuccess: (response) => {
-          queryClient.invalidateQueries(["seller_information"]);
-        },
-        onError: (error) => {
-          console.log(error.message);
-        },
-      });
-    } catch (err) {
-      console.log(err);
+    if(general){
+      if(general.company && general.phone && general.email && general.tax_number && general.address && general.city){
+        if(validateEmail(general.email) && validatePhone(general.phone)){
+          let finalData = {
+            ...logos,
+            company_id: sellerData?.company_id,
+            company_data: {
+              ...temp,
+              ...general,
+              plan_id: changed ? changed : sellerData?.plan_id,
+            },
+          };
+          formData.append("company_data", JSON.stringify(finalData));
+          if (customerImage) {
+            formData.append("theme", customerImage);
+          }
+          if (invoiceImage) {
+            formData.append("mail", invoiceImage);
+          }
+          try {
+            mutate(formData, {
+              onSuccess: (response) => {
+                queryClient.invalidateQueries(["seller_information"]);
+              },
+              onError: (error) => {
+                console.log(error.message);
+              },
+            });
+          } catch (err) {
+            console.log(err);
+          }
+        }
+        else{
+          message.error('Make sure your valid data')
+        }
+      }
+      else{
+        message.error('Required fields can not be empty!')
+      }
+
+    }
+    else{
+        let finalData = {
+          ...logos,
+          company_id: sellerData?.company_id,
+          company_data: {
+            ...temp,
+            ...general,
+            plan_id: changed ? changed : sellerData?.plan_id,
+          },
+        };
+        formData.append("company_data", JSON.stringify(finalData));
+        if (customerImage) {
+          formData.append("theme", customerImage);
+        }
+        if (invoiceImage) {
+          formData.append("mail", invoiceImage);
+        }
+        try {
+          mutate(formData, {
+            onSuccess: (response) => {
+              queryClient.invalidateQueries(["seller_information"]);
+            },
+            onError: (error) => {
+              console.log(error.message);
+            },
+          });
+        } catch (err) {
+          console.log(err);
+        }
+
     }
   };
   const getCompanyData = () => {
@@ -118,6 +199,10 @@ const Seller = () => {
             setSellerData={setSellerData}
             logoData={logoData}
             setLogoData={setLogoData}
+            customerImage={customerImage}
+            setCustomerImage={setCustomerImage}
+            invoiceImage={invoiceImage}
+            setInvoiceImage={setInvoiceImage}
           />
         );
       case tabs[3]:
@@ -164,7 +249,7 @@ const Seller = () => {
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <Button type="primary" onClick={() => handleFormSubmit()}>
+        <Button type="primary" onClick={() => changed===sellerData?.plan_id? handleFormSubmit(form.submit()):showConfirm()}>
           Save Changes
         </Button>
       </div>
@@ -207,22 +292,22 @@ const Seller = () => {
             </div>
             <div className={styles.statistic_list}>
               <div>
-                <p>Balance</p> <p>रु{"33000"}</p>
+                <p>Balance</p> <p>रु{sellerData?.balance}</p>
               </div>
               <div>
-                <p>Orders</p> <p>{5}</p>
+                <p>Orders</p> <p>{sellerData?.orders_count}</p>
               </div>
               <div>
-                <p>Sales</p> <p>रु{0}</p>
+                <p>Sales</p> <p>रु{!sellerData?.sales?0:sellerData?.sales}</p>
               </div>
               <div>
-                <p>Income</p> <p>रु{829}</p>
+                <p>Income</p> <p>रु{sellerData?.income}</p>
               </div>
               <div>
-                <p>Active products</p> <p>{1}</p>
+                <p>Active products</p> <p>{sellerData?.products_count}</p>
               </div>
               <div>
-                <p>Out of stock</p> <p>{0}</p>
+                <p>Out of stock</p> <p>{sellerData?.out_of_stock}</p>
               </div>
             </div>
           </div>

@@ -20,7 +20,7 @@ import ImageUploaderForEdit from "../../../../component/ImageUploader/ImageUploa
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateProduct } from "../../../../apis/ProductApi";
 import Spinner from "../../../../component/Spinner/Spinner";
-const General = ({ editData, categories, getData}) => {
+const General = ({ editData, categories, getData, form}) => {
   // for toggling  fields button
   const [info, setInfo] = useState(true);
   const [options, setOptions] = useState(true);
@@ -202,6 +202,7 @@ const General = ({ editData, categories, getData}) => {
   return (
     <div className={styles.formContainer}>
       <Form
+      form={form}
         name="basic"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}

@@ -15,7 +15,9 @@ const ImageUploaderForPromotion = ({
   setImage,
   imageList,
   deleteImage,
-  setDeleteImage
+  setDeleteImage,
+  logoData,
+  setLogoData
   }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [upload, setUpload] = useState(true);
@@ -57,6 +59,17 @@ const ImageUploaderForPromotion = ({
     return false;
   };
   const onRemove = (a) => {
+    if(logoData){
+      let logo_temp={...logoData}
+      if(logo_temp.removed_image_pair_ids[0]){
+        logo_temp.removed_image_pair_ids[1]=a.image_id
+      }
+      else{
+        logo_temp.removed_image_pair_ids[0]=a.image_id
+      }
+      setLogoData(logo_temp)
+
+    }
     if(deleteImage){
       let delete_image={...deleteImage}
       delete_image.image_id=a?.image_id;

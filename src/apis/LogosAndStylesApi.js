@@ -1,16 +1,17 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apicall } from "../utils/apicall/apicall";
-const { id } = JSON.parse(window.localStorage.getItem("userinfo"));
-export const useGetSellerInformation = () =>
+
+export const useGetThemes = () =>
   useQuery({
-    queryKey: ["seller_information"],
-    queryFn: () => apicall({ url: `Companies` }),
+    queryKey: ["themes"],
+    queryFn: () => apicall({ url: `Themes` }),
     onError: (err) => console.log(err),
   });
-export const useUpdateSeller = () =>
+
+  export const useUpdateTheme = () =>
   useMutation((data) =>
     apicall({
-      url: `Companies`,
+      url: `Themes`,
       method: "post",
       data: data,
       headers: {
