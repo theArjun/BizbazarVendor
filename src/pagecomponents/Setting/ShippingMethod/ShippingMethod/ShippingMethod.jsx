@@ -7,9 +7,10 @@ import EditShipping from "../EditShipping/EditShipping";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 import { useNavigate } from "react-router-dom";
 import { apicall } from "../../../../utils/apicall/apicall";
+import { AiOutlineEye } from "react-icons/ai";
 
-function ShippingMethod({ shipings, setBottom,setUpdate }) {
-  const [open, setOpen] = useState(false);
+function ShippingMethod({open,setOpen, shipings, setBottom,setUpdate }) {
+
   const [openEdit, setOpenEdit] = useState(false);
   const navigate = useNavigate();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -75,9 +76,12 @@ function ShippingMethod({ shipings, setBottom,setUpdate }) {
     {
       title: "Tools",
       dataIndex: "Position",
-      render: (text, dat) => <div onClick={() =>{ setOpenEdit(true);
+      render: (text, dat) => <div className={styles.icon} onClick={() =>{ setOpenEdit(true);
         setId(dat.shipping_id)
-      }}>Edit</div>,
+      }}>
+<AiOutlineEye />
+
+      </div>,
     },
     {
       title: "Status",
@@ -101,37 +105,67 @@ function ShippingMethod({ shipings, setBottom,setUpdate }) {
   };
 
   const deleteShipments=async()=>{
-    const result=await apicall({
-      url:"ShippingMethod/",
-      method:"delete",
-      data:{
-        "shipping_ids": Object.assign({}, selectedRowKeys)
-      }
-      
-      
-    })
-if(result.status==200){
-  setUpdate(dat=>!dat)
-}
+    Modal.warn({
+      title: 'Are you sure!',
+      closable:true,
+    
+      onCancel:()=>{
+      setUpdate(dat=>!dat)
+
+     },
+      onOk :async()=> {
+        const result=await apicall({
+          url:"ShippingMethod/",
+          method:"delete",
+          data:{
+            "shipping_ids": Object.assign({}, selectedRowKeys)
+          }
+          
+          
+        })
+    if(result.status==200){
+      setUpdate(dat=>!dat)
+      setSelectedRowKeys([])
+    }
+
+      },
+    });
+    
   }
 
   const changeStatus=async()=>{
-    const result=await apicall({
-      url:"StatusTool/",
-      method:"post",
-      data:{
-        "table_name": "shippings",
-        "status": status,
-        "id_name": "shipping_id",
-        "ids": [...selectedRowKeys]
+    Modal.warn({
+      title: 'Are you sure!',
+      closable:true,
+    
+      onCancel:()=>{
+        setUpdate(dat=>!dat)
+        setOpenStatusModal(false)
+
+     },
+      onOk :async()=>{
+        const result=await apicall({
+          url:"StatusTool/",
+          method:"post",
+          data:{
+            "table_name": "shippings",
+            "status": status,
+            "id_name": "shipping_id",
+            "ids": [...selectedRowKeys]
+        }
+          
+          
+        })
+    if(result.status==200){
+      setUpdate(dat=>!dat)
+      setOpenStatusModal(false)
     }
-      
-      
-    })
-if(result.status==200){
-  setUpdate(dat=>!dat)
-  setOpenStatusModal(false)
-}
+
+      }})
+
+
+
+   
 
 
   }

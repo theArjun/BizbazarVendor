@@ -23,9 +23,7 @@ const [loading,setLoading]=useState(false)
   const [carrier, setCarrier] = useState([]);
   const [infoData,setInfoData]=useState({})
 
-  const [fileList, setFileList] = useState([
- 
-  ]);
+  const [fileList, setFileList] = useState();
   const [update,setUpdate]=useState(false)
 
   const param=useParams()
@@ -107,7 +105,7 @@ const [loading,setLoading]=useState(false)
   };
   
 
-  console.log(singleShipment);
+ 
 
   
   const onOkay=async()=>{
@@ -133,10 +131,10 @@ const [loading,setLoading]=useState(false)
     },
     "shipping_image_data": {
       "0": {
-          "pair_id": "",
-          "type": "M",
-          "object_id": 0,
-          "image_alt": ""
+          "pair_id":singleShipment?.icon?.pair_id|| "",
+          "type":singleShipment?.icon?.type|| "M",
+          "object_id":singleShipment?.icon?.type|| 0,
+          "image_alt": singleShipment?.icon?.icon?.alt||""
       }
   },
     "file_shipping_image_icon": {
@@ -170,6 +168,8 @@ const [loading,setLoading]=useState(false)
           var formdata = new FormData();
              formdata.append("shipping_data", JSON.stringify(data) );
             formdata.append("file", JSON.stringify(fileList[0]) );
+
+            
              const result=await apicall({
              url:"ShippingMethod/",
              method:"post",
@@ -278,15 +278,22 @@ if(loading)return <>...loading</>
         <div className={styles.section}>
           <label>Icon :</label>
           <ImgCrop rotate>
+            
       <Upload
         action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
         listType="picture-card"
-        fileList={fileList}
+        fileList={fileList||[{
+          uid: '-4',
+          name: 'image.png',
+          status: 'done',
+          url: singleShipment?.icon?.icon?.https_image_path,
+        },]}
         onChange={onChange}
         onPreview={onPreview}
         beforeUpload={beforeUpload}
+        
       >
-        {fileList.length < 1 && '+ Upload'}
+        {fileList?.length < 1 && '+ Upload'}
       </Upload>
     </ImgCrop>
         
@@ -437,6 +444,10 @@ onChange={(e)=>
             <div />
           </div>
         </div>
+     
+     
+     
+     
       </div>
       <Button className={styles.button} onClick={()=>onOkay()}>Save</Button>
       <Button className={styles.button1} onClick={() => navigate(-1)}>Back</Button>
