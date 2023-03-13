@@ -4,6 +4,8 @@ import { Card, Form, Input, Button, Image } from "antd";
 import styles from "./AdminMessages.module.css";
 import { useState } from "react";
 import { useEffect } from "react";
+import { getMessageThread } from "../../../apis/MessageCenterApi";
+import Spinner from "../../../component/Spinner/Spinner";
 const data = [
   {
     chat: [
@@ -39,6 +41,8 @@ const data = [
 const AdminMessages = () => {
   const [message, setMessage] = useState(data[0].chat);
   const { id } = useParams();
+  const {data:threadData, isLoading:threadLoading}=getMessageThread(id);
+  console.log("🚀 ~ file: AdminMessages.jsx:45 ~ AdminMessages ~ threadData:", threadData)
   useEffect(() => {
     let element = document.querySelector("#chat_container");
     const scroll = (el) => {
@@ -54,7 +58,6 @@ const AdminMessages = () => {
       setMessage([...message, { id: "you", message: values.message }]);
     }
   };
-
   return (
     <div className={styles.messages}>
       {/* <div className={styles.nav_top}>

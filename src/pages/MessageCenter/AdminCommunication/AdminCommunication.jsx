@@ -3,19 +3,17 @@ import { AdminCommunicationSearch, AdminCommunicationTable } from '../..'
 import styles from './AdminCommunication.module.css'
 import { Breadcrumb, Modal, Form, Input, Button } from 'antd'
 import { HiPlus } from 'react-icons/hi'
+import { getVendorAdminMessages } from '../../../apis/MessageCenterApi'
+import { useEffect } from 'react'
 const {TextArea}=Input;
-const data= [
-  {
-    image:'https://www.digitaltrends.com/wp-content/uploads/2021/11/macbook-pro-2021-16.jpg',
-    id:'Thread$3',
-    message:'Is this product available at your store?',
-    customer:'Avinash KC',
-    date:'1672831913'
-  }
-]
+const INITIAL_PARAMS={
+  time_from:'',
+  time_to:''
+}
 const AdminCommunication = () => {
   const [open, setOpen] = useState(false);
-
+  const [params, setParams]=useState(INITIAL_PARAMS)
+  const {data: adminMessages, isLoading:messageLoading}=getVendorAdminMessages(params)
   const showModal = () => {
     setOpen(true);
   };
@@ -26,7 +24,14 @@ const AdminCommunication = () => {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+ const getAdminMessages=()=>{
+  if(adminMessages){
+    let message=Object.values(adminMessages?.data?.threads);
+    return message;
+  }
+  return [];
 
+ }
   const hideModal = () => {
     setOpen(false);
   };
@@ -105,8 +110,8 @@ const AdminCommunication = () => {
             </Form>
           </Modal>
     </div>
-    <AdminCommunicationSearch/>
-    <AdminCommunicationTable data= {data}/>
+    <AdminCommunicationSearch setParams={setParams} params={params}/>
+    <AdminCommunicationTable data= {getAdminMessages()} loading={messageLoading} />
     </div>
   )
 }

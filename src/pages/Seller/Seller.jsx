@@ -249,7 +249,7 @@ function showConfirm() {
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <Button type="primary" onClick={() => changed===sellerData?.plan_id? handleFormSubmit(form.submit()):showConfirm()}>
+        <Button type="primary" onClick={() => !changed? handleFormSubmit(form.submit()):showConfirm()}>
           Save Changes
         </Button>
       </div>

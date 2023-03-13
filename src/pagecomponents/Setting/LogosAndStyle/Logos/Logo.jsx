@@ -1,8 +1,10 @@
+import React from 'react'
 import styles from "./Logos.module.css";
 import { Input } from "antd";
 import { AiFillMessage } from "react-icons/ai";
+import { useEffect } from "react";
 import ImageUploaderForPromotion from "../../../../component/ImageUploader/ImageUploaderForPromotion";
-const Logos = ({sellerData, logoData, setLogoData, customerImage, setCustomerImage, invoiceImage, setInvoiceImage}) => {
+const Logo = ({sellerData, logoData, setLogoData, customerImage, setCustomerImage, invoiceImage, setInvoiceImage}) => {
   const getImage = (image) => {
     if (!!image) {
       return [
@@ -15,6 +17,22 @@ const Logos = ({sellerData, logoData, setLogoData, customerImage, setCustomerIma
         },
       ];
     }
+  };
+  useEffect(()=>{
+    setLogo()
+  },[sellerData])
+   // set logo data 
+   const setLogo = () => {
+    let temp = { ...logoData };
+    temp.logotypes_image_data.theme.image_alt =
+      sellerData?.theme?.image?.alt;
+    temp.logotypes_image_data.mail.image_alt =
+      sellerData?.mail?.image?.alt;
+    temp.logotypes_image_data.theme.object_id =
+      sellerData?.theme?.logo_id;
+    temp.logotypes_image_data.mail.object_id =
+      sellerData?.mail?.logo_id;
+    setLogoData(temp);
   };
   return (
     <div className={styles.logos}>
@@ -36,7 +54,7 @@ const Logos = ({sellerData, logoData, setLogoData, customerImage, setCustomerIma
           <Input
             style={{ maxWidth: "300px" }}
             addonBefore={<AiFillMessage size={20} color={"gray"} />}
-          value={logoData?.logotypes_image_data.theme.image_alt}
+          value={logoData?.logotypes_image_data?.theme?.image_alt}
             onChange={(e)=>{
               let temp={...logoData}
               temp.logotypes_image_data.theme.image_alt=e.target.value;
@@ -64,7 +82,7 @@ const Logos = ({sellerData, logoData, setLogoData, customerImage, setCustomerIma
           <Input
             style={{ maxWidth: "300px" }}
             addonBefore={<AiFillMessage size={20} color={"gray"} />}
-            value={logoData?.logotypes_image_data.mail.image_alt}
+            value={logoData?.logotypes_image_data?.mail?.image_alt}
             onChange={(e)=>{
               let temp={...logoData}
               temp.logotypes_image_data.mail.image_alt=e.target.value;
@@ -75,6 +93,6 @@ const Logos = ({sellerData, logoData, setLogoData, customerImage, setCustomerIma
       </div>
     </div>
   );
-};
+}
 
-export default Logos;
+export default Logo

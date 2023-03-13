@@ -353,7 +353,12 @@ function App() {
             ></Route>
             {/**Logos And Styles*/}
             <Route
-              element={<LogosAndStyles/>}
+              element={
+                <SuspenseWrapper>
+                
+                <LogosAndStyles/>
+                </SuspenseWrapper>
+              }
               path="/Setting/Logos And Styles"
             ></Route>
             {/**Files*/}

@@ -114,7 +114,7 @@ const SellerLogos = React.lazy(() =>
   import("../pagecomponents/Seller/Logos/Logos")
 );
 const Logos = React.lazy(() =>
-  import("../pagecomponents/Setting/LogosAndStyle/Logos/Logos")
+  import("../pagecomponents/Setting/LogosAndStyle/Logos/Logo")
 );
 
 
