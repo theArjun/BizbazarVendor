@@ -24,6 +24,9 @@ const navigate=useNavigate()
     });
     return monthyear + ", " + time;
   };
+  const getCustomerName=(firstname, lastname)=>{
+      return firstname+' '+lastname;
+  }
   const columns = [
     {
       title: "Image",
@@ -34,22 +37,22 @@ const navigate=useNavigate()
         <Image
         width={70}
         src={text}
-        alt={""}
+        alt={"No image"}
       />
         </div>
       )
     },
     {
       title: "ID",
-      dataIndex: "id",
+      dataIndex: "thread_id",
       key: "id",
       render: (text) =>(
-        <a>{text}</a>
+        <a onClick={()=>navigate(`CustomerMessage/${text}`)}>{'#thread '+text}</a>
       )
     },
     {
       title: "Message/Subject",
-      dataIndex: "message",
+      dataIndex: "last_message",
       key: "message",
       render:(text, row)=>(
         <div>
@@ -61,10 +64,11 @@ const navigate=useNavigate()
       title: "Customer",
       dataIndex: "customer",
       key: "customer",
+      render: (date, row) => getCustomerName(row?.firstname,row?.lastname)
     },
     {
       title: "Date",
-      dataIndex: "date",
+      dataIndex: "created_at",
       key: "date",
       render: (date) => getTimeAndDate(date),
     },
@@ -74,15 +78,11 @@ const navigate=useNavigate()
     <div>
       <Table
         id="product"
+         rowKey={'thread_id'}
         loading={loading}
         columns={columns}
         dataSource={data}
         pagination={false}
-        onRow={(record, rowIndex) => {
-          return {
-            onClick: (event) => navigate(`CustomerMessage/${record.id}`), // click row
-          };
-        }}
         scroll={{
           y: windowSize.height > 670 ? 300 : 200,
           x: 1000,

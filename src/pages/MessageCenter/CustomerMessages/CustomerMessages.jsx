@@ -1,10 +1,13 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Card, Form, Input, Button, Image } from "antd";
+import { Card, Form, Input, Button, Image, Typography, Result } from "antd";
 import styles from "./CustomerMessages.module.css";
 import { useState } from "react";
 import { useEffect } from "react";
-const { TextArea } = Input;
+import { useQueryClient } from "@tanstack/react-query";
+import { useSendAdminMessage } from "../../../apis/MessageCenterApi";
+import { getCustomerMessageThread } from "../../../apis/MessageCenterApi";
+const {Text}=Typography
 const data = [
   {
     chat: [
@@ -38,9 +41,15 @@ const data = [
     desc: "Importer Details:Rashi Peripherals Pvt. Ltd. Rashi Complex,A Building, Survey186, Dongaripada, Poman Village, Vasai Bhiwandi Road, Dist. Thane,Maharastra 401208, India",
   },
 ];
+const { user_id } = JSON.parse(localStorage.getItem("userinfo"));
 const CustomerMessages = () => {
-    const[message, setMessage]=useState(data[0].chat)
+    const[message, setMessage]=useState([])
+    const [status, setStatus] = useState('');
   const { id } = useParams();
+  const { data: threadData, isLoading: threadLoading } = getCustomerMessageThread(id);
+  const { mutate: sendMutate, isLoading: sendLoading } = useSendAdminMessage();
+  const queryClient=useQueryClient()
+  const [form]=Form.useForm();
   useEffect(()=>{
       let element= document.querySelector("#chat_container");
      const scroll=(el)=>{
@@ -48,35 +57,91 @@ const CustomerMessages = () => {
      }
      scroll(element)
   },[message])
+useEffect(()=>{
+getMessages()
+},[threadData])
+  const getMessages = () => {
+    if(threadData===404){
+      setStatus(threadData)
+    }
+    setMessage(threadData?.data?.messages);
+  };
+
+  const getTimeAndDate = (timeStamp) => {
+    const date = new Date(parseInt(timeStamp) * 1000);
+    const monthyear = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    });
+
+    const time = date.toLocaleString("en-US", {
+      hour: "2-digit",
+      minute: "numeric",
+    });
+    return monthyear + ", " + time;
+  };
   const onValueChange = (a, values) => {
     // console.log(values)
   };
   const onFinish = (values) => {
-    if(values.message){
-        setMessage([...message,{id:'you',message:values.message}])
+    if (values.message) {
+      form.resetFields()
+      let MESSAGE_FORMAT = {
+        communication_type: "vendor_to_admin",
+        message: { thread_id: id, message: values.message },
+      };
+      sendMutate(MESSAGE_FORMAT,{
+        onSuccess:(res)=>{
+          queryClient.invalidateQueries(['customer_messages', id])
+        
+        }
+      });
     }
   };
+  if(status){
+    return (
+     <Result
+       status="404"
+       title="404"
+       subTitle="Sorry, Requested message thread does not found !"
+       extra={<a href="/">Back Home</a>}
+     />
+   );
+}
   return (
     <div className={styles.messages}>
-      {/* <div className={styles.nav_top}>
-        <HiArrowCircleLeft size={40} color="blue" /> <span>{id}</span>
-      </div> */}
       <div>
         <div className={styles.main_content}>
           <div className={styles.message_container}>
             <div id='chat_container' className={styles.chat}>
-              {
-                message.map((item,index)=>{
+              {threadLoading ? (
+                <div>Loading...</div>
+              ) :
+                message?.map((item,index)=>{
                     return(
-                        <div key={index} className={item.id=='user'?styles.client_message:styles.your_message}>
-                        {item.message}
-                        </div>
+                      <div  key={index}>
+                      <div
+                        className={
+                          item.user_id === user_id
+                            ? styles.your_message
+                            : styles.client_message
+                        }
+                      >
+                      <div>
+                      {item.message}
+                      
+                      </div>
+                      <Text type="secondary">{getTimeAndDate(item.timestamp)}</Text>
+                      </div>
+                      </div>
                     )
                 })
               }
             </div>
             <div className={styles.write_message_box}>
               <Form
+              form={form}
                 onFinish={onFinish}
                 layout="vertical"
                 name="basic"
@@ -92,7 +157,7 @@ const CustomerMessages = () => {
                     <Input style={{fontSize:'16px', borderRadius:'20px'}}  placeholder={"Type a message..."} />
                   </Form.Item>
                     <Form.Item>
-                      <Button htmlType="submit" type="default" style={{ borderRadius:'20px'}}> <b> Send</b></Button>
+                      <Button  loading={sendLoading} htmlType="submit" type="default" style={{ borderRadius:'20px'}}> <b> Send</b></Button>
                     </Form.Item>
                 </div>
               </Form>

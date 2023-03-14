@@ -44,7 +44,7 @@ const AdminCommunicationTable = ({loading, data}) => {
       dataIndex: "thread_id",
       key: "id",
       render: (text) =>(
-        <a>{text}</a>
+        <a onClick={()=>navigate(`AdminMessage/${text}`)}>{'#thread '+text}</a>
       )
     },
     {
@@ -80,11 +80,6 @@ const AdminCommunicationTable = ({loading, data}) => {
         columns={columns}
         dataSource={data}
         pagination={false}
-        onRow={(record, rowIndex) => {
-          return {
-            onClick: (event) => navigate(`AdminMessage/${record.thread_id}`), // click row
-          };
-        }}
         scroll={{
           y: windowSize.height > 670 ? 300 : 200,
           x: 1000,

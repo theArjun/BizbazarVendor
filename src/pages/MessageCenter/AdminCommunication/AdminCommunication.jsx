@@ -3,9 +3,23 @@ import { AdminCommunicationSearch, AdminCommunicationTable } from '../..'
 import styles from './AdminCommunication.module.css'
 import { Breadcrumb, Modal, Form, Input, Button } from 'antd'
 import { HiPlus } from 'react-icons/hi'
-import { getVendorAdminMessages } from '../../../apis/MessageCenterApi'
-import { useEffect } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { getVendorAdminMessages, useCreateAdminMessage } from '../../../apis/MessageCenterApi'
+import Spinner from '../../../component/Spinner/Spinner'
 const {TextArea}=Input;
+const {id}=JSON.parse(localStorage.getItem("userinfo"))
+const INITIAL_MESSAGE = {
+  thread: {
+    object_type: "",
+    object_id: 0,
+    communication_type: "vendor_to_admin",
+    subject: "api message",
+    companies: {
+     0:id
+    },
+    message: " ",
+  },
+};
 const INITIAL_PARAMS={
   time_from:'',
   time_to:''
@@ -14,12 +28,20 @@ const AdminCommunication = () => {
   const [open, setOpen] = useState(false);
   const [params, setParams]=useState(INITIAL_PARAMS)
   const {data: adminMessages, isLoading:messageLoading}=getVendorAdminMessages(params)
-  const showModal = () => {
-    setOpen(true);
-  };
+  const {isLoading:sendLoading, mutateAsync:mutateCreate}=useCreateAdminMessage();
+  const queryClient=useQueryClient();
   const [form] = Form.useForm();
   const onFinish = async (values) => {
-   console.log(values)
+   INITIAL_MESSAGE.thread.message=values.message
+   INITIAL_MESSAGE.thread.subject=values.subject
+   mutateCreate(INITIAL_MESSAGE,{
+    onSuccess:(res)=>{
+      queryClient.invalidateQueries(['admin_messages'])
+      hideModal()
+      form.resetFields()
+    }
+   })
+
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -32,9 +54,16 @@ const AdminCommunication = () => {
   return [];
 
  }
+ const showModal = () => {
+  setOpen(true);
+};
   const hideModal = () => {
     setOpen(false);
   };
+
+if(sendLoading){
+  return <Spinner/>
+}
   return (
     <div>
     <div className={styles.top_nav}>
@@ -43,7 +72,6 @@ const AdminCommunication = () => {
     <Breadcrumb.Item>Admin Communications</Breadcrumb.Item>
   </Breadcrumb>
         <div
-        type="primary"
         onClick={showModal}
         className={styles.new_add_btn}
       >
@@ -105,7 +133,7 @@ const AdminCommunication = () => {
                 // id="req"
                 label=""
               >
-               <Button primary type="primary" htmlType="submit" style={{float:'right'}}>Send</Button>
+               <Button type="primary" htmlType="submit" style={{float:'right'}}>Send</Button>
               </Form.Item>
             </Form>
           </Modal>

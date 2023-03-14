@@ -12,6 +12,12 @@ const AdminCommunicationSearch = ({setParams, params}) => {
           parameter.time_from=startDate
           parameter.time_to=endDate
           setParams(parameter)
+        }else{
+          let parameter={...params}
+            parameter.time_from=''
+            parameter.time_to=''
+            setParams(parameter)
+
         }
       };
   return (

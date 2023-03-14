@@ -47,15 +47,34 @@
     margin-bottom: 0 !important;
 }
 .client_message{
-    background-color: rgb(204, 211, 216);
-    margin: 5px;
+    width: fit-content;
+    max-width: 300px;
+}
+.client_message >div{
+    width: fit-content;
     padding: 10px 15px;
     border-radius: 20px;
+    background-color: rgb(204, 211, 216);
+
+}
+.your_message >div{
     width: fit-content;
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: rgb(160, 185, 235);
+}
+.your_message >*{
+    margin-left: auto; 
+  margin-right: 0;
+}
+.your_message >span{
+    width: fit-content;
+    position: relative;
+    float: right;
 }
 .your_message{
-    background-color: rgb(160, 185, 235);
-    margin: 5px;
+    margin-bottom: 20px;
+    max-width: 300px;
     padding: 10px 15px;
     border-radius: 20px;
     width: fit-content;
