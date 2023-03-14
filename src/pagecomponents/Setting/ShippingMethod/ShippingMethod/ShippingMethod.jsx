@@ -174,25 +174,31 @@ function ShippingMethod({open,setOpen, shipings, setBottom,setUpdate }) {
 
   return (
     <div className={styles.container}>
-      <div style={{display:"flex",width:"100%",justifyContent:"right", marginBottom:"10px"}}>
-     
-      {selectedRowKeys.length>0?<>
-     
-     <Button onClick={deleteShipments}>
-      Delete
-     </Button>
-     
-     <Button style={{margin:"0 0 0 10px"}} onClick={()=>setOpenStatusModal(true)}>
-   Change Status
-     </Button>
-     </>:null}
-      <Button style={{margin:"0 0 0 10px"}} onClick={() => setOpen(true)}>
-        Create
-      </Button>
-     
+      <div
+        style={{
+          display: "flex",
+          width: "100%",
+          justifyContent: "right",
+          marginBottom: "10px",
+        }}
+      >
+        {selectedRowKeys.length > 0 ? (
+          <>
+            <Button onClick={deleteShipments}>Delete</Button>
+
+            <Button
+              style={{ margin: "0 0 0 10px" }}
+              onClick={() => setOpenStatusModal(true)}
+            >
+              Change Status
+            </Button>
+          </>
+        ) : null}
+        <Button style={{ margin: "0 0 0 10px" }} onClick={() => setOpen(true)}>
+          Create
+        </Button>
       </div>
-    
-      
+
       <Table
         id="shiipmenttable"
         rowSelection={rowSelection}
@@ -201,40 +207,31 @@ function ShippingMethod({open,setOpen, shipings, setBottom,setUpdate }) {
         rowKey={"shipping_id"}
         pagination={false}
         scroll={{
-          y: windowSize.height > 670 ? 450 : 300,
+          y: windowSize.height > 670 ? 670 : 300,
           x: 1000,
         }}
       />
-    
+
       <CreateShipping open={open} setOpen={setOpen} />
       {/**Edit Shipping is actually view shipping */}
-      <EditShipping  id={id} openEdit={openEdit} setOpenEdit={setOpenEdit} />
-      <Modal open={openStatusModal}
+      <EditShipping id={id} openEdit={openEdit} setOpenEdit={setOpenEdit} />
+      <Modal
+        open={openStatusModal}
         title="Change Status"
-onCancel={()=>setOpenStatusModal(false)}
-onOk={()=>changeStatus()}
->
-  <div>
-    Status : 
-    <Radio.Group  onChange={(e)=>setStatus(
-             
-           e.target.value
-
-             )} 
-          value={status}
+        onCancel={() => setOpenStatusModal(false)}
+        onOk={() => changeStatus()}
+      >
+        <div>
+          Status :
+          <Radio.Group
+            onChange={(e) => setStatus(e.target.value)}
+            value={status}
           >
-            <Radio  
-           value={"A"}
-             >
-              Active
-            </Radio>
-            <Radio value={"D"} >
-              Disabled
-            </Radio>
-            </Radio.Group>
-  </div>
-
-</Modal>
+            <Radio value={"A"}>Active</Radio>
+            <Radio value={"D"}>Disabled</Radio>
+          </Radio.Group>
+        </div>
+      </Modal>
     </div>
   );
 }

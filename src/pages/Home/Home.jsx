@@ -210,7 +210,6 @@ const Home = () => {
                   }}
                 >
                   {dat.icon}
-              
                 </div>
                 <div className={styles.cardValue}>{dat.data}</div>
 
@@ -219,6 +218,7 @@ const Home = () => {
             </AnalyticsCard>
           ))}
         </div>
+
         <div className={styles.rightContainer}>
           <BarCharts series={series} options={options} height={"300px"} />
           <div className={styles.margin} />
