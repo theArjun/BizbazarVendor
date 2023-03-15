@@ -10,6 +10,7 @@ const tabs = ["Shipping Method", "Rate Areas", "Stores And pickup Points"];
 
 function ShippingMethodPage() {
   const [active, setActive] = useState("Shipping Method");
+  const [open, setOpen] = useState(false);
   const [bottom, setBottom] = useState(false);
   const [update,setUpdate]=useState(false)
   const [shipings, setShippings] = React.useState([]);
@@ -18,7 +19,7 @@ function ShippingMethodPage() {
 
   React.useEffect(() => {
     getShiippingMethod();
-  }, [update]);
+  }, [update,open]);
 
   const getShiippingMethod = async () => {
     
@@ -51,7 +52,7 @@ function ShippingMethodPage() {
   const getContainerFromTab = () => {
     switch (active) {
       case "Shipping Method":
-        return <ShippingMethod  setUpdate={setUpdate} shipings={shipings} setBottom={setBottom} />;
+        return <ShippingMethod setOpen={setOpen} open={open} setUpdate={setUpdate} shipings={shipings} setBottom={setBottom} />;
       case "Rate Areas":
         return <RateAreas />;
       default:

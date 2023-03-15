@@ -104,10 +104,13 @@ const beforeUpload = (file) => {
     open={openEdit}
     onOk={() => setOpenEdit(false)}
     onCancel={() => setOpenEdit(false)}
-    width={1000}
+    width={`95vw`}
+   
+    footer={[]}
   >
     {loading?<>...loading</>:
          <div className={styles.container}>
+            <div className={styles.title}>View Shipping Method</div>
         <h3>Information</h3>
 
 

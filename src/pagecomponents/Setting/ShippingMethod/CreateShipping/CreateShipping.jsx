@@ -12,9 +12,11 @@ import ImgCrop from 'antd-img-crop';
 
 
 function CreateShipping({ open, setOpen }) {
+  let active=false
 
   const [carrier, setCarrier] = useState([]);
   const [infoData,setInfoData]=useState({})
+  const [loading,setLoading]=useState(false)
 
   const [fileList, setFileList] = useState([
  
@@ -68,25 +70,33 @@ function CreateShipping({ open, setOpen }) {
   };
 
   const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
-      message.error('You can only upload JPG/PNG file!');
+      message.error("You can only upload JPG/PNG file!");
     }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
-    }
-    return isJpgOrPng && isLt2M;
+    // const isLt2M = file.size / 1024 / 1024 < 2;
+    // if (!isLt2M) {
+    //   message.error('Image must smaller than 2MB!');
+    // }
+    return isJpgOrPng;
   };
 
   
   const onOkay=async()=>{
+    if(active){
+      message.error('Loading');
+      return
+
+    }
     if(!infoData?.name) {
      
       message.error('Name is empty');
       return
     }
+    // active=true
 
+    // console.log("hello");
+    
    const data={
     "shipping_id":0,
     "shipping_data": {
@@ -125,16 +135,31 @@ function CreateShipping({ open, setOpen }) {
 var formdata = new FormData();
 formdata.append("shipping_data", JSON.stringify(data) );
 formdata.append("file", JSON.stringify(fileList[0]||{}) );
-   const result=await apicall({
-url:"ShippingMethod/",
-method:"post",
-data:formdata,
-headers: {
-  "Content-Type": "multipart/form-data",
-  "Access-Control-Allow-Origin": true,
-},
-   })
 
+Modal.warn({
+  title: 'Are you sure!',
+  closable:true,
+
+  onCancel:()=>{
+  // setUpdate(dat=>!dat)
+  active=false
+  setOpen(false)
+
+ },
+  onOk :async()=> {
+    const result=await apicall({
+      url:"ShippingMethod/",
+      method:"post",
+      data:formdata,
+      headers: {
+        "Content-Type": "multipart/form-data",
+        "Access-Control-Allow-Origin": true,
+      },
+         }).then(res=>console.log(res))
+         active=false
+         setOpen(false)
+  }})
+   
   }
   
   
@@ -145,7 +170,8 @@ headers: {
       open={open}
       onOk={onOkay}
       onCancel={() => setOpen(false)}
-      width={1000}
+      width={`90vw`}
+      okText={"Create"}
     >
       <div className={styles.container}>
         <div className={styles.title}>Create Shipping Method</div>

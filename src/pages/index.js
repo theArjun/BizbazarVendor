@@ -116,6 +116,12 @@ const SellerLogos = React.lazy(() =>
 const Logos = React.lazy(() =>
   import("../pagecomponents/Setting/LogosAndStyle/Logos/Logo")
 );
+const MonthlyOrderReportTable = React.lazy(() =>
+  import("../pagecomponents/Reports/MonthlyOrderReport/Table/Table")
+);
+const MonthlyOrderReportSearch = React.lazy(() =>
+  import("../pagecomponents/Reports/MonthlyOrderReport/Search/Search")
+);
 
 
 
@@ -158,5 +164,7 @@ export {
   SellerTermsAndConditions,
   SellerPlan,
   SellerLogos,
-  Logos
+  Logos,
+  MonthlyOrderReportTable,
+  MonthlyOrderReportSearch
 };

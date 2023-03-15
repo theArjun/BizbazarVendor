@@ -12,6 +12,8 @@ import { apicall } from "./utils/apicall/apicall";
 import { Button, Result } from "antd";
 import PublicRoute from "./utils/PublicRoute";
 const Tweak = lazy(() => import("./pages/Orders/Tweak/Tweak"));
+const MonthlyOrderReport = lazy(() => import("./pages/Reports/MonthlyOrderReport/MonthlyOrderReport"));
+
 
 const ViewRateAreas = lazy(() =>
   import("./pages/Setting/ShippingMethod/ViewRateAreas/ViewRateAreas")
@@ -420,7 +422,9 @@ function App() {
             ></Route>
             {/**Monthly Order Report*/}
             <Route
-              element={<>Monthly Order Report</>}
+              element={<SuspenseWrapper>
+                <MonthlyOrderReport/>
+              </SuspenseWrapper>}
               path="/Reports/Monthly Order Report"
             ></Route>
             {/**Order details */}

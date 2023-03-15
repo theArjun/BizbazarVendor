@@ -124,8 +124,9 @@ function Tweak() {
             ) : null}
           </div>{" "}
           <div>Invoice:</div>
-          <div>
+          <div  >
             <JoditEditor
+           style={{width:"100%"}}
               // ref={editor}
               value={content}
               config={config}
