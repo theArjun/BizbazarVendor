@@ -1,0 +1,7 @@
+.search_inputs{
+    display: flex;
+    flex-wrap: wrap;
+}
+.search_inputs >*{
+    margin-right:10px;
+}

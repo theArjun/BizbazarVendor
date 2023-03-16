@@ -40,8 +40,9 @@
   }
   
   .positionabsolute {
-   display: flex;
-   justify-content: flex-end;
+    position: absolute;
+    right: 0;
+    top: -6px;
   }
   
   .print {
