@@ -5,3 +5,7 @@
 .search_inputs >*{
     margin-right:10px;
 }
+.container {
+    margin-top: 10px;
+    background-color: white;
+  }

@@ -151,7 +151,7 @@ const MonthlyOrderReportTable = ({ data, loading, status }) => {
     },
   ];
   return (
-    <div>
+    <div className={styles.report_table_container}>
     <div className={styles.positionabsolute}>
     <Button className={styles.print} onClick={handlePrint}>
       print

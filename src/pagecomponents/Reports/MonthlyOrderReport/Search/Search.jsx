@@ -37,7 +37,7 @@ const Search = ({ status, setParams, params, userGroup }) => {
     setParams(temp_param)
   };
   const getStatus = () => {
-    return status.map((el, i) => ({
+    return status?.map((el, i) => ({
       label: el?.description,
       value: el?.status_id,
     }));

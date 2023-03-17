@@ -6,10 +6,19 @@ import { apicall2 } from "../../../utils/apicall/apicall2";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 import CouponVoucherReportSearch from "../../../pagecomponents/Reports/CouponVoucherReport/Search/Search";
 import CouponVoucherReportTable from "../../../pagecomponents/Reports/CouponVoucherReport/Table/Table";
-
+import { useGetCouponVoucherReport } from "../../../apis/ReportsApi";
+const INITIAL_PARAMS = {
+  order_id: "",
+  time_from: "",
+  time_to: "",
+  status_id: "",
+  page:1,
+};
 const CouponVoucherReport = () => {
   const [sValue, setSearchValue] = useState({});
   const [status, setStatus] = useState([]);
+  const [params, setParams] = useState(INITIAL_PARAMS);
+  const [data, setData]=useState([])
   const [accountOrderDetails, setAccountOrderDetails] = useState([]);
   const [radio, setRadio] = useState("O");
   const [loading, setLoading] = useState(false);
@@ -19,6 +28,7 @@ const CouponVoucherReport = () => {
   const [sortBy, setSortBy] = useState("");
   const [sortColum, setSortingColum] = useState("");
   const [bottom, setBottom] = useState(false);
+  const {isLoading:couponLoading, data:couponData, isPreviousData, isFetching}=useGetCouponVoucherReport(params)
   const stateChange = Object.values(sValue).join("");
 
   useDebounce(
@@ -28,7 +38,9 @@ const CouponVoucherReport = () => {
     1200,
     [stateChange, dload]
   );
-
+useEffect(()=>{
+getCouponReports()
+},[couponData])
   useEffect(() => {
     document
       .querySelector("#reportaccount > div > div.ant-table-body")
@@ -40,10 +52,15 @@ const CouponVoucherReport = () => {
         ?.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
+// function for getting coupon reports
+ const getCouponReports=()=>{
+  if(couponData?.data?.report){
+    setData(couponData?.data?.report)
+  }
+ }
   const handleScroll = (event) => {
     const condition =
-      event.target.scrollTop + event.target.offsetHeight + 100 >
+      event.target.scrollTop + event.target.offsetHeight + 90 >
       event.target.scrollHeight;
     setBottom(condition);
   };
@@ -143,14 +160,16 @@ const CouponVoucherReport = () => {
     setLoading(false);
   };
   useEffect(() => {
-    if (accountOrderDetails.length < 50) {
+    if(couponData?.data?.report?.length<20){
       return;
     }
     if (!bottom) {
       return;
     }
-    page1.current = page1.current + 1;
-    getMoreAccountOrderDetails(sValue);
+    let t_param={...params}
+    t_param.page+=1
+    setParams(t_param)
+    setData((current)=>[...current,...couponData?.data?.report])
   }, [bottom]);
 
   const getMoreAccountOrderDetails = async () => {
@@ -171,9 +190,9 @@ const CouponVoucherReport = () => {
       <Breadcrumb>
         <Breadcrumb.Item>Home</Breadcrumb.Item>
         <Breadcrumb.Item>
-          <a href="">Orders</a>
+          <a href="">Reports</a>
         </Breadcrumb.Item>
-        <Breadcrumb.Item>View Orders</Breadcrumb.Item>
+        <Breadcrumb.Item>Coupon voucher reports</Breadcrumb.Item>
       </Breadcrumb>
       <CouponVoucherReportSearch
         setAccountOrderDetails={setAccountOrderDetails}
@@ -188,14 +207,14 @@ const CouponVoucherReport = () => {
       />
       <CouponVoucherReportTable
         setAccountOrderDetails={setAccountOrderDetails}
-        accountOrderDetails={accountOrderDetails}
+        couponData={data}
         status={status}
         page1={page1}
         sortBy={sortBy}
         sortColum={sortColum}
         setSortingColum={setSortingColum}
         setSortBy={setSortBy}
-        loading={loading}
+        loading={couponLoading || isFetching}
         setLoad={setLoad}
       />
     </div>

@@ -44,6 +44,12 @@ export const apicall = async ({
     }
     return result;
   } catch (error) {
+    if(error?.response?.status===403){
+      notification.error({
+        message: "Process Fail",
+        description: "Error code: 403-> You do not have permission to access this resource",
+      });
+    }
     if (method != "get") {
       notification.error({
         message: "Process Fail",

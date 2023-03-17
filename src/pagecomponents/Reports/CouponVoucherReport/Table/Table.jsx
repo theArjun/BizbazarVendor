@@ -13,7 +13,7 @@ import { apicall } from "../../../../utils/apicall/apicall";
 const AccountOrderDetailsTable = ({
   status,
   setAccountOrderDetails,
-  accountOrderDetails,
+  couponData,
   setSortBy,
   loading,
   page1,
@@ -71,13 +71,6 @@ const AccountOrderDetailsTable = ({
 
   const columns = [
     {
-      title: "Date And Time",
-      dataIndex: "timestamp",
-      key: "order_id",
-      render: (text) => getTimeAndDate(text),
-      sorter: (a, b) => {},
-    },
-    {
       title: "Order Id",
       dataIndex: "order_id",
       key: "status_id",
@@ -93,73 +86,62 @@ const AccountOrderDetailsTable = ({
       sorter: (a, b) => {},
     },
     {
-      title: "CUSTOMER",
-      dataIndex: "customer",
-      key: "order_id",
+      title: "Date And Time",
+      dataIndex: "order_date",
+      key: "date",
+      render: (text) => getTimeAndDate(text),
+      sorter: (a, b) => {},
+    },
+    {
+      title: "Company name",
+      dataIndex: "company_name",
+      key: "company_name",
       render: (text, dat) => <div>{text}</div>,
     },
     {
-      title: "TOTAL ORDER VALUE",
-      dataIndex: "subtotal",
+      title: "Customer",
+      dataIndex: "customer",
+      key:'customer'
     },
     {
-      title: "Status",
-      dataIndex: "statuses",
-      key: "order_id",
+      title: "Customer number",
+      dataIndex: "customer_number",
+      key: "customer_number",
+    },
+    {
+      title: "Total order value",
+      dataIndex: "total_order_value",
+      key: "total_order_value",
+      render:(text)=>(
+        <div>रु{text}</div>
+      )
+    },
 
-      width: 100,
+    {
+      title: "Promotion  value",
+      dataIndex: "promotion_value",
+      key: "promotion_value",
+      render:(text)=>(
+        <div>रु{text}</div>
+      )
     },
     {
-      title: "Phone",
-      dataIndex: "phone",
-      key: "order_id",
-    },
-
-    {
-      title: "PAYMENT METHOD",
-      dataIndex: "payment_method",
-      key: "order_id",
+      title: "Net order value",
+      dataIndex: "net_order_value",
+      key: "net_order_value",
+      render:(text)=>(
+        <div>रु{text}</div>
+      )
     },
     {
-      title: "SHIPMENT AMOUNT",
-      dataIndex: "shipping_cost",
-      key: "order_id",
+      title: "Promotion name",
+      dataIndex: "promotion_value",
+      key: "promotion_value",
     },
     {
-      title: "VENDOR PAYABLE AMOUNT",
-      dataIndex: "vendor_payable_amount",
-      key: "order_id",
-    },
-    {
-      title: "REMAINING AMOUNT",
-      dataIndex: "remaining_amount",
-      key: "order_id",
-    },
-    {
-      title: "GIFT CARD AMOUNT USED",
-      dataIndex: "gift_card_amount_used",
-      render: (text) => <>{text || 0}</>,
-    },
-    {
-      title: "PRODUCT NAME",
-      dataIndex: "product_name",
-      render: (text) => <>{text}</>,
-    },
-    {
-      title: "PRODUCT CATEGORY",
-      dataIndex: "product_category",
-    },
-    {
-      title: "SETTLEMENT STATUS",
-      dataIndex: "settlement_status",
-    },
-    {
-      title: "SETTLEMENT DATE",
-      dataIndex: "settlement_date",
-    },
-    {
-      title: "CASH VENDOR SETTLEMENT",
-      dataIndex: "cash_vendor_settlement",
+      title: "Order status",
+      dataIndex: "status_id",
+      key: "status_id",
     },
   ];
 
@@ -187,11 +169,11 @@ const AccountOrderDetailsTable = ({
         columns={columns}
         rowKey={"order_id"}
         loading={loading}
-        dataSource={accountOrderDetails}
+        dataSource={couponData}
         pagination={false}
         scroll={{
           y: windowSize.height > 670 ? 500 : 300,
-          x: 2500,
+          x: 1800,
         }}
         onChange={onChange}
       />
@@ -202,7 +184,7 @@ const AccountOrderDetailsTable = ({
         <Button>
           <CSVLink
             filename={"Expense_Table.csv"}
-            data={accountOrderDetails}
+            data={couponData}
             className="btn btn-primary"
             onClick={() => {}}
           >
@@ -221,7 +203,7 @@ const AccountOrderDetailsTable = ({
           ref={componentRef}
           rowKey={"order_id"}
           // loading={loading}
-          dataSource={accountOrderDetails}
+          dataSource={couponData}
           pagination={false}
           // scroll={{ y: windowSize.height > 670 ? 450 : 300, x: 1000 }}
           onChange={onChange}

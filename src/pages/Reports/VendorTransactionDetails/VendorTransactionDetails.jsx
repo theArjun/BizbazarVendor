@@ -6,10 +6,15 @@ import { apicall2 } from "../../../utils/apicall/apicall2";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 import VendorTransactionDetailsSearch from "../../../pagecomponents/Reports/VendorTransactionDetails/Search/Search";
 import VendorTransactionsReportTable from "../../../pagecomponents/Reports/VendorTransactionDetails/Table/Table";
-
+import { useGetVendorTransactionDetails } from "../../../apis/ReportsApi";
+const INITIAL_PARAMS={
+  time_from:'',
+  time_to:'',
+  vendor:''
+}
 const VendorTransactionDetails = () => {
   const [sValue, setSearchValue] = useState({});
-  const [status, setStatus] = useState([]);
+  const [params, setParams]=useState(INITIAL_PARAMS)
   const [accountOrderDetails, setAccountOrderDetails] = useState([]);
   const [radio, setRadio] = useState("O");
   const [loading, setLoading] = useState(false);
@@ -17,10 +22,9 @@ const VendorTransactionDetails = () => {
   const [dload, setDload] = useState(false);
   const page1 = useRef(1);
   const [sortBy, setSortBy] = useState("");
-  const [sortColum, setSortingColum] = useState("");
   const [bottom, setBottom] = useState(false);
   const stateChange = Object.values(sValue).join("");
-
+  const {isLoading:transactionLoading, data:transactionData}=useGetVendorTransactionDetails(params)
   useDebounce(
     () => {
       getAccountOrderDetails(sValue);
@@ -28,7 +32,13 @@ const VendorTransactionDetails = () => {
     1200,
     [stateChange, dload]
   );
-
+// get vendor transaction details
+ const getTransaction=()=>{
+  if(transactionData?.data?.report){
+    return transactionData?.data?.report;
+  }
+  return []
+ }
   useEffect(() => {
     document
       .querySelector("#reportaccount > div > div.ant-table-body")
@@ -171,32 +181,21 @@ const VendorTransactionDetails = () => {
       <Breadcrumb>
         <Breadcrumb.Item>Home</Breadcrumb.Item>
         <Breadcrumb.Item>
-          <a href="">Orders</a>
+          <a href="">Reports</a>
         </Breadcrumb.Item>
-        <Breadcrumb.Item>View Orders</Breadcrumb.Item>
+        <Breadcrumb.Item>Vendor transaction details</Breadcrumb.Item>
       </Breadcrumb>
       <VendorTransactionDetailsSearch
-        setAccountOrderDetails={setAccountOrderDetails}
-        status={status}
         setSearchValue={setSearchValue}
         sValue={sValue}
-        setLoad={setLoad}
-        setDload={setDload}
-        radio={radio}
-        setRadio={setRadio}
-        page1={page1}
+       params={params}
+       setParams={setParams}
       />
       <VendorTransactionsReportTable
-        setAccountOrderDetails={setAccountOrderDetails}
-        accountOrderDetails={accountOrderDetails}
-        status={status}
+        accountOrderDetails={getTransaction()}
         page1={page1}
-        sortBy={sortBy}
-        sortColum={sortColum}
-        setSortingColum={setSortingColum}
         setSortBy={setSortBy}
-        loading={loading}
-        setLoad={setLoad}
+        loading={transactionLoading}
       />
     </div>
   );
