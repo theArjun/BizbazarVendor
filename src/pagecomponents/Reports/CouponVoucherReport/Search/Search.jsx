@@ -1,106 +1,64 @@
-import React, { useEffect, useState, forwardRef } from "react";
+import React, { useState } from "react";
 import styles from "./Search.module.css";
-import { Card, Form, Input, Button, Radio } from "antd";
+import { Card, Form, Input, DatePicker } from "antd";
 import { Select, Space } from "antd";
-
+import useDebounce from "../../../../utils/Hooks/useDebounce";
 import "./index.css";
-import { apicall } from "../../../../utils/apicall/apicall";
-import { DatePicker } from "antd";
-
 const { RangePicker } = DatePicker;
+const Search = ({ params, setParams, status }) => {
+  const [orderID, setOrderID] = useState("");
 
-const Search = ({
-  setSearchValue,
-  sValue,
-  setLoad,
-  setDload,
-  setRadio,
-  radio,
-  page1,
-}) => {
-  const [paymentmethod, setPaymentMethod] = useState([]);
+  useDebounce(
+    () => {
+      let temp_param = { ...params };
+      temp_param.order_id = orderID;
+      setParams(temp_param);
+    },
+    500,
+    [orderID]
+  );
 
-  useEffect(() => {
-    getpayment();
-  }, []);
-
-  const getpayment = async () => {
-    const result = await apicall({
-      url: "payments",
-    });
-    setPaymentMethod(result.data.payments);
+  // date picker handle change
+  const handleDateChange = (dates) => {
+    let temp_param = { ...params };
+    if (dates) {
+      let startDate =
+        new Date(dates[0]?.$y, dates[0]?.$M, dates[0]?.$D).getTime() / 1000;
+      let endDate =
+        new Date(dates[1]?.$y, dates[1]?.$M, dates[1]?.$D).getTime() / 1000;
+      temp_param.date = `time_from=${startDate}&time_to=${endDate}`;
+    } else {
+      temp_param.date = "test=9";
+    }
+    setParams(temp_param);
   };
-
   return (
     <div className={styles.container} id="changeHere">
       <Card>
         <div className={styles.formcolumn}>
           <label>
             Order ID
-            <Input
-              type="number"
-              value={sValue?.orderno}
-              onChange={(e) =>
-                setSearchValue({
-                  ...sValue,
-                  orderno: e.target.value,
-                })
-              }
-            />
+            <Input type="number" onChange={(e) => setOrderID(e.target.value)} />
           </label>
-          <label>
-            Order date: <br />
-            <div style={{ display: "flex" }}>
-              <DatePicker
-                className={styles.date}
-                onChange={(e, a) => {
-                  const temp = sValue;
-                  temp.startDate = a;
-
-                  setDload((d) => !d);
-                }}
-              />
-              {"-"}
-              <DatePicker
-                className={styles.date}
-                onChange={(e, a) => {
-                  const temp = sValue;
-                  temp.endDate = a;
-                  setSearchValue(temp);
-
-                  setDload((d) => !d);
-                }}
-              />
-            </div>
-          </label>
-
           <label>
             <div>Order Status</div>
 
             <Select
-              defaultValue=""
+              placeholder={"Search order status"}
               style={{ width: "100%" }}
-              onChange={(e) =>
-                setSearchValue({
-                  ...sValue,
-                  accountstatus: e,
-                })
-              }
-              options={[
-                {
-                  value: "",
-                  label: "Select Order Status ",
-                },
-                {
-                  value: "Paid",
-                  label: "Paid",
-                },
-                {
-                  value: "Pending",
-                  label: "Pending",
-                },
-              ]}
+              onChange={(e) => {
+                let temp_param = { ...params };
+                temp_param.status_id = e;
+                setParams(temp_param);
+              }}
+              options={status}
             />
+          </label>
+          <label>
+            Order date: <br />
+            <div style={{ minWidth: "250px" }}>
+              <RangePicker onChange={(e) => handleDateChange(e)} />
+            </div>
           </label>
         </div>
       </Card>

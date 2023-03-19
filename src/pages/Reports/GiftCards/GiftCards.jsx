@@ -6,9 +6,12 @@ import { apicall2 } from "../../../utils/apicall/apicall2";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 import GiftCardsSearch from "../../../pagecomponents/Reports/GiftCards/Search/Search";
 import GiftCardsTable from "../../../pagecomponents/Reports/GiftCards/Table/Table";
+import { useGetGiftCards } from "../../../apis/ReportsApi";
 
 const GiftCards = () => {
   const [sValue, setSearchValue] = useState({});
+  const [giftData, setGiftData] = useState([]);
+  const [params, setParams] = useState([]);
   const [status, setStatus] = useState([]);
   const [accountOrderDetails, setAccountOrderDetails] = useState([]);
   const [radio, setRadio] = useState("O");
@@ -19,6 +22,7 @@ const GiftCards = () => {
   const [sortBy, setSortBy] = useState("");
   const [sortColum, setSortingColum] = useState("");
   const [bottom, setBottom] = useState(false);
+  const {data:giftCardData, isLoading}= useGetGiftCards(params)
   const stateChange = Object.values(sValue).join("");
 
   useDebounce(
@@ -28,6 +32,15 @@ const GiftCards = () => {
     1200,
     [stateChange, dload]
   );
+useEffect(()=>{
+    getGiftCardData();
+},[giftCardData])
+  // getGIft card data 
+   const getGiftCardData=()=>{
+    if(giftCardData?.data?.report){
+     setGiftData(giftCardData?.data?.report) 
+    }
+   }
 
   useEffect(() => {
     document
@@ -187,6 +200,7 @@ const GiftCards = () => {
         page1={page1}
       />
       <GiftCardsTable
+        giftData={giftData}
         setAccountOrderDetails={setAccountOrderDetails}
         accountOrderDetails={accountOrderDetails}
         status={status}
@@ -195,7 +209,7 @@ const GiftCards = () => {
         sortColum={sortColum}
         setSortingColum={setSortingColum}
         setSortBy={setSortBy}
-        loading={loading}
+        loading={isLoading}
         setLoad={setLoad}
       />
     </div>

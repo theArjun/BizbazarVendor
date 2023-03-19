@@ -21,8 +21,16 @@ export const useGetCouponVoucherReport = (params) =>
     queryKey: ["coupon_voucher_report", params],
     queryFn: () =>
       apicall({
-        url: `CouponVoucherReport?page=${params.page}&items_per_page=20&order_id=${params.order_id}&time_from=${params.time_from}&time_to=${params.time_to}&status_id=${params.status_id}`,
+        url: `CouponVoucherReport?isSearch=Y&page=${params.page}&items_per_page=20&order_id=${params.order_id}&${params.date}&status_id=${params.status_id}`,
       }),
-      keepPreviousData:true,
-      refetchOnWindowFocus: false,
+    keepPreviousData: true,
+    refetchOnWindowFocus: false,
+  });
+export const useGetGiftCards = (params) =>
+  useQuery({
+    queryKey: ["gift_cards", params],
+    queryFn: () =>
+      apicall({
+        url: `GiftCardsReport`,
+      }),
   });
