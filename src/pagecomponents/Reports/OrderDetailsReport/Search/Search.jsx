@@ -1,35 +1,40 @@
-import React, { useEffect, useState, forwardRef } from "react";
+import React, { useState, } from "react";
 import styles from "./Search.module.css";
-import { Card, Form, Input, Button, Radio } from "antd";
-import { Select, Space } from "antd";
+import { Card, Input } from "antd";
 
 import "./index.css";
-import { apicall } from "../../../../utils/apicall/apicall";
 import { DatePicker } from "antd";
+import useDebounce from "../../../../utils/Hooks/useDebounce";
 
 const { RangePicker } = DatePicker;
-
+const INITIAL_SEARCH={
+    order_id:'',
+    vendor_name:'',
+    customer_name:'',
+    ordered_date:''
+}
 const Search = ({
-  setSearchValue,
-  sValue,
-  setLoad,
-  setDload,
-  setRadio,
-  radio,
-  page1,
+  params,
+  setParams
 }) => {
-  const [paymentmethod, setPaymentMethod] = useState([]);
+  const [orderDetail, setOrderDetail] = useState(INITIAL_SEARCH);
+  useDebounce(()=>{
+    let temp_params={...params}
+    if(orderDetail.ordered_date){
+      let startDate =
+      new Date(orderDetail.ordered_date[0]?.$y, orderDetail.ordered_date[0]?.$M, orderDetail.ordered_date[0]?.$D).getTime() / 1000;
+    let endDate =
+      new Date(orderDetail.ordered_date[1]?.$y, orderDetail.ordered_date[1]?.$M, orderDetail.ordered_date[1]?.$D).getTime() / 1000;
+      temp_params.date=`time_from=${startDate}&time_to=${endDate}`;
+    }else{
+      temp_params.date='isSearch=Y'
+    }
+    temp_params.order_id=orderDetail?.order_id;
+    temp_params.vendor_name=orderDetail?.vendor_name;
+    temp_params.shipping_customer_name=orderDetail?.customer_name;
+    setParams(temp_params)
 
-  useEffect(() => {
-    getpayment();
-  }, []);
-
-  const getpayment = async () => {
-    const result = await apicall({
-      url: "payments",
-    });
-    setPaymentMethod(result.data.payments);
-  };
+  },500,[orderDetail])
 
   return (
     <div className={styles.container} id="changeHere">
@@ -39,12 +44,12 @@ const Search = ({
             Order ID
             <Input
               type="number"
-              value={sValue?.orderno}
               onChange={(e) =>
-                setSearchValue({
-                  ...sValue,
-                  orderno: e.target.value,
-                })
+                {
+                  let init_state={...orderDetail}
+                  init_state.order_id=e.target.value;
+                  setOrderDetail(init_state);
+                }
               }
             />
           </label>
@@ -52,25 +57,25 @@ const Search = ({
             Vendor name
             <Input
               type="text"
-              value={sValue?.customername}
               onChange={(e) =>
-                setSearchValue({
-                  ...sValue,
-                  customername: e.target.value,
-                })
+                {
+                  let init_state={...orderDetail}
+                  init_state.vendor_name=e.target.value;
+                  setOrderDetail(init_state);
+                }
               }
             />
           </label>
           <label>
             Shipping Customer Name
             <Input
-              type="number"
-              value={sValue?.customerphone}
+              type="text"
               onChange={(e) =>
-                setSearchValue({
-                  ...sValue,
-                  customerphone: e.target.value,
-                })
+                {
+                  let init_state={...orderDetail}
+                  init_state.customer_name=e.target.value;
+                  setOrderDetail(init_state);
+                }
               }
             />
           </label>
@@ -78,26 +83,13 @@ const Search = ({
           <label>
             Ordered Date <br />
             <div style={{ display: "flex" }}>
-              <DatePicker
-                className={styles.date}
-                onChange={(e, a) => {
-                  const temp = sValue;
-                  temp.startDate = a;
-
-                  setDload((d) => !d);
-                }}
-              />
-              {"-"}
-              <DatePicker
-                className={styles.date}
-                onChange={(e, a) => {
-                  const temp = sValue;
-                  temp.endDate = a;
-                  setSearchValue(temp);
-
-                  setDload((d) => !d);
-                }}
-              />
+             <RangePicker onChange={(e)=>{
+              {
+                let init_state={...orderDetail}
+                init_state.ordered_date=e;
+                setOrderDetail(init_state);
+              }
+             }}/>
             </div>
           </label>
         </div>

@@ -31,6 +31,14 @@ export const useGetGiftCards = (params) =>
     queryKey: ["gift_cards", params],
     queryFn: () =>
       apicall({
-        url: `GiftCardsReport`,
+        url: `GiftCardsReport?isSearch=Y&gift_card_number=${params.gift_card_number}&issued_time_from=${params.issued_time_from}&issued_time_to=${params.issued_time_to}&used_time_from=${params.used_time_from}&used_time_to=${params.used_time_to}`,
+      }),
+  });
+export const useGetOrderDetails = (params) =>
+  useQuery({
+    queryKey: ["order_details", params],
+    queryFn: () =>
+      apicall({
+        url: `OrderDetailReport?order_id=${params.order_id}&vendor_name=${params.vendor_name}&shipping_customer_name=${params.shipping_customer_name}&${params.date}`,
       }),
   });

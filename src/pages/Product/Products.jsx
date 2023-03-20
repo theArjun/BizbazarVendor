@@ -73,7 +73,7 @@ const Products = () => {
       }
       newUrl = newUrl + "&sort_by=" + sortType;
     }
-    return newUrl + `&page=${page}&items_per_page=${20}`;
+    return newUrl + `&page=${page}&items_per_page=${30}`;
   };
   const getProducts = async (values) => {
     setLoading(true);
@@ -96,7 +96,7 @@ const Products = () => {
     setLoading(false);
   };
   useEffect(() => {
-    if (data?.length < 10) {
+    if (data?.length < 30) {
       return;
     }
     if (!bottom) {

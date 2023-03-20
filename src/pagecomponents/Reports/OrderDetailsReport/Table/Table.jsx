@@ -1,56 +1,30 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Table, Button } from "antd";
 import styles from "./Table.module.css";
 import { useNavigate } from "react-router-dom";
 import { Tag } from "antd";
-import { Dropdown, Menu, Space } from "antd";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 import { CSVLink } from "react-csv";
 import { useReactToPrint } from "react-to-print";
-import ReactToPrint from "react-to-print";
-import { apicall } from "../../../../utils/apicall/apicall";
-
 const AccountOrderDetailsTable = ({
+  orderData,
   status,
-  setAccountOrderDetails,
-  accountOrderDetails,
-  setSortBy,
   loading,
-  page1,
-  setLoad,
 }) => {
   const windowSize = useWindowSize();
-
   const [print, setPrint] = useState(false);
-
   const componentRef = useRef();
-
   const navigate = useNavigate();
 
-  const menu = (filterStatus, objId) => (
-    <Menu
-      items={status
-        .filter((datt, ii) => filterStatus != datt?.description)
-        .map((dat, i) => ({
-          key: i,
-          label: (
-            <div target="_blank" style={{ color: dat?.params?.color }}>
-              {dat.description}
-            </div>
-          ),
-        }))}
-    />
-  );
-
-  const getStatusTag = (data, obj) => {
-    const [statusOfRow] = status.filter((dat) => dat.status === data);
+  const getStatusTag = (data) => {
+    const [statusOfRow] = status.filter((dat) => dat.value === data);
 
     return (
-      <Dropdown overlay={menu(statusOfRow?.description, obj)}>
-        <Tag className={styles.dpContainer} color={statusOfRow?.params?.color}>
-          {statusOfRow?.description}
+      <React.Fragment>
+        <Tag className={styles.dpContainer} color={statusOfRow?.color}>
+          {statusOfRow?.label}
         </Tag>
-      </Dropdown>
+      </React.Fragment>
     );
   };
 
@@ -71,16 +45,9 @@ const AccountOrderDetailsTable = ({
 
   const columns = [
     {
-      title: "Date And Time",
-      dataIndex: "timestamp",
-      key: "order_id",
-      render: (text) => getTimeAndDate(text),
-      sorter: (a, b) => {},
-    },
-    {
       title: "Order Id",
       dataIndex: "order_id",
-      key: "status_id",
+      key: "order_id",
       render: (text, dat) => (
         <div
           onClick={() => navigate(`/Orders/orders details/${dat.order_id}`)}
@@ -89,86 +56,75 @@ const AccountOrderDetailsTable = ({
           #{text}
         </div>
       ),
-      width: 140,
-      sorter: (a, b) => {},
-    },
-    {
-      title: "CUSTOMER",
-      dataIndex: "customer",
-      key: "order_id",
-      render: (text, dat) => <div>{text}</div>,
-    },
-    {
-      title: "TOTAL ORDER VALUE",
-      dataIndex: "subtotal",
-    },
-    {
-      title: "Status",
-      dataIndex: "statuses",
-      key: "order_id",
-
       width: 100,
     },
     {
-      title: "Phone",
-      dataIndex: "phone",
-      key: "order_id",
+      title: "Order date",
+      dataIndex: "ordered_date",
+      key: "ordered_date",
+      render: (text) => getTimeAndDate(text),
     },
 
     {
-      title: "PAYMENT METHOD",
-      dataIndex: "payment_method",
-      key: "order_id",
+      title: "Vendor name",
+      dataIndex: "vendor_name",
+      key: "vendor_name",
     },
     {
-      title: "SHIPMENT AMOUNT",
-      dataIndex: "shipping_cost",
-      key: "order_id",
+      title: "Vendor address",
+      dataIndex: "vendor_address",
+      key: "vendor_address",
     },
     {
-      title: "VENDOR PAYABLE AMOUNT",
-      dataIndex: "vendor_payable_amount",
-      key: "order_id",
+      title: "Vendor phone",
+      dataIndex: "vendor_phone",
+      key: "vendor_phone",
     },
     {
-      title: "REMAINING AMOUNT",
-      dataIndex: "remaining_amount",
-      key: "order_id",
-    },
-    {
-      title: "GIFT CARD AMOUNT USED",
-      dataIndex: "gift_card_amount_used",
-      render: (text) => <>{text || 0}</>,
-    },
-    {
-      title: "PRODUCT NAME",
+      title: "Product name",
       dataIndex: "product_name",
-      render: (text) => <>{text}</>,
+      key: "product_name",
+    },
+
+    {
+      title: "Quantity",
+      dataIndex: "qty",
+      key: "qty",
     },
     {
-      title: "PRODUCT CATEGORY",
-      dataIndex: "product_category",
+      title: "Order status",
+      dataIndex: "order_status",
+      key: "order_status",
+      render:(status)=>getStatusTag(status)
     },
     {
-      title: "SETTLEMENT STATUS",
-      dataIndex: "settlement_status",
+      title: "Shipping cost",
+      dataIndex: "shipping_cost",
+      key: "shipping_cost",
+      render: (text) => <div>रु{text || 0}</div>,
     },
     {
-      title: "SETTLEMENT DATE",
-      dataIndex: "settlement_date",
+      title: "Total cost including shipping",
+      dataIndex: "total_cost_including_shipping",
+      key: "total_cost_including_shipping",
+      render: (text) => <div>रु{text || 0}</div>,
     },
     {
-      title: "CASH VENDOR SETTLEMENT",
-      dataIndex: "cash_vendor_settlement",
+      title: "Order delivery remarks",
+      dataIndex: "order_delivery_remarks",
+      key: "order_delivery_remarks",
+    },
+    {
+      title: "Shipping customer name",
+      dataIndex: "shipping_customer_name",
+      key: "shipping_customer_name",
+    },
+    {
+      title: "Shipping address",
+      dataIndex: "shipping_address",
+      key: "shipping_address",
     },
   ];
-
-  function onChange(pagination, filters, sorter, extra) {
-    page1.current = 1;
-
-    setSortBy(sorter);
-  }
-
   const printing = useReactToPrint({
     content: () => componentRef.current,
     onAfterPrint: () => setPrint(false),
@@ -187,13 +143,12 @@ const AccountOrderDetailsTable = ({
         columns={columns}
         rowKey={"order_id"}
         loading={loading}
-        dataSource={accountOrderDetails}
+        dataSource={orderData}
         pagination={false}
         scroll={{
           y: windowSize.height > 670 ? 500 : 300,
-          x: 2500,
+          x: 1800,
         }}
-        onChange={onChange}
       />
       <div className={styles.positionabsolute}>
         <Button className={styles.print} onClick={handlePrint}>
@@ -202,7 +157,7 @@ const AccountOrderDetailsTable = ({
         <Button>
           <CSVLink
             filename={"Expense_Table.csv"}
-            data={accountOrderDetails}
+            data={orderData}
             className="btn btn-primary"
             onClick={() => {}}
           >
@@ -221,10 +176,9 @@ const AccountOrderDetailsTable = ({
           ref={componentRef}
           rowKey={"order_id"}
           // loading={loading}
-          dataSource={accountOrderDetails}
+          dataSource={orderData}
           pagination={false}
           // scroll={{ y: windowSize.height > 670 ? 450 : 300, x: 1000 }}
-          onChange={onChange}
         />
       )}
     </div>

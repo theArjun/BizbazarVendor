@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./Search.module.css";
-import { Card, Form, Input, DatePicker } from "antd";
-import { Select, Space } from "antd";
+import { Card, Input, DatePicker } from "antd";
+import { Select } from "antd";
 import useDebounce from "../../../../utils/Hooks/useDebounce";
 import "./index.css";
 const { RangePicker } = DatePicker;
@@ -44,11 +44,13 @@ const Search = ({ params, setParams, status }) => {
             <div>Order Status</div>
 
             <Select
+              allowClear
               placeholder={"Search order status"}
               style={{ width: "100%" }}
               onChange={(e) => {
+                console.log(e)
                 let temp_param = { ...params };
-                temp_param.status_id = e;
+                temp_param.status_id = e||'';
                 setParams(temp_param);
               }}
               options={status}
