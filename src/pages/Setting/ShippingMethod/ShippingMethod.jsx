@@ -5,54 +5,73 @@ import RateAreas from "./../../../pagecomponents/Setting/ShippingMethod/RateArea
 import ShippingMethod from "./../../../pagecomponents/Setting/ShippingMethod/ShippingMethod/ShippingMethod";
 import StoresAndPickup from "./../../../pagecomponents/Setting/ShippingMethod/StoresAndPickup/StoresAndPickup";
 import { apicall } from "../../../utils/apicall/apicall";
+import { useGetShippingMethods } from "../../../apis/ShippingMethodApi";
+import { useEffect } from "react";
 
 const tabs = ["Shipping Method", "Rate Areas", "Stores And pickup Points"];
 
 function ShippingMethodPage() {
   const [active, setActive] = useState("Shipping Method");
+  const [pages, setPages] = useState(1);
   const [open, setOpen] = useState(false);
   const [bottom, setBottom] = useState(false);
-  const [update,setUpdate]=useState(false)
+  const [update, setUpdate] = useState(false);
   const [shipings, setShippings] = React.useState([]);
-
-  const page = React.useRef(1);
+  const {
+    data: shippingData,
+    isLoading: shippingLoading,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+  } = useGetShippingMethods(pages);
+  useEffect(() => {
+    try {
+      if (shippingData?.pages) {
+        let temp = [];
+        shippingData?.pages?.map((group, i) =>
+          group?.data?.shippings?.map((el, i) => {
+            temp.push(el);
+          })
+        );
+        setShippings(temp);
+      }
+    } catch (err) {
+      console.log("error!", err.message);
+    }
+  }, [shippingData]);
+  // React.useEffect(() => {
+  //   getShiippingMethod();
+  // }, [update,open]);
 
   React.useEffect(() => {
-    getShiippingMethod();
-  }, [update,open]);
-
-  const getShiippingMethod = async () => {
-    
-    const result = await apicall({
-      url: "/ShippingMethod?" + `page=${page.current}&items_per_page=${50}`,
-    });
-
-    setShippings(result.data.shippings);
-  };
-
-  React.useEffect(() => {
-    if (shipings.length < 50) {
+    if (!hasNextPage) {
       return;
     }
     if (!bottom) {
       return;
     }
-    page.current = page.current + 1;
-    getMoreShiippingMethod();
+    fetchNextPage();
+    // setPages((page)=>page+1)
+    // getMoreShiippingMethod();
   }, [bottom]);
 
   const getMoreShiippingMethod = async () => {
-    const result = await apicall({
-      url: "shippings?" + `&page=${page.current}&items_per_page=${50}`,
-    });
-
-    setShippings((dat) => [...dat, ...result.data.shippings]);
+    setShippings((dat) => [...dat, ...shippingData?.data?.shippings]);
   };
 
   const getContainerFromTab = () => {
     switch (active) {
       case "Shipping Method":
-        return <ShippingMethod setOpen={setOpen} open={open} setUpdate={setUpdate} shipings={shipings} setBottom={setBottom} />;
+        return (
+          <ShippingMethod
+            loading={shippingLoading || isFetching}
+            setOpen={setOpen}
+            open={open}
+            setUpdate={setUpdate}
+            shipings={shipings}
+            setBottom={setBottom}
+          />
+        );
       case "Rate Areas":
         return <RateAreas />;
       default:

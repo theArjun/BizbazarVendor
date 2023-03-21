@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "./ShippingMethod.module.css";
-import { Button, Modal, Table,Radio } from "antd";
+import { Button, Modal, Table, Radio } from "antd";
 import { Tag } from "antd";
 import CreateShipping from "./../CreateShipping/CreateShipping";
 import EditShipping from "../EditShipping/EditShipping";
@@ -8,18 +8,24 @@ import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 import { useNavigate } from "react-router-dom";
 import { apicall } from "../../../../utils/apicall/apicall";
 import { AiOutlineEye } from "react-icons/ai";
-
-function ShippingMethod({open,setOpen, shipings, setBottom,setUpdate }) {
-
+import { useQueryClient } from "@tanstack/react-query";
+function ShippingMethod({
+  open,
+  setOpen,
+  shipings,
+  setBottom,
+  setUpdate,
+  loading,
+}) {
   const [openEdit, setOpenEdit] = useState(false);
   const navigate = useNavigate();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [openStatusModal,setOpenStatusModal]=useState(false)
-  const [status,setStatus]=useState("A")
-  const [id,setId]=useState("")
+  const [openStatusModal, setOpenStatusModal] = useState(false);
+  const [status, setStatus] = useState("A");
+  const [id, setId] = useState("");
 
   const windowSize = useWindowSize();
-
+  const queryClient = useQueryClient();
   React.useEffect(() => {
     document
       .querySelector("#shiipmenttable > div > div.ant-table-body")
@@ -47,10 +53,12 @@ function ShippingMethod({open,setOpen, shipings, setBottom,setUpdate }) {
     {
       title: "Name",
       dataIndex: "shipping",
-      render: (text,dat) => (
+      render: (text, dat) => (
         <div
           style={{ color: "blue", cursor: "pointer" }}
-          onClick={() => navigate("/Setting/Shipping Methods/"+dat.shipping_id)}
+          onClick={() =>
+            navigate("/Setting/Shipping Methods/" + dat.shipping_id)
+          }
         >
           {text}
         </div>
@@ -64,9 +72,9 @@ function ShippingMethod({open,setOpen, shipings, setBottom,setUpdate }) {
       title: "Weight Limit",
       dataIndex: "Position",
       render: (text, dat) => (
-        <>
+        <div>
           {dat.max_weight}-{dat.min_weight}
-        </>
+        </div>
       ),
     },
     {
@@ -76,12 +84,17 @@ function ShippingMethod({open,setOpen, shipings, setBottom,setUpdate }) {
     {
       title: "Tools",
       dataIndex: "Position",
-      render: (text, dat) => <div className={styles.icon} onClick={() =>{ setOpenEdit(true);
-        setId(dat.shipping_id)
-      }}>
-<AiOutlineEye />
-
-      </div>,
+      render: (text, dat) => (
+        <div
+          className={styles.icon}
+          onClick={() => {
+            setOpenEdit(true);
+            setId(dat.shipping_id);
+          }}
+        >
+          <AiOutlineEye />
+        </div>
+      ),
     },
     {
       title: "Status",
@@ -93,7 +106,6 @@ function ShippingMethod({open,setOpen, shipings, setBottom,setUpdate }) {
       ),
     },
   ];
-  
 
   const onSelectChange = (a) => {
     console.log();
@@ -104,73 +116,59 @@ function ShippingMethod({open,setOpen, shipings, setBottom,setUpdate }) {
     onChange: onSelectChange,
   };
 
-  const deleteShipments=async()=>{
+  const deleteShipments = async () => {
     Modal.warn({
-      title: 'Are you sure!',
-      closable:true,
-    
-      onCancel:()=>{
-      setUpdate(dat=>!dat)
+      title: "Are you sure!",
+      closable: true,
 
-     },
-      onOk :async()=> {
-        const result=await apicall({
-          url:"ShippingMethod/",
-          method:"delete",
-          data:{
-            "shipping_ids": Object.assign({}, selectedRowKeys)
-          }
-          
-          
-        })
-    if(result.status==200){
-      setUpdate(dat=>!dat)
-      setSelectedRowKeys([])
-    }
-
+      onCancel: () => {
+        setUpdate((dat) => !dat);
+      },
+      onOk: async () => {
+        const result = await apicall({
+          url: "ShippingMethod/",
+          method: "delete",
+          data: {
+            shipping_ids: Object.assign({}, selectedRowKeys),
+          },
+        });
+        if (result.status == 200) {
+          queryClient.invalidateQueries("shippings");
+          setUpdate((dat) => !dat);
+          setSelectedRowKeys([]);
+        }
       },
     });
-    
-  }
+  };
 
-  const changeStatus=async()=>{
+  const changeStatus = async () => {
     Modal.warn({
-      title: 'Are you sure!',
-      closable:true,
-    
-      onCancel:()=>{
-        setUpdate(dat=>!dat)
-        setOpenStatusModal(false)
+      title: "Are you sure!",
+      closable: true,
 
-     },
-      onOk :async()=>{
-        const result=await apicall({
-          url:"StatusTool/",
-          method:"post",
-          data:{
-            "table_name": "shippings",
-            "status": status,
-            "id_name": "shipping_id",
-            "ids": [...selectedRowKeys]
+      onCancel: () => {
+        setUpdate((dat) => !dat);
+        setOpenStatusModal(false);
+      },
+      onOk: async () => {
+        const result = await apicall({
+          url: "StatusTool/",
+          method: "post",
+          data: {
+            table_name: "shippings",
+            status: status,
+            id_name: "shipping_id",
+            ids: [...selectedRowKeys],
+          },
+        });
+        if (result.status == 200) {
+          queryClient.invalidateQueries("shippings");
+          setUpdate((dat) => !dat);
+          setOpenStatusModal(false);
         }
-          
-          
-        })
-    if(result.status==200){
-      setUpdate(dat=>!dat)
-      setOpenStatusModal(false)
-    }
-
-      }})
-
-
-
-   
-
-
-  }
-  
-  
+      },
+    });
+  };
 
   return (
     <div className={styles.container}>
@@ -201,13 +199,14 @@ function ShippingMethod({open,setOpen, shipings, setBottom,setUpdate }) {
 
       <Table
         id="shiipmenttable"
+        loading={loading}
         rowSelection={rowSelection}
         dataSource={shipings}
         columns={columns}
         rowKey={"shipping_id"}
         pagination={false}
         scroll={{
-          y: windowSize.height > 670 ? 670 : 300,
+          y: windowSize.height > 670 ? 500 : 300,
           x: 1000,
         }}
       />
@@ -237,5 +236,3 @@ function ShippingMethod({open,setOpen, shipings, setBottom,setUpdate }) {
 }
 
 export default ShippingMethod;
-
-
