@@ -35,3 +35,34 @@ export const useCreateShippingMethods = () =>
       },
     })
   );
+export const useGetShippingMethodByID = (id) =>
+  useQuery({
+    queryKey: ["single_shipping_method", id],
+    queryFn: () =>
+      apicall({
+        url: `ShippingMethod/${id}`,
+      }),
+  });
+
+export const useGetCarriers = () =>
+  useQuery({
+    queryKey: ["carriers"],
+    queryFn: () =>
+      apicall({
+        url: `ShippingMethod?carriers=1`,
+      }),
+  });
+
+export const useUpdateShippingMethod = () => {
+  return useMutation((data) =>
+    apicall({
+      url: `ShippingMethod`,
+      data: data,
+      method: "post",
+      headers: {
+        "Content-Type": "multipart/form-data",
+        "Access-Control-Allow-Origin": true,
+      },
+    })
+  );
+};

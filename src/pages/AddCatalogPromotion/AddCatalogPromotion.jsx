@@ -9,14 +9,13 @@ import {
 import { Breadcrumb, Button, message } from "antd";
 import { apicall } from "../../utils/apicall/apicall";
 function AddCatalogPromotion() {
- 
   const [activeTab, setActiveTab] = useState("General");
   const [bonuses, setBonuses] = useState([]);
   const [conditions, setConditions] = useState([]);
   const [image, setImage] = useState("");
   const [loading, setLoading] = useState(false);
   const [generalData, setGeneralData] = useState({
-    "zone": "catalog",
+    zone: "catalog",
     name: "",
     detailed_description: "",
     short_description: "",
@@ -58,7 +57,7 @@ function AddCatalogPromotion() {
     }
   };
   const createPromotion = async () => {
-    if(generalData.name){
+    if (generalData.name) {
       setLoading(true);
       const formData = new FormData();
       let image_data = {
@@ -82,7 +81,7 @@ function AddCatalogPromotion() {
       };
       // for preparing condition data
       let temp_conditions = conditions.reduce((update, current, i) => {
-        update[i+1] = { ...current };
+        update[i + 1] = { ...current };
         return update;
       }, {});
       // for preparing bonuses data
@@ -91,26 +90,25 @@ function AddCatalogPromotion() {
         return update;
       }, {});
       let prepareData = {
-        promotion_id:0,
-        promotion_data:{
+        promotion_id: 0,
+        promotion_data: {
           ...generalData,
-          from_date:formatDate(generalData.from_date),
-          to_date:formatDate(generalData.to_date),
+          from_date: formatDate(generalData.from_date),
+          to_date: formatDate(generalData.to_date),
           bonuses: { ...temp_bonuses },
           conditions: {
             ...conditionValues,
             conditions: { ...temp_conditions },
           },
-        }
+        },
       };
       if (image) {
         // append to form data
-         formData.append("file", image);
+        formData.append("file", image);
         prepareData = { ...prepareData, ...image_data };
         formData.append("promotion_data", JSON.stringify(prepareData));
-      }else{
+      } else {
         formData.append("promotion_data", JSON.stringify(prepareData));
-        console.log("🚀 ~ file: AddCatalogPromotion.jsx:111 ~ createPromotion ~ prepareData:", prepareData)
       }
       let result = await apicall({
         url: "Promotions",
@@ -121,25 +119,24 @@ function AddCatalogPromotion() {
           "Access-Control-Allow-Origin": true,
         },
       });
-  
+
       if (result) {
         setLoading(false);
       }
       setLoading(false);
-    }else{
-
-      message.error("Name is necessary to create a promotion.")
+    } else {
+      message.error("Name is necessary to create a promotion.");
     }
   };
   // formatting date
-  const formatDate=(date)=>{
-    if(date){
-      let date_arr=date.split('-')
-      let new_date= `${date_arr[2]}/${date_arr[1]}/${date_arr[0]}`;
+  const formatDate = (date) => {
+    if (date) {
+      let date_arr = date.split("-");
+      let new_date = `${date_arr[2]}/${date_arr[1]}/${date_arr[0]}`;
       return new_date;
     }
     return;
-  }
+  };
   return (
     <React.Fragment>
       <div className={styles.breadcumb}>

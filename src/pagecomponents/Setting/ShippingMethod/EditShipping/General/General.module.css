@@ -1,10 +1,17 @@
-.container {
-  height: 80vh;
-  overflow: scroll;
+.wrap {
   position: relative;
+  height: 70vh;
 
-  /* margin-top: 1em; */
+  /* background-color: brown; */
 }
+.container {
+  overflow: scroll;
+  background-color: white;
+
+  border-radius: 5px;
+  padding: 20px;
+}
+
 .container::-webkit-scrollbar {
   display: none;
 }
@@ -12,7 +19,6 @@
 .title {
   margin: 10px 0;
   width: 100%;
-  text-align: center;
   font-size: 18px;
   font-weight: 600;
 }
@@ -27,22 +33,33 @@
 .red {
   color: red;
 }
-.section > div > div {
-  display: flex;
-  flex-wrap: wrap;
-  /* justify-content: space-around; */
-}
 
-.section > div > div > * {
-  margin-bottom: 5px;
-}
 .section > label {
   font-size: 16px;
   font-weight: 500;
+}
+.section div > div {
+  display: flex;
+  flex-wrap: wrap;
+}
+.section div > div > * {
+  /* margin-bottom: 10px; */
 }
 .errorSection {
   width: 100%;
   color: red;
   /* text-align: center; */
   margin-left: 10%;
+}
+
+.button {
+  position: absolute;
+  right: 0;
+  top: -40px;
+}
+
+.button1 {
+  position: absolute;
+  right: 80px;
+  top: -40px;
 }

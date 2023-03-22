@@ -90,7 +90,9 @@ const CatalogPromotionBonuses = React.lazy(() =>
   import("../pagecomponents/Marketing/AddCatalogPromotion/Bonuses/Bonuses")
 );
 const CatalogPromotionConditions = React.lazy(() =>
-  import("../pagecomponents/Marketing/AddCatalogPromotion/Conditions/Conditions")
+  import(
+    "../pagecomponents/Marketing/AddCatalogPromotion/Conditions/Conditions"
+  )
 );
 const AdminPromotion = React.lazy(() =>
   import("../pagecomponents/Marketing/Promotion/AdminPromotion")
@@ -122,8 +124,36 @@ const MonthlyOrderReportTable = React.lazy(() =>
 const MonthlyOrderReportSearch = React.lazy(() =>
   import("../pagecomponents/Reports/MonthlyOrderReport/Search/Search")
 );
-
-
+const ShippingMethodGeneral = React.lazy(() =>
+  import(
+    "../pagecomponents/Setting/ShippingMethod/EditShipping/General/General"
+  )
+);
+const ShippingTimeRates = React.lazy(() =>
+  import(
+    "../pagecomponents/Setting/ShippingMethod/EditShipping/ShippingTimeRates/ShippingTimeRates"
+  )
+);
+const ShippingAdditionalSetting = React.lazy(() =>
+  import(
+    "../pagecomponents/Setting/ShippingMethod/EditShipping/AdditionalSettings/AdditionalSettings"
+  )
+);
+const TestRateCalculation = React.lazy(() =>
+  import(
+    "../pagecomponents/Setting/ShippingMethod/EditShipping/TestRateCalculation/TestRateCalculation"
+  )
+);
+const StoreFronts = React.lazy(() =>
+  import(
+    "../pagecomponents/Setting/ShippingMethod/EditShipping/StoreFronts/StoreFronts"
+  )
+);
+const ShippingSuppliers = React.lazy(() =>
+  import(
+    "../pagecomponents/Setting/ShippingMethod/EditShipping/Suppliers/Suppliers"
+  )
+);
 
 export {
   ProductTable,
@@ -145,7 +175,7 @@ export {
   EditFeatures,
   EditOptions,
   EditSeo,
-  EditQuantityDiscount, 
+  EditQuantityDiscount,
   EditVariations,
   CustomerCommunicationSearch,
   CustomerCommunicationTable,
@@ -166,5 +196,11 @@ export {
   SellerLogos,
   Logos,
   MonthlyOrderReportTable,
-  MonthlyOrderReportSearch
+  MonthlyOrderReportSearch,
+  ShippingMethodGeneral,
+  ShippingAdditionalSetting,
+  ShippingTimeRates,
+  TestRateCalculation,
+  StoreFronts,
+  ShippingSuppliers,
 };

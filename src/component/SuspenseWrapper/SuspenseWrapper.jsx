@@ -1,5 +1,4 @@
-import React, { lazy, Suspense } from "react";
-import { Space, Spin } from "antd";
+import React, { Suspense } from "react";
 import Spinner from "../Spinner/Spinner";
 
 const SuspenseWrapper = (props) => {
@@ -11,20 +10,6 @@ const SuspenseWrapper = (props) => {
 };
 
 export default SuspenseWrapper;
-
-const customStyle = {
-  height: "40vh",
-  width: "40vw",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-};
-
-const Loading = () => (
-  <div style={customStyle}>
-    <Spin size="large" />
-  </div>
-);
 
 class ErrorBoundary extends React.Component {
   constructor(props) {

@@ -55,10 +55,6 @@ function ShippingMethodPage() {
     // getMoreShiippingMethod();
   }, [bottom]);
 
-  const getMoreShiippingMethod = async () => {
-    setShippings((dat) => [...dat, ...shippingData?.data?.shippings]);
-  };
-
   const getContainerFromTab = () => {
     switch (active) {
       case "Shipping Method":

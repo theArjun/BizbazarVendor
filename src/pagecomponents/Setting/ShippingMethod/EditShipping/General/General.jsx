@@ -1,135 +1,52 @@
-import React, { useEffect, useState } from "react";
-import styles from "./CreateShipping.module.css";
-import { Checkbox, Modal, Input, Radio } from "antd";
+import React from "react";
+import { Checkbox, Input, Radio } from "antd";
 import { Select } from "antd";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { message } from "antd";
-import { apicall } from "../../../../utils/apicall/apicall";
-import ImageUploader from "../../../../component/ImageUploader/ImageUploaderForPromotion";
-import { useCreateShippingMethods } from "../../../../apis/ShippingMethodApi";
-import { useQueryClient } from "@tanstack/react-query";
-function CreateShipping({ open, setOpen }) {
-  let active = false;
-  const queryClient = useQueryClient();
-  const [carrier, setCarrier] = useState([]);
-  const [infoData, setInfoData] = useState({});
-  const [image, setImage] = useState("");
-  const { mutate, isLoading } = useCreateShippingMethods();
-
-  useEffect(() => {
-    getCarrier();
-  }, []);
-
-  const getCarrier = async () => {
-    const result = await apicall({
-      url: "VendorCarrier",
-    });
-    if (result.status === 200) {
-      setCarrier(
-        Object.entries(result?.data?.carriers).map((dat, i) => ({
-          label: dat[1]?.name,
-          value: dat[0],
-          key: i,
-        }))
-      );
-    }
-  };
-  const onOkay = async () => {
-    if (active) {
-      message.error("Loading");
-      return;
-    }
-    if (!infoData?.name) {
-      message.error("Name is empty");
-      return;
-    }
-    // active=true
-
-    // console.log("hello");
-
-    const data = {
-      shipping_id: 0,
-      shipping_data: {
-        rate_calculation: infoData.rateCalculation,
-        carrier: infoData.rateCalculation,
-        shipping: infoData.name,
-        status: infoData.status,
-        delivery_time: infoData.time,
-        description: infoData.description,
-        usergroup_ids: infoData.usergroup,
-        company_id: JSON.parse(localStorage.getItem("userinfo"))?.id,
-        min_weight: infoData.min,
-        max_weight: infoData.max,
-        available_delivery_date: "N",
-      },
-      shipping_image_data: {
-        0: {
-          pair_id: "",
-          type: "M",
-          object_id: 0,
-          image_alt: "",
+import ImageUploader from "../../../../../component/ImageUploader/ImageUploaderForPromotion";
+import styles from "./General.module.css";
+const General = ({
+  singleShipment,
+  carriers,
+  image,
+  setImage,
+  setSingleShipment,
+}) => {
+  //function to get image
+  const getImage = (image) => {
+    if (!!image) {
+      return [
+        {
+          uid: "0",
+          name: "main_image.jpg",
+          status: "done",
+          url: image?.icon?.image_path,
+          pair_id: image?.pair_id,
+          image_id: image?.image_id,
         },
-      },
-      file_shipping_image_icon: {
-        0: "shipping",
-      },
-      type_shipping_image_icon: {
-        0: "local",
-      },
-      is_high_res_shipping_image_icon: {
-        0: "N",
-      },
-    };
-
-    var formData = new FormData();
-    formData.append("shipping_data", JSON.stringify(data));
-    formData.append("file", image);
-
-    Modal.warn({
-      title: "Are you sure!",
-      closable: true,
-      onCancel: () => {
-        // setUpdate(dat=>!dat)
-        active = false;
-        setOpen(false);
-      },
-      onOk: () => {
-        mutate(formData, {
-          onSuccess: (res) => {
-            queryClient.invalidateQueries(["shippings"]);
-            active = false;
-            setOpen(false);
-          },
-        });
-      },
-    });
+      ];
+    }
+    return [];
   };
 
   return (
-    <Modal
-      centered
-      open={open}
-      onOk={onOkay}
-      okButtonProps={{
-        loading: isLoading,
-      }}
-      onCancel={() => setOpen(false)}
-      width={`90vw`}
-      okText={"Create"}
-    >
+    <div className={styles.wrap}>
       <div className={styles.container}>
-        <div className={styles.title}>Create Shipping Method</div>
         <h3>Information</h3>
+
+        <div></div>
         <div className={styles.section}>
           <label>Rate Calculation</label>{" "}
           <Select
             placeholder="Rate Calculation"
             style={{ width: 150 }}
+            value={singleShipment?.rate_calculation}
             onChange={(e) =>
-              setInfoData((dat) => ({
+              setSingleShipment((dat) => ({
                 ...dat,
-                rateCalculation: e,
+                rate_calculation: e,
+                carrier: e,
               }))
             }
             options={[
@@ -137,26 +54,22 @@ function CreateShipping({ open, setOpen }) {
                 value: "Manual ",
                 disabled: true,
                 label: "Manual ",
-                key: "manual",
               },
               {
-                value: "By customer's address",
+                value: "M",
                 label: "By customer's address",
-                key: "customer",
               },
               {
-                value: "By Pickup Location",
+                value: "N",
                 label: "By Pickup Location",
-                key: "pickup",
               },
               {
-                value: "non Manual",
+                value: "Non Manual",
                 disabled: true,
                 label: "Non Manual ",
-                key: "non_manual",
               },
 
-              ...carrier,
+              ...carriers,
             ]}
           />
         </div>
@@ -166,10 +79,11 @@ function CreateShipping({ open, setOpen }) {
           </label>{" "}
           <Input
             placeholder="Name"
+            value={singleShipment?.shipping}
             onChange={(e) =>
-              setInfoData((dat) => ({
+              setSingleShipment((dat) => ({
                 ...dat,
-                name: e.target.value,
+                shipping: e.target.value,
               }))
             }
           />
@@ -178,13 +92,14 @@ function CreateShipping({ open, setOpen }) {
           <label>Status :</label>{" "}
           <div style={{ display: "flex" }}>
             <Radio.Group
+              va
               onChange={(e) =>
-                setInfoData((dat) => ({
+                setSingleShipment((dat) => ({
                   ...dat,
                   status: e.target.value,
                 }))
               }
-              value={infoData?.status}
+              value={singleShipment?.status}
             >
               <Radio value={"A"}>Active</Radio>
               <Radio value={"D"}>Disabled</Radio>
@@ -197,7 +112,7 @@ function CreateShipping({ open, setOpen }) {
           <ImageUploader
             image={image}
             setImage={setImage}
-            imageList={[]}
+            imageList={getImage(singleShipment?.icon)}
             message={message}
           />
         </div>
@@ -205,13 +120,13 @@ function CreateShipping({ open, setOpen }) {
           <label>Delivery Time:</label>{" "}
           <div>
             <Input
-              type="time"
-              placeholder="Basic usage"
+              placeholder="Delivery Time"
+              value={singleShipment?.delivery_time}
               style={{ width: "150px" }}
               onChange={(e) =>
-                setInfoData((dat) => ({
+                setSingleShipment((dat) => ({
                   ...dat,
-                  time: e.target.value,
+                  delivery_time: e.target.value,
                 }))
               }
             />
@@ -224,12 +139,13 @@ function CreateShipping({ open, setOpen }) {
         </div>
         <span></span>
         <div className={styles.section}>
-          <label>Detailed description:</label>
+          <div>Detailed description:</div>
           <ReactQuill
             className={styles.inputQuill}
             theme="snow"
+            value={singleShipment?.description}
             onChange={(e) =>
-              setInfoData((dat) => ({
+              setSingleShipment((dat) => ({
                 ...dat,
                 description: e,
               }))
@@ -240,16 +156,14 @@ function CreateShipping({ open, setOpen }) {
         <div className={styles.section}>
           <label>User Group :</label>{" "}
           <div style={{ display: "flex" }}>
-            {/* <Checkbox>All </Checkbox> <Checkbox>Guest </Checkbox>{" "}
-            <Checkbox>Registered </Checkbox> */}
             <Radio.Group
-              va
               onChange={(e) =>
-                setInfoData((dat) => ({
+                setSingleShipment((dat) => ({
                   ...dat,
-                  usergroup: e.target.value,
+                  usergroup_ids: e.target.value,
                 }))
               }
+              value={singleShipment?.usergroup_ids}
             >
               <Radio value={"0"}>All</Radio>
               <Radio value={"1"}>Guest</Radio>
@@ -263,21 +177,20 @@ function CreateShipping({ open, setOpen }) {
           <label>Owner :</label>{" "}
           <div style={{ display: "flex" }}>
             {JSON.parse(localStorage.getItem("userinfo"))?.name}
-
             <div />
           </div>
         </div>
         <div className={styles.section}>
-          <label>Weight(kg):</label>{" "}
+          <label>Weight:</label>{" "}
           <div>
             <Input
-              type="number"
               placeholder="Min"
               style={{ width: "100px" }}
+              value={singleShipment?.min_weight}
               onChange={(e) =>
-                setInfoData((dat) => ({
+                setSingleShipment((dat) => ({
                   ...dat,
-                  min: e.target.value,
+                  min_weight: e.target.value,
                 }))
               }
             />
@@ -285,10 +198,11 @@ function CreateShipping({ open, setOpen }) {
             <Input
               placeholder="Max"
               style={{ width: "100px" }}
+              value={singleShipment?.max_weight}
               onChange={(e) =>
-                setInfoData((dat) => ({
+                setSingleShipment((dat) => ({
                   ...dat,
-                  max: e.target.value,
+                  max_weight: e.target.value,
                 }))
               }
             />
@@ -296,7 +210,7 @@ function CreateShipping({ open, setOpen }) {
         </div>
 
         <div className={styles.section}>
-          <label>Allowed Payment Method:</label>{" "}
+          <label>Allowed Payment Method :</label>{" "}
           <div style={{ display: "flex" }}>
             <Checkbox.Group
               options={[
@@ -312,21 +226,20 @@ function CreateShipping({ open, setOpen }) {
                 " Government Check",
                 " Traveller's Check ",
               ]}
-              onChange={(e) => {
-                console.log(e);
-                setInfoData((dat) => ({
+              onChange={(e) =>
+                setSingleShipment((dat) => ({
                   ...dat,
-                  allowedPaymentMethod: e,
-                }));
-              }}
+                  allowedPayment: e,
+                }))
+              }
             />
 
             <div />
           </div>
         </div>
       </div>
-    </Modal>
+    </div>
   );
-}
+};
 
-export default CreateShipping;
+export default General;

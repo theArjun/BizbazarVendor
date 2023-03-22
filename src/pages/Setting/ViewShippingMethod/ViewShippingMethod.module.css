@@ -1,62 +1,39 @@
-.container {
-    height: 70vh; 
-  overflow: scroll; 
-  background-color: white;
-
-    border-radius: 5px;
-    padding: 20px;
-    margin-top: 40px;
-
-  }
-  .wrap{
-    position: relative;
-    height: 70vh;
- 
-
-    /* background-color: brown; */
-  }
-  .container::-webkit-scrollbar{
-    display: none;
-  }
-  
-  .title{
-    margin: 10px 0;
-    width: 100%;
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  .section{
-    width: 100%;
-    margin: 15px 0;
-    display: grid;
-    grid-template-columns: 150px 1fr;
-  }
-
-  .red{
-    color:red
-  }
-
-  .section >label{
-    font-size: 16px;
-    font-weight: 500;
-  }
-  .errorSection{
-    width: 100%;
-    color: red;
-    /* text-align: center; */
-    margin-left: 10%;
-  }
-
-  .button{
-position: absolute;
-right: 0;
-top: -40px;
-  }
-
-  .button1{
-    position: absolute;
-    right: 80px;
-    top: -40px;
-      }
-    
+.tabContainer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+.tabContainer > div.left {
+  display: flex;
+  width: 100%;
+  margin: 10px 0;
+  flex-wrap: wrap;
+}
+.bgColor {
+  background: linear-gradient(
+    118deg,
+    #7367f0,
+    rgba(115, 103, 240, 0.7)
+  ) !important;
+  color: white !important;
+}
+.button {
+  font-size: 16px;
+  /* padding: 0 0px !important; */
+  padding: 5px 10px;
+  margin: 2px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.672);
+  position: relative;
+  background-color: rgb(232, 229, 229);
+}
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.breadcrumb > div > * {
+  margin-left: 10px;
+}
