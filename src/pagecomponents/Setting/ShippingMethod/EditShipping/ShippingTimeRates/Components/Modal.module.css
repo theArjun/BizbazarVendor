@@ -1,6 +1,5 @@
 .wrap {
   position: relative;
-  height: 70vh;
 
   /* background-color: brown; */
 }
@@ -9,7 +8,7 @@
   background-color: white;
 
   border-radius: 5px;
-  padding: 20px;
+  /* padding: 20px; */
 }
 
 .container::-webkit-scrollbar {
@@ -24,15 +23,12 @@
 }
 
 .section {
-  width: 100%;
   margin: 15px 0;
-  display: grid;
-  grid-template-columns: 150px 1fr;
 }
 
 .section > label {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
 }
 .section div > div {
   display: flex;
@@ -40,4 +36,11 @@
 }
 .section div > div > * {
   /* margin-bottom: 10px; */
+}
+.section_container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.section_container > * {
+  margin: 0 10px;
 }

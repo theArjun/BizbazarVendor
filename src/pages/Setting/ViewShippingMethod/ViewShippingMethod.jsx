@@ -14,7 +14,11 @@ import cx from "classnames";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useGetCarriers,
+  useGetCountries,
+  useGetRecipient,
+  useGetSender,
   useGetShippingMethodByID,
+  useGetStates,
   useUpdateShippingMethod,
 } from "../../../apis/ShippingMethodApi";
 import Spinner from "../../../component/Spinner/Spinner";
@@ -28,26 +32,45 @@ const tabs = [
 ];
 function EditShipping() {
   const [singleShipment, setSingleShipment] = useState({});
+  const [shippingTimeRates, setShippingTimeRates] = useState([]);
+  const [sender, setSender] = useState({});
+  const [recipient, setRecipient] = useState({});
   const [image, setImage] = useState("");
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [active, setActive] = useState(tabs[0]);
-
   const { data: generalData, isLoading: generalLoading } =
     useGetShippingMethodByID(id);
   const { data: carriers, isLoading: carriersLoading } = useGetCarriers();
   const { mutate: mutateUpdate, isLoading: updateLoading } =
     useUpdateShippingMethod();
+  const { data: countryData } = useGetCountries();
+  const { data: stateData } = useGetStates();
+  const { data: senderData, isLoading: senderLoading } = useGetSender();
+  const { data: recipientData, isLoading: recipientLoading } =
+    useGetRecipient();
+  // set sender data
   useEffect(() => {
-    console.log(singleShipment);
-  }, [singleShipment]);
+    if (senderData?.data) {
+      setSender(senderData?.data);
+    }
+  }, [senderData]);
+  // set recipient data
+  useEffect(() => {
+    if (recipientData?.data) {
+      setRecipient(recipientData?.data);
+    }
+  }, [recipientData]);
   // to get general data we can write useEffect hook
   useEffect(() => {
     if (generalData?.data) {
       setSingleShipment(generalData?.data);
     }
   }, [generalData]);
+  // useEffect(() => {
+  //   getShippingTimeRate();
+  // }, [generalData]);
   // function for getting carriers
   const getCarriers = () => {
     if (carriers?.data) {
@@ -57,6 +80,38 @@ function EditShipping() {
         key: i,
       }));
       return carrier;
+    }
+    return [];
+  };
+  // Get country data
+  const getCountries = () => {
+    if (countryData?.data) {
+      let countries = Object.entries(countryData?.data)?.map((item) => ({
+        label: item[1],
+        value: item[0],
+      }));
+      return countries;
+    }
+    return [];
+  };
+  // function for getting states
+  const getStates = () => {
+    if (stateData?.data) {
+      let states = stateData?.data;
+      return states;
+    }
+    return {};
+  };
+  // get shipping time and rates
+  const getDestinations = () => {
+    if (generalData?.data) {
+      let temp = Object.values(generalData?.data?.rates || {})
+        ?.filter((el, i) => el?.status === "A")
+        ?.map((item) => ({
+          label: item?.destination,
+          value: item?.destination_id,
+        }));
+      return temp;
     }
     return [];
   };
@@ -88,6 +143,8 @@ function EditShipping() {
       shipping_id: id,
       shipping_data: { ...singleShipment },
       ...data_for_image,
+      sender: { ...sender },
+      recipient: { ...recipient },
       result_ids: "rates",
       recipient: {
         country: "NP",
@@ -119,9 +176,24 @@ function EditShipping() {
   const getContainerFromTab = () => {
     switch (active) {
       case tabs[1]:
-        return <ShippingTimeRates />;
+        return (
+          <ShippingTimeRates
+            destinations={getDestinations()}
+            setShippingTimeRates={setShippingTimeRates}
+            shippingTimeRates={shippingTimeRates}
+          />
+        );
       case tabs[2]:
-        return <TestRateCalculation />;
+        return (
+          <TestRateCalculation
+            countries={getCountries()}
+            states={getStates()}
+            sender={sender}
+            setSender={setSender}
+            recipient={recipient}
+            setRecipient={setRecipient}
+          />
+        );
       case tabs[3]:
         return <ShippingAdditionalSetting />;
       case tabs[4]:
@@ -142,7 +214,13 @@ function EditShipping() {
         );
     }
   };
-  if (generalLoading || carriersLoading || updateLoading) {
+  if (
+    generalLoading ||
+    carriersLoading ||
+    updateLoading ||
+    recipientLoading ||
+    senderLoading
+  ) {
     return <Spinner />;
   }
   return (

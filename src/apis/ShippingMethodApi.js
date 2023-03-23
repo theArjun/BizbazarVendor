@@ -66,3 +66,36 @@ export const useUpdateShippingMethod = () => {
     })
   );
 };
+export const useGetCountries = () =>
+  useQuery({
+    queryKey: ["countries"],
+    queryFn: () =>
+      apicall({
+        url: `ShippingMethod?countries=1`,
+      }),
+  });
+export const useGetStates = () =>
+  useQuery({
+    queryKey: ["states"],
+    queryFn: () =>
+      apicall({
+        url: `ShippingMethod?states=1`,
+      }),
+  });
+
+export const useGetRecipient = () =>
+  useQuery({
+    queryKey: ["shipping_recipient"],
+    queryFn: () =>
+      apicall({
+        url: `ShippingMethod?recipient=1`,
+      }),
+  });
+export const useGetSender = () =>
+  useQuery({
+    queryKey: ["shipping_sender"],
+    queryFn: () =>
+      apicall({
+        url: `ShippingMethod?sender=1`,
+      }),
+  });
