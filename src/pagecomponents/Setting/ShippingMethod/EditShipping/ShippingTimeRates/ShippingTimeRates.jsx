@@ -2,54 +2,22 @@ import React, { useEffect, useState } from "react";
 import styles from "./ShippingTimeRates.module.css";
 import { Form, Select, Button, Input } from "antd";
 import RatesTable from "./Components/Table";
-import RatesModal from "./Components/Modal";
-const INITIAL_CONDITIONS = {
-  price_condition: {
-    from: "",
-    to: "",
-    surcharge: "",
-    type: "A",
-  },
-  weight_condition: {
-    from: "",
-    to: "",
-    surcharge: "",
-    type: "A",
-  },
-  items_condition: {
-    from: "",
-    to: "",
-    surcharge: "",
-    type: "A",
-  },
-};
 const ShippingTimeRates = ({
   destinations,
   shippingTimeRates,
   setShippingTimeRates,
+  haveRate,
+  setHaveRate,
 }) => {
-  const [condition, setCondition] = useState({ ...INITIAL_CONDITIONS });
-  const [modalOpen, setModalOpen] = useState(false);
   const [form] = Form.useForm();
-  const resetCondition = () => {
-    setCondition(INITIAL_CONDITIONS);
-  };
   // form submit function
   const onFinish = (values) => {
-    let prepared_data = { ...values, ...condition };
-    console.log(
-      "🚀 ~ file: ShippingTimeRates.jsx:37 ~ onFinish ~ prepared_data:",
-      prepared_data
-    );
+    let prepared_data = { ...values };
     // lets do set Values
     let temp_data = [...shippingTimeRates, { ...prepared_data }];
     setShippingTimeRates(temp_data);
-    setCondition(INITIAL_CONDITIONS);
     form.resetFields();
   };
-  useEffect(() => {
-    console.log(INITIAL_CONDITIONS);
-  }, [condition]);
   return (
     <div className={styles.container}>
       <div className={styles.condition_body}>
@@ -73,7 +41,12 @@ const ShippingTimeRates = ({
                     style={{
                       width: 200,
                     }}
-                    options={destinations}
+                    options={destinations?.map((el) => ({
+                      ...el,
+                      disabled: haveRate?.some(
+                        (item) => item?.destination_id === el?.value
+                      ),
+                    }))}
                   />
                 </Form.Item>
                 <div className={styles.selected_condition_content}>
@@ -92,10 +65,6 @@ const ShippingTimeRates = ({
                     >
                       <Input type="number" />
                     </Form.Item>
-
-                    <Button onClick={() => setModalOpen(true)}>
-                      Add Conditions
-                    </Button>
                   </div>
                 </div>
               </div>
@@ -106,18 +75,12 @@ const ShippingTimeRates = ({
           </Form>
           <div className={styles.condition_table}>
             <RatesTable
-              shippingTimeRates={shippingTimeRates}
+              shippingTimeRates={haveRate}
+              setShippingTimeRates={setShippingTimeRates}
               destinations={destinations}
             />
           </div>
         </div>
-        <RatesModal
-          modalOpen={modalOpen}
-          setModalOpen={setModalOpen}
-          condition={condition}
-          setCondition={setCondition}
-          resetCondition={resetCondition}
-        />
       </div>
     </div>
   );

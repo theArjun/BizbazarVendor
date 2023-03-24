@@ -32,6 +32,8 @@ const tabs = [
 ];
 function EditShipping() {
   const [singleShipment, setSingleShipment] = useState({});
+  const [destinations, setDestinations] = useState([]);
+  const [haveRate, setHaveRate] = useState([]);
   const [shippingTimeRates, setShippingTimeRates] = useState([]);
   const [sender, setSender] = useState({});
   const [recipient, setRecipient] = useState({});
@@ -66,11 +68,12 @@ function EditShipping() {
   useEffect(() => {
     if (generalData?.data) {
       setSingleShipment(generalData?.data);
+      getDestinations();
     }
   }, [generalData]);
-  // useEffect(() => {
-  //   getShippingTimeRate();
-  // }, [generalData]);
+  useEffect(() => {
+    console.log(shippingTimeRates);
+  }, [shippingTimeRates]);
   // function for getting carriers
   const getCarriers = () => {
     if (carriers?.data) {
@@ -104,16 +107,18 @@ function EditShipping() {
   };
   // get shipping time and rates
   const getDestinations = () => {
-    if (generalData?.data) {
-      let temp = Object.values(generalData?.data?.rates || {})
-        ?.filter((el, i) => el?.status === "A")
-        ?.map((item) => ({
-          label: item?.destination,
-          value: item?.destination_id,
-        }));
-      return temp;
-    }
-    return [];
+    let temp = Object.values(generalData?.data?.rates || {})
+      ?.filter((el, i) => el?.status === "A")
+      ?.map((item) => ({
+        label: item?.destination,
+        value: item?.destination_id,
+      }));
+    let temp_rate =
+      Object.values(generalData?.data?.rates || {})?.filter(
+        (el, i) => el?.status === "A" && el?.rate_id
+      ) || [];
+    setHaveRate(temp_rate);
+    setDestinations(temp);
   };
   // submit changes
   const onOkay = async () => {
@@ -178,9 +183,11 @@ function EditShipping() {
       case tabs[1]:
         return (
           <ShippingTimeRates
-            destinations={getDestinations()}
+            destinations={destinations}
             setShippingTimeRates={setShippingTimeRates}
             shippingTimeRates={shippingTimeRates}
+            haveRate={haveRate}
+            setHaveRate={setHaveRate}
           />
         );
       case tabs[2]:

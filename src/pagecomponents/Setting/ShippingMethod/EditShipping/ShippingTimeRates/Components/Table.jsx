@@ -1,30 +1,42 @@
 import React from "react";
-import { Table } from "antd";
+import { Input, Select, Table } from "antd";
 import useWindowSize from "../../../../../../utils/Hooks/useWindowSize";
-const RatesTable = ({ shippingTimeRates, destinations }) => {
+import { AiFillEye } from "react-icons/ai";
+import { useState } from "react";
+import EditConditionsModal from "./EditConditionsModal";
+const RatesTable = ({
+  shippingTimeRates,
+  destinations,
+  setShippingTimeRates,
+}) => {
   const windowSize = useWindowSize();
-
-  const getDestinationName = (id) => {
-    let name = destinations?.filter((el, i) => el?.value == id);
-    return name[0]?.label;
-  };
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalData, setModalData] = useState({});
   const columns = [
     {
       title: "Destination",
       dataIndex: "destination",
       key: "destination",
-      width: 150,
-      render: (id) => getDestinationName(id),
     },
     {
       title: "Shipping time",
-      dataIndex: "shipping_time",
-      key: "shipping_time",
+      dataIndex: "delivery_time",
+      key: "delivery_time",
+      render: (text) => (
+        <div>
+          <Input value={text} />
+        </div>
+      ),
     },
     {
-      title: "Rate",
-      dataIndex: "rate",
-      key: "rate",
+      title: "Base rate",
+      dataIndex: "base_rate",
+      key: "base_rate",
+      render: (text) => (
+        <div>
+          <Input value={text} />
+        </div>
+      ),
     },
     {
       title: "Price condition",
@@ -33,7 +45,6 @@ const RatesTable = ({ shippingTimeRates, destinations }) => {
           title: "From(रु)",
           dataIndex: "price_condition",
           key: "from",
-          render: (text) => <div>{text?.from}</div>,
         },
         {
           title: "To(रु)",
@@ -45,7 +56,27 @@ const RatesTable = ({ shippingTimeRates, destinations }) => {
           title: "Surcharge / Discount",
           dataIndex: "price_condition",
           key: "surcharge",
-          render: (text) => <div>{text?.surcharge}</div>,
+          render: (text) => <div></div>,
+        },
+        {
+          title: "",
+          dataIndex: "rate_value",
+          key: "rate_value",
+          render: (text, row, i) => (
+            <a
+              onClick={() => {
+                setModalData({
+                  rate_value: "C",
+                  index: i,
+                  destination: row?.destination,
+                  condition: "Price condition",
+                });
+                setModalOpen(true);
+              }}
+            >
+              <AiFillEye />
+            </a>
+          ),
         },
       ],
     },
@@ -68,7 +99,27 @@ const RatesTable = ({ shippingTimeRates, destinations }) => {
           title: "Surcharge / Discount",
           dataIndex: "weight_condition",
           key: "surcharge",
-          render: (text) => <div>{text?.surcharge}</div>,
+          render: (text) => <div></div>,
+        },
+        {
+          title: "",
+          dataIndex: "rate_value",
+          key: "rate_value",
+          render: (text, row, i) => (
+            <a
+              onClick={() => {
+                setModalData({
+                  rate_value: "W",
+                  index: i,
+                  destination: row?.destination,
+                  condition: "Weight condition",
+                });
+                setModalOpen(true);
+              }}
+            >
+              <AiFillEye />
+            </a>
+          ),
         },
       ],
     },
@@ -91,7 +142,27 @@ const RatesTable = ({ shippingTimeRates, destinations }) => {
           title: "Surcharge / Discount",
           dataIndex: "items_condition",
           key: "surcharge",
-          render: (text) => <div>{text?.surcharge}</div>,
+          render: (text) => <div></div>,
+        },
+        {
+          title: "",
+          dataIndex: "rate_value",
+          key: "rate_value",
+          render: (text, row, i) => (
+            <a
+              onClick={() => {
+                setModalData({
+                  rate_value: "I",
+                  index: i,
+                  destination: row?.destination,
+                  condition: "Item condition",
+                });
+                setModalOpen(true);
+              }}
+            >
+              <AiFillEye />
+            </a>
+          ),
         },
       ],
     },
@@ -112,8 +183,15 @@ const RatesTable = ({ shippingTimeRates, destinations }) => {
         pagination={false}
         scroll={{
           y: windowSize.height > 670 ? 300 : 200,
-          x: 1500,
+          x: 1800,
         }}
+      />
+      <EditConditionsModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        modalData={modalData}
+        setShippingTimeRates={setShippingTimeRates}
+        shippingTimeRates={shippingTimeRates}
       />
     </div>
   );

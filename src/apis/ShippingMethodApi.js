@@ -38,6 +38,7 @@ export const useCreateShippingMethods = () =>
 export const useGetShippingMethodByID = (id) =>
   useQuery({
     queryKey: ["single_shipping_method", id],
+    refetchOnWindowFocus: false,
     queryFn: () =>
       apicall({
         url: `ShippingMethod/${id}`,
