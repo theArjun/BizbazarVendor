@@ -1,17 +1,24 @@
 import React from "react";
 import { Input, Select, Table } from "antd";
 import useWindowSize from "../../../../../../utils/Hooks/useWindowSize";
-import { AiFillEye } from "react-icons/ai";
+import { AiFillDelete, AiFillEdit, AiFillEye } from "react-icons/ai";
 import { useState } from "react";
 import EditConditionsModal from "./EditConditionsModal";
 const RatesTable = ({
   shippingTimeRates,
   destinations,
   setShippingTimeRates,
+  setHaveRate,
+  haveRate,
 }) => {
   const windowSize = useWindowSize();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState({});
+  const handleDeleteDestination = (id) => {
+    let temp = [...haveRate];
+    let hasRate = temp.filter((el, i) => el?.destination_id !== id);
+    setHaveRate(hasRate);
+  };
   const columns = [
     {
       title: "Destination",
@@ -22,9 +29,16 @@ const RatesTable = ({
       title: "Shipping time",
       dataIndex: "delivery_time",
       key: "delivery_time",
-      render: (text) => (
+      render: (text, row, i) => (
         <div>
-          <Input value={text} />
+          <Input
+            value={text}
+            onChange={(e) => {
+              let temp = [...haveRate];
+              temp[i].delivery_time = e.target.value;
+              setHaveRate(temp);
+            }}
+          />
         </div>
       ),
     },
@@ -32,9 +46,16 @@ const RatesTable = ({
       title: "Base rate",
       dataIndex: "base_rate",
       key: "base_rate",
-      render: (text) => (
+      render: (text, row, i) => (
         <div>
-          <Input value={text} />
+          <Input
+            value={text}
+            onChange={(e) => {
+              let temp = [...haveRate];
+              temp[i].base_rate = e.target.value;
+              setHaveRate(temp);
+            }}
+          />
         </div>
       ),
     },
@@ -43,20 +64,31 @@ const RatesTable = ({
       children: [
         {
           title: "From(रु)",
-          dataIndex: "price_condition",
+          dataIndex: "rate_value",
           key: "from",
+          render: (value) => (
+            <div>
+              {Object?.values(value["C"] || {}).at(-1)?.range_from_value || ""}
+            </div>
+          ),
         },
         {
           title: "To(रु)",
-          dataIndex: "price_condition",
+          dataIndex: "rate_value",
           key: "from",
-          render: (text) => <div>{text?.to}</div>,
+          render: (value) => (
+            <div>
+              {Object?.values(value["C"] || {}).at(-1)?.range_to_value || ""}
+            </div>
+          ),
         },
         {
           title: "Surcharge / Discount",
-          dataIndex: "price_condition",
+          dataIndex: "rate_value",
           key: "surcharge",
-          render: (text) => <div></div>,
+          render: (value) => (
+            <div>{Object?.values(value["C"] || {}).at(-1)?.value || ""}</div>
+          ),
         },
         {
           title: "",
@@ -74,7 +106,7 @@ const RatesTable = ({
                 setModalOpen(true);
               }}
             >
-              <AiFillEye />
+              <AiFillEdit size={18} />
             </a>
           ),
         },
@@ -85,21 +117,31 @@ const RatesTable = ({
       children: [
         {
           title: "From(Kg)",
-          dataIndex: "weight_condition",
+          dataIndex: "rate_value",
           key: "from",
-          render: (text) => <div>{text?.from}</div>,
+          render: (value) => (
+            <div>
+              {Object?.values(value["W"] || {}).at(-1)?.range_from_value || ""}
+            </div>
+          ),
         },
         {
           title: "To(Kg)",
-          dataIndex: "weight_condition",
+          dataIndex: "rate_value",
           key: "from",
-          render: (text) => <div>{text?.to}</div>,
+          render: (value) => (
+            <div>
+              {Object?.values(value["W"] || {}).at(-1)?.range_to_value || ""}
+            </div>
+          ),
         },
         {
           title: "Surcharge / Discount",
-          dataIndex: "weight_condition",
+          dataIndex: "rate_value",
           key: "surcharge",
-          render: (text) => <div></div>,
+          render: (value) => (
+            <div>{Object?.values(value["W"] || {}).at(-1)?.value || ""}</div>
+          ),
         },
         {
           title: "",
@@ -117,7 +159,7 @@ const RatesTable = ({
                 setModalOpen(true);
               }}
             >
-              <AiFillEye />
+              <AiFillEdit size={18} />
             </a>
           ),
         },
@@ -128,21 +170,31 @@ const RatesTable = ({
       children: [
         {
           title: "From(item)",
-          dataIndex: "items_condition",
+          dataIndex: "rate_value",
           key: "from",
-          render: (text) => <div>{text?.from}</div>,
+          render: (value) => (
+            <div>
+              {Object?.values(value["I"] || {}).at(-1)?.range_from_value || ""}
+            </div>
+          ),
         },
         {
           title: "To(item)",
-          dataIndex: "items_condition",
+          dataIndex: "rate_value",
           key: "from",
-          render: (text) => <div>{text?.to}</div>,
+          render: (value) => (
+            <div>
+              {Object?.values(value["I"] || {}).at(-1)?.range_to_value || ""}
+            </div>
+          ),
         },
         {
           title: "Surcharge / Discount",
-          dataIndex: "items_condition",
+          dataIndex: "rate_value",
           key: "surcharge",
-          render: (text) => <div></div>,
+          render: (value) => (
+            <div>{Object?.values(value["I"] || {}).at(-1)?.value || ""}</div>
+          ),
         },
         {
           title: "",
@@ -160,7 +212,7 @@ const RatesTable = ({
                 setModalOpen(true);
               }}
             >
-              <AiFillEye />
+              <AiFillEdit size={18} />
             </a>
           ),
         },
@@ -169,9 +221,14 @@ const RatesTable = ({
     {
       title: "Action",
       key: "action",
-      dataIndex: "action",
+      dataIndex: "destination_id",
       fixed: "right",
       width: 100,
+      render: (id) => (
+        <a onClick={() => handleDeleteDestination(id)}>
+          <AiFillDelete size={20} color={"red"} />
+        </a>
+      ),
     },
   ];
   return (
@@ -192,6 +249,8 @@ const RatesTable = ({
         modalData={modalData}
         setShippingTimeRates={setShippingTimeRates}
         shippingTimeRates={shippingTimeRates}
+        setHaveRate={setHaveRate}
+        haveRate={haveRate}
       />
     </div>
   );

@@ -33,6 +33,7 @@ const tabs = [
 function EditShipping() {
   const [singleShipment, setSingleShipment] = useState({});
   const [destinations, setDestinations] = useState([]);
+  const [allDestination, setAllDestination] = useState([]);
   const [haveRate, setHaveRate] = useState([]);
   const [shippingTimeRates, setShippingTimeRates] = useState([]);
   const [sender, setSender] = useState({});
@@ -71,9 +72,6 @@ function EditShipping() {
       getDestinations();
     }
   }, [generalData]);
-  useEffect(() => {
-    console.log(shippingTimeRates);
-  }, [shippingTimeRates]);
   // function for getting carriers
   const getCarriers = () => {
     if (carriers?.data) {
@@ -117,12 +115,33 @@ function EditShipping() {
       Object.values(generalData?.data?.rates || {})?.filter(
         (el, i) => el?.status === "A" && el?.rate_id
       ) || [];
+    let temp_all_rate =
+      Object.values(generalData?.data?.rates || {})?.filter(
+        (el, i) => el?.status === "A"
+      ) || [];
+    setAllDestination(temp_all_rate);
     setHaveRate(temp_rate);
     setDestinations(temp);
   };
   // submit changes
   const onOkay = async () => {
     var formData = new FormData();
+    let time_and_shipping = [...haveRate];
+    let temp_time_rate_data = {
+      0: "",
+      ...time_and_shipping?.reduce((accumulator, currentValue, i) => {
+        accumulator[currentValue?.destination_id] = currentValue || "";
+        return accumulator;
+      }, {}),
+      delivery_time: {
+        ...time_and_shipping?.reduce((accumulator, currentValue, i) => {
+          accumulator[currentValue?.destination_id] =
+            parseInt(currentValue?.delivery_time) || "";
+          return accumulator;
+        }, {}),
+      },
+    };
+    console.log(temp_time_rate_data);
     let data_for_image = image
       ? {
           shipping_image_data: {
@@ -146,26 +165,14 @@ function EditShipping() {
       : {};
     const data = {
       shipping_id: id,
-      shipping_data: { ...singleShipment },
+      shipping_data: { ...singleShipment, rates: { ...temp_time_rate_data } },
+
       ...data_for_image,
       sender: { ...sender },
       recipient: { ...recipient },
       result_ids: "rates",
-      recipient: {
-        country: "NP",
-        state: "BGM",
-        city: "Kathmandu",
-        zipcode: "02125",
-        address: "Kuleshowr",
-      },
-      sender: {
-        country: "US",
-        state: "NY",
-        city: "New York",
-        zipcode: "10001",
-        address: "41 Avenue",
-      },
     };
+    console.log(data);
     formData.append("shipping_data", JSON.stringify(data));
     formData.append("file", image);
     // function for update
@@ -188,6 +195,7 @@ function EditShipping() {
             shippingTimeRates={shippingTimeRates}
             haveRate={haveRate}
             setHaveRate={setHaveRate}
+            allDestination={allDestination}
           />
         );
       case tabs[2]:
@@ -202,7 +210,12 @@ function EditShipping() {
           />
         );
       case tabs[3]:
-        return <ShippingAdditionalSetting />;
+        return (
+          <ShippingAdditionalSetting
+            singleShipment={singleShipment}
+            setSingleShipment={setSingleShipment}
+          />
+        );
       case tabs[4]:
         return <StoreFronts />;
       case tabs[5]:
@@ -268,7 +281,7 @@ function EditShipping() {
           ))}
         </div>
       </div>
-      {getContainerFromTab()}
+      <div>{getContainerFromTab()}</div>
     </div>
   );
 }

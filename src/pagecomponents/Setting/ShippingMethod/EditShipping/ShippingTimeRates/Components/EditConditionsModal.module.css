@@ -5,8 +5,16 @@
 .section > * {
   margin: 0 3px;
 }
+.available_rates_parent_container {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 5px;
+  align-items: center;
+  padding: 5px;
+}
 .available_rates_container {
   display: flex;
+  /* flex-wrap: wrap; */
 }
 .available_rates_container > * {
   margin: 0 5px;

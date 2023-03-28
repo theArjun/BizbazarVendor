@@ -11,10 +11,6 @@ const TestRateCalculation = ({
   recipient,
   setRecipient,
 }) => {
-  console.log("🚀 ~ file: TestRateCalculation.jsx:14 ~ recipient:", recipient);
-
-  const [currentSenderState, setCurrentSenderState] = useState([]);
-  const [currentRecipientState, setCurrentRecipientState] = useState([]);
   return (
     <div className={styles.wrap}>
       <div className={styles.container}>

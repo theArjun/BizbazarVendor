@@ -8,14 +8,23 @@ const ShippingTimeRates = ({
   setShippingTimeRates,
   haveRate,
   setHaveRate,
+  allDestination,
 }) => {
   const [form] = Form.useForm();
   // form submit function
   const onFinish = (values) => {
-    let prepared_data = { ...values };
+    let prepared_data = allDestination?.filter(
+      (el) => el?.destination_id === values?.destination
+    );
+    let final_prepared_data = {
+      ...prepared_data[0],
+      delivery_time: values.shipping_time || "",
+      base_rate: values.rate || "",
+      rate_value: {},
+    };
     // lets do set Values
-    let temp_data = [...shippingTimeRates, { ...prepared_data }];
-    setShippingTimeRates(temp_data);
+    let temp_data = [...haveRate, { ...final_prepared_data }];
+    setHaveRate(temp_data);
     form.resetFields();
   };
   return (
@@ -78,6 +87,8 @@ const ShippingTimeRates = ({
               shippingTimeRates={haveRate}
               setShippingTimeRates={setShippingTimeRates}
               destinations={destinations}
+              haveRate={haveRate}
+              setHaveRate={setHaveRate}
             />
           </div>
         </div>
