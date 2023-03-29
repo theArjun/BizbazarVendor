@@ -44,7 +44,22 @@ function ShippingMethod({
       event.target.scrollHeight;
     setBottom(condition);
   };
-
+  // get usegroup names
+  const getUserGroups = (ids) => {
+    let names = ids.split(",").reduce((accumulator, currentValue) => {
+      if (currentValue == 2) {
+        accumulator = accumulator + ", " + "Registered";
+      }
+      if (currentValue == 1) {
+        accumulator = accumulator + ", " + "Guest";
+      }
+      if (currentValue == 0) {
+        accumulator = accumulator + ", " + "All";
+      }
+      return accumulator;
+    }, "");
+    return names.slice(1);
+  };
   const columns = [
     {
       title: "Pos",
@@ -80,6 +95,7 @@ function ShippingMethod({
     {
       title: "User Group",
       dataIndex: "usergroup_ids",
+      render: (text) => getUserGroups(text || {}),
     },
     {
       title: "Tools",

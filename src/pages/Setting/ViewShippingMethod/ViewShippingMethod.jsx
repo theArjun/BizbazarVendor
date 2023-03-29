@@ -19,6 +19,7 @@ import {
   useGetSender,
   useGetShippingMethodByID,
   useGetStates,
+  useGetStoreFrontData,
   useUpdateShippingMethod,
 } from "../../../apis/ShippingMethodApi";
 import Spinner from "../../../component/Spinner/Spinner";
@@ -30,10 +31,13 @@ const tabs = [
   "Storefronts",
   "Suppliers",
 ];
+const { id: company_id } = JSON.parse(localStorage.getItem("userinfo"));
 function EditShipping() {
   const [singleShipment, setSingleShipment] = useState({});
   const [destinations, setDestinations] = useState([]);
+  const [storefronts, setStorefronts] = useState([]);
   const [allDestination, setAllDestination] = useState([]);
+  const [isDisabled, setIsDisabled] = useState(false);
   const [haveRate, setHaveRate] = useState([]);
   const [shippingTimeRates, setShippingTimeRates] = useState([]);
   const [sender, setSender] = useState({});
@@ -53,12 +57,24 @@ function EditShipping() {
   const { data: senderData, isLoading: senderLoading } = useGetSender();
   const { data: recipientData, isLoading: recipientLoading } =
     useGetRecipient();
+  const { data: storeFrontData, isLoading: storefrontLoading } =
+    useGetStoreFrontData(id);
   // set sender data
   useEffect(() => {
     if (senderData?.data) {
       setSender(senderData?.data);
     }
   }, [senderData]);
+  useEffect(() => {
+    if (storeFrontData?.data) {
+      setStorefronts(
+        Object.values(storeFrontData?.data?.storefronts || {})?.map((el) => ({
+          ...el,
+          key: el["id"],
+        })) || {}
+      );
+    }
+  }, [storeFrontData]);
   // set recipient data
   useEffect(() => {
     if (recipientData?.data) {
@@ -68,10 +84,12 @@ function EditShipping() {
   // to get general data we can write useEffect hook
   useEffect(() => {
     if (generalData?.data) {
+      setIsDisabled(company_id == generalData?.data?.company_id);
       setSingleShipment(generalData?.data);
       getDestinations();
     }
   }, [generalData]);
+
   // function for getting carriers
   const getCarriers = () => {
     if (carriers?.data) {
@@ -141,7 +159,6 @@ function EditShipping() {
         }, {}),
       },
     };
-    console.log(temp_time_rate_data);
     let data_for_image = image
       ? {
           shipping_image_data: {
@@ -172,7 +189,6 @@ function EditShipping() {
       recipient: { ...recipient },
       result_ids: "rates",
     };
-    console.log(data);
     formData.append("shipping_data", JSON.stringify(data));
     formData.append("file", image);
     // function for update
@@ -217,9 +233,21 @@ function EditShipping() {
           />
         );
       case tabs[4]:
-        return <StoreFronts />;
+        return (
+          <StoreFronts
+            storefronts={storefronts}
+            setStorefront={setStorefronts}
+            singleShipment={singleShipment}
+            setSingleShipment={setSingleShipment}
+          />
+        );
       case tabs[5]:
-        return <ShippingSuppliers />;
+        return (
+          <ShippingSuppliers
+            singleShipment={singleShipment}
+            setSingleShipment={setSingleShipment}
+          />
+        );
       default:
         return Object.values(singleShipment).length ? (
           <ShippingMethodGeneral
@@ -239,7 +267,8 @@ function EditShipping() {
     carriersLoading ||
     updateLoading ||
     recipientLoading ||
-    senderLoading
+    senderLoading ||
+    storefrontLoading
   ) {
     return <Spinner />;
   }
@@ -260,7 +289,11 @@ function EditShipping() {
           <Button className={styles.button1} onClick={() => navigate(-1)}>
             Back
           </Button>
-          <Button className={styles.button1} onClick={() => onOkay()}>
+          <Button
+            style={!isDisabled ? { display: "none" } : {}}
+            className={styles.button1}
+            onClick={() => onOkay()}
+          >
             Save
           </Button>
         </div>
@@ -281,7 +314,9 @@ function EditShipping() {
           ))}
         </div>
       </div>
-      <div>{getContainerFromTab()}</div>
+      <div className={isDisabled ? "" : styles.area_disabled}>
+        {getContainerFromTab()}
+      </div>
     </div>
   );
 }

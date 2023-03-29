@@ -6,6 +6,12 @@ import "react-quill/dist/quill.snow.css";
 import { message } from "antd";
 import ImageUploader from "../../../../../component/ImageUploader/ImageUploaderForPromotion";
 import styles from "./General.module.css";
+const CheckboxGroup = Checkbox.Group;
+const USER_GROUPS = [
+  { label: "All", value: "0" },
+  { label: "Guest", value: "1" },
+  { label: "Registered", value: "2" },
+];
 const General = ({
   singleShipment,
   carriers,
@@ -29,7 +35,16 @@ const General = ({
     }
     return [];
   };
-
+  // change usergroup handler
+  const handleUserGroupChange = (value) => {
+    let temp = { ...singleShipment };
+    let values = value?.reduce((accumulator, currentValue) => {
+      accumulator = accumulator + "," + currentValue;
+      return accumulator;
+    }, "");
+    temp.usergroup_ids = values.slice(1);
+    setSingleShipment(temp);
+  };
   return (
     <div className={styles.wrap}>
       <div className={styles.container}>
@@ -156,20 +171,11 @@ const General = ({
         <div className={styles.section}>
           <label>User Group :</label>{" "}
           <div style={{ display: "flex" }}>
-            <Radio.Group
-              onChange={(e) =>
-                setSingleShipment((dat) => ({
-                  ...dat,
-                  usergroup_ids: e.target.value,
-                }))
-              }
-              value={singleShipment?.usergroup_ids}
-            >
-              <Radio value={"0"}>All</Radio>
-              <Radio value={"1"}>Guest</Radio>
-              <Radio value={"2"}>Registered</Radio>
-            </Radio.Group>
-
+            <CheckboxGroup
+              options={USER_GROUPS}
+              value={singleShipment?.usergroup_ids?.split(",") || []}
+              onChange={handleUserGroupChange}
+            />
             <div />
           </div>
         </div>

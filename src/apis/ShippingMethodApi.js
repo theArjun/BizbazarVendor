@@ -100,3 +100,11 @@ export const useGetSender = () =>
         url: `ShippingMethod?sender=1`,
       }),
   });
+export const useGetStoreFrontData = (id) =>
+  useQuery({
+    queryKey: ["storefronts"],
+    queryFn: () =>
+      apicall({
+        url: `ShippingMethod/${id}?storefronts=1`,
+      }),
+  });
