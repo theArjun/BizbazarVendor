@@ -9,6 +9,12 @@ import { apicall } from "../../../../utils/apicall/apicall";
 import ImageUploader from "../../../../component/ImageUploader/ImageUploaderForPromotion";
 import { useCreateShippingMethods } from "../../../../apis/ShippingMethodApi";
 import { useQueryClient } from "@tanstack/react-query";
+const CheckboxGroup = Checkbox.Group;
+const USER_GROUPS = [
+  { label: "All", value: "0" },
+  { label: "Guest", value: "1" },
+  { label: "Registered", value: "2" },
+];
 function CreateShipping({ open, setOpen }) {
   let active = false;
   const queryClient = useQueryClient();
@@ -20,7 +26,16 @@ function CreateShipping({ open, setOpen }) {
   useEffect(() => {
     getCarrier();
   }, []);
-
+  // change usergroup handler
+  const handleUserGroupChange = (value) => {
+    let temp = { ...infoData };
+    let values = value?.reduce((accumulator, currentValue) => {
+      accumulator = accumulator + "," + currentValue;
+      return accumulator;
+    }, "");
+    temp.usergroup = values.slice(1);
+    setInfoData(temp);
+  };
   const getCarrier = async () => {
     const result = await apicall({
       url: "VendorCarrier",
@@ -109,6 +124,7 @@ function CreateShipping({ open, setOpen }) {
   return (
     <Modal
       centered
+      className={styles.shipping_create_modal}
       open={open}
       onOk={onOkay}
       okButtonProps={{
@@ -240,22 +256,10 @@ function CreateShipping({ open, setOpen }) {
         <div className={styles.section}>
           <label>User Group :</label>{" "}
           <div style={{ display: "flex" }}>
-            {/* <Checkbox>All </Checkbox> <Checkbox>Guest </Checkbox>{" "}
-            <Checkbox>Registered </Checkbox> */}
-            <Radio.Group
-              va
-              onChange={(e) =>
-                setInfoData((dat) => ({
-                  ...dat,
-                  usergroup: e.target.value,
-                }))
-              }
-            >
-              <Radio value={"0"}>All</Radio>
-              <Radio value={"1"}>Guest</Radio>
-              <Radio value={"2"}>Registered</Radio>
-            </Radio.Group>
-
+            <CheckboxGroup
+              options={USER_GROUPS}
+              onChange={handleUserGroupChange}
+            />
             <div />
           </div>
         </div>
@@ -297,7 +301,7 @@ function CreateShipping({ open, setOpen }) {
 
         <div className={styles.section}>
           <label>Allowed Payment Method:</label>{" "}
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex" }} className={styles.section_body}>
             <Checkbox.Group
               options={[
                 "Connect Credit card",

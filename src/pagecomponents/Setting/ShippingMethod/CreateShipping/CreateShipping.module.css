@@ -27,10 +27,9 @@
 .red {
   color: red;
 }
-.section > div > div {
+.section_body > div > div {
   display: flex;
   flex-wrap: wrap;
-  /* justify-content: space-around; */
 }
 
 .section > div > div > * {
@@ -45,4 +44,10 @@
   color: red;
   /* text-align: center; */
   margin-left: 10%;
+}
+.shipping_create_modal > div > :nth-child(3) {
+  display: block;
+  text-align: end;
+  background: transparent;
+  margin-top: 12px;
 }

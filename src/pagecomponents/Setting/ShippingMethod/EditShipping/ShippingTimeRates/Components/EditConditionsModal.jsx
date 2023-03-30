@@ -52,6 +52,7 @@ const EditConditionsModal = ({
       title={`${modalData.destination} ----->${modalData.condition}`}
       centered
       open={modalOpen}
+      className={styles.condition_modal}
       onOk={() => setModalOpen(false)}
       onCancel={() => setModalOpen(false)}
       width={800}

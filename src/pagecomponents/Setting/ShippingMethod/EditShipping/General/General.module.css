@@ -38,12 +38,9 @@
   font-size: 16px;
   font-weight: 500;
 }
-.section div > div {
+.section_body div {
   display: flex;
   flex-wrap: wrap;
-}
-.section div > div > * {
-  /* margin-bottom: 10px; */
 }
 .errorSection {
   width: 100%;

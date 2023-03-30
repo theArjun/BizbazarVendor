@@ -1,47 +1,20 @@
 import React, { useState, useEffect } from "react";
 import styles from "./RecentOrders.module.css";
 import cx from "classnames";
-import { Dropdown, Menu, Table } from "antd";
-import { apicall } from "../../../utils/apicall/apicall";
+import { Table } from "antd";
 import { Tag } from "antd";
-import OrderStatusModal from "../../../component/OrderStatusModal/OrderStatusModal";
 import { useNavigate } from "react-router-dom";
 
-function RecentOrders({ order, status, statusModalOpen, setStatusModalOpen }) {
+function RecentOrders({ order, status }) {
   const [activeTab, setActiveTab] = useState("");
   const navigate = useNavigate();
-
-  const menu = (filterStatus, objId) => (
-    <Menu
-      items={status
-        .filter((datt, ii) => filterStatus != datt?.description)
-        .map((dat, i) => ({
-          key: i,
-          label: (
-            <div
-              onClick={() => {
-                setStatusModalOpen({
-                  open: true,
-                  data: dat,
-                  orderId: objId,
-                });
-              }}
-              target="_blank"
-              style={{ color: dat?.params?.color }}
-            >
-              {dat.description}
-            </div>
-          ),
-        }))}
-    />
-  );
 
   const getStatusTag = (data, obj) => {
     const [statusOfRow] = status.filter((dat) => dat.status === data);
     return (
-      <Dropdown overlay={menu(statusOfRow?.description, obj)}>
+      <React.Fragment>
         <Tag color={statusOfRow?.params?.color}>{statusOfRow?.description}</Tag>
-      </Dropdown>
+      </React.Fragment>
     );
   };
 
@@ -160,10 +133,6 @@ function RecentOrders({ order, status, statusModalOpen, setStatusModalOpen }) {
           }}
         />
       </div>
-      <OrderStatusModal
-        statusModalOpen={statusModalOpen}
-        setStatusModalOpen={setStatusModalOpen}
-      />
     </div>
   );
 }

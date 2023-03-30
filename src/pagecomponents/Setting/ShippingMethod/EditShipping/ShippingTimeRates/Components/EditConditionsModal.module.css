@@ -26,3 +26,9 @@
 .available_rates > * {
   margin: 10px 0;
 }
+.condition_modal > div > :nth-child(4) {
+  display: block;
+  text-align: end;
+  background: transparent;
+  margin-top: 12px;
+}

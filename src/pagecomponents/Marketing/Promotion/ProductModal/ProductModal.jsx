@@ -51,8 +51,8 @@ const ProductModal = ({ modalOpen, setModalOpen, productData }) => {
       setProductList(temp);
     }
   };
-//  set Status of product
-const getProductStatus = (status) => {
+  //  set Status of product
+  const getProductStatus = (status) => {
     switch (status) {
       case "H":
         return "Hidden";
@@ -76,19 +76,17 @@ const getProductStatus = (status) => {
     return false;
   };
   const columns = [
-    
     {
       title: "Name/Code",
       dataIndex: "name",
-      render:(text, row)=>(
+      render: (text, row) => (
         <>
-        <div className={styles.product_name}>
-        <h4>{row?.product}</h4>
-        <p>{row?.product_code}</p>
-        </div>
+          <div className={styles.product_name}>
+            <h4>{row?.product}</h4>
+            <p>{row?.product_code}</p>
+          </div>
         </>
-        
-      )
+      ),
     },
     {
       title: "Price",
@@ -101,11 +99,7 @@ const getProductStatus = (status) => {
     {
       title: "Status",
       dataIndex: "status",
-      render:(status)=>(
-        <div>
-        {getProductStatus(status)}
-        </div>
-      )
+      render: (status) => <div>{getProductStatus(status)}</div>,
     },
   ];
 
@@ -114,6 +108,7 @@ const getProductStatus = (status) => {
       title="Add products"
       centered
       open={modalOpen}
+      className={styles.variation_modal}
       onOk={() => setModalOpen(false)}
       onCancel={() => setModalOpen(false)}
       width={1000}
@@ -152,20 +147,20 @@ const getProductStatus = (status) => {
               </div>
             )}
           </div>
-          </div>
-          <div></div>
-          <div className={styles.tableContain}>
-            <Table
-               rowKey={"product_id"}
-              dataSource={productList}
-              columns={columns}
-              pagination={false}
-              scroll={{
-                y: windowSize.height > 670 ? 300 : 200,
-                x: 1000,
-              }}
-            />
-          </div>
+        </div>
+        <div></div>
+        <div className={styles.tableContain}>
+          <Table
+            rowKey={"product_id"}
+            dataSource={productList}
+            columns={columns}
+            pagination={false}
+            scroll={{
+              y: windowSize.height > 670 ? 300 : 200,
+              x: 1000,
+            }}
+          />
+        </div>
       </div>
     </Modal>
   );

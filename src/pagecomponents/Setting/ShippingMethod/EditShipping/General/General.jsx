@@ -156,7 +156,6 @@ const General = ({
         <div className={styles.section}>
           <div>Detailed description:</div>
           <ReactQuill
-            className={styles.inputQuill}
             theme="snow"
             value={singleShipment?.description}
             onChange={(e) =>
@@ -217,7 +216,7 @@ const General = ({
 
         <div className={styles.section}>
           <label>Allowed Payment Method :</label>{" "}
-          <div style={{ display: "flex" }}>
+          <div style={{ display: "flex" }} className={styles.section_body}>
             <Checkbox.Group
               options={[
                 "Connect Credit card",

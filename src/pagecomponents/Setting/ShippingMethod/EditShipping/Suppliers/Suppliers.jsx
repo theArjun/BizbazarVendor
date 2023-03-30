@@ -13,8 +13,14 @@ const Suppliers = ({ singleShipment, setSingleShipment }) => {
               let temp = { ...singleShipment };
               if (e.target.checked) {
                 temp.supplier_id = "0";
+                temp.suppliers = {
+                  0: "Y",
+                };
               } else {
-                temp.supplier_id = "1";
+                temp.supplier_id = "";
+                temp.suppliers = {
+                  0: "N",
+                };
               }
               setSingleShipment(temp);
             }}

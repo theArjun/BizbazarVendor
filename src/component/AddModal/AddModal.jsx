@@ -22,19 +22,18 @@ const AddModal = ({ modalOpen, setModalOpen, condition_data, ids, setIds }) => {
       document.removeEventListener("click", handleClick);
     };
   }, []);
-useEffect(()=>{
-  
-  let only_ids=productList.reduce((updater, current)=>{
-   updater=updater+','+current.id;
-    return updater;
-  },"")
-  setIds(only_ids.slice(1))
-},[productList])
-useEffect(()=>{
-    if(!ids){
-      setProductList([])
+  useEffect(() => {
+    let only_ids = productList.reduce((updater, current) => {
+      updater = updater + "," + current.id;
+      return updater;
+    }, "");
+    setIds(only_ids.slice(1));
+  }, [productList]);
+  useEffect(() => {
+    if (!ids) {
+      setProductList([]);
     }
-},[ids])
+  }, [ids]);
   const getUrl = (search) => {
     return (
       "products?is_search=Y" +
@@ -115,7 +114,7 @@ useEffect(()=>{
         </>
       ),
     },
-    
+
     {
       title: "Quantity",
       dataIndex: "quantity",
@@ -132,6 +131,7 @@ useEffect(()=>{
       centered
       open={modalOpen}
       onOk={() => setModalOpen(false)}
+      className={styles.variation_modal}
       onCancel={() => setModalOpen(false)}
       width={1000}
     >

@@ -1,25 +1,25 @@
-.add_condition_field{
-    display:  flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    align-items: center;
+.add_condition_field {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: center;
 }
-.add_condition_field > *{
-margin: 10px 0;
+.add_condition_field > * {
+  margin: 10px 0;
 }
-.condition_fields >*{
-   margin-right: 20px;
+.condition_fields > * {
+  margin-right: 20px;
 }
-.condition_fields{
-    display: flex;
-    flex-wrap: wrap;
+.condition_fields {
+  display: flex;
+  flex-wrap: wrap;
 }
-.condition_fields > div{
-    margin-bottom: 0 !important;
+.condition_fields > div {
+  margin-bottom: 0 !important;
 }
-.particular_condition{
-    display: flex;
+.particular_condition {
+  display: flex;
 }
-.particular_condition > *{
-    margin: 0 5px;
+.particular_condition > * {
+  margin: 0 5px;
 }
