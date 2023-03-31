@@ -2,80 +2,39 @@ import React, { lazy, Suspense } from "react";
 import styles from "./Barcharts.module.css";
 const Chart = lazy(() => import("react-apexcharts"));
 
-function Barcharts({ height = "800" }) {
-  const gRN = () => {
-    return Math.ceil(Math.random() * (1000 - 1) + 1);
+function Barcharts({ height = "800", graphData }) {
+  // get Labels
+  const getLabels = () => {
+    let data = graphData?.reduce((accumulator, currentValue) => {
+      accumulator.push(currentValue?.category);
+      return accumulator;
+    }, []);
+    return data;
   };
-
+  // get Totals
+  const getTotals = () => {
+    let data = graphData?.reduce((accumulator, currentValue) => {
+      accumulator.push(currentValue?.total);
+      return accumulator;
+    }, []);
+    return data;
+  };
+  // get Actives
+  const getActives = () => {
+    let data = graphData?.reduce((accumulator, currentValue) => {
+      accumulator.push(currentValue?.active);
+      return accumulator;
+    }, []);
+    return data;
+  };
   const series = [
     {
       name: "Total",
-      data: [
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-      ],
+      data: getTotals(),
     },
     {
       name: "Active",
-      data: [
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-      ],
+      data: getActives(),
     },
   ];
   var options = {
@@ -94,10 +53,11 @@ function Barcharts({ height = "800" }) {
     },
 
     xaxis: {
+      categories: getLabels(),
       labels: {
-        rotate: -15,
-        rotateAlways: true,
-        maxHeight: 37,
+        // rotate: -15,
+        // rotateAlways: true,
+        maxHeight: 70,
       },
 
       plotOptions: {
@@ -122,7 +82,7 @@ function Barcharts({ height = "800" }) {
     <Suspense fallback={<div>..loading</div>}>
       <div className={styles.container} style={{ height: height + "px" }}>
         <div className="heading-tab" style={{ marginLeft: "10px" }}>
-          Statistic
+          Category barchart
         </div>
         <Chart
           type="bar"

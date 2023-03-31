@@ -12,8 +12,9 @@ import { apicall } from "./utils/apicall/apicall";
 import { Button, Result } from "antd";
 import PublicRoute from "./utils/PublicRoute";
 const Tweak = lazy(() => import("./pages/Orders/Tweak/Tweak"));
-const MonthlyOrderReport = lazy(() => import("./pages/Reports/MonthlyOrderReport/MonthlyOrderReport"));
-
+const MonthlyOrderReport = lazy(() =>
+  import("./pages/Reports/MonthlyOrderReport/MonthlyOrderReport")
+);
 
 const ViewRateAreas = lazy(() =>
   import("./pages/Setting/ShippingMethod/ViewRateAreas/ViewRateAreas")
@@ -38,6 +39,7 @@ import {
   QueryClientProvider,
   useQueryClient,
 } from "@tanstack/react-query";
+import { GeneralContextProvider } from "./ContextProvider/ContextProvider";
 
 const Home = lazy(() => import("./pages/Home/Home"));
 const ProductCountReport = lazy(() =>
@@ -139,7 +141,9 @@ function App() {
             <Route
               element={
                 <SuspenseWrapper>
-                  <Home />
+                  <GeneralContextProvider>
+                    <Home />
+                  </GeneralContextProvider>
                 </SuspenseWrapper>
               }
               path="/"
@@ -148,7 +152,9 @@ function App() {
             <Route
               element={
                 <SuspenseWrapper>
-                  <Seller />
+                  <GeneralContextProvider>
+                    <Seller />
+                  </GeneralContextProvider>
                 </SuspenseWrapper>
               }
               path="/SellerInformation"
@@ -357,8 +363,7 @@ function App() {
             <Route
               element={
                 <SuspenseWrapper>
-                
-                <LogosAndStyles/>
+                  <LogosAndStyles />
                 </SuspenseWrapper>
               }
               path="/Setting/Logos And Styles"
@@ -422,9 +427,11 @@ function App() {
             ></Route>
             {/**Monthly Order Report*/}
             <Route
-              element={<SuspenseWrapper>
-                <MonthlyOrderReport/>
-              </SuspenseWrapper>}
+              element={
+                <SuspenseWrapper>
+                  <MonthlyOrderReport />
+                </SuspenseWrapper>
+              }
               path="/Reports/Monthly Order Report"
             ></Route>
             {/**Order details */}

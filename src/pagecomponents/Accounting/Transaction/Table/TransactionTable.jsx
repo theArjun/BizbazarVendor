@@ -2,7 +2,17 @@ import React, { useState, useEffect } from "react";
 import styles from "./Table.module.css";
 import { Table, Tag } from "antd";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
-const TransactionTable = ({ handleScroll, loading, data, status,getTotalTransaction,getTotalShipping,getTotalVoucher,getTotalGift, getNetIncome}) => {
+const TransactionTable = ({
+  handleScroll,
+  loading,
+  data,
+  status,
+  getTotalTransaction,
+  getTotalShipping,
+  getTotalVoucher,
+  getTotalGift,
+  getNetIncome,
+}) => {
   const windowSize = useWindowSize();
   useEffect(() => {
     document
@@ -16,21 +26,20 @@ const TransactionTable = ({ handleScroll, loading, data, status,getTotalTransact
     };
   }, [handleScroll]);
 
-
-// getting status tag
+  // getting status tag
   const getStatusTag = (data, obj) => {
     const [statusOfRow] = status.filter((dat) => dat.status === data);
     return (
       <div>
-      <Tag className={styles.dpContainer} color={statusOfRow?.params?.color}>
-      {statusOfRow?.description}
-      </Tag>
+        <Tag className={styles.dpContainer} color={statusOfRow?.params?.color}>
+          {statusOfRow?.description}
+        </Tag>
       </div>
     );
   };
-// getting time and date 
+  // getting time and date
   const getTimeAndDate = (timeStamp) => {
-    const date = new Date(parseInt(timeStamp*1000));
+    const date = new Date(parseInt(timeStamp * 1000));
     const monthyear = date.toLocaleString("en-US", {
       year: "numeric",
       month: "short",
@@ -49,13 +58,13 @@ const TransactionTable = ({ handleScroll, loading, data, status,getTotalTransact
       dataIndex: "approval_status",
       data: "data",
       key: "product",
-      render: (text) => getStatusTag(text=='P'?'G':text)
+      render: (text) => getStatusTag(text == "P" ? "G" : text),
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      render:(text, row)=>getTimeAndDate(row.payout_date)
+      render: (text, row) => getTimeAndDate(row.payout_date),
     },
     {
       title: "Type",
@@ -72,26 +81,34 @@ const TransactionTable = ({ handleScroll, loading, data, status,getTotalTransact
       title: "Voucher cost",
       key: "v_cost",
       dataIndex: "voucher_cost",
-      render: (value) => <p>रु{value?value:0}</p>,
+      render: (value) => <p>रु{value ? value : 0}</p>,
     },
     {
       title: "Gift certificate cost",
       key: "cert_cost",
       dataIndex: "gift_certificate_cost",
-      render: (value) => <p>रु{value?value:0}</p>,
+      render: (value) => <p>रु{value ? value : 0}</p>,
     },
     {
       title: "Shipping cost",
       dataIndex: "shipping_cost",
       key: "shipping_cost",
-      render: (value) => <p>रु{value?value:0}</p>,
+      render: (value) => <p>रु{value ? value : 0}</p>,
     },
     {
       title: "Total transaction",
       dataIndex: "total_transaction",
       key: "total_transaction",
       render: (value, row) => (
-        <p>रु{parseFloat(row?.payout_amount?row.payout_amount:0) - parseFloat(row?.shipping_cost?row.shipping_cost:0) - parseFloat(row?.voucher_cost?row.voucher_cost:0) - parseFloat(row?.gift_certificate_cost?row.gift_certificate_cost:0)}</p>
+        <p>
+          रु
+          {parseFloat(row?.payout_amount ? row.payout_amount : 0) -
+            parseFloat(row?.shipping_cost ? row.shipping_cost : 0) -
+            parseFloat(row?.voucher_cost ? row.voucher_cost : 0) -
+            parseFloat(
+              row?.gift_certificate_cost ? row.gift_certificate_cost : 0
+            )}
+        </p>
       ),
     },
   ];

@@ -17,14 +17,16 @@ import {
   useGetSellerInformation,
   useUpdateSeller,
 } from "../../apis/SellerApis";
+import { useGeneralContext } from "../../ContextProvider/ContextProvider";
 const tabs = ["General", "Description", "Logos", "TermsAndConditions", "Plan"];
 const Seller = () => {
+  const sellerContext = useGeneralContext();
   const [active, setActive] = useState("General");
   const [sellerData, setSellerData] = useState({});
   const [plans, setPlans] = useState([]);
-  const [general, setGeneral] = useState('');
+  const [general, setGeneral] = useState("");
   const [logoData, setLogoData] = useState({
-    removed_image_pair_ids: { },
+    removed_image_pair_ids: {},
     logotypes_image_data: {
       theme: { type: "M", object_id: "", image_alt: "" },
       mail: { type: "M", object_id: "", image_alt: "" },
@@ -43,6 +45,12 @@ const Seller = () => {
   const { isLoading: updateLoading, mutate } = useUpdateSeller();
   const queryClient = useQueryClient();
   const { confirm } = Modal;
+  // for redirect to plan tab
+  useEffect(() => {
+    if (sellerContext?.generalState?.plan) {
+      setActive(tabs[4]);
+    }
+  }, [sellerContext]);
   useEffect(() => {
     setPlans(data?.data?.plans);
     setSellerData(data?.data?.company_data);
@@ -51,7 +59,7 @@ const Seller = () => {
   const handleFinish = (values) => {
     // console.log(values);
   };
-  // set logo data 
+  // set logo data
   const setLogo = () => {
     let temp = { ...logoData };
     temp.logotypes_image_data.theme.image_alt =
@@ -65,40 +73,43 @@ const Seller = () => {
     setLogoData(temp);
   };
   const handleFinishFailed = () => {};
-// show
-function showConfirm() {
-  confirm({
-    title: "Change plan!",
-    content: "Do you want to change your plan?",
-    onOk() {
-    handleFormSubmit()
-    },
-    onCancel() {},
-  });
-}
+  // show
+  function showConfirm() {
+    confirm({
+      title: "Change plan!",
+      content: "Do you want to change your plan?",
+      onOk() {
+        handleFormSubmit();
+      },
+      onCancel() {},
+    });
+  }
   // validate email
-  const validateEmail=(email)=>{
+  const validateEmail = (email) => {
     let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-    if (email.match(regex)) 
-      return true; 
-     else 
-      return false;
-  } 
-  const validatePhone=(phone)=>{
-    if (phone.length===10) 
-      return true; 
-     else 
-      return false;
-  }
+    if (email.match(regex)) return true;
+    else return false;
+  };
+  const validatePhone = (phone) => {
+    if (phone.length === 10) return true;
+    else return false;
+  };
   // handle form submit
   const handleFormSubmit = () => {
     let temp = { ...sellerData };
     let logos = { ...logoData };
     delete temp.logos;
-    if(general){
-      if(general.company && general.phone && general.email && general.tax_number && general.address && general.city){
-        if(validateEmail(general.email) && validatePhone(general.phone)){
+    if (general) {
+      if (
+        general.company &&
+        general.phone &&
+        general.email &&
+        general.tax_number &&
+        general.address &&
+        general.city
+      ) {
+        if (validateEmail(general.email) && validatePhone(general.phone)) {
           let finalData = {
             ...logos,
             company_id: sellerData?.company_id,
@@ -127,56 +138,53 @@ function showConfirm() {
           } catch (err) {
             console.log(err);
           }
+        } else {
+          message.error("Make sure your valid data");
         }
-        else{
-          message.error('Make sure your valid data')
-        }
+      } else {
+        message.error("Required fields can not be empty!");
       }
-      else{
-        message.error('Required fields can not be empty!')
+    } else {
+      let finalData = {
+        ...logos,
+        company_id: sellerData?.company_id,
+        company_data: {
+          ...temp,
+          ...general,
+          plan_id: changed ? changed : sellerData?.plan_id,
+        },
+      };
+      formData.append("company_data", JSON.stringify(finalData));
+      if (customerImage) {
+        formData.append("theme", customerImage);
       }
-
-    }
-    else{
-        let finalData = {
-          ...logos,
-          company_id: sellerData?.company_id,
-          company_data: {
-            ...temp,
-            ...general,
-            plan_id: changed ? changed : sellerData?.plan_id,
+      if (invoiceImage) {
+        formData.append("mail", invoiceImage);
+      }
+      try {
+        mutate(formData, {
+          onSuccess: (response) => {
+            queryClient.invalidateQueries(["seller_information"]);
           },
-        };
-        formData.append("company_data", JSON.stringify(finalData));
-        if (customerImage) {
-          formData.append("theme", customerImage);
-        }
-        if (invoiceImage) {
-          formData.append("mail", invoiceImage);
-        }
-        try {
-          mutate(formData, {
-            onSuccess: (response) => {
-              queryClient.invalidateQueries(["seller_information"]);
-            },
-            onError: (error) => {
-              console.log(error.message);
-            },
-          });
-        } catch (err) {
-          console.log(err);
-        }
-
+          onError: (error) => {
+            console.log(error.message);
+          },
+        });
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
   const getCompanyData = () => {
     return data?.data?.company_data;
   };
   const getCountries = () => {
-    let temp = Object.entries(data?.data?.countries).map(([value, label]) => ({
-      label,
-      value,
-    }));
+    let temp = Object.entries(data?.data?.countries || {}).map(
+      ([value, label]) => ({
+        label,
+        value,
+      })
+    );
     return temp;
   };
   // get states
@@ -215,7 +223,7 @@ function showConfirm() {
       case tabs[4]:
         return (
           <SellerPlan
-            plans={plans}
+            plans={plans || []}
             sellerData={sellerData}
             changed={changed}
             setChanged={setChanged}
@@ -249,7 +257,12 @@ function showConfirm() {
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <Button type="primary" onClick={() => !changed? handleFormSubmit(form.submit()):showConfirm()}>
+        <Button
+          type="primary"
+          onClick={() =>
+            !changed ? handleFormSubmit(form.submit()) : showConfirm()
+          }
+        >
           Save Changes
         </Button>
       </div>
@@ -298,7 +311,8 @@ function showConfirm() {
                 <p>Orders</p> <p>{sellerData?.orders_count}</p>
               </div>
               <div>
-                <p>Sales</p> <p>रु{!sellerData?.sales?0:sellerData?.sales}</p>
+                <p>Sales</p>{" "}
+                <p>रु{!sellerData?.sales ? 0 : sellerData?.sales}</p>
               </div>
               <div>
                 <p>Income</p> <p>रु{sellerData?.income}</p>

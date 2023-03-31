@@ -5,9 +5,27 @@ import format from "date-fns/format";
 import "./index.css";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
-
-const DateRangePickerComp = ({ range, setRange }) => {
+const INITIAL_PARAMS = {
+  time_from: "",
+  time_to: "",
+};
+const DateRangePickerComp = ({ params, setParams }) => {
   const [open, setOpen] = useState(false);
+  const [range, setRange] = useState([
+    {
+      startDate: new Date(),
+      // endDate: addDays(new Date(), -30),
+    },
+  ]);
+  const setTimePeriod = (values) => {
+    INITIAL_PARAMS.time_from = Math.round(
+      values.range1.startDate.getTime() / 1000
+    );
+    INITIAL_PARAMS.time_to = Math.round(values.range1.endDate.getTime() / 1000);
+    let temp_params = `time_from=${INITIAL_PARAMS.time_from}&time_to=${INITIAL_PARAMS.time_to}`;
+    setParams(temp_params);
+    // queryClient.invalidateQueries(["dashboard", temp_params]);
+  };
   const refOne = useRef(null);
 
   useEffect(() => {
@@ -37,6 +55,7 @@ const DateRangePickerComp = ({ range, setRange }) => {
           <DateRangePicker
             onChange={(item) => {
               setRange([item.range1]);
+              setTimePeriod(item);
             }}
             editableDateInputs={true}
             moveRangeOnFirstSelection={false}

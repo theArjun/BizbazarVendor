@@ -71,7 +71,7 @@
 }
 
 .cardIcon {
-  width: 20px;
+  /* width: 20px; */
   padding: 10px;
   border-radius: 50%;
   aspect-ratio: 1/1;

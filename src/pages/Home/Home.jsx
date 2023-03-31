@@ -41,30 +41,20 @@ const INITIAL_MESSAGE = {
 };
 const Home = () => {
   const [data, setData] = useState({});
+  const [params, setParams] = useState("");
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState([]);
-  const [range, setRange] = useState([
-    {
-      startDate: new Date(),
-      // endDate: addDays(new Date(), -30),
-    },
-  ]);
-
   const [statusModalOpen, setStatusModalOpen] = useState({
     open: false,
     data: {},
     orderId: null,
   });
   const { data: dashboardData, isLoading: dashboardLoading } =
-    useGetDashboardData();
+    useGetDashboardData(params);
   const { mutate, isLoading: sendLoading } = useCreateAdminMessage();
   useEffect(() => {
     if (dashboardData?.data) {
-      console.log(
-        "🚀 ~ file: Home.jsx:50 ~ useEffect ~ dashboardData?.data:",
-        dashboardData?.data
-      );
       setData(dashboardData.data);
       setOrder(dashboardData?.data?.recent_orders?.all || []);
     }
@@ -107,7 +97,6 @@ const Home = () => {
       },
     });
   };
-  const onFinishFailed = () => {};
   const series = [
     {
       name: "Guests",
@@ -143,10 +132,6 @@ const Home = () => {
       curve: "smooth",
     },
     colors: ["#218c74"],
-
-    // xaxis: {
-    //   categories: ["2019-05-01", "2019-05-02", "2019-05-03", "2019-05-04"],
-    // },
   };
 
   const leftContainerData = [
@@ -168,7 +153,7 @@ const Home = () => {
         <div className={styles.dashboardHeaderLeft}>Dashboard</div>
         <div className={styles.dashboardHeaderRight}>
           {/* <RangePicker value={dateRange} onChange={(e, a) => setDateRange(e)} /> */}
-          <DateRangePickerComp range={range} setRange={setRange} />
+          <DateRangePickerComp params={params} setParams={setParams} />
         </div>
       </div>
 
@@ -187,7 +172,10 @@ const Home = () => {
           </AnalyticsCard>
           <AnalyticsCard>
             <div className={styles.cardWrapperAd}>
-              <div> रु{Math.round(data?.current_balance || 0)}</div>
+              <div>
+                {" "}
+                रु{Math.round(data?.current_balance || 0).toLocaleString()}
+              </div>
               <Button type="primary">Refill balance</Button>
             </div>
           </AnalyticsCard>
@@ -204,7 +192,9 @@ const Home = () => {
               </div>
               <div className={styles.cardValue}>
                 रु
-                {data.period_income || 0}
+                {parseFloat(
+                  Math.round(data.period_income || 0)
+                ).toLocaleString()}
               </div>
 
               <div className={styles.cardTitle}>Income</div>
@@ -358,7 +348,12 @@ const Home = () => {
         </div>
 
         <div className={styles.rightContainer}>
-          <BarCharts series={series} options={options} height={"300px"} />
+          <BarCharts
+            series={series}
+            graphData={data?.category_data?.bar_data || []}
+            options={options}
+            height={"300px"}
+          />
           <div className={styles.margin} />
           <LineCharts series={series} options={options} height={"300px"} />
           <div className={styles.margin} />
@@ -371,11 +366,13 @@ const Home = () => {
             <ProductCountReport />
           </div>
           <div className={styles.margin} />
-          <CurrentPlanUsage />
+          <CurrentPlanUsage
+            planData={data?.plan_data}
+            planUsage={Object.values(data?.plan_usage || {})}
+          />
           <div className={styles.margin} />
-          <RecentActivities />
+          <RecentActivities logs={data?.logs || []} />
         </div>
-        <div></div>
         <Modal
           title="Contact administrator"
           centered
