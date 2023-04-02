@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Search.module.css";
 import { Card, Form, Select, DatePicker, Input } from "antd";
 import useDebounce from "../../../../utils/Hooks/useDebounce";
@@ -10,31 +10,42 @@ const USER_TYPES = [
 ];
 const Search = ({ status, setParams, params, userGroup }) => {
   const [form] = Form.useForm();
-  const [orderId,setOrderId]=useState('');
+  const [orderId, setOrderId] = useState("");
   useDebounce(
     () => {
-     let temp_param={...params}
-     temp_param.order_id=orderId;
-     setParams(temp_param)
+      let temp_param = { ...params };
+      temp_param.order_id = orderId;
+      setParams(temp_param);
     },
+
     500,
     [orderId]
   );
   const onValueChange = (a, values) => {
-    let temp_param={...params}
-    temp_param.status_id=values.status?values.status:'';
-    temp_param.user_type=values.user_types?values.user_types:'';
-    temp_param.usergroup_id=values.user_group?values.user_group:'';
-    if(values.dates){
-      let startDate = new Date(values?.dates[0]?.$y,values?.dates[0]?.$M, values?.dates[0]?.$D).getTime()/1000;
-      let endDate = new Date(values?.dates[1]?.$y,values?.dates[1]?.$M, values?.dates[1]?.$D).getTime()/1000;
-    temp_param.time_from=startDate?startDate:'';
-    temp_param.time_to=endDate?endDate:''
-    }else{
-      temp_param.time_from=''
-      temp_param.time_to=''
+    let temp_param = { ...params };
+    temp_param.status_id = values.status ? values.status : "";
+    temp_param.user_type = values.user_types ? values.user_types : "";
+    temp_param.usergroup_id = values.user_group ? values.user_group : "";
+    if (values.dates) {
+      let startDate =
+        new Date(
+          values?.dates[0]?.$y,
+          values?.dates[0]?.$M,
+          values?.dates[0]?.$D
+        ).getTime() / 1000;
+      let endDate =
+        new Date(
+          values?.dates[1]?.$y,
+          values?.dates[1]?.$M,
+          values?.dates[1]?.$D
+        ).getTime() / 1000;
+      temp_param.time_from = startDate ? startDate : "";
+      temp_param.time_to = endDate ? endDate : "";
+    } else {
+      temp_param.time_from = "";
+      temp_param.time_to = "";
     }
-    setParams(temp_param)
+    setParams(temp_param);
   };
   const getStatus = () => {
     return status?.map((el, i) => ({
@@ -59,9 +70,11 @@ const Search = ({ status, setParams, params, userGroup }) => {
               id="status"
               label="Order ID"
               style={{ minWidth: "150px" }}
-      
             >
-              <Input type="number" onChange={(e)=>setOrderId(e.target.value)} />
+              <Input
+                type="number"
+                onChange={(e) => setOrderId(e.target.value)}
+              />
             </Form.Item>
             <Form.Item
               id="status"
@@ -70,7 +83,7 @@ const Search = ({ status, setParams, params, userGroup }) => {
               style={{ width: "200px" }}
             >
               <Select
-              allowClear
+                allowClear
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
@@ -88,7 +101,7 @@ const Search = ({ status, setParams, params, userGroup }) => {
               style={{ width: "200px" }}
             >
               <Select
-              allowClear
+                allowClear
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>
@@ -106,7 +119,7 @@ const Search = ({ status, setParams, params, userGroup }) => {
               style={{ width: "200px" }}
             >
               <Select
-              allowClear
+                allowClear
                 showSearch
                 optionFilterProp="children"
                 filterOption={(input, option) =>

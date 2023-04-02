@@ -5,16 +5,18 @@ import format from "date-fns/format";
 import "./index.css";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+import useDebounce from "../../../utils/Hooks/useDebounce";
 const INITIAL_PARAMS = {
   time_from: "",
   time_to: "",
 };
-const DateRangePickerComp = ({ params, setParams }) => {
+const DateRangePickerComp = ({ params, setParams, date }) => {
   const [open, setOpen] = useState(false);
+  const [item, setItem] = useState({});
   const [range, setRange] = useState([
     {
-      startDate: new Date(),
-      // endDate: addDays(new Date(), -30),
+      startDate: new Date(date?.time_from * 1000),
+      endDate: new Date(date?.time_to * 1000),
     },
   ]);
   const setTimePeriod = (values) => {
@@ -32,7 +34,13 @@ const DateRangePickerComp = ({ params, setParams }) => {
     document.addEventListener("click", hideOnClickOutside, true);
     return () => document.removeEventListener("click", hideOnClickOutside);
   }, []);
-
+  useDebounce(
+    () => {
+      setTimePeriod(item);
+    },
+    500,
+    [item]
+  );
   const hideOnClickOutside = (e) => {
     if (refOne.current && !refOne.current.contains(e.target)) {
       setOpen(false);
@@ -55,7 +63,7 @@ const DateRangePickerComp = ({ params, setParams }) => {
           <DateRangePicker
             onChange={(item) => {
               setRange([item.range1]);
-              setTimePeriod(item);
+              setItem(item);
             }}
             editableDateInputs={true}
             moveRangeOnFirstSelection={false}

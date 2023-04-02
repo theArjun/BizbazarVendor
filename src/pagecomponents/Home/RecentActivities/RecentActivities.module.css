@@ -1,5 +1,4 @@
 .container {
-  width: 100%;
   background-color: white;
   box-shadow: var(--box-shadow);
   padding: 18px 10px;
@@ -13,7 +12,6 @@
   margin-top: 1em;
   border: 1px solid rgba(0, 0, 0, 0.283);
   border-radius: 5px;
-  width: 98%;
   opacity: 0.7;
 }
 
@@ -28,4 +26,8 @@
 
 .wrapStep {
   padding: 0 0 10px 10px;
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
 }

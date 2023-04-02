@@ -154,6 +154,12 @@ const ShippingSuppliers = React.lazy(() =>
     "../pagecomponents/Setting/ShippingMethod/EditShipping/Suppliers/Suppliers"
   )
 );
+const LogList = React.lazy(() =>
+  import("../pagecomponents/Logs/LogList/LogList")
+);
+const LogSearch = React.lazy(() =>
+  import("../pagecomponents/Logs/Search/Search")
+);
 
 export {
   ProductTable,
@@ -203,4 +209,6 @@ export {
   TestRateCalculation,
   StoreFronts,
   ShippingSuppliers,
+  LogList,
+  LogSearch,
 };

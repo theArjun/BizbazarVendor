@@ -115,6 +115,8 @@ const LogosAndStyles = lazy(() =>
   import("./pages/Setting/LogosAndStyle/LogosAndStyle")
 );
 
+const Logs = lazy(() => import("./pages/Logs/Logs"));
+
 export const queryClient = new QueryClient();
 
 function App() {
@@ -147,6 +149,15 @@ function App() {
                 </SuspenseWrapper>
               }
               path="/"
+              exact
+            />
+            <Route
+              element={
+                <SuspenseWrapper>
+                  <Logs />
+                </SuspenseWrapper>
+              }
+              path="/logs"
               exact
             />
             <Route

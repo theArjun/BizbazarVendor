@@ -3,7 +3,7 @@ import styles from "./Home.module.css";
 import LineCharts from "../../pagecomponents/Home/Charts/LineCharts/LineCharts";
 import BarCharts from "../../pagecomponents/Home/Charts/Barcharts/Barcharts";
 import AnalyticsCard from "./../../pagecomponents/Home/Cards/AnalyticsCard/AnalyticsCard";
-import { Button, DatePicker, Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal } from "antd";
 import RecentOrders from "./../../pagecomponents/Home/RecentOrders/RecentOrders";
 import RecentActivities from "./../../pagecomponents/Home/RecentActivities/RecentActivities";
 import CurrentPlanUsage from "./../../pagecomponents/Home/CurrentPlanUsage/CurrentPlanUsage";
@@ -19,10 +19,7 @@ import {
   FolderOpenOutlined,
   InsertRowAboveOutlined,
 } from "@ant-design/icons";
-import { apicall } from "../../utils/apicall/apicall";
-
 import DateRangePickerComp from "../../pagecomponents/Home/RangePicker/Rangepicker";
-import { addDays } from "date-fns";
 import ProductCountReport from "./../../pagecomponents/Reports/ProductCountReport/ProductCountReport";
 import { useGetDashboardData } from "../../apis/DashboardApi";
 import { useCreateAdminMessage } from "../../apis/MessageCenterApi";
@@ -45,11 +42,6 @@ const Home = () => {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState([]);
-  const [statusModalOpen, setStatusModalOpen] = useState({
-    open: false,
-    data: {},
-    orderId: null,
-  });
   const { data: dashboardData, isLoading: dashboardLoading } =
     useGetDashboardData(params);
   const { mutate, isLoading: sendLoading } = useCreateAdminMessage();
@@ -57,38 +49,11 @@ const Home = () => {
     if (dashboardData?.data) {
       setData(dashboardData.data);
       setOrder(dashboardData?.data?.recent_orders?.all || []);
+      setStatus(Object.values(dashboardData?.data?.order_statuses || {}));
     }
   }, [dashboardData]);
-  useEffect(() => {
-    getStatus();
-  }, []);
-
-  useEffect(() => {
-    getOrders();
-  }, [statusModalOpen.open]);
-
-  const getOrders = async () => {
-    const result = await apicall({
-      url: "orders",
-    });
-
-    // setOrder(result.data.orders);
-  };
-
-  const getStatus = async () => {
-    const result = await apicall({
-      url: "statuses",
-    });
-
-    setStatus(result.data.statuses);
-  };
-
-  const gRN = () => {
-    return Math.ceil(Math.random() * (100 + 100) - 100);
-  };
   // send message to admin
   const onFinish = (values) => {
-    console.log(values);
     INITIAL_MESSAGE.thread.message = values.message;
     INITIAL_MESSAGE.thread.subject = values.subject;
     mutate(INITIAL_MESSAGE, {
@@ -96,42 +61,6 @@ const Home = () => {
         setOpen(false);
       },
     });
-  };
-  const series = [
-    {
-      name: "Guests",
-      data: [
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-        gRN(),
-      ],
-    },
-  ];
-  const options = {
-    stroke: {
-      curve: "smooth",
-    },
-    colors: ["#218c74"],
   };
 
   const leftContainerData = [
@@ -152,11 +81,17 @@ const Home = () => {
       <div className={styles.dashboardHeader}>
         <div className={styles.dashboardHeaderLeft}>Dashboard</div>
         <div className={styles.dashboardHeaderRight}>
-          {/* <RangePicker value={dateRange} onChange={(e, a) => setDateRange(e)} /> */}
-          <DateRangePickerComp params={params} setParams={setParams} />
+          {Object.values(data).length ? (
+            <DateRangePickerComp
+              params={params}
+              setParams={setParams}
+              date={{ time_from: data?.time_from, time_to: data?.time_to }}
+            />
+          ) : (
+            <Spinner />
+          )}
         </div>
       </div>
-
       <div className={styles.container}>
         <div className={styles.leftContainer}>
           <AnalyticsCard>
@@ -346,16 +281,13 @@ const Home = () => {
             </AnalyticsCard>
           ))}
         </div>
-
         <div className={styles.rightContainer}>
           <BarCharts
-            series={series}
             graphData={data?.category_data?.bar_data || []}
-            options={options}
             height={"300px"}
           />
           <div className={styles.margin} />
-          <LineCharts series={series} options={options} height={"300px"} />
+          <LineCharts graphData={data?.graphs} height={"300px"} />
           <div className={styles.margin} />
           <RecentOrders order={order} status={status} />
           <div className={styles.margin} />
