@@ -8,12 +8,12 @@ const General = ({
   handleFormSubmit,
   handleFinishFailed,
   setGeneral,
-  form
+  form,
 }) => {
   const [state, setState] = useState("");
   const [location, setLocation] = useState("");
   useEffect(() => {
-    getStates(vendorData?.country);
+    getStates(vendorData?.country || "NP");
   }, [vendorData]);
   const onSearch = (value) => {
     console.log("search:", value);
@@ -27,15 +27,15 @@ const General = ({
       );
     }
   };
-  const onValueChanges=(a,values)=>{
-   setGeneral(values)
-  }
+  const onValueChanges = (a, values) => {
+    setGeneral(values);
+  };
   return (
     <div className={styles.container_general}>
       <div className={styles.formContainer}>
         <Form
-        layout="vertical"
-        form={form}
+          layout="vertical"
+          form={form}
           name="basic"
           onFinish={handleFormSubmit}
           onFinishFailed={handleFinishFailed}
@@ -87,7 +87,7 @@ const General = ({
                 rules={[
                   {
                     required: true,
-                    len:10,
+                    len: 10,
                     message: "Phone number should must have 10 digit",
                   },
                 ]}
@@ -119,22 +119,19 @@ const General = ({
               >
                 <Input type="number" />
               </Form.Item>
-              <Form.Item label="Address" name="address"
-              
-              rules={[
-                {
-                  required: true,
-                  message: "",
-                },
-              ]}
-              >
-                <Input type="address"
-                 />
-              </Form.Item>
               <Form.Item
-                label="Country"
-                name="country"
+                label="Address"
+                name="address"
+                rules={[
+                  {
+                    required: true,
+                    message: "",
+                  },
+                ]}
               >
+                <Input type="address" />
+              </Form.Item>
+              <Form.Item label="Country" name="country">
                 <Select
                   onSelect={getStates}
                   onSearch={onSearch}
@@ -143,19 +140,18 @@ const General = ({
                 />
               </Form.Item>
 
-              <Form.Item
-                label="State/Province"
-                name="state"
-              >
+              <Form.Item label="State/Province" name="state">
                 <Select onSearch={onSearch} showSearch options={state} />
               </Form.Item>
-              <Form.Item label="City" name="city"
-              rules={[
-                {
-                  required: true,
-                  message: "",
-                },
-              ]}
+              <Form.Item
+                label="City"
+                name="city"
+                rules={[
+                  {
+                    required: true,
+                    message: "",
+                  },
+                ]}
               >
                 <Input type="address" />
               </Form.Item>

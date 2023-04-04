@@ -159,7 +159,9 @@ const ProductTable = ({
       key: "1",
       label: (
         <a
-          onClick={() => navigate("../Products/Products/Edit Product/"+productId)}
+          onClick={() =>
+            navigate("../Products/Products/Edit Product/" + productId)
+          }
         >
           Edit <AiFillEdit />
         </a>
@@ -196,7 +198,9 @@ const ProductTable = ({
           />
           <div className={styles.product_name}>
             <a
-              onClick={() => navigate(`../Products/Products/Edit Product/`+row?.product_id)}
+              onClick={() =>
+                navigate(`../Products/Products/Edit Product/` + row?.product_id)
+              }
             >
               <strong>
                 {row["product"]?.length > 15

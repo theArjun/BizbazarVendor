@@ -3,7 +3,10 @@ const Chart = lazy(() => import("react-apexcharts"));
 const Category = ({ styles, data }) => {
   // get labels
   const getLabels = () => {
-    let labels = Object.keys(data);
+    let labels = Object.values(data)?.reduce((accumulator, currentValue) => {
+      accumulator.push(currentValue?.date);
+      return accumulator;
+    }, []);
     return labels;
   };
   // getting current data

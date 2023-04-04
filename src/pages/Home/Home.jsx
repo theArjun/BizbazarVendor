@@ -8,6 +8,7 @@ import RecentOrders from "./../../pagecomponents/Home/RecentOrders/RecentOrders"
 import RecentActivities from "./../../pagecomponents/Home/RecentActivities/RecentActivities";
 import CurrentPlanUsage from "./../../pagecomponents/Home/CurrentPlanUsage/CurrentPlanUsage";
 import Spinner from "../../component/Spinner/Spinner";
+import { Typography } from "antd";
 import {
   DollarCircleOutlined,
   RiseOutlined,
@@ -36,6 +37,7 @@ const INITIAL_MESSAGE = {
     message: " ",
   },
 };
+const { Text } = Typography;
 const Home = () => {
   const [data, setData] = useState({});
   const [params, setParams] = useState("");
@@ -62,16 +64,6 @@ const Home = () => {
       },
     });
   };
-
-  const leftContainerData = [
-    {
-      title: "sales",
-      icon: <RiseOutlined />,
-      data: "रु22",
-      color: "#6ECCAF",
-    },
-  ];
-
   const { TextArea } = Input;
   if (dashboardLoading) {
     return <Spinner />;
@@ -88,7 +80,7 @@ const Home = () => {
               date={{ time_from: data?.time_from, time_to: data?.time_to }}
             />
           ) : (
-            <Spinner />
+            ""
           )}
         </div>
       </div>
@@ -133,6 +125,45 @@ const Home = () => {
               </div>
 
               <div className={styles.cardTitle}>Income</div>
+            </div>
+          </AnalyticsCard>
+          <AnalyticsCard>
+            <div className={styles.cardWrapper}>
+              <div
+                className={styles.cardIcon}
+                style={{
+                  backgroundColor: "#6ECCAF" + "41",
+                  color: "#6ECCAF",
+                }}
+              >
+                <RiseOutlined />
+              </div>
+              <div className={styles.cardValue}>
+                रु
+                {parseFloat(
+                  Math.round(data?.orders_stat?.orders_total?.totally_paid || 0)
+                ).toLocaleString()}
+                <div>
+                  <Text type="secondary">
+                    {" "}
+                    रु{" "}
+                    {Math.floor(
+                      data?.orders_stat?.prev_orders_total?.totally_paid || 0
+                    )}
+                    ,
+                  </Text>
+                  <Text type="secondary">
+                    {" "}
+                    {parseFloat(data?.orders_stat?.diff?.sales).toFixed(2) ===
+                    "NaN"
+                      ? 0
+                      : parseFloat(data?.orders_stat?.diff?.sales).toFixed(2)}
+                    %
+                  </Text>
+                </div>
+              </div>
+
+              <div className={styles.cardTitle}>Sales</div>
             </div>
           </AnalyticsCard>
           <AnalyticsCard>
@@ -261,25 +292,6 @@ const Home = () => {
               <div className={styles.cardTitle}>Web pages</div>
             </div>
           </AnalyticsCard>
-
-          {leftContainerData.map((dat, i) => (
-            <AnalyticsCard key={i}>
-              <div className={styles.cardWrapper}>
-                <div
-                  className={styles.cardIcon}
-                  style={{
-                    backgroundColor: dat.color + "41",
-                    color: dat.color,
-                  }}
-                >
-                  {dat.icon}
-                </div>
-                <div className={styles.cardValue}>{dat.data}</div>
-
-                <div className={styles.cardTitle}>{dat.title}</div>
-              </div>
-            </AnalyticsCard>
-          ))}
         </div>
         <div className={styles.rightContainer}>
           <BarCharts

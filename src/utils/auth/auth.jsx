@@ -1,12 +1,10 @@
-import { apicall } from "../apicall/apicall";
-
 export const handleLogout = async () => {
   localStorage.clear();
   location.reload();
 };
 
 export const handlelogin = (result) => {
-  localStorage.setItem("token", result.key);
+  localStorage.setItem("token", result?.token);
   const userInfo = {
     user_id: result.user_info.user_id,
     name: result.user_info.firstname + " " + result.user_info.lastname,

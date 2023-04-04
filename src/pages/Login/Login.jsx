@@ -8,20 +8,14 @@ import { handlelogin } from "../../utils/auth/auth";
 
 function Login() {
   const navigate = useNavigate();
-
-  // if (localStorage.getItem("login")) {
-  //   return <Navigate to="/" />;
-  // }
-
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
     console.log(values.email, values.password);
-
     const result = await apicall({
       method: "post",
       auth: true,
-      url: "BizbazarVendors",
+      url: "VendorAuthTokens",
       data: {
         email: values.email,
 
@@ -30,7 +24,6 @@ function Login() {
         user_type: "V",
       },
     });
-    console.log(result.data.key);
     if (result.status === 201) {
       handlelogin(result.data);
       navigate("/");

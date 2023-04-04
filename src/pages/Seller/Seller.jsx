@@ -189,7 +189,7 @@ const Seller = () => {
   };
   // get states
   const getStates = () => {
-    return data?.data?.states;
+    return data?.data?.states || {};
   };
   const getContainerFromTab = () => {
     switch (active) {

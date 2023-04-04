@@ -11,7 +11,7 @@ import {
 } from "../../../../apis/PromotionApi";
 import AddModal from "../../../../component/AddModal/AddModal";
 import Spinner from "../../../../component/Spinner/Spinner";
-import { useGetFeatures} from "../../../../apis/FeatureApis";
+import { useGetFeatures } from "../../../../apis/FeatureApis";
 import { apicall } from "../../../../utils/apicall/apicall";
 const condition_features = {
   PRODUCT_PRICE: "price",
@@ -34,27 +34,36 @@ function Conditions({
   const [currentCondition, setCurrentCondition] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [cdata, setCData] = useState([]);
-  const [ids, setIds] = useState('');
-  const [features, setFeatures]=useState([])
-  const [variants,setVariants]=useState([])
-  const [variantName,setVariantName]=useState('')
+  const [ids, setIds] = useState("");
+  const [features, setFeatures] = useState([]);
+  const [variants, setVariants] = useState([]);
+  const [variantName, setVariantName] = useState("");
   const {
-    isLoading:productLoading,
+    isLoading: productLoading,
     data: productData,
     isError,
   } = useGetPromotionProducts();
-  const { data: categoryData, isError: categoryError, isLoading:categoryLoading } =
-    useGetPromotionCategories();
-    const { data: usersData, isError: userError, isLoading:usersLoading } =
-    useGetPromotionUsers();
-    const {isLoading:featureLoading,data:featureData}=useGetFeatures();
-  useEffect(()=>{
-    if(featureData){
-      let temp_features=[...featureData?.data?.features]
-       let feature_data=temp_features?.map((item, i)=>({label:item?.description, value:item?.feature_id}))
-       setFeatures(feature_data)
+  const {
+    data: categoryData,
+    isError: categoryError,
+    isLoading: categoryLoading,
+  } = useGetPromotionCategories();
+  const {
+    data: usersData,
+    isError: userError,
+    isLoading: usersLoading,
+  } = useGetPromotionUsers();
+  const { isLoading: featureLoading, data: featureData } = useGetFeatures();
+  useEffect(() => {
+    if (featureData) {
+      let temp_features = [...(featureData?.data?.features || [])];
+      let feature_data = temp_features?.map((item, i) => ({
+        label: item?.description,
+        value: item?.feature_id,
+      }));
+      setFeatures(feature_data);
     }
-  },[featureData])
+  }, [featureData]);
   const handleTextChange = (a, b) => {
     let temp_condition = { ...conditionValues };
     temp_condition.set = b.value;
@@ -67,24 +76,25 @@ function Conditions({
   };
   // handleCondition select change
   const handleConditionSelectChange = (a, b) => {
-    setIds('')
+    setIds("");
     setCurrentCondition(b.value);
   };
-  const handleProductFeatureSelect= async (id)=>{
-    setVariants([])
-    try{
+  const handleProductFeatureSelect = async (id) => {
+    setVariants([]);
+    try {
       let result = await apicall({
-        url:`features/${id}`
-      })
-      if(result?.data){
-        let temp_variants= Object.values(result?.data?.variants)?.map((item, i)=>({label:item?.variant,value:item?.variant_id}))
-        setVariants(temp_variants)
+        url: `features/${id}`,
+      });
+      if (result?.data) {
+        let temp_variants = Object.values(result?.data?.variants)?.map(
+          (item, i) => ({ label: item?.variant, value: item?.variant_id })
+        );
+        setVariants(temp_variants);
       }
+    } catch (e) {
+      console.log(e.message);
     }
-    catch(e){
-      console.log(e.message)
-    }
-  }
+  };
   // lets create a function to get particular condition UI
   const getConditionByConditionName = (condition) => {
     switch (condition) {
@@ -166,7 +176,14 @@ function Conditions({
                 options={data.categories}
               />
             </Form.Item>
-            <Button type="primary"  onClick={() => setConditionValue(condition_features.PURCHASED_PRODUCTS)}>Add products</Button>
+            <Button
+              type="primary"
+              onClick={() =>
+                setConditionValue(condition_features.PURCHASED_PRODUCTS)
+              }
+            >
+              Add products
+            </Button>
           </div>
         );
       case condition_features.USERS:
@@ -188,7 +205,12 @@ function Conditions({
                 options={data.categories}
               />
             </Form.Item>
-            <Button type="primary" onClick={() => setConditionValue(condition_features.USERS)}>Add users</Button>
+            <Button
+              type="primary"
+              onClick={() => setConditionValue(condition_features.USERS)}
+            >
+              Add users
+            </Button>
           </div>
         );
       case condition_features.PRODUCT_FEATURE:
@@ -204,7 +226,7 @@ function Conditions({
               ]}
             >
               <Select
-              onSelect={handleProductFeatureSelect}
+                onSelect={handleProductFeatureSelect}
                 style={{
                   width: 200,
                 }}
@@ -237,7 +259,7 @@ function Conditions({
               ]}
             >
               <Select
-              onSelect={(a,b)=>setVariantName(b.label)}
+                onSelect={(a, b) => setVariantName(b.label)}
                 style={{
                   width: 200,
                 }}
@@ -412,17 +434,17 @@ function Conditions({
         setModalOpen(true);
         break;
       case condition_features.PURCHASED_PRODUCTS:
-          setCData(
-            temp_pro?.map((el, i) => ({
-              id: el?.product_id,
-              name: el?.product,
-              code: el?.product_code,
-              quantity: el?.amount,
-              status: el?.status,
-            }))
-          );
-          setModalOpen(true);
-          break;
+        setCData(
+          temp_pro?.map((el, i) => ({
+            id: el?.product_id,
+            name: el?.product,
+            code: el?.product_code,
+            quantity: el?.amount,
+            status: el?.status,
+          }))
+        );
+        setModalOpen(true);
+        break;
       case condition_features.CATAGORIES:
         setCData(
           temp_cat?.map((el, i) => ({
@@ -436,18 +458,18 @@ function Conditions({
         setModalOpen(true);
         break;
       case condition_features.USERS:
-       let temp_users=[...usersData?.data?.users]
-          setCData(
-            temp_users?.map((el, i) => ({
-              id: el?.user_id,
-              name: el?.firstname+' '+el?.lastname,
-              code: el?.email,
-              // quantity: el?.product_count,
-              status: el?.status,
-            }))
-          );
-          setModalOpen(true);
-          break;
+        let temp_users = [...usersData?.data?.users];
+        setCData(
+          temp_users?.map((el, i) => ({
+            id: el?.user_id,
+            name: el?.firstname + " " + el?.lastname,
+            code: el?.email,
+            // quantity: el?.product_count,
+            status: el?.status,
+          }))
+        );
+        setModalOpen(true);
+        break;
     }
   };
   // form submit function
@@ -511,8 +533,8 @@ function Conditions({
             condition: values.condition,
             operator: values.product_feature_condition,
             value: values.product_feature_variant,
-            condition_element:values.product_feature,
-            value_name:variantName
+            condition_element: values.product_feature,
+            value_name: variantName,
           },
         ];
         break;
@@ -635,7 +657,12 @@ function Conditions({
             <ConditionTable
               conditions={conditions.map((el, i) => ({ ...el, key: i }))}
               setConditions={setConditions}
-              loading={productLoading || categoryLoading || usersLoading || featureLoading }
+              loading={
+                productLoading ||
+                categoryLoading ||
+                usersLoading ||
+                featureLoading
+              }
               productData={productData?.data?.products}
               categoryData={categoryData?.data?.categories}
               userData={usersData?.data?.users}

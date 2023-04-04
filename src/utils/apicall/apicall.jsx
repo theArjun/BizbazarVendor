@@ -1,5 +1,8 @@
 import axios from "axios";
 import { notification } from "antd";
+import { handleLogout } from "../auth/auth";
+import { config } from "../../config/config";
+const token = localStorage.getItem("token");
 export const apicall = async ({
   method = "get",
   url = "",
@@ -26,8 +29,8 @@ export const apicall = async ({
       data: data,
       body: body,
       auth: {
-        username: import.meta.env.VITE_APP_USERNAME,
-        password: import.meta.env.VITE_APP_PASSWORD,
+        username: token ? token : config.ADMIN_USERNAME,
+        password: token ? "" : config.ADMIN_API_KEY,
       },
       headers: headers,
     });
@@ -44,10 +47,19 @@ export const apicall = async ({
     }
     return result;
   } catch (error) {
-    if(error?.response?.status===403){
+    if (error?.response?.status === 401) {
+      handleLogout();
+      notification.error({
+        message: "Login required!",
+        description:
+          "Your session ended please login first to enter into the system",
+      });
+    }
+    if (error?.response?.status === 403) {
       notification.error({
         message: "Process Fail",
-        description: "Error code: 403-> You do not have permission to access this resource",
+        description:
+          "Error code: 403-> You do not have permission to access this resource",
       });
     }
     if (method != "get") {
