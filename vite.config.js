@@ -4,6 +4,7 @@ import mkcert from "vite-plugin-mkcert";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "/DeployVendorPanel/",
   plugins: [react()],
   server: {
     port: 3000,
