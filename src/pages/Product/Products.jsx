@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { apicall } from "../../utils/apicall/apicall";
 import styles from "./Product.module.css";
 import "./index.css";
 import { AiFillSetting } from "react-icons/ai";
@@ -8,19 +6,40 @@ import { useNavigate } from "react-router-dom";
 import { Col, Row, Breadcrumb, Dropdown } from "antd";
 import { HiPlus } from "react-icons/hi";
 import { ProductSearch, ProductTable } from "..";
-import useDebounce from "../../utils/Hooks/useDebounce";
-import { loadTableData } from "../../redux/features/products/productSlice";
+import { useGetProducts } from "../../apis/ProductApi";
+const INITIAL_PARAMS = {
+  product_name: "",
+  price_from: "",
+  price_to: "",
+  category: "",
+  status: "",
+  sort_order: "",
+  sort_by: "",
+};
 const Products = () => {
-  const data = useSelector((state) => state.product.products);
-  const [sValue, setSearchValue] = useState({});
-  const [page, setPage] = useState(1);
+  const [products, setProducts] = useState([]);
   const [bottom, setBottom] = useState(false);
   const [sortBy, setSortBy] = useState("");
-  const [loading, setLoading] = useState(false);
   const [sortColum, setSortingColum] = useState("");
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const a = Object.values(sValue).join("");
+  const [params, setParams] = useState(INITIAL_PARAMS);
+  const {
+    data: productData,
+    isLoading: productLoading,
+    isFetchingNextPage: nextLoading,
+    fetchNextPage,
+  } = useGetProducts(params);
+  //let set products
+  useEffect(() => {
+    let temp = [];
+    productData?.pages?.map((el) => {
+      el?.data?.products?.map((item) => {
+        temp.push(item);
+      });
+    });
+    setProducts(temp || []);
+  }, [productData]);
+
   // handle data when the there  is scroll in product table
   const handleScroll = (event) => {
     const condition =
@@ -28,37 +47,12 @@ const Products = () => {
       event.target.scrollHeight;
     setBottom(condition);
   };
-  useDebounce(
-    () => {
-      setPage(1);
-      getProducts(sValue);
-    },
-    500,
-    [a]
-  );
+  // for sorting params
   useEffect(() => {
-    getProducts(sValue);
-  }, [sortBy?.order, sortBy?.field]);
-  const getUrl = (values) => {
-    let newUrl = "products?is_search=Y";
-    if (values?.name) {
-      newUrl = newUrl + "&q=" + values.name;
-    }
-    if (values?.cid) {
-      newUrl = newUrl + "&cid=" + values.cid;
-    }
-    if (values?.status) {
-      newUrl = newUrl + "&status=" + values.status;
-    }
-    if (values?.max_price) {
-      newUrl = newUrl + "&price_to=" + values.max_price;
-    }
-    if (values?.min_price) {
-      newUrl = newUrl + "&price_from=" + values.min_price;
-    }
+    let param = { ...params };
     if (sortBy?.order) {
       const orderType = sortBy?.order === "ascend" ? "asc" : "desc";
-      newUrl = newUrl + "&sort_order=" + orderType;
+      param.sort_order = orderType;
       let sortType = "";
       switch (sortBy?.field) {
         case "price":
@@ -71,39 +65,16 @@ const Products = () => {
       if (sortBy?.field[1] === "product") {
         sortType = "product";
       }
-      newUrl = newUrl + "&sort_by=" + sortType;
+      param.sort_by = sortType;
     }
-    return newUrl + `&page=${page}&items_per_page=${30}`;
-  };
-  const getProducts = async (values) => {
-    setLoading(true);
-    const result = await apicall({
-      url: getUrl(values),
-    });
-    dispatch(loadTableData(result.data.products));
-    setLoading(false);
-  };
-
-  const getMoreData = async (values) => {
-    setLoading(true);
-    const result = await apicall({
-      url: getUrl(values),
-    });
-    if (result.data) {
-      dispatch(loadTableData([...data, ...result?.data?.products]));
-      setLoading(false);
-    }
-    setLoading(false);
-  };
+    setParams(param);
+  }, [sortBy]);
+  // Handle infinite scroll
   useEffect(() => {
-    if (data?.length < 30) {
-      return;
-    }
     if (!bottom) {
       return;
     }
-    setPage((p) => p + 1);
-    getMoreData(sValue);
+    fetchNextPage();
   }, [bottom]);
   const items = [
     {
@@ -122,8 +93,6 @@ const Products = () => {
       key: "2",
       label: (
         <a
-          rel="noopener noreferrer"
-          // href="/products/BulkProductAddition"
           onClick={() => navigate("../products/BulkProductAddition")}
           className={styles.action_items}
         >
@@ -135,12 +104,10 @@ const Products = () => {
       key: "3",
       label: (
         <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="/products/products/delete"
+          onClick={() => navigate("../products/productsonmoderation")}
           className={styles.action_items}
         >
-          Product subscriptions
+          Product on moderation
         </a>
       ),
     },
@@ -191,18 +158,14 @@ const Products = () => {
           </Col>
         </Row>
       </div>
-      <ProductSearch data={data ? data : ""} setSearchValue={setSearchValue} />
+      <ProductSearch params={params} setParams={setParams} />
       <ProductTable
         handleScroll={handleScroll}
-        data={data ? data : ""}
-        page={page}
-        setPage={setPage}
+        products={products}
         setSortBy={setSortBy}
         sortColum={sortColum}
         setSortingColum={setSortingColum}
-        setLoading={setLoading}
-        loading={loading}
-        getProducts={getProducts}
+        loading={productLoading || nextLoading}
       />
     </div>
   );

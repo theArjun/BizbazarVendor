@@ -14,7 +14,7 @@ export const apicall = async ({
     "Access-Control-Allow-Origin": true,
   },
 }) => {
-  let finalurl = "https://dev.bizbazar.com.np/api/";
+  let finalurl = "/api/";
   if (!auth) {
     finalurl =
       finalurl +

@@ -1,21 +1,33 @@
 import React, { useState } from "react";
 import styles from "./Search.module.css";
 import { apicall } from "../../../utils/apicall/apicall";
-import { Card, Form, Input, Button, Select } from "antd";
+import { Card, Form, Input, Select } from "antd";
 import "./index.css";
-import AdvanceSearch from "./AdvanceSearch/AdvanceSearch";
-import { useDispatch } from "react-redux";
-import { handleAdvanceSearchModal } from "../../../redux/features/products/productSlice";
-const Search = ({ setSearchValue }) => {
-  const dispatch = useDispatch();
-
+import useDebounce from "../../../utils/Hooks/useDebounce";
+const Search = ({ params, setParams, hasStatus }) => {
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
-  const status = [
-    {
-      label: "All",
-      value: "",
+  const [values, setValues] = useState({
+    name: "",
+    price_from: "",
+    price_to: "",
+    category: "",
+    status: "",
+  });
+  useDebounce(
+    () => {
+      let param = { ...params };
+      param.price_from = values.price_from;
+      param.price_to = values.price_to;
+      param.category = values.category;
+      param.product_name = values.name;
+      param.status = hasStatus ? params.status : values.status;
+      setParams(param);
     },
+    500,
+    [values]
+  );
+  const status = [
     {
       label: "Active",
       value: "A",
@@ -36,7 +48,13 @@ const Search = ({ setSearchValue }) => {
         sData.cid = item.id;
       }
     });
-    setSearchValue(sData);
+    let param = { ...values };
+    param.price_from = value.min_price || "";
+    param.price_to = value.max_price || "";
+    param.category = sData?.cid || "";
+    param.name = value.name || "";
+    param.status = value?.status || "";
+    setValues(param);
   };
   const retrieveCategories = async () => {
     const category = [];
@@ -67,9 +85,6 @@ const Search = ({ setSearchValue }) => {
           wrapperCol={{}}
           autoComplete="off"
           onValuesChange={onValueChange}
-          initialValues={{
-            status: "",
-          }}
         >
           <div className={styles.search_inputs}>
             <Form.Item
@@ -107,6 +122,7 @@ const Search = ({ setSearchValue }) => {
               style={{ width: "200px" }}
             >
               <Select
+                allowClear
                 onClick={() => retrieveCategories()}
                 showSearch
                 placeholder="Select a category"
@@ -120,26 +136,29 @@ const Search = ({ setSearchValue }) => {
                 options={categories}
               />
             </Form.Item>
-            <Form.Item label="Status" name="status" style={{ width: "200px" }}>
-              <Select
-                showSearch
-                optionFilterProp="children"
-                onSearch={onSearch}
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={status}
-              />
-            </Form.Item>
-            <div
-              style={{ float: "right", cursor: "pointer", color: "#7367f0" }}
-              onClick={() => dispatch(handleAdvanceSearchModal("open"))}
-            >
-              Advanced search
-            </div>
-            <AdvanceSearch />
+            {hasStatus ? (
+              ""
+            ) : (
+              <Form.Item
+                label="Status"
+                name="status"
+                style={{ width: "200px" }}
+              >
+                <Select
+                  allowClear
+                  showSearch
+                  optionFilterProp="children"
+                  placeholder="Select by status"
+                  onSearch={onSearch}
+                  filterOption={(input, option) =>
+                    (option?.label ?? "")
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  options={status}
+                />
+              </Form.Item>
+            )}
           </div>
         </Form>
       </Card>

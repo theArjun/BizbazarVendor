@@ -1,26 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { Space, Table, Dropdown, Image, Button, Modal, Tag } from "antd";
 import styles from "./Table.module.css";
-import { DownOutlined } from "@ant-design/icons";
 import { apicall } from "../../../utils/apicall/apicall";
 import { AiFillEdit, AiFillDelete, AiFillSetting } from "react-icons/ai";
 import { loadTableData } from "../../../redux/features/products/productSlice";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../utils/Hooks/useWindowSize";
+import {
+  useDeleteBulkProducts,
+  useDeleteSingleProduct,
+  useUpdateProductStatus,
+} from "../../../apis/ProductApi";
+import { useQueryClient } from "@tanstack/react-query";
 const { confirm } = Modal;
-const ProductTable = ({
-  setPage,
-  setLoading,
-  loading,
-  handleScroll,
-  setSortBy,
-  getProducts,
-}) => {
-  const dispatch = useDispatch();
-  const data = useSelector((state) => state.product.products);
+const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
   const [productId, setProductId] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const { mutate: deleteMutate, isLoading: deleteLoading } =
+    useDeleteSingleProduct();
+  const { mutate: deleteBulkMutate, isLoading: bulkDeleteLoading } =
+    useDeleteBulkProducts();
+  const { mutate: statusMutate, isLoading: statusLoading } =
+    useUpdateProductStatus();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const windowSize = useWindowSize();
   useEffect(() => {
@@ -42,7 +44,11 @@ const ProductTable = ({
       content: message,
       async onOk() {
         try {
-          deleteProduct(id);
+          deleteMutate(id, {
+            onSuccess: (res) => {
+              queryClient.invalidateQueries(["products"]);
+            },
+          });
         } catch (e) {
           return console.log("Oops errors!");
         }
@@ -50,44 +56,20 @@ const ProductTable = ({
       onCancel() {},
     });
   }
-  // Delete data
-  const deleteProduct = async (id) => {
-    setLoading(true);
-    // perform api call to retrieve data
-    if (id) {
-      var result = await apicall({
-        method: "delete",
-        url: `products/${id}`,
-      });
-
-      if (result.status == "204") {
-        setLoading(false);
-        getProducts();
-      }
-      setLoading(false);
-    }
-  };
 
   //This  is for product deletion of multiple products
   const deleteSelectedProduct = async (ids) => {
-    setLoading(true);
     let final_delete_ids = { product_ids: {} };
     ids?.map((id, i) => {
       final_delete_ids.product_ids[i] = id;
     });
-    let result = await apicall({
-      url: `BulkProducts`,
-      method: "delete",
-      data: final_delete_ids,
+    // delete bulk api call
+    deleteBulkMutate(final_delete_ids, {
+      onSuccess: (res) => {
+        queryClient.invalidateQueries(["products"]);
+      },
     });
-    if (result.statusText == "OK") {
-      setSelectedRowKeys([]);
-      getProducts();
-      setLoading(false);
-    }
-    setLoading(false);
   };
-  // Set id
   const setSelectedRow = async (id, method) => {
     setProductId(id);
     window.localstorage.setItem("productRowId", JSON.stringify(id));
@@ -97,23 +79,16 @@ const ProductTable = ({
   };
 
   //UpdateProduct status
-  const updateProductStatus = async (id, status) => {
-    const timeOutId = setTimeout(async () => {
-      const result = await apicall({
-        method: "put",
-        data: {
-          status,
+  const updateProductStatus = (id, status) => {
+    // change status
+    statusMutate(
+      { id, status },
+      {
+        onSuccess: (res) => {
+          queryClient.invalidateQueries(["products"]);
         },
-        url: `products/${id}`,
-      });
-      if (result?.statusText == "OK") {
-        const allData = await apicall({
-          url: `products/`,
-        });
-        await dispatch(loadTableData(allData?.data?.products));
       }
-    }, 500);
-    return () => clearTimeout(timeOutId);
+    );
   };
 
   //  set Status of product
@@ -311,7 +286,6 @@ const ProductTable = ({
     ],
   };
   function onChange(pagination, filters, sorter, extra) {
-    setPage(1);
     setSortBy(sorter);
   }
 
@@ -328,10 +302,11 @@ const ProductTable = ({
       </div>
       <Table
         id="product"
-        loading={loading}
+        rowKey={"product_id"}
+        loading={loading || deleteLoading || bulkDeleteLoading || statusLoading}
         rowSelection={rowSelection}
         columns={columns}
-        dataSource={data}
+        dataSource={products}
         pagination={false}
         onChange={onChange}
         scroll={{
