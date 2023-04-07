@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { apicall } from "../utils/apicall/apicall";
-const ITEM_PER_PAGE = 10;
+const ITEM_PER_PAGE = 50;
 export const useAddProduct = () =>
   useMutation((data) =>
     apicall({

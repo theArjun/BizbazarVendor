@@ -1,0 +1,45 @@
+.list_item_container > h3 {
+  font-weight: 500;
+  font-size: large;
+  text-transform: capitalize;
+}
+.list_footer {
+  display: flex;
+  flex-wrap: wrap;
+}
+.list_footer > div > span {
+  font-weight: 400;
+}
+.list_footer > * {
+  font-size: 15px;
+  font-weight: 600;
+  margin-right: 5px;
+}
+.body_container {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+}
+.body_container > div {
+  text-transform: capitalize;
+  font-weight: 600;
+}
+.body_container > span {
+  width: 100%;
+  word-break: break-all;
+}
+.log_container > div > div > div > ul {
+  height: 500px;
+  overflow-y: scroll;
+  background: "white";
+}
+.log_container > div {
+  width: inherit;
+}
+.log_list > div > div > ul > li {
+  background-color: aliceblue;
+}
+@media only screen and (max-width: 768px) {
+  .body_container {
+    grid-template-columns: 1fr;
+  }
+}
