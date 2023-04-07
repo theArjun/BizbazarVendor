@@ -1,13 +1,22 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { apicall } from "../utils/apicall/apicall";
-
+const ITEM_PER_PAGE = 5;
 export const getVendorAdminMessages = (data) =>
-  useQuery({
+  useInfiniteQuery({
     queryKey: ["admin_messages", data],
-    queryFn: () =>
+    queryFn: ({ pageParam = 1 }) =>
       apicall({
-        url: `MessageCenter?communication_type=vendor_to_admin&period=C&time_from=${data.time_from}&time_to=${data.time_to}`,
+        url: `MessageCenter?page=${pageParam}&items_per_page=${ITEM_PER_PAGE}&communication_type=vendor_to_admin&period=C&time_from=${data.time_from}&time_to=${data.time_to}`,
       }),
+    getNextPageParam: (lastPage, pages) => {
+      if (
+        Object.values(lastPage?.data?.threads || {})?.length < ITEM_PER_PAGE
+      ) {
+        return;
+      }
+      return (lastPage.nextCursor = parseInt(lastPage?.data?.search?.page) + 1);
+    },
+    refetchOnWindowFocus: false,
   });
 
 export const getMessageThread = (id) =>
@@ -31,13 +40,23 @@ export const useSendAdminMessage = () =>
       data: data,
     })
   );
+// getting customer messages
 export const getVendorCustomerMessages = (data) =>
-  useQuery({
+  useInfiniteQuery({
     queryKey: ["customer_messages", data],
-    queryFn: () =>
+    queryFn: ({ pageParam = 1 }) =>
       apicall({
-        url: `MessageCenter?communication_type=vendor_to_customer&period=C&customer_name=${data.customer_name}&time_from=${data.time_from}&time_to=${data.time_to}`,
+        url: `MessageCenter?page=${pageParam}&items_per_page=${ITEM_PER_PAGE}&communication_type=vendor_to_customer&period=C&customer_name=${data.customer_name}&time_from=${data.time_from}&time_to=${data.time_to}`,
       }),
+    getNextPageParam: (lastPage, pages) => {
+      if (
+        Object.values(lastPage?.data?.threads || {})?.length < ITEM_PER_PAGE
+      ) {
+        return;
+      }
+      return (lastPage.nextCursor = parseInt(lastPage?.data?.search?.page) + 1);
+    },
+    refetchOnWindowFocus: false,
   });
 
 export const getCustomerMessageThread = (id) =>

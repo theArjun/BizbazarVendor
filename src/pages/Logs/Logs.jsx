@@ -4,9 +4,9 @@ import { LogList, LogSearch } from "..";
 import { useGetLogs } from "../../apis/LogsApi";
 import { useEffect } from "react";
 import { useState } from "react";
+import useDebounce from "../../utils/Hooks/useDebounce";
 const INITIAL_PARAMS = {
   period: "C",
-  page: 1,
   time_from: "",
   time_to: "",
 };
@@ -14,12 +14,17 @@ const Logs = () => {
   const [params, setParams] = useState(INITIAL_PARAMS);
   const [bottom, setBottom] = useState(false);
   const [logs, setLogs] = useState([]);
-  const { isLoading, data } = useGetLogs(params);
+  const { isLoading, data, isFetchingNextPage, fetchNextPage } =
+    useGetLogs(params);
 
   useEffect(() => {
-    if (data?.data?.logs && params.page === 1) {
-      setLogs(data?.data?.logs);
-    }
+    let temp = [];
+    data?.pages?.map((el) => {
+      el?.data?.logs?.map((item) => {
+        temp.push(item);
+      });
+    });
+    setLogs(temp || []);
   }, [data]);
   // handle data when the there  is scroll in product table
   const handleScroll = (event) => {
@@ -28,25 +33,26 @@ const Logs = () => {
       event.target.scrollHeight;
     setBottom(condition);
   };
-  useEffect(() => {
-    if (data?.data?.logs?.length < 50) {
-      return;
-    }
-    if (!bottom) {
-      return;
-    }
-    let param = { ...params };
-    param.page = param.page + 1;
-    setParams(param);
-    let temp_logs = [...logs, ...data?.data?.logs];
-    setLogs(temp_logs);
-  }, [bottom]);
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
 
   return (
     <div className={styles.logs}>
       <div className={styles.logTitle}>Activity logs</div>
       <LogSearch params={params} setParams={setParams} />
-      <LogList handleScroll={handleScroll} logs={logs} loading={isLoading} />
+      <LogList
+        handleScroll={handleScroll}
+        logs={logs}
+        loading={isLoading || isFetchingNextPage}
+      />
     </div>
   );
 };

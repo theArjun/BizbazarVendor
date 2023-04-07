@@ -17,9 +17,9 @@ function Login() {
       auth: true,
       url: "VendorAuthTokens",
       data: {
-        email: values.email,
+        email: String(values.email).trim(),
 
-        password: values.password,
+        password: String(values.password).trim(),
 
         user_type: "V",
       },

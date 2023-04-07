@@ -7,6 +7,7 @@ import { Col, Row, Breadcrumb, Dropdown } from "antd";
 import { HiPlus } from "react-icons/hi";
 import { ProductSearch, ProductTable } from "..";
 import { useGetProducts } from "../../apis/ProductApi";
+import useDebounce from "../../utils/Hooks/useDebounce";
 const INITIAL_PARAMS = {
   product_name: "",
   price_from: "",
@@ -70,12 +71,16 @@ const Products = () => {
     setParams(param);
   }, [sortBy]);
   // Handle infinite scroll
-  useEffect(() => {
-    if (!bottom) {
-      return;
-    }
-    fetchNextPage();
-  }, [bottom]);
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
   const items = [
     {
       key: "1",

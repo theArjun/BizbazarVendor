@@ -2,16 +2,18 @@ import React from "react";
 import styles from "./Promotions.module.css";
 import { Breadcrumb, Button, Table, Select, Tag } from "antd";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useGetPromotions,
   useDeletePromotions,
   useChangePromotionStatus,
 } from "../../apis/PromotionApi";
-import Spinner from "../../component/Spinner/Spinner";
 import useWindowSize from "../../utils/Hooks/useWindowSize";
+import useDebounce from "../../utils/Hooks/useDebounce";
+import { useMemo } from "react";
 function Promotions() {
+  const [bottom, setBottom] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const { isLoading, mutate, isError } = useDeletePromotions();
   const { isLoading: isStatusChange, mutate: mutateStatus } =
@@ -19,28 +21,50 @@ function Promotions() {
   const {
     isLoading: isPromotionLoading,
     data: promotionData,
-    isError: isPromotionError,
-    error: promotionError,
+    fetchNextPage,
+    isFetchingNextPage,
   } = useGetPromotions();
   const navigate = useNavigate();
   const windowSize = useWindowSize();
   const queryClient = useQueryClient();
-  //  lets get promotions from API
-  const getPromotions = () => {
-    try {
-      if (isPromotionError) {
-        console.log(promotionError);
-        return [];
-      }
-      if (isPromotionLoading) {
-        return [];
-      }
-      let data = [...promotionData?.data?.promotions];
-      return data.map((el, i) => ({ ...el, key: el?.promotion_id }));
-    } catch (e) {
-      console.log("error on getting promotions", e.message);
-    }
+  // handle data when the there  is scroll in product table
+  const handleScroll = (event) => {
+    const condition =
+      event.target.scrollTop + event.target.offsetHeight + 100 >
+      event.target.scrollHeight;
+    setBottom(condition);
   };
+  useEffect(() => {
+    document
+      .querySelector("#product > div > div.ant-table-body")
+      ?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      document
+        .querySelector("#product > div > div.ant-table-body")
+        ?.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
+  // Handle infinite scroll
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
+  let promotionsData = useMemo(() => {
+    let temp = [];
+    promotionData?.pages?.map((el) => {
+      el?.data?.promotions?.map((item) => {
+        temp.push(item);
+      });
+    });
+    return temp || [];
+  }, [promotionData]);
   //  set Status of product
   const getPromotionStatus = (status) => {
     switch (status) {
@@ -51,7 +75,7 @@ function Promotions() {
       case "D":
         return <Tag color="orange">Disabled</Tag>;
       default:
-        return  <Tag color="magenta">Pending</Tag>;
+        return <Tag color="magenta">Pending</Tag>;
     }
   };
   // lets delete promotions
@@ -94,6 +118,7 @@ function Promotions() {
       },
     });
   };
+
   // lets handle the select status change
   const columns = [
     {
@@ -145,9 +170,6 @@ function Promotions() {
     onChange: onSelectChange,
   };
   const hasSelected = selectedRowKeys.length > 0;
-  if (isLoading || isStatusChange) {
-    return <Spinner />;
-  }
   return (
     <div className={styles.container}>
       <div className={styles.breadcumb}>
@@ -187,13 +209,20 @@ function Promotions() {
           />
         </div>
         <Table
+          id="product"
+          rowKey={"promotion_id"}
           rowSelection={rowSelection}
           pagination={false}
-          loading={isPromotionLoading}
+          loading={
+            isPromotionLoading ||
+            isStatusChange ||
+            isLoading ||
+            isFetchingNextPage
+          }
           columns={columns}
-          dataSource={getPromotions()}
+          dataSource={promotionsData}
           scroll={{
-            y: windowSize.height >  670 ? 500 : 300,
+            y: windowSize.height > 670 ? 500 : 300,
             x: 700,
           }}
         />

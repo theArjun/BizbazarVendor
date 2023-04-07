@@ -4,6 +4,7 @@ import { ProductSearch, ProductTable } from "../..";
 import { useGetProducts } from "../../../apis/ProductApi";
 import { useEffect } from "react";
 import { useState } from "react";
+import useDebounce from "../../../utils/Hooks/useDebounce";
 
 const INITIAL_PARAMS = {
   product_name: "",
@@ -66,12 +67,16 @@ const ProductsOnModeration = () => {
     setParams(param);
   }, [sortBy]);
   // Handle infinite scroll
-  useEffect(() => {
-    if (!bottom) {
-      return;
-    }
-    fetchNextPage();
-  }, [bottom]);
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
   return (
     <div className={styles.container}>
       <div className={styles.heading}>

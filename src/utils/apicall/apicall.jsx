@@ -2,7 +2,6 @@ import axios from "axios";
 import { notification } from "antd";
 import { handleLogout } from "../auth/auth";
 import { config } from "../../config/config";
-const token = localStorage.getItem("token");
 export const apicall = async ({
   method = "get",
   url = "",
@@ -14,6 +13,7 @@ export const apicall = async ({
     "Access-Control-Allow-Origin": true,
   },
 }) => {
+  const token = localStorage.getItem("token");
   let finalurl = "/api/";
   if (!auth) {
     finalurl =

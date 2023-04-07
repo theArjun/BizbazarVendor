@@ -65,7 +65,6 @@ const Search = ({ params, setParams }) => {
   }, [params.period]);
   const onValueChange = (a, values) => {
     let temp_date = { ...params };
-    temp_date.page = 1;
     values.period
       ? (temp_date.period = values.period)
       : (temp_date.period = "C");

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useMemo } from "react";
 import { AdminCommunicationSearch, AdminCommunicationTable } from "../..";
 import styles from "./AdminCommunication.module.css";
 import { Breadcrumb, Modal, Form, Input, Button } from "antd";
@@ -8,7 +9,7 @@ import {
   getVendorAdminMessages,
   useCreateAdminMessage,
 } from "../../../apis/MessageCenterApi";
-import Spinner from "../../../component/Spinner/Spinner";
+import useDebounce from "../../../utils/Hooks/useDebounce";
 const { TextArea } = Input;
 const { id } = JSON.parse(localStorage.getItem("userinfo"));
 const INITIAL_MESSAGE = {
@@ -30,8 +31,13 @@ const INITIAL_PARAMS = {
 const AdminCommunication = () => {
   const [open, setOpen] = useState(false);
   const [params, setParams] = useState(INITIAL_PARAMS);
-  const { data: adminMessages, isLoading: messageLoading } =
-    getVendorAdminMessages(params);
+  const [bottom, setBottom] = useState(false);
+  const {
+    data: adminMessages,
+    isLoading: messageLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = getVendorAdminMessages(params);
   const { isLoading: sendLoading, mutateAsync: mutateCreate } =
     useCreateAdminMessage();
   const queryClient = useQueryClient();
@@ -50,12 +56,22 @@ const AdminCommunication = () => {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-  const getAdminMessages = () => {
-    if (adminMessages) {
-      let message = Object.values(adminMessages?.data?.threads || {});
-      return message;
-    }
-    return [];
+  // getting messages
+  let getAdminMessages = useMemo(() => {
+    let temp = [];
+    adminMessages?.pages?.map((el) => {
+      Object.values(el?.data?.threads || {})?.map((item) => {
+        temp.push(item);
+      });
+    });
+    return temp || [];
+  }, [adminMessages]);
+  // handle data when the there  is scroll in product table
+  const handleScroll = (event) => {
+    const condition =
+      event.target.scrollTop + event.target.offsetHeight + 100 >
+      event.target.scrollHeight;
+    setBottom(condition);
   };
   const showModal = () => {
     setOpen(true);
@@ -63,10 +79,17 @@ const AdminCommunication = () => {
   const hideModal = () => {
     setOpen(false);
   };
-
-  if (sendLoading) {
-    return <Spinner />;
-  }
+  // Handle infinite scroll
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
   return (
     <div>
       <div className={styles.top_nav}>
@@ -132,6 +155,7 @@ const AdminCommunication = () => {
               label=""
             >
               <Button
+                loading={sendLoading}
                 type="primary"
                 htmlType="submit"
                 style={{ float: "right" }}
@@ -144,8 +168,9 @@ const AdminCommunication = () => {
       </div>
       <AdminCommunicationSearch setParams={setParams} params={params} />
       <AdminCommunicationTable
-        data={getAdminMessages()}
-        loading={messageLoading}
+        handleScroll={handleScroll}
+        data={getAdminMessages}
+        loading={messageLoading || isFetchingNextPage}
       />
     </div>
   );

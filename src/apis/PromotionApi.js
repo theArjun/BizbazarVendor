@@ -1,6 +1,6 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { apicall } from "../utils/apicall/apicall";
-
+const ITEM_PER_PAGE = 50;
 export const useUpdatePromotion = () =>
   useMutation((data) =>
     apicall({
@@ -30,12 +30,19 @@ export const useChangePromotionStatus = () =>
     })
   );
 export const useGetPromotions = () =>
-  useQuery({
+  useInfiniteQuery({
     queryKey: ["promotions"],
-    queryFn: () =>
+    queryFn: ({ pageParam = 1 }) =>
       apicall({
-        url: "Promotions",
+        url: `Promotions?page=${pageParam}&items_per_page=${ITEM_PER_PAGE}`,
       }),
+    getNextPageParam: (lastPage, pages) => {
+      if (lastPage?.data?.promotions?.length < ITEM_PER_PAGE) {
+        return;
+      }
+      return (lastPage.nextCursor = parseInt(lastPage.data?.params?.page) + 1);
+    },
+    refetchOnWindowFocus: false,
   });
 
 export const useDeletePromotionImage = () =>
@@ -50,7 +57,7 @@ export const useGetPromotionById = (id) =>
       apicall({
         url: `Promotions?promotion_id=${id}&extend[]=get_images&expand=1`,
       }),
-      onSuccess:(res)=>console.log(id)
+    onSuccess: (res) => console.log(id),
   });
 
 export const useGetPromotionProducts = () =>
@@ -67,14 +74,14 @@ export const useGetPromotionCategories = () =>
       }),
   });
 
-  export const useGetPromotionUsers = () =>
+export const useGetPromotionUsers = () =>
   useQuery({
     queryKey: ["promotion_users"],
     queryFn: () =>
       apicall({
         url: `users`,
       }),
-      onError:(error)=>{
-        console.log('Error occured', error)
-      },
+    onError: (error) => {
+      console.log("Error occured", error);
+    },
   });

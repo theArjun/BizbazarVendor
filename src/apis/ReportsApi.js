@@ -1,11 +1,13 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { apicall } from "../utils/apicall/apicall";
+const ITEM_PER_PAGE = 50;
+// getting monthly order report
 export const useGetMonthlyReport = (params) =>
-  useQuery({
+  useInfiniteQuery({
     queryKey: ["monthly_order_report", params],
-    queryFn: () =>
+    queryFn: ({ pageParam = 1 }) =>
       apicall({
-        url: `MonthlyOrderReport?order_id=${params.order_id}&status_id=${params.status_id}&user_type=${params.user_type}&usergroup_id=${params.usergroup_id}&time_from=${params.time_from}&time_to=${params.time_to}`,
+        url: `MonthlyOrderReport?${pageParam}&items_per_page=${ITEM_PER_PAGE}order_id=${params.order_id}&status_id=${params.status_id}&user_type=${params.user_type}&usergroup_id=${params.usergroup_id}&time_from=${params.time_from}&time_to=${params.time_to}`,
       }),
   });
 export const useGetVendorTransactionDetails = (params) =>
