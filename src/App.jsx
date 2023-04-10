@@ -1,15 +1,11 @@
 import React, { lazy, useContext, useEffect } from "react";
 import "./App.css";
-import cx from "classnames";
-import { useDispatch } from "react-redux";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SuspenseWrapper from "./component/SuspenseWrapper/SuspenseWrapper";
 import { DarkModeContext } from "./context/DarkAndLightMode/DarkAndLightContex";
 import PrivateRoutes from "./utils/PrivateRoutes";
-import { loadTableData } from "./redux/features/products/productSlice";
-import { saveCategories } from "./redux/features/products/productSlice";
-import { apicall } from "./utils/apicall/apicall";
-import { Button, Result } from "antd";
+
+import { Result } from "antd";
 import PublicRoute from "./utils/PublicRoute";
 const Tweak = lazy(() => import("./pages/Orders/Tweak/Tweak"));
 const MonthlyOrderReport = lazy(() =>
@@ -123,21 +119,7 @@ const Logs = lazy(() => import("./pages/Logs/Logs"));
 export const queryClient = new QueryClient();
 
 function App() {
-  const dispatch = useDispatch();
-  dispatch(loadTableData);
-  useEffect(() => {
-    getAllCategories();
-  }, []);
   const { darkMode } = useContext(DarkModeContext);
-  const getAllCategories = async () => {
-    const result = await apicall({
-      url: `categories`,
-    });
-    if (result.data) {
-      await dispatch(saveCategories(result.data.categories));
-    }
-  };
-
   return (
     <QueryClientProvider client={queryClient}>
       <Router>

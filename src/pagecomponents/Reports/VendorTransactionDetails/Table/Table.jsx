@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Table, Button } from "antd";
 import styles from "./Table.module.css";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
@@ -7,13 +7,22 @@ import { useReactToPrint } from "react-to-print";
 
 const AccountOrderDetailsTable = ({
   accountOrderDetails,
-  setSortBy,
   loading,
-  page1,
+  handleScroll,
 }) => {
-  const windowSize = useWindowSize();
-
   const [print, setPrint] = useState(false);
+  const windowSize = useWindowSize();
+  useEffect(() => {
+    document
+      .querySelector("#reportaccount > div > div.ant-table-body")
+      ?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      document
+        .querySelector("#reportaccount > div > div.ant-table-body ")
+        ?.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const componentRef = useRef();
 
@@ -32,66 +41,46 @@ const AccountOrderDetailsTable = ({
       title: "Total order amount",
       dataIndex: "total_order_amount",
       key: "total_order_amount",
-      render:(text)=>(
-        <div>रु{text}</div>
-      )
+      render: (text) => <div>रु{text}</div>,
     },
     {
       title: "Commission",
       dataIndex: "commission",
       key: "commission",
-      render:(text)=>(
-        <div>रु{text}</div>
-      )
+      render: (text) => <div>रु{text}</div>,
     },
 
     {
       title: "Total shipping",
       dataIndex: "total_shipping",
       key: "total_shipping",
-      render:(text)=>(
-        <div>रु{text}</div>
-      )
+      render: (text) => <div>रु{text}</div>,
     },
     {
       title: "Total withdrawal",
       dataIndex: "total_withdrawal",
       key: "total_withdrawal",
-      render:(text)=>(
-        <div>रु{text}</div>
-      )
+      render: (text) => <div>रु{text}</div>,
     },
     {
       title: "Total payout addition",
       dataIndex: "total_payout_addition",
       key: "total_payout_addition",
-      render:(text)=>(
-        <div>रु{text}</div>
-      )
+      render: (text) => <div>रु{text}</div>,
     },
     {
       title: "Total payout deduction",
       dataIndex: "total_payout_deduction",
       key: "total_payout_deduction",
-      render:(text)=>(
-        <div>रु{text}</div>
-      )
+      render: (text) => <div>रु{text}</div>,
     },
     {
       title: "Balance",
       dataIndex: "balance",
-      key:'balance',
-      render:(text)=>(
-        <div>रु{text}</div>
-      )
+      key: "balance",
+      render: (text) => <div>रु{text}</div>,
     },
   ];
-
-  function onChange(pagination, filters, sorter, extra) {
-    page1.current = 1;
-
-    setSortBy(sorter);
-  }
 
   const printing = useReactToPrint({
     content: () => componentRef.current,
@@ -117,7 +106,6 @@ const AccountOrderDetailsTable = ({
           y: windowSize.height > 670 ? 500 : 300,
           x: 1500,
         }}
-        onChange={onChange}
       />
       <div className={styles.positionabsolute}>
         <Button className={styles.print} onClick={handlePrint}>
@@ -147,7 +135,6 @@ const AccountOrderDetailsTable = ({
           loading={loading}
           dataSource={accountOrderDetails}
           pagination={false}
-          onChange={onChange}
         />
       )}
     </div>

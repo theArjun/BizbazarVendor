@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Table, Button } from "antd";
 import styles from "./Table.module.css";
 import { useNavigate } from "react-router-dom";
@@ -10,12 +10,23 @@ const AccountOrderDetailsTable = ({
   orderData,
   status,
   loading,
+  handleScroll,
 }) => {
   const windowSize = useWindowSize();
   const [print, setPrint] = useState(false);
   const componentRef = useRef();
   const navigate = useNavigate();
+  useEffect(() => {
+    document
+      .querySelector("#reportaccount > div > div.ant-table-body")
+      ?.addEventListener("scroll", handleScroll);
 
+    return () => {
+      document
+        .querySelector("#reportaccount > div > div.ant-table-body ")
+        ?.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   const getStatusTag = (data) => {
     const [statusOfRow] = status.filter((dat) => dat.value === data);
 
@@ -95,7 +106,7 @@ const AccountOrderDetailsTable = ({
       title: "Order status",
       dataIndex: "order_status",
       key: "order_status",
-      render:(status)=>getStatusTag(status)
+      render: (status) => getStatusTag(status),
     },
     {
       title: "Shipping cost",

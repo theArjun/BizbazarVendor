@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Space, Table, Dropdown, Image, Button, Modal, Tag } from "antd";
 import styles from "./Table.module.css";
-import { apicall } from "../../../utils/apicall/apicall";
 import { AiFillEdit, AiFillDelete, AiFillSetting } from "react-icons/ai";
-import { loadTableData } from "../../../redux/features/products/productSlice";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../utils/Hooks/useWindowSize";
 import {

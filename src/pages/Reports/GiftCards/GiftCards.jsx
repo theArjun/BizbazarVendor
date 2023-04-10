@@ -1,10 +1,11 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { Breadcrumb } from "antd";
 import styles from "./GiftCards.module.css";
-import { useEffect } from "react";
 import GiftCardsSearch from "../../../pagecomponents/Reports/GiftCards/Search/Search";
 import GiftCardsTable from "../../../pagecomponents/Reports/GiftCards/Table/Table";
 import { useGetGiftCards } from "../../../apis/ReportsApi";
+import { useMemo } from "react";
+import useDebounce from "../../../utils/Hooks/useDebounce";
 const INITIAL_PARAMS = {
   gift_card_number: "",
   issued_time_from: "",
@@ -13,36 +14,52 @@ const INITIAL_PARAMS = {
   used_time_to: "",
 };
 const GiftCards = () => {
-  const [giftData, setGiftData] = useState([]);
   const [params, setParams] = useState(INITIAL_PARAMS);
-  const { data: giftCardData, isLoading } = useGetGiftCards(params);
-
-  useEffect(() => {
-    getGiftCardData();
-  }, [giftCardData]);
-  // getGIft card data
-  const getGiftCardData = () => {
-    if (giftCardData?.data?.report) {
-      setGiftData(giftCardData?.data?.report);
-    }
+  const [bottom, setBottom] = useState(false);
+  const {
+    data: giftCardData,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useGetGiftCards(params);
+  const handleScroll = (event) => {
+    const condition =
+      event.target.scrollTop + event.target.offsetHeight + 100 >
+      event.target.scrollHeight;
+    setBottom(condition);
   };
-
+  //  for getting gift card reports
+  let getGiftCardsReportData = useMemo(() => {
+    let temp = [];
+    giftCardData?.pages?.map((el) => {
+      el?.data?.report?.map((item) => {
+        temp.push(item);
+      });
+    });
+    return temp || [];
+  }, [giftCardData]);
+  // Handle infinite scroll
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
   return (
     <div className={styles.container}>
       <Breadcrumb>
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <a href="">Report</a>
-        </Breadcrumb.Item>
+        <Breadcrumb.Item>Reports</Breadcrumb.Item>
         <Breadcrumb.Item>Gift Cards</Breadcrumb.Item>
       </Breadcrumb>
-      <GiftCardsSearch
-        params={params}
-        setParams={setParams}
-      />
+      <GiftCardsSearch params={params} setParams={setParams} />
       <GiftCardsTable
-        giftData={giftData}
-        loading={isLoading}
+        giftData={getGiftCardsReportData}
+        loading={isLoading || isFetchingNextPage}
+        handleScroll={handleScroll}
       />
     </div>
   );

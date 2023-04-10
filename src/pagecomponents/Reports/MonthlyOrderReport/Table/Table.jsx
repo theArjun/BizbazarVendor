@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./Table.module.css";
 import { Table, Button, Tag } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -10,12 +10,22 @@ const USER_TYPE = {
   C: "Customer",
   V: "Vendor",
 };
-const MonthlyOrderReportTable = ({ data, loading, status }) => {
+const MonthlyOrderReportTable = ({ data, loading, status, handleScroll }) => {
   const [print, setPrint] = useState(false);
   const windowSize = useWindowSize();
   const componentRef = useRef();
   const navigate = useNavigate();
+  useEffect(() => {
+    document
+      .querySelector("#reportaccount > div > div.ant-table-body")
+      ?.addEventListener("scroll", handleScroll);
 
+    return () => {
+      document
+        .querySelector("#reportaccount > div > div.ant-table-body")
+        ?.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
   const getTimeAndDate = (timeStamp) => {
     const date = new Date(parseInt(timeStamp) * 1000);
     const monthyear = date.toLocaleString("en-US", {
@@ -152,21 +162,21 @@ const MonthlyOrderReportTable = ({ data, loading, status }) => {
   ];
   return (
     <div className={styles.report_table_container}>
-    <div className={styles.positionabsolute}>
-    <Button className={styles.print} onClick={handlePrint}>
-      print
-    </Button>
-    <Button>
-      <CSVLink
-        filename={"Monthly_Report_Table.csv"}
-        data={data}
-        className="btn btn-primary"
-        onClick={() => {}}
-      >
-        Export to CSV
-      </CSVLink>
-    </Button>
-  </div>
+      <div className={styles.positionabsolute}>
+        <Button className={styles.print} onClick={handlePrint}>
+          print
+        </Button>
+        <Button>
+          <CSVLink
+            filename={"Monthly_Report_Table.csv"}
+            data={data}
+            className="btn btn-primary"
+            onClick={() => {}}
+          >
+            Export to CSV
+          </CSVLink>
+        </Button>
+      </div>
       <Table
         id="reportaccount"
         columns={columns}
@@ -179,7 +189,6 @@ const MonthlyOrderReportTable = ({ data, loading, status }) => {
           x: 1800,
         }}
       />
-   
 
       {print && <div className={styles.margintop} />}
       {print && (
@@ -195,7 +204,6 @@ const MonthlyOrderReportTable = ({ data, loading, status }) => {
             // loading={loading}
             dataSource={data}
             pagination={false}
-            // scroll={{ y: windowSize.height > 670 ? 450 : 300, x: 1000 }}
             //   onChange={onChange}
           />
         </React.Fragment>

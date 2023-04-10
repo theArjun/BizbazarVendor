@@ -169,11 +169,8 @@ const AccountOrderDetails = () => {
   return (
     <div className={styles.container}>
       <Breadcrumb>
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <a href="">Orders</a>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>View Orders</Breadcrumb.Item>
+        <Breadcrumb.Item>Reports</Breadcrumb.Item>
+        <Breadcrumb.Item>Account Orders Details</Breadcrumb.Item>
       </Breadcrumb>
       <AccountOrderDetailsSearch
         setAccountOrderDetails={setAccountOrderDetails}

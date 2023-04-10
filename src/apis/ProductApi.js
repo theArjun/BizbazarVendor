@@ -48,7 +48,6 @@ export const useGetProductById = (id) =>
   useQuery({
     queryKey: ["single_product", id],
     queryFn: () => apicall({ url: `products/${id}` }),
-    onSuccess: (res) => console.log("refetch"),
   });
 export const useUpdateProduct = () =>
   useMutation((data) =>
@@ -90,3 +89,8 @@ export const useGetProductFeatures = (id) =>
     queryFn: () => apicall({ url: `products/${id}/ProductFeature` }),
     onError: (err) => console.log(err),
   });
+// Function  for bulk addition
+export const useCreateBulkProducts = () =>
+  useMutation((data) =>
+    apicall({ url: `BulkProducts`, data: data, method: "post" })
+  );

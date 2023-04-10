@@ -1,27 +1,34 @@
-import React, { useState,} from "react";
+import React, { useState } from "react";
 import { Breadcrumb } from "antd";
 import styles from "./OrderDetailsReport.module.css";
-import { useEffect } from "react";
 import OrderDetailsReportSearch from "../../../pagecomponents/Reports/OrderDetailsReport/Search/Search";
 import AccountOrderDetailsTable from "../../../pagecomponents/Reports/OrderDetailsReport/Table/Table";
 import { useGetOrderDetails } from "../../../apis/ReportsApi";
+import useDebounce from "../../../utils/Hooks/useDebounce";
+import { useMemo } from "react";
 const INITIAL_PARAMS = {
   order_id: "",
   vendor_name: "",
   shipping_customer_name: "",
- date:'isSearch=Y'
-};  
+  date: "isSearch=Y",
+};
 const OrderDetailsReport = () => {
   const [params, setParams] = useState(INITIAL_PARAMS);
-  const [orderData, setOrderData] = useState([]);
-  const { data, isLoading } = useGetOrderDetails(params);
-  useEffect(() => {
-    getOrderData();
-  }, [data]);
+  const [bottom, setBottom] = useState(false);
+  const { data, isLoading, isFetchingNextPage, fetchNextPage } =
+    useGetOrderDetails(params);
+  const handleScroll = (event) => {
+    const condition =
+      event.target.scrollTop + event.target.offsetHeight + 100 >
+      event.target.scrollHeight;
+    setBottom(condition);
+  };
   // get order data through api
   const getOrderStatus = () => {
-    if (data?.data?.order_statuses) {
-      let status = Object.values(data?.data?.order_statuses)?.map((el, i) => ({
+    if (data?.pages) {
+      let status = Object.values(
+        data?.pages?.at(-1)?.data?.order_statuses || {}
+      )?.map((el, i) => ({
         label: el?.description,
         value: el?.status,
         color: el?.params?.color,
@@ -30,29 +37,39 @@ const OrderDetailsReport = () => {
     }
     return [];
   };
-  // function to get order statuses
-  const getOrderData = () => {
-    if (data?.data?.report) {
-      setOrderData(data?.data?.report);
-    }
-  };
+  //  for getting order reports
+  let getOrderReportData = useMemo(() => {
+    let temp = [];
+    data?.pages?.map((el) => {
+      el?.data?.report?.map((item) => {
+        temp.push(item);
+      });
+    });
+    return temp || [];
+  }, [data]);
+  // Handle infinite scroll
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
   return (
     <div className={styles.container}>
       <Breadcrumb>
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <a href="">Orders</a>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>View Orders</Breadcrumb.Item>
+        <Breadcrumb.Item>Reports</Breadcrumb.Item>
+        <Breadcrumb.Item>Order Details</Breadcrumb.Item>
       </Breadcrumb>
-      <OrderDetailsReportSearch
-        params={params}
-        setParams={setParams}
-      />
+      <OrderDetailsReportSearch params={params} setParams={setParams} />
       <AccountOrderDetailsTable
         status={getOrderStatus()}
-        orderData={orderData}
-        loading={isLoading}
+        orderData={getOrderReportData}
+        loading={isLoading || isFetchingNextPage}
+        handleScroll={handleScroll}
       />
     </div>
   );

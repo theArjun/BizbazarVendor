@@ -1,17 +1,20 @@
 import React from "react";
 import styles from "./BulkAddition.module.css";
-import { useSelector } from "react-redux";
 import { Breadcrumb, Button, Skeleton } from "antd";
 import { useState } from "react";
 import { useEffect } from "react";
 import { AdditionField, AdditionTable } from "../..";
-import { apicall } from "../../../utils/apicall/apicall";
 import Spinner from "../../../component/Spinner/Spinner";
+import { useMemo } from "react";
+import { useCreateBulkProducts } from "../../../apis/ProductApi";
+import { useNavigate } from "react-router-dom";
+import { useGetCategories } from "../../../apis/CategoryApi";
 const BulkAddition = () => {
-  const categories = useSelector((state) => state.product.categories);
   const [products, setProducts] = useState([]);
   const [disabled, setDisabled] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { data: categories, isLoading: categoryLoading } = useGetCategories();
+  const { mutate, isLoading: createLoading } = useCreateBulkProducts();
   useEffect(() => {
     if (products.length) {
       setDisabled(false);
@@ -19,28 +22,29 @@ const BulkAddition = () => {
       setDisabled(true);
     }
   }, [products]);
-
+  //  for getting order reports
+  let getCategories = useMemo(() => {
+    if (categories?.data) {
+      return categories?.data?.categories;
+    }
+    return [];
+  }, [categories]);
   // api call to insert bulk data
   const insertBulkData = async (bulk_data) => {
     if (bulk_data.length) {
-      setLoading(true);
       let finalData = {
         products_data: [...bulk_data],
       };
-
-      let result = await apicall({
-        method: "post",
-        url: "BulkProducts",
-        data: finalData,
+      mutate(finalData, {
+        onSuccess: (res) => {
+          navigate("../products/products");
+        },
       });
-      if (result.status == 201) {
-        setLoading(false);
-        console.log(result);
-        setProducts([]);
-      }
-      setLoading(false);
     }
   };
+  if (categoryLoading) {
+    return <Spinner />;
+  }
   return (
     <div className={styles.bulk_addition_container}>
       <div className={styles.breadcrumb_container}>
@@ -55,7 +59,7 @@ const BulkAddition = () => {
       <section className={styles.title_section}>
         <h3>Add products</h3>
         <Button
-          loading={loading}
+          loading={createLoading}
           disabled={disabled}
           type="primary"
           onClick={() => insertBulkData(products)}
@@ -63,25 +67,17 @@ const BulkAddition = () => {
           Create
         </Button>
       </section>
-      {categories ? (
-        <AdditionField
-          categories={categories}
-          setProducts={setProducts}
-          products={products}
-        />
-      ) : (
-        <Spinner />
-      )}
+      <AdditionField
+        categories={getCategories}
+        setProducts={setProducts}
+        products={products}
+      />
       <div>
-        {categories ? (
-          <AdditionTable
-            products={products}
-            setProducts={setProducts}
-            categories={categories}
-          />
-        ) : (
-          ""
-        )}
+        <AdditionTable
+          products={products}
+          setProducts={setProducts}
+          categories={getCategories}
+        />
       </div>
     </div>
   );

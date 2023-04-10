@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./MonthlyOrderReport.module.css";
 import { Breadcrumb } from "antd";
 import { MonthlyOrderReportSearch, MonthlyOrderReportTable } from "../..";
 import { useGetMonthlyReport } from "../../../apis/ReportsApi";
 import { useGetStatuses } from "../../../apis/StatusApi";
 import { useMemo } from "react";
+import useDebounce from "../../../utils/Hooks/useDebounce";
 const INITIAL_PARAMS = {
   order_id: "",
   status_id: "",
@@ -15,9 +16,21 @@ const INITIAL_PARAMS = {
 };
 const MonthlyOrderReport = () => {
   const [params, setParams] = useState(INITIAL_PARAMS);
-  const { data: reportData, isLoading: reportLoading } =
-    useGetMonthlyReport(params);
+  const [bottom, setBottom] = useState(false);
+  const {
+    data: reportData,
+    isLoading: reportLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useGetMonthlyReport(params);
   const { data: statusData, isLoading: statusLoading } = useGetStatuses();
+  // handle data when the there  is scroll in product table
+  const handleScroll = (event) => {
+    const condition =
+      event.target.scrollTop + event.target.offsetHeight + 100 >
+      event.target.scrollHeight;
+    setBottom(condition);
+  };
   let getReportData = useMemo(() => {
     let temp = [];
     reportData?.pages?.map((el) => {
@@ -43,19 +56,26 @@ const MonthlyOrderReport = () => {
   // getUserGroups
   const getUserGroups = () => {
     let temp = reportData?.pages?.at(-1)?.data?.usergroups || {};
-    console.log(reportData);
     return Object.values(temp)?.map((el, i) => ({
       label: el?.usergroup,
       value: el?.usergroup_id,
     }));
   };
+  // Handle infinite scroll
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
   return (
     <div className={styles.container}>
       <Breadcrumb>
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <a href="">Reports</a>
-        </Breadcrumb.Item>
+        <Breadcrumb.Item>Reports</Breadcrumb.Item>
         <Breadcrumb.Item>Monthly order reports</Breadcrumb.Item>
       </Breadcrumb>
       <MonthlyOrderReportSearch
@@ -65,8 +85,9 @@ const MonthlyOrderReport = () => {
         setParams={setParams}
       />
       <MonthlyOrderReportTable
+        handleScroll={handleScroll}
         data={getReportData}
-        loading={reportLoading}
+        loading={reportLoading || isFetchingNextPage}
         status={getStatus()}
       />
     </div>

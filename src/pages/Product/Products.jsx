@@ -8,6 +8,8 @@ import { HiPlus } from "react-icons/hi";
 import { ProductSearch, ProductTable } from "..";
 import { useGetProducts } from "../../apis/ProductApi";
 import useDebounce from "../../utils/Hooks/useDebounce";
+import { useGetCategories } from "../../apis/CategoryApi";
+import { useMemo } from "react";
 const INITIAL_PARAMS = {
   product_name: "",
   price_from: "",
@@ -24,6 +26,7 @@ const Products = () => {
   const [sortColum, setSortingColum] = useState("");
   const navigate = useNavigate();
   const [params, setParams] = useState(INITIAL_PARAMS);
+  const { data: categories, isLoading: categoryLoading } = useGetCategories();
   const {
     data: productData,
     isLoading: productLoading,
@@ -40,7 +43,13 @@ const Products = () => {
     });
     setProducts(temp || []);
   }, [productData]);
-
+  //  for getting order reports
+  let getCategories = useMemo(() => {
+    if (categories?.data) {
+      return categories?.data?.categories;
+    }
+    return [];
+  }, [categories]);
   // handle data when the there  is scroll in product table
   const handleScroll = (event) => {
     const condition =
@@ -163,14 +172,18 @@ const Products = () => {
           </Col>
         </Row>
       </div>
-      <ProductSearch params={params} setParams={setParams} />
+      <ProductSearch
+        params={params}
+        categories={getCategories}
+        setParams={setParams}
+      />
       <ProductTable
         handleScroll={handleScroll}
         products={products}
         setSortBy={setSortBy}
         sortColum={sortColum}
         setSortingColum={setSortingColum}
-        loading={productLoading || nextLoading}
+        loading={productLoading || nextLoading || categoryLoading}
       />
     </div>
   );

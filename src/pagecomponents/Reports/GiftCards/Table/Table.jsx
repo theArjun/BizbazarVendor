@@ -5,11 +5,9 @@ import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 import { CSVLink } from "react-csv";
 import { useReactToPrint } from "react-to-print";
+import { useEffect } from "react";
 
-const AccountOrderDetailsTable = ({
-  giftData,
-  loading,
-}) => {
+const AccountOrderDetailsTable = ({ giftData, loading, handleScroll }) => {
   const windowSize = useWindowSize();
 
   const [print, setPrint] = useState(false);
@@ -17,6 +15,17 @@ const AccountOrderDetailsTable = ({
   const componentRef = useRef();
 
   const navigate = useNavigate();
+  useEffect(() => {
+    document
+      .querySelector("#reportaccount > div > div.ant-table-body")
+      ?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      document
+        .querySelector("#reportaccount > div > div.ant-table-body ")
+        ?.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   const getTimeAndDate = (timeStamp) => {
     const date = new Date(parseInt(timeStamp) * 1000);
     const monthyear = date.toLocaleString("en-US", {
@@ -43,9 +52,7 @@ const AccountOrderDetailsTable = ({
       title: "Customer email",
       dataIndex: "email",
       key: "email",
-      render: (text, dat) => (
-        <a>{text}</a>
-      ),
+      render: (text, dat) => <a>{text}</a>,
     },
     {
       title: "Customer number",
@@ -68,28 +75,21 @@ const AccountOrderDetailsTable = ({
       title: "Total order value",
       dataIndex: "total_order_value",
       key: "total_order_value",
-      render:(text)=>(
-        <div>	रु{text}</div>
-      )
+      render: (text) => <div> रु{text}</div>,
     },
     {
       title: "Gift card amount used",
       dataIndex: "gift_card_amount_used",
       key: "gift_card_amount_used",
-      render:(text)=>(
-        <div>	रु{text}</div>
-      )
+      render: (text) => <div> रु{text}</div>,
     },
 
     {
       title: "Gift card number",
       dataIndex: "gift_card_number",
       key: "gift_card_number",
-      render: (text, dat) => (
-        <a>{text}</a>
-      ),
+      render: (text, dat) => <a>{text}</a>,
     },
-    
   ];
   const printing = useReactToPrint({
     content: () => componentRef.current,
@@ -122,7 +122,7 @@ const AccountOrderDetailsTable = ({
         </Button>
         <Button>
           <CSVLink
-            filename={"Expense_Table.csv"}
+            filename={"Gift_Cards.csv"}
             data={giftData}
             className="btn btn-primary"
             onClick={() => {}}

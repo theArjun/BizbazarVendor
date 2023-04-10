@@ -1,15 +1,7 @@
 import React from "react";
 import styles from "./General.module.css";
 import "./index.css";
-import {
-  Button,
-  Form,
-  Input,
-  Select,
-  message,
-  Checkbox,
-  Card,
-} from "antd";
+import { Button, Form, Input, Select, message, Checkbox, Card } from "antd";
 import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
 import { apicall } from "../../../../utils/apicall/apicall";
 import ReactQuill from "react-quill";
@@ -20,7 +12,7 @@ import ImageUploaderForEdit from "../../../../component/ImageUploader/ImageUploa
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateProduct } from "../../../../apis/ProductApi";
 import Spinner from "../../../../component/Spinner/Spinner";
-const General = ({ editData, categories, getData, form}) => {
+const General = ({ editData, categories, getData, form }) => {
   // for toggling  fields button
   const [info, setInfo] = useState(true);
   const [options, setOptions] = useState(true);
@@ -100,14 +92,16 @@ const General = ({ editData, categories, getData, form}) => {
     return temp;
   };
   const getImage = (data) => {
-    let main_image = data?.main_pair?data.main_pair:{};
-    let additional_image = data?.image_pairs?Object.values(data?.image_pairs)?.map((el, i) => ({
-      uid: `${i + 1}`,
-      name: `additional_mage_${i + 1}.jpg`,
-      status: "done",
-      url: el?.detailed?.image_path,
-      pair_id: el?.pair_id,
-    })):{}
+    let main_image = data?.main_pair ? data.main_pair : {};
+    let additional_image = data?.image_pairs
+      ? Object.values(data?.image_pairs)?.map((el, i) => ({
+          uid: `${i + 1}`,
+          name: `additional_mage_${i + 1}.jpg`,
+          status: "done",
+          url: el?.detailed?.image_path,
+          pair_id: el?.pair_id,
+        }))
+      : {};
     if (Object.keys(main_image).length) {
       return [
         {
@@ -163,7 +157,7 @@ const General = ({ editData, categories, getData, form}) => {
     mutate(final_data, {
       onSuccess: (response) => {
         queryClient.invalidateQueries(["single_product", String(product_id)]);
-        getData()
+        getData();
       },
     });
   };
@@ -179,7 +173,6 @@ const General = ({ editData, categories, getData, form}) => {
     }));
     return temp;
   };
-
   // this function is for category search
   const onSearch = (value) => {
     console.log("search:", value);
@@ -196,13 +189,13 @@ const General = ({ editData, categories, getData, form}) => {
       setVatId([...tax[0].tax_id]);
     }
   };
-  if(isLoading){
-    return <Spinner/>
+  if (isLoading) {
+    return <Spinner />;
   }
   return (
     <div className={styles.formContainer}>
       <Form
-      form={form}
+        form={form}
         name="basic"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
