@@ -1,34 +1,27 @@
 import axios from "axios";
-
+import { config } from "./config";
 const { env } = import.meta;
-const API = axios.create({
-  // baseURL:
+const { id } = JSON.parse(localStorage.getItem("userinfo")) || { id: "" };
+const BASE_URL = id ? `/api/vendors/${id}/` : `api/`;
+const Axios = axios.create({
+  baseURL: BASE_URL,
   timeout: 10000,
-  withCredentialsL: true,
+  auth: {
+    username: config.ADMIN_USERNAME,
+
+    password: config.ADMIN_API_KEY,
+  },
 });
-axios.interceptors.request.use(
-  function (config) {
-    // Do something before request is sent
-    return config;
-  },
-  function (error) {
-    // Do something with request error
+
+Axios.interceptors.request.use((configuration) => {
+  return configuration;
+});
+Axios.interceptors.response.use(
+  (configuration) => configuration,
+
+  (error) => {
     return Promise.reject(error);
   }
 );
 
-// Add a response interceptor
-axios.interceptors.response.use(
-  function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    return response;
-  },
-  function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return Promise.reject(error);
-  }
-);
-
-export default API;
+export default Axios;

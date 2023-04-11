@@ -25,7 +25,7 @@ const Search = ({ params, setParams, hasStatus, categories }) => {
     500,
     [values]
   );
-  let cats = categories.map((item) => ({
+  let cats = categories?.map((item) => ({
     label: item.category,
     value: item.category_id,
   }));

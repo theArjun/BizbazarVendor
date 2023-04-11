@@ -5,6 +5,8 @@ import { useGetLogs } from "../../apis/LogsApi";
 import { useEffect } from "react";
 import { useState } from "react";
 import useDebounce from "../../utils/Hooks/useDebounce";
+import { Button, Result } from "antd";
+import { useNavigate } from "react-router-dom";
 const INITIAL_PARAMS = {
   period: "C",
   time_from: "",
@@ -14,8 +16,9 @@ const Logs = () => {
   const [params, setParams] = useState(INITIAL_PARAMS);
   const [bottom, setBottom] = useState(false);
   const [logs, setLogs] = useState([]);
-  const { isLoading, data, isFetchingNextPage, fetchNextPage } =
+  const { isLoading, data, isFetchingNextPage, fetchNextPage, isError, error } =
     useGetLogs(params);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let temp = [];
@@ -43,7 +46,20 @@ const Logs = () => {
     300,
     [bottom]
   );
-
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.logs}>
       <div className={styles.logTitle}>Activity logs</div>

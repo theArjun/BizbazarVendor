@@ -107,7 +107,7 @@ const Products = () => {
       key: "2",
       label: (
         <a
-          onClick={() => navigate("../products/BulkProductAddition")}
+          onClick={() => navigate("../BulkProductAddition")}
           className={styles.action_items}
         >
           Bulk product addition
@@ -118,7 +118,7 @@ const Products = () => {
       key: "3",
       label: (
         <a
-          onClick={() => navigate("../products/productsonmoderation")}
+          onClick={() => navigate("../ProductsOnModeration")}
           className={styles.action_items}
         >
           Product on moderation

@@ -3,31 +3,27 @@ import { useNavigate, Navigate } from "react-router-dom";
 import { Button, Form, Input, Card } from "antd";
 import styles from "./Login.module.css";
 import "./index.css";
-import { apicall } from "./../../utils/apicall/apicall";
 import { handlelogin } from "../../utils/auth/auth";
-
+import { useLogin } from "../../apis/LoginApi";
+import { notification } from "antd";
 function Login() {
+  const { mutate, isLoading } = useLogin();
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
-    console.log(values.email, values.password);
-    const result = await apicall({
-      method: "post",
-      auth: true,
-      url: "VendorAuthTokens",
-      data: {
-        email: String(values.email).trim(),
-
-        password: String(values.password).trim(),
-
-        user_type: "V",
+    let data = {
+      email: String(values.email).trim(),
+      password: String(values.password).trim(),
+      user_type: "V",
+    };
+    mutate(data, {
+      onSuccess: (result) => {
+        handlelogin(result.data);
+        notification.success({ message: "Login successful!" });
+        navigate("/");
       },
     });
-    if (result.status === 201) {
-      handlelogin(result.data);
-      navigate("/");
-    }
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -91,7 +87,7 @@ function Login() {
                 span: 16,
               }}
             >
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" loading={isLoading}>
                 Submit
               </Button>
             </Form.Item>

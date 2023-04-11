@@ -37,7 +37,7 @@ const BulkAddition = () => {
       };
       mutate(finalData, {
         onSuccess: (res) => {
-          navigate("../products/products");
+          navigate("../products");
         },
       });
     }

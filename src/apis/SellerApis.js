@@ -1,21 +1,23 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { apicall } from "../utils/apicall/apicall";
-const { id } = JSON.parse(window.localStorage.getItem("userinfo"));
+import Axios from "../config/apiConfig";
+import { notification } from "antd";
 export const useGetSellerInformation = () =>
   useQuery({
     queryKey: ["seller_information"],
-    queryFn: () => apicall({ url: `Companies` }),
-    onError: (err) => console.log(err),
+    queryFn: () => Axios.get(`Companies`),
   });
 export const useUpdateSeller = () =>
-  useMutation((data) =>
-    apicall({
-      url: `Companies`,
-      method: "post",
-      data: data,
-      headers: {
-        "Content-Type": "multipart/form-data",
-        "Access-Control-Allow-Origin": true,
-      },
-    })
-  );
+  useMutation({
+    mutationFn: (data) => Axios.post(`Companies`, data),
+    onSuccess: (res) => {
+      notification.success({
+        message: "Your changes have been saved.",
+      });
+    },
+    onError: (err) => {
+      notification.error({
+        message: "Failed to save",
+        description: err?.message,
+      });
+    },
+  });

@@ -200,7 +200,7 @@ function App() {
                   <Products />
                 </SuspenseWrapper>
               }
-              path="/products/Products"
+              path="/products"
             ></Route>
             <Route
               element={
@@ -208,7 +208,7 @@ function App() {
                   <ProductsOnModeration />
                 </SuspenseWrapper>
               }
-              path="/products/productsonmoderation"
+              path="/ProductsOnModeration"
             ></Route>
             {/** product add  */}
             <Route
@@ -217,7 +217,7 @@ function App() {
                   <AddProduct />
                 </SuspenseWrapper>
               }
-              path="/products/Products/Add Product"
+              path="/Products/Add Product"
             ></Route>{" "}
             {/*Bulk Product addition  */}
             <Route
@@ -226,7 +226,7 @@ function App() {
                   <BulkAddition />
                 </SuspenseWrapper>
               }
-              path="/products/BulkProductAddition"
+              path="/BulkProductAddition"
             ></Route>{" "}
             {/** product edit  */}
             <Route
@@ -235,7 +235,7 @@ function App() {
                   <Edit />
                 </SuspenseWrapper>
               }
-              path="/products/Products/Edit Product/:id"
+              path="/products/:id"
             ></Route>
             {/** product Reviews */}
             <Route

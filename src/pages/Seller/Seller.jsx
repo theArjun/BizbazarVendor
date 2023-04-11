@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styles from "./Seller.module.css";
 import cx from "classnames";
 import Spinner from "../../component/Spinner/Spinner";
-import { Breadcrumb, Button, message, Form, Modal } from "antd";
+import { Breadcrumb, Button, message, Form, Modal, Result } from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
@@ -38,7 +38,7 @@ const Seller = () => {
   const [customerImage, setCustomerImage] = useState("");
   const [invoiceImage, setInvoiceImage] = useState("");
   const [changed, setChanged] = useState("");
-  const { data, isLoading } = useGetSellerInformation();
+  const { data, isLoading, isError, error } = useGetSellerInformation();
   const formData = new FormData();
   const navigate = useNavigate();
   const [form] = Form.useForm();
@@ -130,9 +130,6 @@ const Seller = () => {
             mutate(formData, {
               onSuccess: (response) => {
                 queryClient.invalidateQueries(["seller_information"]);
-              },
-              onError: (error) => {
-                console.log(error.message);
               },
             });
           } catch (err) {
@@ -246,6 +243,20 @@ const Seller = () => {
   if (isLoading || updateLoading) {
     return <Spinner />;
   }
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <div className={styles.breadcrumb_create_btn}>
@@ -290,7 +301,7 @@ const Seller = () => {
               <h4>Menu</h4>
             </div>
             <div className={styles.menu_list}>
-              <div onClick={() => navigate("../Products/Products")}>
+              <div onClick={() => navigate("../Products")}>
                 View vendor products
               </div>
               <div>View vendor admins</div>
