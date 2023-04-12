@@ -1,0 +1,1 @@
+const t="_tabWrapper_125as_1",a="_tab_125as_1",o="_bgColor_125as_33",_="_container_125as_51",n="_tabcontain_125as_69",s="_breadcrumb_125as_75",c="_top_section_125as_87",r={tabWrapper:t,tab:a,bgColor:o,container:_,tabcontain:n,breadcrumb:s,top_section:c};export{r as s};
