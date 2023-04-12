@@ -1,0 +1,1 @@
+import{B as n,v as g,f as e}from"./index.b239cc55.js";n("warning","error","");function c(r,t,s){var a;return g((a={},e(a,r+"-status-success",t==="success"),e(a,r+"-status-warning",t==="warning"),e(a,r+"-status-error",t==="error"),e(a,r+"-status-validating",t==="validating"),e(a,r+"-has-feedback",s),a))}var o=function(t,s){return s||t};export{o as a,c as g};
