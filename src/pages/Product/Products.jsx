@@ -3,7 +3,7 @@ import styles from "./Product.module.css";
 import "./index.css";
 import { AiFillSetting } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { Col, Row, Breadcrumb, Dropdown } from "antd";
+import { Col, Row, Breadcrumb, Dropdown, Result, Button } from "antd";
 import { HiPlus } from "react-icons/hi";
 import { ProductSearch, ProductTable } from "..";
 import { useGetProducts } from "../../apis/ProductApi";
@@ -32,6 +32,8 @@ const Products = () => {
     isLoading: productLoading,
     isFetchingNextPage: nextLoading,
     fetchNextPage,
+    isError,
+    error,
   } = useGetProducts(params);
   //let set products
   useEffect(() => {
@@ -139,6 +141,20 @@ const Products = () => {
       ),
     },
   ];
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <div className="product_header">

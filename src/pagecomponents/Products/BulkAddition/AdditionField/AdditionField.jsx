@@ -9,6 +9,7 @@ import ImageUploader from "../../../../component/ImageUploader/ImageUploader";
 
 const AdditionField = ({ categories, products, setProducts }) => {
   const [moreOpen, setMoreOpen] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(0);
   const [imageCount, setImageCount] = useState(0);
   const [uploadedImage, setUploadedImage] = useState({
@@ -19,6 +20,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
     type_product_add_additional_image_detailed: {},
     file_product_add_additional_image_detailed: {},
   });
+  const [form] = Form.useForm();
   let cats = categories.map((item) => ({
     label: item.category,
     value: item.category_id,
@@ -33,6 +35,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
         category_ids: getCategories(values.category),
       },
     ]);
+    form.resetFields();
     setCount(count + 1);
     setImageCount(0);
   };
@@ -54,19 +57,20 @@ const AdditionField = ({ categories, products, setProducts }) => {
       value: "H",
     },
   ];
-  const getCategories=(a)=>{
-    let temp={}
-      if(a){
-       a?.map((el, i)=>{
-        temp[i]=el
-       })
-      }
-      return temp
-  }
+  const getCategories = (a) => {
+    let temp = {};
+    if (a) {
+      a?.map((el, i) => {
+        temp[i] = el;
+      });
+    }
+    return temp;
+  };
   return (
     <div>
       <Card>
         <Form
+          form={form}
           layout="vertical"
           className={styles.form}
           name="basic"
@@ -198,6 +202,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
             <div className={styles.action_buttons}>
               <Form.Item>
                 <Button
+                  disabled={loading}
                   type="primary"
                   style={{ marginTop: "25px" }}
                   htmlType="submit"
@@ -233,6 +238,7 @@ const AdditionField = ({ categories, products, setProducts }) => {
               imageCount={imageCount}
               setImageCount={setImageCount}
               Form={Form}
+              setLoading={setLoading}
             />
           </div>
         </Form>

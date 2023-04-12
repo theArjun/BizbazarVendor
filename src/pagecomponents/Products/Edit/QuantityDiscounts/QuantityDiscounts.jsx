@@ -5,26 +5,19 @@ import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateDiscounts } from "../../../../apis/ProductApi";
-import { apicall } from "../../../../utils/apicall/apicall";
-import Spinner from "../../../../component/Spinner/Spinner";
 const userGroup = {
   0: "All",
   1: "Guest",
   2: "Registered user",
 };
-const QuantityDiscounts = ({
-  id,
-  price_data,
-  loading,
-  setLoading,
-  getData,
-}) => {
+const QuantityDiscounts = ({ id, price_data }) => {
   const [data, setData] = useState([]);
   const [type, setType] = useState("A");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [deleteDiscount, setDeleteDiscount] = useState([]);
-  const {isLoading:discountLoading, mutate:discountMutate}=useUpdateDiscounts()
-  const queryClient=useQueryClient();
+  const { isLoading: discountLoading, mutate: discountMutate } =
+    useUpdateDiscounts();
+  const queryClient = useQueryClient();
   const windowSize = useWindowSize();
   let discounts = price_data?.prices;
   const onFinish = (values) => {
@@ -60,13 +53,16 @@ const QuantityDiscounts = ({
 
   // Update Quantity discount
   const updateDiscount = (id, values) => {
-    discountMutate({data:values, id:id},{
-      onSuccess:(res)=>{
-        queryClient.invalidateQueries(['single_product',id])
-        setSelectedRowKeys([]);
-      },
-      onError:(error)=> console.log('Something went wrong,', error)
-    })
+    discountMutate(
+      { data: values, id: id },
+      {
+        onSuccess: (res) => {
+          queryClient.invalidateQueries(["single_product", id]);
+          setSelectedRowKeys([]);
+        },
+        onError: (error) => console.log("Something went wrong,", error),
+      }
+    );
   };
   const onValueChange = (a) => {
     // console.log(values)
@@ -136,9 +132,6 @@ const QuantityDiscounts = ({
       dataIndex: "user_group",
     },
   ];
-  if(discountLoading){
-    return <Spinner/>
-  }
   return (
     <div className={styles.quantity_discount}>
       <Card>
@@ -235,7 +228,6 @@ const QuantityDiscounts = ({
         <Button
           type="primary"
           disabled={!hasSelected}
-          loading={loading}
           onClick={() => updateDiscount(id, deleteDiscount)}
         >
           Delete
@@ -243,7 +235,7 @@ const QuantityDiscounts = ({
       </div>
       <Table
         id="product"
-        loading={loading}
+        loading={discountLoading}
         columns={columns}
         dataSource={data}
         pagination={false}

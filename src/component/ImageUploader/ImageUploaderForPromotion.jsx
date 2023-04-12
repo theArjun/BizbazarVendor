@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import styles from './upload.module.css'
+import styles from "./upload.module.css";
 import { Upload, Modal, Form } from "antd";
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -11,23 +11,24 @@ const getBase64 = (file) =>
   });
 const ImageUploaderForPromotion = ({
   message,
-  image,
   setImage,
   imageList,
   deleteImage,
   setDeleteImage,
   logoData,
-  setLogoData
-  }) => {
+  setLogoData,
+}) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [upload, setUpload] = useState(true);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
-  const [fileList, setFileList] = useState(imageList.length?[...imageList]:[]);
-  let insertImage =  (e) => {
+  const [fileList, setFileList] = useState(
+    imageList.length ? [...imageList] : []
+  );
+  let insertImage = (e) => {
     let image_type = e.target.files[0].name.split(".").pop();
     if (image_type === "jpeg" || image_type === "png" || image_type === "jpg") {
-      setImage(e.target.files[0])
+      setImage(e.target.files[0]);
     }
   };
   const handleCancel = () => setPreviewOpen(false);
@@ -59,27 +60,25 @@ const ImageUploaderForPromotion = ({
     return false;
   };
   const onRemove = (a) => {
-    if(logoData){
-      let logo_temp={...logoData}
-      if(logo_temp.removed_image_pair_ids[0]){
-        logo_temp.removed_image_pair_ids[1]=a.image_id
+    if (logoData) {
+      let logo_temp = { ...logoData };
+      if (logo_temp.removed_image_pair_ids[0]) {
+        logo_temp.removed_image_pair_ids[1] = a.image_id;
+      } else {
+        logo_temp.removed_image_pair_ids[0] = a.image_id;
       }
-      else{
-        logo_temp.removed_image_pair_ids[0]=a.image_id
-      }
-      setLogoData(logo_temp)
-
+      setLogoData(logo_temp);
     }
-    if(deleteImage){
-      let delete_image={...deleteImage}
-      delete_image.image_id=a?.image_id;
-      delete_image.pair_id=a?.pair_id;
-      setDeleteImage(delete_image)
+    if (deleteImage) {
+      let delete_image = { ...deleteImage };
+      delete_image.image_id = a?.image_id;
+      delete_image.pair_id = a?.pair_id;
+      setDeleteImage(delete_image);
     }
-    setImage('')
+    setImage("");
   };
   const uploadButton = (
-    <div >
+    <div>
       <PlusOutlined />
       <div
         style={{
@@ -92,39 +91,42 @@ const ImageUploaderForPromotion = ({
   );
   return (
     <React.Fragment>
-    <Form>
-    <Form.Item name="image" onChange={insertImage}>
-    <div className={ fileList?.length?styles.close_upload:styles.open_upload}>
-    <Upload
-      action="#"
-      listType="picture-card"
-      fileList={fileList}
-      onPreview={handlePreview}
-      onChange={handleChange}
-      beforeUpload={beforeUpload}
-      onRemove={onRemove}
-    >
-      {fileList.length >= 8 ? null : uploadButton}
-    </Upload>
- 
-      <Modal
-        open={previewOpen}
-        title={previewTitle}
-        footer={null}
-        onCancel={handleCancel}
-      >
-        <img
-          alt="example"
-          style={{
-            width: "100%",
-          }}
-          src={previewImage}
-        />
-      </Modal>
-    </div>
-    </Form.Item>
-    </Form>
-      
+      <Form>
+        <Form.Item name="image" onChange={insertImage}>
+          <div
+            className={
+              fileList?.length ? styles.close_upload : styles.open_upload
+            }
+          >
+            <Upload
+              action="#"
+              listType="picture-card"
+              fileList={fileList}
+              onPreview={handlePreview}
+              onChange={handleChange}
+              beforeUpload={beforeUpload}
+              onRemove={onRemove}
+            >
+              {fileList.length >= 8 ? null : uploadButton}
+            </Upload>
+
+            <Modal
+              open={previewOpen}
+              title={previewTitle}
+              footer={null}
+              onCancel={handleCancel}
+            >
+              <img
+                alt="example"
+                style={{
+                  width: "100%",
+                }}
+                src={previewImage}
+              />
+            </Modal>
+          </div>
+        </Form.Item>
+      </Form>
     </React.Fragment>
   );
 };

@@ -166,3 +166,63 @@ export const useCreateBulkProducts = () =>
       });
     },
   });
+// Creating variations
+export const useCreateVariations = () =>
+  useMutation({
+    mutationFn: (data) =>
+      Axios.post(`products/${data.id}/ProductVariation`, data.data),
+    onSuccess: (res) => {
+      notification.success({ message: "Variations created successfully" });
+    },
+    onError: (err) => {
+      notification.error({
+        message: "Failed to create variations",
+        description: err.message,
+      });
+    },
+  });
+// Remove variation group and delete item
+export const useRemoveVariationGroup = () =>
+  useMutation({
+    mutationFn: (data) => Axios({ method: data.method, url: data.url }),
+    onSuccess: (res) => {
+      notification.success({ message: "Changes applied successfully" });
+    },
+    onError: (err) => {
+      notification.error({
+        message: "Failed to apply changes ",
+        description: err.message,
+      });
+    },
+  });
+// Remove variation group and delete item
+export const useUpdateVariationStatus = () =>
+  useMutation({
+    mutationFn: (data) => Axios.put(`products/${data.id}`, data.status),
+    onSuccess: (res) => {
+      notification.success({ message: "Changes applied successfully" });
+    },
+    onError: (err) => {
+      notification.error({
+        message: "Failed to apply changes ",
+        description: err.message,
+      });
+    },
+  });
+// Getting Feature Variants
+export const useGetFeatureVariants = (id) =>
+  useQuery({
+    queryKey: ["feature_variants"],
+    queryFn: () => Axios.get(`products/${id}/ProductVariation`),
+  });
+// Getting Product variation group
+export const useGetProductVariationGroup = (id) =>
+  useQuery({
+    queryKey: ["variation_group", id],
+    queryFn: () =>
+      id
+        ? Axios.get(`product_variations_groups/${id}/product_variations`)
+        : new Promise((resolve, reject) => {
+            resolve([]);
+          }),
+  });

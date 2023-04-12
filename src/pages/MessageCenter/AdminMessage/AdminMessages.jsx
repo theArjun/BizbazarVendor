@@ -4,21 +4,27 @@ import { Form, Input, Button, Typography, Result } from "antd";
 import styles from "./AdminMessages.module.css";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   getMessageThread,
   useSendAdminMessage,
 } from "../../../apis/MessageCenterApi";
-const {Text}=Typography
+const { Text } = Typography;
 const { user_id } = JSON.parse(localStorage.getItem("userinfo"));
 const AdminMessages = () => {
+  const navigate = useNavigate();
   const [message, setMessage] = useState([]);
-  const [status, setStatus] = useState('');
   const { id } = useParams();
-  const { data: threadData, isLoading: threadLoading } = getMessageThread(id);
+  const {
+    data: threadData,
+    isLoading: threadLoading,
+    error,
+    isError,
+  } = getMessageThread(id);
   const { mutate: sendMutate, isLoading: sendLoading } = useSendAdminMessage();
-  const [form]=Form.useForm()
-  const queryClient=useQueryClient()
+  const [form] = Form.useForm();
+  const queryClient = useQueryClient();
   useEffect(() => {
     getMessages();
   }, [threadData]);
@@ -37,10 +43,9 @@ const AdminMessages = () => {
     return monthyear + ", " + time;
   };
   const getMessages = () => {
-    if(threadData===404){
-      setStatus(threadData)
+    if (threadData?.data) {
+      setMessage(threadData?.data?.messages);
     }
-    setMessage(threadData?.data?.messages);
   };
   useEffect(() => {
     let element = document.querySelector("#chat_container");
@@ -51,28 +56,31 @@ const AdminMessages = () => {
   }, [message]);
   const onFinish = (values) => {
     if (values.message) {
-      form.resetFields()
+      form.resetFields();
       let MESSAGE_FORMAT = {
         communication_type: "vendor_to_admin",
         message: { thread_id: id, message: values.message },
       };
-      sendMutate(MESSAGE_FORMAT,{
-        onSuccess:(res)=>{
-          queryClient.invalidateQueries(['admin_messages', id])
-        
-        }
+      sendMutate(MESSAGE_FORMAT, {
+        onSuccess: (res) => {
+          queryClient.invalidateQueries(["admin_messages", id]);
+        },
       });
     }
   };
-  if(status){
-       return (
-        <Result
-          status="404"
-          title="404"
-          subTitle="Sorry, Requested message thread does not found !"
-          extra={<a href="/">Back Home</a>}
-        />
-      );
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
   }
   return (
     <div className={styles.messages}>
@@ -85,29 +93,27 @@ const AdminMessages = () => {
               ) : (
                 message?.map((item, index) => {
                   return (
-                    <div  key={index}>
-                    <div
-                      className={
-                        item.user_id === user_id
-                          ? styles.your_message
-                          : styles.client_message
-                      }
-                    >
-                    <div>
-                    {item.message}
-                    
+                    <div key={index}>
+                      <div
+                        className={
+                          item.user_id === user_id
+                            ? styles.your_message
+                            : styles.client_message
+                        }
+                      >
+                        <div>{item.message}</div>
+                        <Text type="secondary">
+                          {getTimeAndDate(item.timestamp)}
+                        </Text>
+                      </div>
                     </div>
-                    <Text type="secondary">{getTimeAndDate(item.timestamp)}</Text>
-                    </div>
-                    </div>
-
                   );
                 })
               )}
             </div>
             <div className={styles.write_message_box}>
               <Form
-              form={form}
+                form={form}
                 onFinish={onFinish}
                 layout="vertical"
                 name="basic"

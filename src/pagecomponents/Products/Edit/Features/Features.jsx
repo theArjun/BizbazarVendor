@@ -8,13 +8,15 @@ const Features = ({ features, selected_features, editID }) => {
   const [insertFeature, setInsertFeature] = useState({
     product_features: selected_features,
   });
-  const queryClient=useQueryClient();
-  const {isLoading, mutateAsync}=useUpdateProduct()
+  const queryClient = useQueryClient();
+  const { isLoading, mutateAsync } = useUpdateProduct();
+  const [form] = Form.useForm();
   const onFinish = (values) => {
-    let final_features={product_id:editID, ...insertFeature}
-   mutateAsync(final_features,{
-    onSuccess:()=>queryClient.invalidateQueries(['single_product',String(editID)])
-   })
+    let final_features = { product_id: editID, ...insertFeature };
+    mutateAsync(final_features, {
+      onSuccess: () =>
+        queryClient.invalidateQueries(["single_product", String(editID)]),
+    });
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -56,7 +58,10 @@ const Features = ({ features, selected_features, editID }) => {
                       >
                         <Select
                           showSearch
-                          defaultValue={selected_features[subfeature?.feature_id]?.variant_id}
+                          defaultValue={
+                            selected_features[subfeature?.feature_id]
+                              ?.variant_id
+                          }
                           onChange={handleSelectChange}
                           optionFilterProp="children"
                           filterOption={(input, option) =>
@@ -71,8 +76,7 @@ const Features = ({ features, selected_features, editID }) => {
                                     label: variant.variant,
                                     value: variant.variant_id,
                                     feature: subfeature.feature_id,
-                                    type:variant.feature_type
-                                    
+                                    type: variant.feature_type,
                                   })
                                 )
                               : []
@@ -112,7 +116,7 @@ const Features = ({ features, selected_features, editID }) => {
                     label: variant.variant,
                     value: variant.variant_id,
                     feature: item.feature_id,
-                    type:variant.feature_type
+                    type: variant.feature_type,
                   }))}
                 />
               </Form.Item>
@@ -122,15 +126,15 @@ const Features = ({ features, selected_features, editID }) => {
       </Card>
     );
   };
-  if(isLoading){
-    return <Spinner/>
+  if (isLoading) {
+    return <Spinner />;
   }
   return (
     <div className={styles.feature_container}>
-    {isLoading?<Spinner/>:''}
+      {isLoading ? <Spinner /> : ""}
       <Form
+        form={form}
         name="features"
-        initialValues={{}}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"

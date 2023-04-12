@@ -2,14 +2,14 @@ import React from "react";
 import styles from "./Seo.module.css";
 import { Form, Button, Input, Card, Typography } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { apicall } from "../../../../utils/apicall/apicall";
 import { useUpdateSeoPath } from "../../../../apis/ProductApi";
 import { useQueryClient } from "@tanstack/react-query";
 import Spinner from "../../../../component/Spinner/Spinner";
 const { Text } = Typography;
 const Seo = ({ data, seoPath }) => {
-  const {isLoading, mutate}=useUpdateSeoPath()
-  const queryClient=useQueryClient();
+  const { isLoading, mutate } = useUpdateSeoPath();
+  const queryClient = useQueryClient();
+  const [form] = Form.useForm();
   const onFinish = (values) => {
     updateSEO(data?.product_id, values);
   };
@@ -17,17 +17,25 @@ const Seo = ({ data, seoPath }) => {
     console.log("Failed:", errorInfo);
   };
   const updateSEO = async (id, values) => {
-    // mutate update function 
-    mutate({data:values, id:id},{
-      onSuccess:(res)=> queryClient.invalidateQueries(['single_product',String(data?.product_id)]),
-    });
+    // mutate update function
+    mutate(
+      { data: values, id: id },
+      {
+        onSuccess: (res) =>
+          queryClient.invalidateQueries([
+            "single_product",
+            String(data?.product_id),
+          ]),
+      }
+    );
   };
-  if(isLoading){
-    return <Spinner/>
+  if (isLoading) {
+    return <Spinner />;
   }
   return (
     <div className={styles.seo} key={data?.product_id}>
       <Form
+        form={form}
         name="basic"
         initialValues={{
           seo_name: data?.seo_name,

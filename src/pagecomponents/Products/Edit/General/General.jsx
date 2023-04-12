@@ -3,7 +3,6 @@ import styles from "./General.module.css";
 import "./index.css";
 import { Button, Form, Input, Select, message, Checkbox, Card } from "antd";
 import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
-import { apicall } from "../../../../utils/apicall/apicall";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useState } from "react";
@@ -12,12 +11,14 @@ import ImageUploaderForEdit from "../../../../component/ImageUploader/ImageUploa
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateProduct } from "../../../../apis/ProductApi";
 import Spinner from "../../../../component/Spinner/Spinner";
-const General = ({ editData, categories, getData, form }) => {
+import { useGetTaxes } from "../../../../apis/TaxApi";
+const General = ({ editData, categories, form }) => {
   // for toggling  fields button
   const [info, setInfo] = useState(true);
   const [options, setOptions] = useState(true);
   const [pricing, setPricing] = useState(true);
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
   const [taxChecked, setTaxChecked] = useState(false);
   const [vatId, setVatId] = useState([]);
   const [imageCount, setImageCount] = useState(0);
@@ -34,6 +35,7 @@ const General = ({ editData, categories, getData, form }) => {
     product_additional_image_data: {},
   });
   const { isLoading, mutate } = useUpdateProduct();
+  const { data: taxData } = useGetTaxes();
   const queryClient = useQueryClient();
   // for setting vatId
   useEffect(() => {
@@ -43,6 +45,15 @@ const General = ({ editData, categories, getData, form }) => {
       setVatId([]);
     }
   }, [taxChecked]);
+  // get Tax  and set value to the state
+  const getTax = async () => {
+    if (taxData.data) {
+      let tax = taxData?.data?.taxes?.filter((item) => {
+        return item.tax === "VAT";
+      });
+      setVatId([...tax[0].tax_id]);
+    }
+  };
   // for check vat and uncheck
   useEffect(() => {
     editData?.tax_ids?.map((item) => {
@@ -157,7 +168,6 @@ const General = ({ editData, categories, getData, form }) => {
     mutate(final_data, {
       onSuccess: (response) => {
         queryClient.invalidateQueries(["single_product", String(product_id)]);
-        getData();
       },
     });
   };
@@ -172,22 +182,6 @@ const General = ({ editData, categories, getData, form }) => {
       value: dat.category_id,
     }));
     return temp;
-  };
-  // this function is for category search
-  const onSearch = (value) => {
-    console.log("search:", value);
-  };
-  // get Tax  and set value to the state
-  const getTax = async () => {
-    const result = await apicall({
-      url: "taxes",
-    });
-    if (result.data) {
-      let tax = result?.data?.taxes?.filter((item) => {
-        return item.tax === "VAT";
-      });
-      setVatId([...tax[0].tax_id]);
-    }
   };
   if (isLoading) {
     return <Spinner />;
@@ -219,7 +213,7 @@ const General = ({ editData, categories, getData, form }) => {
         }}
       >
         <Form.Item style={{ float: "right" }} name="submit_btn">
-          <Button type="primary" htmlType="submit">
+          <Button disabled={loading} type="primary" htmlType="submit">
             Save Changes
           </Button>
         </Form.Item>
@@ -262,7 +256,6 @@ const General = ({ editData, categories, getData, form }) => {
                 mode="tags"
                 placeholder="Select a category"
                 optionFilterProp="children"
-                onSearch={onSearch}
                 filterOption={(input, option) =>
                   (option?.label ?? "")
                     .toLowerCase()
@@ -323,6 +316,7 @@ const General = ({ editData, categories, getData, form }) => {
               imageList={getImage(editData)}
               finalImages={finalImages}
               setFinalImages={setFinalImages}
+              setLoading={setLoading}
             />
           </Card>
         </div>

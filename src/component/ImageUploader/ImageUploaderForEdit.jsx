@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { apicall } from "../../utils/apicall/apicall";
 import { PlusOutlined } from "@ant-design/icons";
 import { Upload, Modal } from "antd";
+import { useUploadImage } from "../../apis/ImageUploaderApi";
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -18,93 +18,94 @@ const ImageUploaderForEdit = ({
   setImageCount,
   imageList,
   finalImages,
-  setFinalImages
+  setFinalImages,
+  setLoading,
 }) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [upload, setUpload] = useState(true);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
   const [fileList, setFileList] = useState(imageList ? [...imageList] : []);
+  const { mutate, isLoading } = useUploadImage();
 
-  useEffect(()=>{
-    setFinalImages(imageList)
-    let temp={...uploadedImage}
-    setImageCount(imageList?.length+1)
-    imageList?.map((el,i)=>{
-        temp.removed_image_pair_ids[i]=''
-       if(i===0){
-        temp.product_main_image_data[el?.pair_id]={
-            "detailed_alt": "",
-            "type": "M",
-            "object_id": el.uid,
-            "pair_id": el.pair_id,
-            "position": i,
-            "is_new": "N"
-        }
-       }else{
-        temp.product_additional_image_data[el?.pair_id]={
-            "detailed_alt": "",
-            "type": "A",
-            "object_id": el.uid,
-            "pair_id": el.pair_id,
-            "position": i,
-            "is_new": "N"
-        }
-       }
-    })
+  useEffect(() => {
+    if (isLoading) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [isLoading]);
+  useEffect(() => {
+    setFinalImages(imageList);
+    let temp = { ...uploadedImage };
+    setImageCount(imageList?.length + 1);
+    imageList?.map((el, i) => {
+      temp.removed_image_pair_ids[i] = "";
+      if (i === 0) {
+        temp.product_main_image_data[el?.pair_id] = {
+          detailed_alt: "",
+          type: "M",
+          object_id: el.uid,
+          pair_id: el.pair_id,
+          position: i,
+          is_new: "N",
+        };
+      } else {
+        temp.product_additional_image_data[el?.pair_id] = {
+          detailed_alt: "",
+          type: "A",
+          object_id: el.uid,
+          pair_id: el.pair_id,
+          position: i,
+          is_new: "N",
+        };
+      }
+    });
     setUploadedImage(temp);
-    
-  },[])
+  }, []);
   let insertImage = async (e) => {
     let image_type = e.target.files[0].name.split(".").pop();
     if (image_type === "jpeg" || image_type === "png" || image_type === "jpg") {
       let formData = new FormData();
       await formData.append("file[]", e.target.files[0]);
-      let result = await apicall({
-        method: "post",
-        url: "ImageUploads",
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "Access-Control-Allow-Origin": true,
+      mutate(formData, {
+        onSuccess: (result) => {
+          if (imageCount <= 0) {
+            setImageCount((current) => current + 1);
+            setUploadedImage({
+              ...uploadedImage,
+              product_main_image_data: {
+                0: {
+                  detailed_alt: "",
+                  type: "M",
+                  object_id: e.target.files[0].uid,
+                  position: "0",
+                  is_new: "Y",
+                },
+              },
+              type_product_main_image_detailed: { 0: "uploaded" },
+              file_product_main_image_detailed: {
+                0: result?.data?.path,
+              },
+            });
+          } else {
+            let temp = { ...uploadedImage };
+            setImageCount((current) => current + 1);
+            temp.product_add_additional_image_data[imageCount] = {
+              detailed_alt: "",
+              type: "A",
+              object_id: e.target.files[0].uid,
+              position: String(imageCount),
+              is_new: "Y",
+            };
+            temp.type_product_add_additional_image_detailed[imageCount] =
+              "uploaded";
+            temp.file_product_add_additional_image_detailed[imageCount] =
+              result?.data?.path;
+            setUploadedImage({ ...temp });
+          }
         },
       });
-      if (result?.status == 201) {
-        if (imageCount <= 0) {
-          setImageCount((current) => current + 1);
-          setUploadedImage({
-            ...uploadedImage,
-            product_main_image_data: {
-              0: {
-                detailed_alt: "",
-                type: "M",
-                object_id: e.target.files[0].uid,
-                position: "0",
-                is_new: "Y",
-              },
-            },
-            type_product_main_image_detailed: { 0: "uploaded" },
-            file_product_main_image_detailed: {
-              0: result?.data?.path,
-            },
-          });
-        } else {
-          let temp = { ...uploadedImage };
-          setImageCount((current) => current + 1);
-          temp.product_add_additional_image_data[imageCount] = {
-            detailed_alt: "",
-            type: "A",
-            object_id: e.target.files[0].uid,
-            position: String(imageCount),
-            is_new: "Y",
-          };
-          temp.type_product_add_additional_image_detailed[imageCount] =
-            "uploaded";
-          temp.file_product_add_additional_image_detailed[imageCount] =
-            result?.data?.path;
-          setUploadedImage({ ...temp });
-        }
-      }
     }
   };
   const handleCancel = () => setPreviewOpen(false);
@@ -137,12 +138,12 @@ const ImageUploaderForEdit = ({
   };
   const onRemove = (a) => {
     let temp_upload_data = { ...uploadedImage };
-    let temp_final_image=[...finalImages]
+    let temp_final_image = [...finalImages];
     // set final image List
-    if(temp_final_image.length){
-        temp_upload_data.removed_image_pair_ids[a.uid]=a.pair_id
-        let remove_images= temp_final_image.filter((el, i)=> el.uid!==a.uid)
-        setFinalImages(remove_images)
+    if (temp_final_image.length) {
+      temp_upload_data.removed_image_pair_ids[a.uid] = a.pair_id;
+      let remove_images = temp_final_image.filter((el, i) => el.uid !== a.uid);
+      setFinalImages(remove_images);
     }
     if (a.uid === temp_upload_data.product_main_image_data["0"]?.object_id) {
       if (temp_upload_data.product_add_additional_image_data["1"]) {
@@ -174,7 +175,7 @@ const ImageUploaderForEdit = ({
         temp_upload_data.type_product_main_image_detailed = {};
         temp_upload_data.file_product_main_image_detailed = {};
         temp_upload_data.product_main_image_data = {};
-        setImageCount(0)
+        setImageCount(0);
       }
     } else {
       let index = 0;

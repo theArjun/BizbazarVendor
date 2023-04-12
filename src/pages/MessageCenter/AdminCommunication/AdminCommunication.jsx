@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { useMemo } from "react";
 import { AdminCommunicationSearch, AdminCommunicationTable } from "../..";
 import styles from "./AdminCommunication.module.css";
-import { Breadcrumb, Modal, Form, Input, Button } from "antd";
+import { Breadcrumb, Modal, Form, Input, Button, Result } from "antd";
 import { HiPlus } from "react-icons/hi";
 import { useQueryClient } from "@tanstack/react-query";
+import { notification } from "antd";
+import { useNavigate } from "react-router-dom";
 import {
   getVendorAdminMessages,
   useCreateAdminMessage,
@@ -37,19 +39,29 @@ const AdminCommunication = () => {
     isLoading: messageLoading,
     isFetchingNextPage,
     fetchNextPage,
+    error,
+    isError,
   } = getVendorAdminMessages(params);
   const { isLoading: sendLoading, mutateAsync: mutateCreate } =
     useCreateAdminMessage();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const onFinish = async (values) => {
     INITIAL_MESSAGE.thread.message = values.message;
     INITIAL_MESSAGE.thread.subject = values.subject;
     mutateCreate(INITIAL_MESSAGE, {
       onSuccess: (res) => {
+        notification.success({ message: "Message sent successfully!" });
         queryClient.invalidateQueries(["admin_messages"]);
         hideModal();
         form.resetFields();
+      },
+      onError: (err) => {
+        notification.error({
+          message: "Failed to send message",
+          description: err.message,
+        });
       },
     });
   };
@@ -90,6 +102,20 @@ const AdminCommunication = () => {
     300,
     [bottom]
   );
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div>
       <div className={styles.top_nav}>

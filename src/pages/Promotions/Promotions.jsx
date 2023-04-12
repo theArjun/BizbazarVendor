@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./Promotions.module.css";
-import { Breadcrumb, Button, Table, Select, Tag } from "antd";
+import { Breadcrumb, Button, Table, Select, Tag, Result } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ import { useMemo } from "react";
 function Promotions() {
   const [bottom, setBottom] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const { isLoading, mutate, isError } = useDeletePromotions();
+  const { isLoading, mutate } = useDeletePromotions();
   const { isLoading: isStatusChange, mutate: mutateStatus } =
     useChangePromotionStatus();
   const {
@@ -23,6 +23,8 @@ function Promotions() {
     data: promotionData,
     fetchNextPage,
     isFetchingNextPage,
+    isError,
+    error,
   } = useGetPromotions();
   const navigate = useNavigate();
   const windowSize = useWindowSize();
@@ -170,6 +172,20 @@ function Promotions() {
     onChange: onSelectChange,
   };
   const hasSelected = selectedRowKeys.length > 0;
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <div className={styles.breadcumb}>

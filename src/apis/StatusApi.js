@@ -1,10 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { apicall } from "../utils/apicall/apicall";
+import Axios from "../config/apiConfig";
 export const useGetStatuses = () =>
   useQuery({
     queryKey: ["statuses"],
-    queryFn: () =>
-      apicall({
-        url: `statuses`,
-      }),
+    queryFn: () => Axios.get("statuses"),
   });
