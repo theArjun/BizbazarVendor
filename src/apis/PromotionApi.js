@@ -1,80 +1,100 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { apicall } from "../utils/apicall/apicall";
-
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import { notification } from "antd";
+import Axios from "../config/apiConfig";
+const ITEM_PER_PAGE = 50;
 export const useUpdatePromotion = () =>
-  useMutation((data) =>
-    apicall({
-      url: `Promotions`,
-      method: "post",
-      data: data,
-      headers: {
-        "Content-Type": "multipart/form-data",
-        "Access-Control-Allow-Origin": true,
-      },
-    })
-  );
+  useMutation({
+    mutationFn: (data) => Axios.post(`Promotions`, data),
+    onSuccess: (res) => {
+      notification.success({
+        message: "Changes have been successfully applied.",
+      });
+    },
+    onError: (err) => {
+      notification.error({
+        message: "Failed to update.",
+        description: err.message,
+      });
+    },
+  });
 export const useDeletePromotions = () =>
-  useMutation((data) =>
-    apicall({
-      url: `Promotions`,
-      data: data,
-      method: "delete",
-    })
-  );
+  useMutation({
+    mutationFn: (data) => Axios.delete(`Promotions`, { data: data }),
+    onSuccess: (res) => {
+      notification.success({
+        message: "Promotions deleted successfully.",
+      });
+    },
+    onError: (err) => {
+      notification.error({
+        message: "Failed to delete.",
+        description: err.message,
+      });
+    },
+  });
 export const useChangePromotionStatus = () =>
-  useMutation((data) =>
-    apicall({
-      url: "StatusTool",
-      data: data,
-      method: "post",
-    })
-  );
+  useMutation({
+    mutationFn: (data) => Axios.post(`StatusTool`, data),
+    onSuccess: (res) => {
+      notification.success({
+        message: "Status changed successfully.",
+      });
+    },
+    onError: (err) => {
+      notification.error({
+        message: "Failed to change status.",
+        description: err.message,
+      });
+    },
+  });
 export const useGetPromotions = () =>
-  useQuery({
+  useInfiniteQuery({
     queryKey: ["promotions"],
-    queryFn: () =>
-      apicall({
-        url: "Promotions",
-      }),
+    queryFn: ({ pageParam = 1 }) =>
+      Axios.get(`Promotions?page=${pageParam}&items_per_page=${ITEM_PER_PAGE}`),
+    getNextPageParam: (lastPage, pages) => {
+      if (lastPage?.data?.promotions?.length < ITEM_PER_PAGE) {
+        return;
+      }
+      return (lastPage.nextCursor = parseInt(lastPage.data?.params?.page) + 1);
+    },
+    refetchOnWindowFocus: false,
   });
 
 export const useDeletePromotionImage = () =>
-  useMutation((data) =>
-    apicall({ url: `ImageUploads`, data: data, method: "delete" })
-  );
+  useMutation({
+    mutationFn: (data) => Axios.delete(`ImageUploads`, { data: data }),
+    onError: (err) => {
+      notification.error({
+        message: "Failed to delete. promotion image",
+        description: err.message,
+      });
+    },
+  });
 
 export const useGetPromotionById = (id) =>
   useQuery({
     queryKey: ["single_promotion", id],
     queryFn: () =>
-      apicall({
-        url: `Promotions?promotion_id=${id}&extend[]=get_images&expand=1`,
-      }),
-      onSuccess:(res)=>console.log(id)
+      Axios.get(`Promotions?promotion_id=${id}&extend[]=get_images&expand=1`),
   });
 
 export const useGetPromotionProducts = () =>
   useQuery({
     queryKey: ["promotion_products"],
-    queryFn: () => apicall({ url: `VendorProducts?get_short_list_only=1` }),
+    queryFn: () => Axios.get(`VendorProducts?get_short_list_only=1`),
   });
 export const useGetPromotionCategories = () =>
   useQuery({
     queryKey: ["promotion_categories"],
-    queryFn: () =>
-      apicall({
-        url: `categories`,
-      }),
+    queryFn: () => Axios.get("categories"),
   });
 
-  export const useGetPromotionUsers = () =>
+export const useGetPromotionUsers = () =>
   useQuery({
     queryKey: ["promotion_users"],
-    queryFn: () =>
-      apicall({
-        url: `users`,
-      }),
-      onError:(error)=>{
-        console.log('Error occured', error)
-      },
+    queryFn: () => Axios.get("users"),
+    onError: (error) => {
+      console.log("Error occured", error);
+    },
   });

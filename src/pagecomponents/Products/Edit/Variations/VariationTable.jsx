@@ -7,13 +7,11 @@ const VariationTable = ({ data, columns, loading }) => {
     <div>
       <Table
         id="product"
-        // loading={loading}
-        // rowSelection={rowSelection}
+        rowKey={"product_id"}
         columns={columns}
         dataSource={data}
         pagination={false}
         loading={loading}
-        // onChange={onChange}
         scroll={{
           y: windowSize.height > 670 ? 500 : 300,
           x: 1000,

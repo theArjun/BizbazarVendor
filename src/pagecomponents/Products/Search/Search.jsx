@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import styles from "./Search.module.css";
-import { apicall } from "../../../utils/apicall/apicall";
 import { Card, Form, Input, Select } from "antd";
 import "./index.css";
 import useDebounce from "../../../utils/Hooks/useDebounce";
-const Search = ({ params, setParams, hasStatus }) => {
+const Search = ({ params, setParams, hasStatus, categories }) => {
   const [form] = Form.useForm();
-  const [categories, setCategories] = useState([]);
   const [values, setValues] = useState({
     name: "",
     price_from: "",
@@ -27,6 +25,10 @@ const Search = ({ params, setParams, hasStatus }) => {
     500,
     [values]
   );
+  let cats = categories?.map((item) => ({
+    label: item.category,
+    value: item.category_id,
+  }));
   const status = [
     {
       label: "Active",
@@ -42,37 +44,13 @@ const Search = ({ params, setParams, hasStatus }) => {
     },
   ];
   const onValueChange = (a, value) => {
-    const sData = { ...value };
-    categories.map((item, index) => {
-      if (value.category == item.label) {
-        sData.cid = item.id;
-      }
-    });
     let param = { ...values };
     param.price_from = value.min_price || "";
     param.price_to = value.max_price || "";
-    param.category = sData?.cid || "";
+    param.category = value.category || "";
     param.name = value.name || "";
     param.status = value?.status || "";
     setValues(param);
-  };
-  const retrieveCategories = async () => {
-    const category = [];
-    // perform api call to retrieve data
-    const result = await apicall({
-      url: `categories`,
-    });
-    await result.data.categories.map((item, index) => {
-      category.push({
-        value: item.category,
-        label: item.category,
-        id: item.category_id,
-      });
-    });
-    setCategories(category);
-  };
-  const onSearch = (value) => {
-    console.log("search:", value);
   };
   return (
     <div className={styles.container}>
@@ -123,17 +101,15 @@ const Search = ({ params, setParams, hasStatus }) => {
             >
               <Select
                 allowClear
-                onClick={() => retrieveCategories()}
                 showSearch
                 placeholder="Select a category"
                 optionFilterProp="children"
-                onSearch={onSearch}
                 filterOption={(input, option) =>
                   (option?.label ?? "")
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={categories}
+                options={cats}
               />
             </Form.Item>
             {hasStatus ? (
@@ -149,7 +125,6 @@ const Search = ({ params, setParams, hasStatus }) => {
                   showSearch
                   optionFilterProp="children"
                   placeholder="Select by status"
-                  onSearch={onSearch}
                   filterOption={(input, option) =>
                     (option?.label ?? "")
                       .toLowerCase()

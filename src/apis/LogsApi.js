@@ -1,10 +1,18 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { apicall } from "../utils/apicall/apicall";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import Axios from "../config/apiConfig";
+const ITEM_PER_PAGE = 50;
 export const useGetLogs = (params) =>
-  useQuery({
+  useInfiniteQuery({
     queryKey: ["logs", params],
-    queryFn: () =>
-      apicall({
-        url: `Logs?isSearch=Y&period=${params.period}&page=${params.page}&time_from=${params.time_from}&time_to=${params.time_to}`,
-      }),
+    queryFn: ({ pageParam = 1 }) =>
+      Axios.get(
+        `Logs?isSearch=Y&period=${params.period}&page=${pageParam}&items_per_page=${ITEM_PER_PAGE}&time_from=${params.time_from}&time_to=${params.time_to}`
+      ),
+    getNextPageParam: (lastPage, pages) => {
+      if (lastPage?.data?.logs?.length < ITEM_PER_PAGE) {
+        return;
+      }
+      return (lastPage.nextCursor = parseInt(lastPage.data?.search?.page) + 1);
+    },
+    refetchOnWindowFocus: false,
   });

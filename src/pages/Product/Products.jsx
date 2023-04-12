@@ -3,10 +3,13 @@ import styles from "./Product.module.css";
 import "./index.css";
 import { AiFillSetting } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { Col, Row, Breadcrumb, Dropdown } from "antd";
+import { Col, Row, Breadcrumb, Dropdown, Result, Button } from "antd";
 import { HiPlus } from "react-icons/hi";
 import { ProductSearch, ProductTable } from "..";
 import { useGetProducts } from "../../apis/ProductApi";
+import useDebounce from "../../utils/Hooks/useDebounce";
+import { useGetCategories } from "../../apis/CategoryApi";
+import { useMemo } from "react";
 const INITIAL_PARAMS = {
   product_name: "",
   price_from: "",
@@ -23,11 +26,14 @@ const Products = () => {
   const [sortColum, setSortingColum] = useState("");
   const navigate = useNavigate();
   const [params, setParams] = useState(INITIAL_PARAMS);
+  const { data: categories, isLoading: categoryLoading } = useGetCategories();
   const {
     data: productData,
     isLoading: productLoading,
     isFetchingNextPage: nextLoading,
     fetchNextPage,
+    isError,
+    error,
   } = useGetProducts(params);
   //let set products
   useEffect(() => {
@@ -39,7 +45,13 @@ const Products = () => {
     });
     setProducts(temp || []);
   }, [productData]);
-
+  //  for getting order reports
+  let getCategories = useMemo(() => {
+    if (categories?.data) {
+      return categories?.data?.categories;
+    }
+    return [];
+  }, [categories]);
   // handle data when the there  is scroll in product table
   const handleScroll = (event) => {
     const condition =
@@ -70,12 +82,16 @@ const Products = () => {
     setParams(param);
   }, [sortBy]);
   // Handle infinite scroll
-  useEffect(() => {
-    if (!bottom) {
-      return;
-    }
-    fetchNextPage();
-  }, [bottom]);
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
   const items = [
     {
       key: "1",
@@ -93,7 +109,7 @@ const Products = () => {
       key: "2",
       label: (
         <a
-          onClick={() => navigate("../products/BulkProductAddition")}
+          onClick={() => navigate("../BulkProductAddition")}
           className={styles.action_items}
         >
           Bulk product addition
@@ -104,7 +120,7 @@ const Products = () => {
       key: "3",
       label: (
         <a
-          onClick={() => navigate("../products/productsonmoderation")}
+          onClick={() => navigate("../ProductsOnModeration")}
           className={styles.action_items}
         >
           Product on moderation
@@ -125,6 +141,20 @@ const Products = () => {
       ),
     },
   ];
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <div className="product_header">
@@ -158,14 +188,18 @@ const Products = () => {
           </Col>
         </Row>
       </div>
-      <ProductSearch params={params} setParams={setParams} />
+      <ProductSearch
+        params={params}
+        categories={getCategories}
+        setParams={setParams}
+      />
       <ProductTable
         handleScroll={handleScroll}
         products={products}
         setSortBy={setSortBy}
         sortColum={sortColum}
         setSortingColum={setSortingColum}
-        loading={productLoading || nextLoading}
+        loading={productLoading || nextLoading || categoryLoading}
       />
     </div>
   );

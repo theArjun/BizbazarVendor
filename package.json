@@ -1,6 +1,6 @@
 {
   "name": "vendor-admin",
-  "homepage": "https://bizamrit.github.io/DeployVendorPanel",
+  "homepage": "https://amritach222.github.io/BizbazarVendor",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,7 +13,6 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^1.9.1",
     "@tanstack/react-query": "^4.24.10",
     "antd": "^5.0.1",
     "antd-img-crop": "^4.8.0",

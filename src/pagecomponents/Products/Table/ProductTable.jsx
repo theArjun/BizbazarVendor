@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Space, Table, Dropdown, Image, Button, Modal, Tag } from "antd";
 import styles from "./Table.module.css";
-import { apicall } from "../../../utils/apicall/apicall";
 import { AiFillEdit, AiFillDelete, AiFillSetting } from "react-icons/ai";
-import { loadTableData } from "../../../redux/features/products/productSlice";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../utils/Hooks/useWindowSize";
 import {
@@ -74,7 +72,7 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
     setProductId(id);
     window.localstorage.setItem("productRowId", JSON.stringify(id));
     if (method === "detail") {
-      navigate("Edit Product");
+      navigate("products");
     }
   };
 
@@ -133,11 +131,7 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
     {
       key: "1",
       label: (
-        <a
-          onClick={() =>
-            navigate("../Products/Products/Edit Product/" + productId)
-          }
-        >
+        <a onClick={() => navigate("../products/" + productId)}>
           Edit <AiFillEdit />
         </a>
       ),
@@ -172,11 +166,7 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
             alt={""}
           />
           <div className={styles.product_name}>
-            <a
-              onClick={() =>
-                navigate(`../Products/Products/Edit Product/` + row?.product_id)
-              }
-            >
+            <a onClick={() => navigate(`../products/` + row?.product_id)}>
               <strong>
                 {row["product"]?.length > 15
                   ? row["product"].substring(0, 15) + "..."

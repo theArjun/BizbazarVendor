@@ -58,7 +58,11 @@ function Navbar() {
                       : null
                   )}
                   onClick={() => {
-                    navigate(`${dat.navName}/${datum.subNav}`);
+                    navigate(
+                      datum.subNav === "Products"
+                        ? `${datum.subNav}`
+                        : `${dat.navName}/${datum.subNav}`
+                    );
                   }}
                 >
                   {datum.subNav}

@@ -7,8 +7,11 @@ import { useUpdateProduct } from "../../../../apis/ProductApi";
 import Spinner from "../../../../component/Spinner/Spinner";
 const Shipping = ({ data }) => {
   const [itemsInBox, setItemsInBox] = useState(false);
-  const [free_ship, setFree_ship] = useState(false);
+  const [free_ship, setFree_ship] = useState(
+    data?.free_shipping === "Y" ? true : false
+  );
   const { isLoading, mutate } = useUpdateProduct();
+  const [form] = Form.useForm();
   const queryClient = useQueryClient();
   const onFinish = (values) => {
     const temp = {
@@ -47,6 +50,7 @@ const Shipping = ({ data }) => {
   return (
     <div className={styles.shipping}>
       <Form
+        form={form}
         name="basic"
         initialValues={{
           weight: data?.weight,
@@ -81,7 +85,10 @@ const Shipping = ({ data }) => {
             label="Free shipping"
             extra="Products with the Free shipping option enabled will be excluded from shipping calculation if shipping method has the Use for free shipping option enabled."
           >
-            <Checkbox onChange={() => setFree_ship(!free_ship)} />
+            <Checkbox
+              checked={free_ship}
+              onChange={() => setFree_ship(!free_ship)}
+            />
           </Form.Item>
           <Form.Item label="Shipping freight(रु)" name="shipping_freight">
             <Input />

@@ -1,11 +1,8 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { apicall } from "../utils/apicall/apicall";
+import { useQuery } from "@tanstack/react-query";
+import Axios from "../config/apiConfig";
 export const useGetFeatures = () =>
   useQuery({
     queryKey: ["features"],
-    queryFn: () =>
-      apicall({
-        url: `features`,
-      }),
+    queryFn: () => Axios.get("features"),
     onError: (error) => console.log(error),
   });

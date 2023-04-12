@@ -1,34 +1,26 @@
 import axios from "axios";
-
-const { env } = import.meta;
-const API = axios.create({
-  // baseURL:
+import { config } from "./config";
+const Axios = axios.create({
   timeout: 10000,
-  withCredentialsL: true,
 });
-axios.interceptors.request.use(
-  function (config) {
-    // Do something before request is sent
-    return config;
-  },
-  function (error) {
-    // Do something with request error
+
+Axios.interceptors.request.use((configuration) => {
+  const { id } = JSON.parse(localStorage.getItem("userinfo")) || { id: "" };
+  const BASE_URL = id ? `https://dev.bizbazar.com.np/api/vendors/${id}/` : `https://dev.bizbazar.com.np/api/`;
+  const token = localStorage.getItem("token");
+  configuration.baseURL = BASE_URL;
+  configuration.auth = {
+    username: token ? token : config.ADMIN_USERNAME,
+    password: token ? "" : config.ADMIN_API_KEY,
+  };
+  return configuration;
+});
+Axios.interceptors.response.use(
+  (configuration) => configuration,
+
+  (error) => {
     return Promise.reject(error);
   }
 );
 
-// Add a response interceptor
-axios.interceptors.response.use(
-  function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    return response;
-  },
-  function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return Promise.reject(error);
-  }
-);
-
-export default API;
+export default Axios;

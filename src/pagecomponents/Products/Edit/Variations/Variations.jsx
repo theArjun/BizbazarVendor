@@ -1,32 +1,37 @@
 import React, { useState } from "react";
-import { Button, Modal, Select, Input, Image, Dropdown, Alert, Tag } from "antd";
+import {
+  Button,
+  Modal,
+  Select,
+  Input,
+  Image,
+  Dropdown,
+  Alert,
+  Tag,
+} from "antd";
 import styles from "./Variations.module.css";
 import { useEffect } from "react";
 import VariationTable from "./VariationTable";
 import "./index.css";
-import { apicall } from "../../../../utils/apicall/apicall";
 import { useQueryClient } from "@tanstack/react-query";
 import { AiFillSetting } from "react-icons/ai";
 import ModalTable from "./ModalContent/ModalTable";
 import { useNavigate } from "react-router-dom";
+import {
+  useCreateVariations,
+  useGetProductVariationGroup,
+  useRemoveVariationGroup,
+  useUpdateVariationStatus,
+} from "../../../../apis/ProductApi";
 let id = "";
 const { confirm } = Modal;
 
-const Variations = ({
-  data,
-  variations,
-  variationData,
-  setVariationData,
-  setLoading,
-  loading,
-  editID,
- 
-}) => {
+const Variations = ({ data, variations, editID }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [features, setFeatures] = useState("");
   const [featureList, setFeatureList] = useState([]);
-  const [updated, setUpdated] = useState(false);
   const [selectVariantId, setSelectVariantId] = useState("");
+  const [variationData, setVariationData] = useState([]);
   const [tableData, setTableData] = useState({});
   const [variationLength, setVariationLength] = useState(0);
   const [variant, setVariant] = useState([]);
@@ -38,8 +43,19 @@ const Variations = ({
     check_all: "Y",
     combinations_data: {},
   });
-  const queryClient=useQueryClient();
-  const navigate= useNavigate();
+  const { mutate: variationMutate, isLoading: variationCreateLoading } =
+    useCreateVariations();
+  const {
+    mutate: changeVariationMutate,
+    isLoading: changeVariationGroupLoading,
+  } = useRemoveVariationGroup();
+  const { mutate: updateStatusMutate, isLoading: statusLoading } =
+    useUpdateVariationStatus();
+  const { data: variationGroupData, isLoading } = useGetProductVariationGroup(
+    data?.variation_group_id
+  );
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   useEffect(() => {
     if (Object.values(tableData).length > 1) {
       setVariant(cartesianProduct([...Object.values(tableData)]));
@@ -65,15 +81,25 @@ const Variations = ({
         [[]]
       );
   }
+  // get variation group
+  useEffect(() => {
+    if (variationGroupData?.data) {
+      setVariationData(variationGroupData?.data?.products);
+    } else {
+      setVariationData([]);
+    }
+  }, [variationGroupData]);
   useEffect(() => {
     setFeatures(
-      variations?.filter((el)=>!el?.children)?.map((item) => ({
-        value: item?.id,
-        label: item?.text,
-        variation: Object.values(item?.object?.variants),
-      }))
+      variations
+        ?.filter((el) => !el?.children)
+        ?.map((item) => ({
+          value: item?.id,
+          label: item?.text,
+          variation: Object.values(item?.object?.variants),
+        }))
     );
-  }, [updated]);
+  }, [variations]);
   useEffect(() => {
     id = selectVariantId;
   }, [selectVariantId]);
@@ -163,20 +189,15 @@ const Variations = ({
       title: title,
       content: message,
       async onOk() {
-        try {
-          setLoading(true);
-          let result = await apicall({
-            url: url,
-            method: method,
-          });
-          if (result.status) {
-            queryClient.invalidateQueries(['single_product', editID])
-            setLoading(false);
-          }
-          setLoading(false);
-        } catch (e) {
-          return console.log("Oops errors!", e.message);
-        }
+        let data = {
+          url: url,
+          method: method,
+        };
+        changeVariationMutate(data, {
+          onSuccess: (res) => {
+            queryClient.invalidateQueries(["variation_group"]);
+          },
+        });
       },
       onCancel() {},
     });
@@ -197,42 +218,36 @@ const Variations = ({
     }
   };
   const createVariations = async (id) => {
-    setLoading(true);
-    let result = await apicall({
-      url: `products/${id}/ProductVariation`,
-      method: "post",
+    let data = {
+      id: id,
       data: finalData,
+    };
+    variationMutate(data, {
+      onSuccess: (res) => {
+        queryClient.invalidateQueries(["variation_group"]);
+        setModalOpen(false);
+      },
     });
-    if (result?.statusText == "Created") {
-     queryClient.invalidateQueries(['single_product', editID])
-      setModalOpen(false);
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
   };
   //for edit option
   // Set id
   const onEditPress = async (v_id) => {
-    navigate("../Products/Products/Edit Product/"+v_id)
-      location.reload();
+    navigate("../products/" + v_id);
+    location.reload();
   };
   // update status of variant
   const updateStatus = async (status) => {
-    setLoading(true);
-    let res = await apicall({
-      url: `products/${id}`,
-      method: "put",
-      data: {
+    let data = {
+      id: id,
+      status: {
         status,
       },
+    };
+    updateStatusMutate(data, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["variation_group"]);
+      },
     });
-    if (res.data) {
-      queryClient.invalidateQueries(['single_product', editID])
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
   };
   const handleVariantSelect = (a, b) => {
     setTableData({
@@ -433,8 +448,9 @@ const Variations = ({
           onCancel={() => setModalOpen(false)}
           className={styles.variation_modal}
           okButtonProps={{
+            loading: variationCreateLoading,
             disabled: variationLength !== 0 ? false : true,
-           }} 
+          }}
         >
           <div className={styles.modal_body}>
             <div>
@@ -505,7 +521,7 @@ const Variations = ({
             </div>
             <div className={styles.modal_variation_table}>
               <ModalTable
-                loading={loading}
+                loading={isLoading}
                 data={variant}
                 product_data={data}
                 finalData={finalData}
@@ -518,7 +534,7 @@ const Variations = ({
       </div>
       <div className={styles.variations_table}>
         <VariationTable
-          loading={loading}
+          loading={statusLoading || changeVariationGroupLoading || isLoading}
           data={variationData}
           columns={columns}
         />

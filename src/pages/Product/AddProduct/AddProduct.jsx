@@ -24,6 +24,7 @@ const AddProduct = () => {
   const navigate = useNavigate();
   // for toggling  fields button
   const [info, setInfo] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState(true);
   const [pricing, setPricing] = useState(true);
   const [categories, setCategories] = useState([]);
@@ -166,7 +167,7 @@ const AddProduct = () => {
           }}
         >
           <Form.Item style={{ float: "right" }}>
-            <Button type="primary" htmlType="submit">
+            <Button disabled={loading} type="primary" htmlType="submit">
               Create
             </Button>
           </Form.Item>
@@ -268,6 +269,7 @@ const AddProduct = () => {
                 imageCount={imageCount}
                 setImageCount={setImageCount}
                 Form={Form}
+                setLoading={setLoading}
               />
             </Card>
           </div>

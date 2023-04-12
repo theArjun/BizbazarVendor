@@ -1,4 +1,4 @@
-import { Result } from "antd";
+import { Button, Result } from "antd";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AdminPromotion, VendorPromotion } from "..";
@@ -7,22 +7,36 @@ import { useGetPromotionById } from "../../apis/PromotionApi";
 const ExplorePromotion = () => {
   const user = JSON.parse(localStorage.getItem("userinfo"));
   const param = useParams("id");
-  const [promotion, setPromotion] = useState('');
+  const [promotion, setPromotion] = useState("");
   const [pageStatus, setPageStatus] = useState("");
-  const {isLoading, isError, data}=useGetPromotionById(param.id)
+  const { isLoading, isError, error, data } = useGetPromotionById(param.id);
   useEffect(() => {
-    getPromotion()
+    getPromotion();
   }, [data]);
-  const getPromotion =async  () => {
+  const getPromotion = async () => {
     try {
       if (data?.data?.promotions.length == 0) {
         setPageStatus(data?.status);
       }
-      setPromotion(data?.data?.promotions[0])
+      setPromotion(data?.data?.promotions[0]);
     } catch (e) {
       console.log("something went wrong, ", e);
     }
   };
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   // for page not found
   if (pageStatus) {
     return (
@@ -39,15 +53,14 @@ const ExplorePromotion = () => {
     return <Spinner />;
   }
   if (promotion?.company_id == user.id) {
-    return (
-      promotion?<VendorPromotion
-        data={promotion}
-      />:<Spinner/>
+    return promotion ? <VendorPromotion data={promotion} /> : <Spinner />;
+  } else {
+    return promotion ? (
+      <AdminPromotion data={promotion} loading={isLoading} />
+    ) : (
+      <Spinner />
     );
-  }else{
-    return promotion?<AdminPromotion data={promotion} loading={isLoading}/>:<Spinner/>;
   }
-  
 };
 
 export default ExplorePromotion;

@@ -5,26 +5,21 @@ import { CSVLink } from "react-csv";
 import { useLocation } from "react-router-dom";
 import { apicall2 } from "../../../utils/apicall/apicall2";
 import { useReactToPrint } from "react-to-print";
+import { useGetProductCountReport } from "../../../apis/ReportsApi";
+import { useMemo } from "react";
 
 function ProductCountReport() {
   const location = useLocation();
-
-  const [report, setReport] = useState([]);
   const [print, setPrint] = useState(false);
-
+  const { data: countData, isLoading } = useGetProductCountReport();
   const componentRef = useRef();
-
-  useEffect(() => {
-    getProductCountReport();
-  }, []);
-
-  const getProductCountReport = async () => {
-    const result = await apicall2({
-      preurl: "VendorCountReport",
-    });
-    setReport(result.data);
-  };
-
+  //  for getting gift card reports
+  let getProductCountReport = useMemo(() => {
+    if (countData) {
+      return countData?.data;
+    }
+    return [];
+  }, [countData]);
   const columns = [
     {
       title: "Vendor Id",
@@ -80,7 +75,8 @@ function ProductCountReport() {
       <Table
         pagination={false}
         columns={columns}
-        dataSource={report}
+        loading={isLoading}
+        dataSource={getProductCountReport}
         rowKey={"company_id"}
         scroll={{
           x: 1000,
@@ -94,7 +90,7 @@ function ProductCountReport() {
           <Button>
             <CSVLink
               filename={"ProductCountReport.csv"}
-              data={report || []}
+              data={getProductCountReport || []}
               className="btn btn-primary"
               onClick={() => {}}
             >
@@ -110,7 +106,7 @@ function ProductCountReport() {
           pagination={false}
           rowKey={"company_id"}
           columns={columns}
-          dataSource={report}
+          dataSource={getProductCountReport}
         />
       )}
     </div>

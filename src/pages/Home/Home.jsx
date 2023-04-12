@@ -3,11 +3,12 @@ import styles from "./Home.module.css";
 import LineCharts from "../../pagecomponents/Home/Charts/LineCharts/LineCharts";
 import BarCharts from "../../pagecomponents/Home/Charts/Barcharts/Barcharts";
 import AnalyticsCard from "./../../pagecomponents/Home/Cards/AnalyticsCard/AnalyticsCard";
-import { Button, Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal, Result } from "antd";
 import RecentOrders from "./../../pagecomponents/Home/RecentOrders/RecentOrders";
 import RecentActivities from "./../../pagecomponents/Home/RecentActivities/RecentActivities";
 import CurrentPlanUsage from "./../../pagecomponents/Home/CurrentPlanUsage/CurrentPlanUsage";
 import Spinner from "../../component/Spinner/Spinner";
+import { useNavigate } from "react-router-dom";
 import { Typography } from "antd";
 import {
   DollarCircleOutlined,
@@ -25,6 +26,8 @@ import ProductCountReport from "./../../pagecomponents/Reports/ProductCountRepor
 import { useGetDashboardData } from "../../apis/DashboardApi";
 import { useCreateAdminMessage } from "../../apis/MessageCenterApi";
 const { id } = JSON.parse(localStorage.getItem("userinfo"));
+const { TextArea } = Input;
+
 const INITIAL_MESSAGE = {
   thread: {
     object_type: "",
@@ -44,8 +47,13 @@ const Home = () => {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState([]);
-  const { data: dashboardData, isLoading: dashboardLoading } =
-    useGetDashboardData(params);
+  const navigate = useNavigate();
+  const {
+    data: dashboardData,
+    isLoading: dashboardLoading,
+    isError,
+    error,
+  } = useGetDashboardData(params);
   const { mutate, isLoading: sendLoading } = useCreateAdminMessage();
   useEffect(() => {
     if (dashboardData?.data) {
@@ -64,9 +72,22 @@ const Home = () => {
       },
     });
   };
-  const { TextArea } = Input;
   if (dashboardLoading) {
     return <Spinner />;
+  }
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
   }
   return (
     <>
