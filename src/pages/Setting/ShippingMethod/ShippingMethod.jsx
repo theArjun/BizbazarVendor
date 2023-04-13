@@ -4,26 +4,28 @@ import cx from "classnames";
 import RateAreas from "./../../../pagecomponents/Setting/ShippingMethod/RateAreas/RateAreas";
 import ShippingMethod from "./../../../pagecomponents/Setting/ShippingMethod/ShippingMethod/ShippingMethod";
 import StoresAndPickup from "./../../../pagecomponents/Setting/ShippingMethod/StoresAndPickup/StoresAndPickup";
-import { apicall } from "../../../utils/apicall/apicall";
 import { useGetShippingMethods } from "../../../apis/ShippingMethodApi";
 import { useEffect } from "react";
-
+import { Button, Result } from "antd";
+import { useNavigate } from "react-router-dom";
 const tabs = ["Shipping Method", "Rate Areas", "Stores And pickup Points"];
 
 function ShippingMethodPage() {
   const [active, setActive] = useState("Shipping Method");
-  const [pages, setPages] = useState(1);
   const [open, setOpen] = useState(false);
   const [bottom, setBottom] = useState(false);
   const [update, setUpdate] = useState(false);
   const [shipings, setShippings] = React.useState([]);
+  const navigate = useNavigate();
   const {
     data: shippingData,
     isLoading: shippingLoading,
     isFetching,
     fetchNextPage,
     hasNextPage,
-  } = useGetShippingMethods(pages);
+    isError,
+    error,
+  } = useGetShippingMethods();
   useEffect(() => {
     try {
       if (shippingData?.pages) {
@@ -39,10 +41,6 @@ function ShippingMethodPage() {
       console.log("error!", err.message);
     }
   }, [shippingData]);
-  // React.useEffect(() => {
-  //   getShiippingMethod();
-  // }, [update,open]);
-
   React.useEffect(() => {
     if (!hasNextPage) {
       return;
@@ -51,10 +49,21 @@ function ShippingMethodPage() {
       return;
     }
     fetchNextPage();
-    // setPages((page)=>page+1)
-    // getMoreShiippingMethod();
   }, [bottom]);
-
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   const getContainerFromTab = () => {
     switch (active) {
       case "Shipping Method":

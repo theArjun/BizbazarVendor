@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Button, Result } from "antd";
 import styles from "./VendorTransactionDetails.module.css";
+import { useNavigate } from "react-router-dom";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 import VendorTransactionDetailsSearch from "../../../pagecomponents/Reports/VendorTransactionDetails/Search/Search";
 import VendorTransactionsReportTable from "../../../pagecomponents/Reports/VendorTransactionDetails/Table/Table";
@@ -13,11 +14,14 @@ const INITIAL_PARAMS = {
 const VendorTransactionDetails = () => {
   const [params, setParams] = useState(INITIAL_PARAMS);
   const [bottom, setBottom] = useState(false);
+  const navigate = useNavigate();
   const {
     isLoading: transactionLoading,
     data: transactionData,
     fetchNextPage,
     isFetchingNextPage,
+    isError,
+    error,
   } = useGetVendorTransactionDetails(params);
   //  for getting coupon reports
   let getTransactionReportData = useMemo(() => {
@@ -46,6 +50,20 @@ const VendorTransactionDetails = () => {
     300,
     [bottom]
   );
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <Breadcrumb>

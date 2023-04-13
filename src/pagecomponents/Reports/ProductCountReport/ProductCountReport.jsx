@@ -1,17 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./ProductCountReport.module.css";
-import { Button, Space, Table, Tag } from "antd";
+import { Button, Result, Space, Table, Tag } from "antd";
 import { CSVLink } from "react-csv";
 import { useLocation } from "react-router-dom";
-import { apicall2 } from "../../../utils/apicall/apicall2";
 import { useReactToPrint } from "react-to-print";
 import { useGetProductCountReport } from "../../../apis/ReportsApi";
 import { useMemo } from "react";
-
+import { useNavigate } from "react-router-dom";
 function ProductCountReport() {
   const location = useLocation();
   const [print, setPrint] = useState(false);
-  const { data: countData, isLoading } = useGetProductCountReport();
+  const navigate = useNavigate();
+  const {
+    data: countData,
+    isLoading,
+    isError,
+    error,
+  } = useGetProductCountReport();
   const componentRef = useRef();
   //  for getting gift card reports
   let getProductCountReport = useMemo(() => {
@@ -69,7 +74,20 @@ function ProductCountReport() {
     const time = setTimeout(printing, 10);
     return () => clearTimeout(time);
   };
-
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <Table

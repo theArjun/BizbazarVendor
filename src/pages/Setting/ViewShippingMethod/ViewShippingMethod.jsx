@@ -7,7 +7,7 @@ import {
   ShippingSuppliers,
   ShippingMethodGeneral,
 } from "../..";
-import { Breadcrumb, Button } from "antd";
+import { Breadcrumb, Button, Result } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./ViewShippingMethod.module.css";
 import cx from "classnames";
@@ -47,8 +47,12 @@ function EditShipping() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [active, setActive] = useState(tabs[0]);
-  const { data: generalData, isLoading: generalLoading } =
-    useGetShippingMethodByID(id);
+  const {
+    data: generalData,
+    isLoading: generalLoading,
+    isError,
+    error,
+  } = useGetShippingMethodByID(id);
   const { data: carriers, isLoading: carriersLoading } = useGetCarriers();
   const { mutate: mutateUpdate, isLoading: updateLoading } =
     useUpdateShippingMethod();
@@ -271,6 +275,20 @@ function EditShipping() {
     storefrontLoading
   ) {
     return <Spinner />;
+  }
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
   }
   return (
     <div>

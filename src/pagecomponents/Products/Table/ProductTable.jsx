@@ -161,7 +161,7 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
       render: (text, row) => (
         <div className={styles.product_info}>
           <Image
-            width={70}
+            width={50}
             src={!row["main_pair"] ? "" : row["main_pair"].detailed.image_path}
             alt={""}
           />

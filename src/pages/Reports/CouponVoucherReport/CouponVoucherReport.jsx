@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Button, Result } from "antd";
+import { useNavigate } from "react-router-dom";
 import styles from "./CouponVoucherReport.module.css";
 import { useEffect } from "react";
 import CouponVoucherReportSearch from "../../../pagecomponents/Reports/CouponVoucherReport/Search/Search";
@@ -16,11 +17,14 @@ const INITIAL_PARAMS = {
 const CouponVoucherReport = () => {
   const [params, setParams] = useState(INITIAL_PARAMS);
   const [bottom, setBottom] = useState(false);
+  const navigate = useNavigate();
   const {
     isLoading: couponLoading,
     data: couponData,
     isFetchingNextPage,
     fetchNextPage,
+    isError,
+    error,
   } = useGetCouponVoucherReport(params);
   useEffect(() => {
     document
@@ -72,7 +76,20 @@ const CouponVoucherReport = () => {
     300,
     [bottom]
   );
-
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <Breadcrumb>

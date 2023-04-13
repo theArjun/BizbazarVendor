@@ -4,7 +4,14 @@ import styles from "./Reviews.module.css";
 import { Breadcrumb } from "antd";
 import { apicall } from "../../../utils/apicall/apicall";
 import useDebounce from "../../../utils/Hooks/useDebounce";
+const INITIAL_PARAMS = {
+  name: "",
+  rating: "",
+  message: "",
+  has_images: "",
+};
 const Reviews = () => {
+  const [params, setParams] = useState(INITIAL_PARAMS);
   const [sValue, setSearchValue] = useState({});
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -38,8 +45,8 @@ const Reviews = () => {
     if (values?.message) {
       newUrl = newUrl + "&message=" + values.message;
     }
-    if(values?.photo){
-      newUrl=newUrl+"&has_images="+values.photo
+    if (values?.photo) {
+      newUrl = newUrl + "&has_images=" + values.photo;
     }
     return newUrl;
   };
@@ -60,7 +67,11 @@ const Reviews = () => {
         </Breadcrumb.Item>
         <Breadcrumb.Item>Reviews</Breadcrumb.Item>
       </Breadcrumb>
-      <ReviewSearch setSearchValue={setSearchValue} />
+      <ReviewSearch
+        setSearchValue={setSearchValue}
+        params={params}
+        setParams={setParams}
+      />
       <ReviewTable loading={loading} reviews={reviews} />
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Button, Result } from "antd";
+import { useNavigate } from "react-router-dom";
 import styles from "./OrderDetailsReport.module.css";
 import OrderDetailsReportSearch from "../../../pagecomponents/Reports/OrderDetailsReport/Search/Search";
 import AccountOrderDetailsTable from "../../../pagecomponents/Reports/OrderDetailsReport/Table/Table";
@@ -15,7 +16,8 @@ const INITIAL_PARAMS = {
 const OrderDetailsReport = () => {
   const [params, setParams] = useState(INITIAL_PARAMS);
   const [bottom, setBottom] = useState(false);
-  const { data, isLoading, isFetchingNextPage, fetchNextPage } =
+  const navigate = useNavigate();
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, isError, error } =
     useGetOrderDetails(params);
   const handleScroll = (event) => {
     const condition =
@@ -58,6 +60,20 @@ const OrderDetailsReport = () => {
     300,
     [bottom]
   );
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <Breadcrumb>

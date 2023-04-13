@@ -1,15 +1,15 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
-import { apicall } from "../utils/apicall/apicall";
-
+import { notification } from "antd";
+import Axios from "../config/apiConfig";
 export const useGetShippingMethods = () => {
-  let items_per_page = 30;
+  let items_per_page = 50;
   try {
     return useInfiniteQuery({
       queryKey: ["shippings"],
       queryFn: ({ pageParam = 1 }) =>
-        apicall({
-          url: `ShippingMethod?page=${pageParam}&items_per_page=${items_per_page}`,
-        }),
+        Axios.get(
+          `ShippingMethod?page=${pageParam}&items_per_page=${items_per_page}`
+        ),
       keepPreviousData: true,
       refetchOnWindowFocus: false,
       getNextPageParam: (lastPage, pages) => {
@@ -24,87 +24,68 @@ export const useGetShippingMethods = () => {
   }
 };
 export const useCreateShippingMethods = () =>
-  useMutation((data) =>
-    apicall({
-      url: `ShippingMethod`,
-      method: "post",
-      data: data,
-      headers: {
-        "Content-Type": "multipart/form-data",
-        "Access-Control-Allow-Origin": true,
-      },
-    })
-  );
+  useMutation({
+    mutationFn: (data) => Axios.post(`ShippingMethod`, data),
+    onSuccess: (res) => {
+      notification.success({ message: "Shipping method created successfully" });
+    },
+    onError: (err) => {
+      notification.error({
+        message: "Failed to create. ",
+        description: err.message,
+      });
+    },
+  });
 export const useGetShippingMethodByID = (id) =>
   useQuery({
     queryKey: ["single_shipping_method", id],
     refetchOnWindowFocus: false,
-    queryFn: () =>
-      apicall({
-        url: `ShippingMethod/${id}`,
-      }),
+    queryFn: () => Axios.get(`ShippingMethod/${id}`),
   });
 
 export const useGetCarriers = () =>
   useQuery({
     queryKey: ["carriers"],
-    queryFn: () =>
-      apicall({
-        url: `ShippingMethod?carriers=1`,
-      }),
+    queryFn: () => Axios.get(`ShippingMethod?carriers=1`),
   });
 
 export const useUpdateShippingMethod = () => {
-  return useMutation((data) =>
-    apicall({
-      url: `ShippingMethod`,
-      data: data,
-      method: "post",
-      headers: {
-        "Content-Type": "multipart/form-data",
-        "Access-Control-Allow-Origin": true,
-      },
-    })
-  );
+  return useMutation({
+    mutationFn: (data) => Axios.post(`ShippingMethod`, data),
+    onSuccess: (res) => {
+      notification.success({ message: "Shipping method updated successfully" });
+    },
+    onError: (err) => {
+      notification.error({
+        message: "Failed to update. ",
+        description: err.message,
+      });
+    },
+  });
 };
 export const useGetCountries = () =>
   useQuery({
     queryKey: ["countries"],
-    queryFn: () =>
-      apicall({
-        url: `ShippingMethod?countries=1`,
-      }),
+    queryFn: () => Axios.get(`ShippingMethod?countries=1`),
   });
 export const useGetStates = () =>
   useQuery({
     queryKey: ["states"],
-    queryFn: () =>
-      apicall({
-        url: `ShippingMethod?states=1`,
-      }),
+    queryFn: () => Axios.get(`ShippingMethod?states=1`),
   });
 
 export const useGetRecipient = () =>
   useQuery({
     queryKey: ["shipping_recipient"],
-    queryFn: () =>
-      apicall({
-        url: `ShippingMethod?recipient=1`,
-      }),
+    queryFn: () => Axios.get(`ShippingMethod?recipient=1`),
   });
 export const useGetSender = () =>
   useQuery({
     queryKey: ["shipping_sender"],
-    queryFn: () =>
-      apicall({
-        url: `ShippingMethod?sender=1`,
-      }),
+    queryFn: () => Axios.get(`ShippingMethod?sender=1`),
   });
 export const useGetStoreFrontData = (id) =>
   useQuery({
     queryKey: ["storefronts"],
-    queryFn: () =>
-      apicall({
-        url: `ShippingMethod/${id}?storefronts=1`,
-      }),
+    queryFn: () => Axios.get(`ShippingMethod/${id}?storefronts=1`),
   });

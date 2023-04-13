@@ -1,6 +1,7 @@
 import axios from "axios";
 import { notification } from "antd";
-
+import { handleLogout } from "../auth/auth";
+import { config } from "../../config/config";
 export const apicall2 = async ({
   method = "get",
   preurl = "",
@@ -9,6 +10,7 @@ export const apicall2 = async ({
   body = "",
   auth = false,
 }) => {
+  const token = localStorage.getItem("token");
   let finalurl = "/api/";
 
   if (!auth) {
@@ -29,8 +31,8 @@ export const apicall2 = async ({
       data: data,
       body: body,
       auth: {
-        username: import.meta.env.VITE_APP_USERNAME,
-        password: import.meta.env.VITE_APP_PASSWORD,
+        username: token ? token : config.ADMIN_USERNAME,
+        password: token ? "" : config.ADMIN_API_KEY,
       },
       headers: {
         "Content-Type": "application/json",
@@ -46,6 +48,14 @@ export const apicall2 = async ({
 
     return result;
   } catch (error) {
+    if (error?.response?.status === 401) {
+      handleLogout();
+      notification.error({
+        message: "Login required!",
+        description:
+          "Your session ended please login first to enter into the system",
+      });
+    }
     if (method != "get") {
       notification.error({
         message: "Process Fail",

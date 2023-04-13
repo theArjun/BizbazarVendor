@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./MonthlyOrderReport.module.css";
-import { Breadcrumb } from "antd";
+import { useNavigate } from "react-router-dom";
+import { Breadcrumb, Button, Result } from "antd";
 import { MonthlyOrderReportSearch, MonthlyOrderReportTable } from "../..";
 import { useGetMonthlyReport } from "../../../apis/ReportsApi";
 import { useGetStatuses } from "../../../apis/StatusApi";
@@ -17,11 +18,14 @@ const INITIAL_PARAMS = {
 const MonthlyOrderReport = () => {
   const [params, setParams] = useState(INITIAL_PARAMS);
   const [bottom, setBottom] = useState(false);
+  const navigate = useNavigate();
   const {
     data: reportData,
     isLoading: reportLoading,
     isFetchingNextPage,
     fetchNextPage,
+    isError,
+    error,
   } = useGetMonthlyReport(params);
   const { data: statusData, isLoading: statusLoading } = useGetStatuses();
   // handle data when the there  is scroll in product table
@@ -72,6 +76,20 @@ const MonthlyOrderReport = () => {
     300,
     [bottom]
   );
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <Breadcrumb>

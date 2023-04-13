@@ -1,5 +1,7 @@
 import axios from "axios";
 import { config } from "./config";
+import { handleLogout } from "../utils/auth/auth";
+import { notification } from "antd";
 const Axios = axios.create({
   timeout: 10000,
 });
@@ -19,6 +21,14 @@ Axios.interceptors.response.use(
   (configuration) => configuration,
 
   (error) => {
+    if (error?.response?.status === 401) {
+      handleLogout();
+      notification.error({
+        message: "Login required!",
+        description:
+          "Your session ended please login first to enter into the system",
+      });
+    }
     return Promise.reject(error);
   }
 );
