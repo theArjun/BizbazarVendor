@@ -7,10 +7,10 @@ export default defineConfig({
   base:'BizbazarVendor',
   server: {
     port: 3000,
-    // proxy: {
-    //   "/api": "https://dev.bizbazar.com.np/",
-    //   // "/images": "https://dev.bizbazar.com.np",
-    // },
+    proxy: {
+      "/api": "https://dev.bizbazar.com.np/",
+      // "/images": "https://dev.bizbazar.com.np",
+    },
   },
 
   preview: {
