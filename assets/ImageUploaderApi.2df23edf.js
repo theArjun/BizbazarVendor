@@ -1,0 +1,1 @@
+import{A as r}from"./apiConfig.2a32373e.js";import{u as s}from"./useMutation.esm.c151e619.js";import{n as a}from"./config.54eb1656.js";const m=()=>s({mutationFn:o=>r.post("ImageUploads",o),onError:o=>{a.error({message:"Error!",description:o.message})}});export{m as u};
