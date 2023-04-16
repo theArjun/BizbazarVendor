@@ -4,7 +4,7 @@ import { Card, Form, Input, Button, Select } from "antd";
 import { AiFillStar } from "react-icons/ai";
 import "./index.css";
 import useDebounce from "../../../../utils/Hooks/useDebounce";
-const Search = ({ setSearchValue, params, setParams }) => {
+const Search = ({ params, setParams }) => {
   const [values, setValues] = useState({
     name: "",
     rating: "",
@@ -19,7 +19,7 @@ const Search = ({ setSearchValue, params, setParams }) => {
       temp.rating = values.rating;
       temp.message = values.message;
       temp.has_images = values.has_images;
-      setValues(temp);
+      setParams(temp);
     },
     500,
     [values]
@@ -34,12 +34,11 @@ const Search = ({ setSearchValue, params, setParams }) => {
   };
   const onValueChange = (a, values) => {
     let temp = { ...values };
-    temp.name = values.name;
-    temp.rating = values.rating;
-    temp.message = values.message;
-    temp.has_images = values.photo;
+    temp.name = values.customer || "";
+    temp.rating = values.rating || "";
+    temp.message = values.message || "";
+    temp.has_images = values.photo || "";
     setValues(temp);
-    setSearchValue(values);
   };
   return (
     <div className={styles.container}>
@@ -69,6 +68,7 @@ const Search = ({ setSearchValue, params, setParams }) => {
               style={{ width: "130px" }}
             >
               <Select
+                allowClear
                 placeholder="Select Rating"
                 optionFilterProp="children"
                 filterOption={(input, option) =>
@@ -137,6 +137,7 @@ const Search = ({ setSearchValue, params, setParams }) => {
               style={{ width: "130px" }}
             >
               <Select
+                allowClear
                 placeholder="With photo"
                 optionFilterProp="children"
                 filterOption={(input, option) =>
@@ -145,10 +146,6 @@ const Search = ({ setSearchValue, params, setParams }) => {
                     .includes(input.toLowerCase())
                 }
                 options={[
-                  {
-                    value: "",
-                    label: "All",
-                  },
                   {
                     value: "1",
                     label: "With photo",

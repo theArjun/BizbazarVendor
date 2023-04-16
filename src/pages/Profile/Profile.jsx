@@ -3,7 +3,9 @@ import styles from "./Profile.module.css";
 import { countries } from "./countries";
 import "./index.css";
 import states from "./state.json";
+import Spinner from "../../component/Spinner/Spinner";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Form,
   Breadcrumb,
@@ -12,41 +14,41 @@ import {
   Input,
   Checkbox,
   Card,
-  Skeleton,
+  Result,
 } from "antd";
 import { useState, useEffect } from "react";
-import { apicall } from "../../utils/apicall/apicall";
+import {
+  useGetProfileInformation,
+  useUpdateProfile,
+} from "../../apis/ProfileApi";
+import { useMemo } from "react";
 const Profile = () => {
   const userInfo = JSON.parse(localStorage.getItem("userinfo"));
   const [pradesh, setPradesh] = useState("");
   const [cities, setCities] = useState([]);
   const [isShipping, setIsShipping] = useState(false);
-  const [vendorData, setVendorData] = useState({});
-  const [loading, setLoading] = useState(false);
   const [confirm, setConfirm] = useState("");
-  const provinces = [];
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const provinces = [];
   for (var key in states) {
     provinces.push(key);
   }
-  useEffect(() => {
-    console.log(vendorData);
-  }, [vendorData]);
-  useEffect(() => {
-    getVendorInformation();
-  }, []);
-  const getVendorInformation = async () => {
-    setLoading(true);
-    const result = await apicall({
-      url: `VendorProfile/${userInfo.user_id}?details=1`,
-    });
-    if (result.data) {
-      setLoading(false);
-      setVendorData(result.data.data);
-    } else {
-      setLoading(false);
+  const { data: profileData, isLoading: profileLoading } =
+    useGetProfileInformation(userInfo.id);
+  const {
+    mutate,
+    isLoading: updateLoading,
+    isError,
+    error,
+  } = useUpdateProfile();
+  // Lets get profile information using useMemo hook
+  const vendorData = useMemo(() => {
+    if (profileData?.data) {
+      return profileData?.data?.data;
     }
-  };
+    return {};
+  }, [profileData]);
   // console.log(states)
   useEffect(() => {
     var demo = [];
@@ -68,28 +70,26 @@ const Profile = () => {
   };
   const onFinish = async (values) => {
     const data = {
-      user_data:{
+      user_id: userInfo.id,
+      user_data: {
         ...values,
-        "company_id": userInfo.id,
-       
-
-      }
-     ,
-     ship_to_another: 1,
+        company_id: userInfo.id,
+      },
+      ship_to_another: 1,
       notify_customer: "Y",
       user_id: userInfo.user_id,
       selected_section: "general",
       user_type: "V",
     };
-    if(isShipping){
-      data.user_data={
+    if (isShipping) {
+      data.user_data = {
         ...data.user_data,
-        s_address:values.b_address,
-        s_city:values.b_city,
-        s_country:values.b_country,
-        s_state:values.b_state,
-        s_zipcode:values.b_zipcode
-      }
+        s_address: values.b_address,
+        s_city: values.b_city,
+        s_country: values.b_country,
+        s_state: values.b_state,
+        s_zipcode: values.b_zipcode,
+      };
     }
     if (values.password?.length > 0 && values?.password?.length < 8) {
       setConfirm("Password should at least 8 character!");
@@ -97,18 +97,11 @@ const Profile = () => {
       if (values.password != values.c_password) {
         setConfirm("password  doesn't match");
       } else {
-        setConfirm("");
-        const result = await apicall({
-          url: `VendorProfile/${userInfo.user_id}?details=1`,
-          data: data,
-          method: "put",
+        mutate(data, {
+          onSuccess: (res) => {
+            queryClient.invalidateQueries(["profile"]);
+          },
         });
-
-        if (result.data) {
-          setTimeout(() => {
-            navigate("/");
-          }, 2000);
-        }
       }
     }
   };
@@ -118,8 +111,22 @@ const Profile = () => {
   const onSelect = (value) => {
     setPradesh(value);
   };
-  if (loading) {
-    return <Skeleton />;
+  if (profileLoading) {
+    return <Spinner />;
+  }
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
   }
   return (
     <div className={styles.container}>
@@ -158,7 +165,7 @@ const Profile = () => {
           }}
         >
           <Form.Item style={{ float: "right" }} name="submit_btn">
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={updateLoading}>
               Save Changes
             </Button>
           </Form.Item>
@@ -304,7 +311,7 @@ const Profile = () => {
               <h2 className={styles.title_header}>Shipping address</h2>{" "}
             </div>
             <Form.Item>
-              <Checkbox onChange={() => setIsShipping((prev)=> !prev)}>
+              <Checkbox onChange={() => setIsShipping((prev) => !prev)}>
                 Are shipping and billing addresses the same?
               </Checkbox>
             </Form.Item>

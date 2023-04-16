@@ -1,28 +1,83 @@
-import React from 'react'
-import {TransactionTable,TransactionSearch} from '../..'
-const Transactions = ({data ,status,getAccountingInformation,loading}) => {
-  const getTotalTransaction=()=>{
-   return  data?data.reduce((init, dat) =>  init + parseFloat(dat?.payout_amount), 0):'';
+import React, { useState } from "react";
+import { useMemo } from "react";
+import { TransactionTable, TransactionSearch } from "../..";
+import { useGetTransactions } from "../../../apis/AccountingApi";
+import useDebounce from "../../../utils/Hooks/useDebounce";
+import { useNavigate } from "react-router-dom";
+import { Button, Result } from "antd";
+const INITIAL_PARAMS = {
+  payout_type: "",
+  approval_status: "",
+  time_from: "",
+  time_to: "",
+};
+const Transactions = ({ status }) => {
+  const [params, setParams] = useState(INITIAL_PARAMS);
+  const [bottom, setBottom] = useState(false);
+  const navigate = useNavigate();
+  const {
+    data: transactionData,
+    isLoading: transactionLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    isError,
+    error,
+  } = useGetTransactions(params);
+  // handle data when the there  is scroll in product table
+  const handleScroll = (event) => {
+    const condition =
+      event.target.scrollTop + event.target.offsetHeight + 100 >
+      event.target.scrollHeight;
+    setBottom(condition);
   };
-  const getTotalShipping=()=>{
-   return  data?data.reduce((init, dat) =>  init + parseFloat(dat?.shipping_cost?dat.shipping_cost:0), 0):'';
-  }; 
-  const getTotalVoucher=()=>{
-   return  data?data.reduce((init, dat) =>  init + parseFloat(dat?.voucher_cost?dat.voucher_cost:0), 0):'';
-  };
-  const getTotalGift=()=>{
-    return  data?data.reduce((init, dat) =>  init + parseFloat(dat?.gift_certificate_cost?dat.gift_certificate_cost:0), 0):'';
-   };
-   
-   const getNetIncome=()=>{
-    return  getTotalTransaction()-getTotalShipping()-getTotalVoucher();
-   };
+  // getting messages
+  let getTransactions = useMemo(() => {
+    let temp = [];
+    transactionData?.pages?.map((el) => {
+      temp = [...temp, ...el?.data];
+    });
+    return temp || [];
+  }, [transactionData]);
+  // Handle infinite scroll
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div>
-    <TransactionSearch getAccountingInformation={getAccountingInformation} getTotalTransaction={getTotalTransaction} getTotalShipping={getTotalShipping} getTotalVoucher={getTotalVoucher} getTotalGift={getTotalGift} getNetIncome={getNetIncome}  />
-    <TransactionTable data={data?data:''} status={status} loading={loading} getTotalTransaction={getTotalTransaction} getTotalShipping={getTotalShipping} getTotalVoucher={getTotalVoucher} getTotalGift={getTotalGift} getNetIncome={getNetIncome} />
-  </div>
-  )
-}
+      <TransactionSearch
+        data={getTransactions}
+        params={params}
+        setParams={setParams}
+      />
+      <TransactionTable
+        data={getTransactions}
+        status={status}
+        loading={transactionLoading || isFetchingNextPage}
+        handleScroll={handleScroll}
+      />
+    </div>
+  );
+};
 
-export default Transactions
+export default Transactions;

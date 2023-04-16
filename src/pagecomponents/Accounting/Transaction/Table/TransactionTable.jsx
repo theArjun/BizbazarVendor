@@ -2,17 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./Table.module.css";
 import { Table, Tag } from "antd";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
-const TransactionTable = ({
-  handleScroll,
-  loading,
-  data,
-  status,
-  getTotalTransaction,
-  getTotalShipping,
-  getTotalVoucher,
-  getTotalGift,
-  getNetIncome,
-}) => {
+const TransactionTable = ({ handleScroll, loading, data, status }) => {
   const windowSize = useWindowSize();
   useEffect(() => {
     document
@@ -51,6 +41,45 @@ const TransactionTable = ({
       minute: "numeric",
     });
     return monthyear + ", " + time;
+  };
+  const getTotalTransaction = () => {
+    return data
+      ? data.reduce((init, dat) => init + parseFloat(dat?.payout_amount), 0)
+      : "";
+  };
+  const getTotalShipping = () => {
+    return data
+      ? data.reduce(
+          (init, dat) =>
+            init + parseFloat(dat?.shipping_cost ? dat.shipping_cost : 0),
+          0
+        )
+      : "";
+  };
+  const getTotalVoucher = () => {
+    return data
+      ? data.reduce(
+          (init, dat) =>
+            init + parseFloat(dat?.voucher_cost ? dat.voucher_cost : 0),
+          0
+        )
+      : "";
+  };
+  const getTotalGift = () => {
+    return data
+      ? data.reduce(
+          (init, dat) =>
+            init +
+            parseFloat(
+              dat?.gift_certificate_cost ? dat.gift_certificate_cost : 0
+            ),
+          0
+        )
+      : "";
+  };
+
+  const getNetIncome = () => {
+    return getTotalTransaction() - getTotalShipping() - getTotalVoucher();
   };
   const columns = [
     {
@@ -116,12 +145,13 @@ const TransactionTable = ({
     <div>
       <Table
         id="product"
+        rowKey={"payout_id"}
         loading={loading}
         columns={columns}
         dataSource={data}
         pagination={false}
         scroll={{
-          y: windowSize.height > 670 ? 300 : 200,
+          y: windowSize.height > 670 ? 400 : 200,
           x: 1000,
         }}
       />

@@ -1,39 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styles from "./Reviews.module.css";
 import { AiFillStar, AiFillLike, AiFillDislike } from "react-icons/ai";
-import { apicall } from "../../../utils/apicall/apicall";
 import { Typography, Image, Button, Result } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import Spinner from "../../../component/Spinner/Spinner";
+import { useGetReviewByID, useUpdateReply } from "../../../apis/ReviewsApi";
+import { useQueryClient } from "@tanstack/react-query";
 const ReviewDetail = () => {
-  const [review, setReview] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [replyMessage, setReplyMessage] = useState("");
-  const [pageStatus, setPageStatus] = useState("");
   const param = useParams("id");
+  const [review, setReview] = useState("");
+  const [replyMessage, setReplyMessage] = useState("");
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const {
+    data: reviewData,
+    isLoading: reviewLoading,
+    error,
+    isError,
+  } = useGetReviewByID(param.id);
+  const { mutate, isLoading: replyLoading } = useUpdateReply();
   useEffect(() => {
-    getReviewData();
-  }, []);
-  // getting review data from API
-  const getReviewData = async () => {
-    setLoading(true);
-    let result = await apicall({
-      url: `ProductReview?product_review_id=${param.id}`,
-    });
-    console.log(result)
-    if (result?.data?.reviews?.length==0) {
-      setPageStatus(404);
-    }
-    if (result?.data) {
-      setLoading(false);
-      setReview(result?.data?.reviews[param.id]);
-      setReplyMessage(result?.data?.reviews[param.id]?.reply?.reply);
-    } else {
-      setLoading(false);
-      setReview({});
-    }
-  };
+    setReview(reviewData?.data?.reviews[param.id] || "");
+    setReplyMessage(reviewData?.data?.reviews[param.id]?.reply?.reply || "");
+  }, [reviewData]);
   // submit message
   const submitMessage = async () => {
     let finalData = {
@@ -42,26 +33,26 @@ const ReviewDetail = () => {
         reply: replyMessage,
       },
     };
-    let result = await apicall({
-      method: "put",
-      url: `ProductReview/${param.id}`,
-      data: finalData,
+    mutate(finalData, {
+      onSuccess: (res) => {
+        queryClient.invalidateQueries(["single_review", param.id]);
+      },
     });
-    if (result?.data) {
-      getReviewData();
-    }
   };
-  if (loading) {
+  if (reviewLoading) {
     return <Spinner />;
   }
-
-  if (pageStatus) {
+  if (isError || !reviewData?.data?.reviews[param.id]) {
     return (
       <Result
-        status="404"
-        title="404"
-        subTitle="Sorry, Requested review does not found !"
-        extra={<a href="/">Back Home</a>}
+        status={error?.response?.status || 404}
+        title={error?.response?.status || 404}
+        subTitle={error?.message || "Sorry request review does not found"}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
       />
     );
   }
@@ -91,7 +82,11 @@ const ReviewDetail = () => {
                 />
               </div>
               <div className={styles.reply_btn}>
-                <Button type="primary" onClick={submitMessage}>
+                <Button
+                  type="primary"
+                  onClick={submitMessage}
+                  loading={replyLoading}
+                >
                   {review?.reply?.reply ? "Update reply" : "Add reply"}
                 </Button>
               </div>
@@ -110,6 +105,7 @@ export default ReviewDetail;
 
 const ProductDetail = ({ data }) => {
   const { Text } = Typography;
+  const navigate = useNavigate();
   return (
     <div className={styles.product_wrapper}>
       <div className={styles.review_status}>
@@ -146,7 +142,10 @@ const ProductDetail = ({ data }) => {
             />
           </div>
           <div className={styles.product_description}>
-            <a href="#">
+            <a
+              href=""
+              onClick={() => navigate(`../products/${data?.product_id}`)}
+            >
               <b>{data?.product?.product}</b>
             </a>
             <Text type="secondary">

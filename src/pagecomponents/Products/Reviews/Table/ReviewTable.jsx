@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Table, Dropdown, Image, Skeleton } from "antd";
+import { Table, Image } from "antd";
 import styles from "./Table.module.css";
 import { AiFillStar } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
-import Typography from "antd/es/typography/Typography";
 const ReviewTable = ({ loading, handleScroll, reviews }) => {
   const navigate = useNavigate();
   const windowSize = useWindowSize();
@@ -167,6 +166,7 @@ const ReviewTable = ({ loading, handleScroll, reviews }) => {
     <div>
       <Table
         id="product"
+        rowKey={"product_review_id"}
         loading={loading}
         columns={columns}
         dataSource={reviews}
@@ -203,7 +203,7 @@ const ReviewTable = ({ loading, handleScroll, reviews }) => {
           rowExpandable: (record) => record.message,
         }}
         scroll={{
-          y: windowSize.height > 670 ? 300 : 200,
+          y: windowSize.height > 670 ? 500 : 200,
           x: 1000,
         }}
       />

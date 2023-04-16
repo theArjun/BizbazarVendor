@@ -224,6 +224,7 @@ const Variations = ({ data, variations, editID }) => {
     };
     variationMutate(data, {
       onSuccess: (res) => {
+        queryClient.invalidateQueries(["single_product", editID]);
         queryClient.invalidateQueries(["variation_group"]);
         setModalOpen(false);
       },

@@ -14,11 +14,15 @@ import { useNavigate, useLocation } from "react-router-dom";
 import cx from "classnames";
 import useWindowSize from "../../utils/Hooks/useWindowSize";
 import { handleLogout } from "../../utils/auth/auth";
+import { useGetProfileInformation } from "../../apis/ProfileApi";
+import { useMemo } from "react";
 
 function TopNavbar() {
+  let { user_id } = JSON.parse(localStorage.getItem("userinfo"));
   const windowsize = useWindowSize();
   const navigate = useNavigate();
   const locate = useLocation();
+  const { data: profileData } = useGetProfileInformation(user_id);
 
   const [activeLink, setAvtivelink] = useState({
     main: "",
@@ -26,7 +30,12 @@ function TopNavbar() {
   });
 
   const [openSideBar, setOpenSideBar] = useState(false);
-
+  const getProfileData = useMemo(() => {
+    if (profileData?.data) {
+      return profileData?.data?.data;
+    }
+    return {};
+  }, [profileData]);
   useEffect(() => {
     const loc = locate.pathname.split("/");
 
@@ -64,11 +73,16 @@ function TopNavbar() {
         <div className={styles.profileWrapper}>
           <div>
             <div className={styles.profileName}>
-              {JSON.parse(localStorage.getItem("userinfo"))?.name}
+              <span>
+                {getProfileData?.firstname ? getProfileData?.firstname : ""}
+              </span>
+              &nbsp;
+              <span>
+                {getProfileData?.lastname ? getProfileData?.lastname : ""}
+              </span>
             </div>
             <div className={styles.profilerole}>
-              {" "}
-              {JSON.parse(localStorage.getItem("userinfo"))?.phone}
+              {getProfileData?.phone ? getProfileData?.phone : ""}
             </div>
           </div>
 

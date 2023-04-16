@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./Table.module.css";
 import { Table, Tag } from "antd";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
-const WithdrawalsTable = ({ handleScroll, loading, data, status}) => {
-
+const WithdrawalsTable = ({ handleScroll, loading, data, status }) => {
   const windowSize = useWindowSize();
   useEffect(() => {
     document
@@ -22,15 +21,15 @@ const WithdrawalsTable = ({ handleScroll, loading, data, status}) => {
     const [statusOfRow] = status.filter((dat) => dat.status === data);
     return (
       <div>
-      <Tag className={styles.dpContainer} color={statusOfRow?.params?.color}>
-      {statusOfRow?.description}
-      </Tag>
+        <Tag className={styles.dpContainer} color={statusOfRow?.params?.color}>
+          {statusOfRow?.description}
+        </Tag>
       </div>
     );
   };
-  // getting time and date 
+  // getting time and date
   const getTimeAndDate = (timeStamp) => {
-    const date = new Date(parseInt(timeStamp*1000));
+    const date = new Date(parseInt(timeStamp * 1000));
     const monthyear = date.toLocaleString("en-US", {
       year: "numeric",
       month: "short",
@@ -49,13 +48,13 @@ const WithdrawalsTable = ({ handleScroll, loading, data, status}) => {
       dataIndex: "approval_status",
       data: "data",
       key: "product",
-      render: (text) =>getStatusTag(text=='P'?'G':text)
+      render: (text) => getStatusTag(text == "P" ? "G" : text),
     },
     {
       title: "Date",
       dataIndex: "payout_date",
       key: "date",
-      render:(date)=>getTimeAndDate(date)
+      render: (date) => getTimeAndDate(date),
     },
     {
       title: "Type",
@@ -68,12 +67,12 @@ const WithdrawalsTable = ({ handleScroll, loading, data, status}) => {
       key: "transaction",
       render: (value) => <p>रु{value}</p>,
     },
-    
   ];
   return (
     <div>
       <Table
         id="product"
+        rowKey={"payout_id"}
         loading={loading}
         columns={columns}
         expandable={{
@@ -83,8 +82,8 @@ const WithdrawalsTable = ({ handleScroll, loading, data, status}) => {
                 margin: 0,
               }}
             >
-            Comment: 
-              {' '+record.comments}
+              Comment:
+              {" " + record.comments}
             </p>
           ),
           rowExpandable: (record) => record.comments,
@@ -92,7 +91,7 @@ const WithdrawalsTable = ({ handleScroll, loading, data, status}) => {
         dataSource={data}
         pagination={false}
         scroll={{
-          y: windowSize.height > 670 ? 300 : 200,
+          y: windowSize.height > 670 ? 400 : 200,
           x: 1000,
         }}
       />

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { CustomerCommunicationSearch, CustomerCommunicationTable } from "../..";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Button, Result } from "antd";
 import { getVendorCustomerMessages } from "../../../apis/MessageCenterApi";
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 const INITIAL_PARAMS = {
   time_from: "",
@@ -12,11 +13,14 @@ const INITIAL_PARAMS = {
 const CustomerCommunication = () => {
   const [params, setParams] = useState(INITIAL_PARAMS);
   const [bottom, setBottom] = useState(false);
+  const navigate = useNavigate();
   const {
     data: customerMessages,
     isLoading: messageLoading,
     fetchNextPage,
     isFetchingNextPage,
+    error,
+    isError,
   } = getVendorCustomerMessages(params);
   // getting messages
   let getCustomerMessages = useMemo(() => {
@@ -46,6 +50,20 @@ const CustomerCommunication = () => {
     300,
     [bottom]
   );
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div>
       <Breadcrumb>

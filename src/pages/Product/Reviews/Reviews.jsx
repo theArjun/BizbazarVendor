@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ReviewSearch, ReviewTable } from "../..";
 import styles from "./Reviews.module.css";
-import { Breadcrumb } from "antd";
-import { apicall } from "../../../utils/apicall/apicall";
+import { Breadcrumb, Button, Result } from "antd";
+import { useGetReviews } from "../../../apis/ReviewsApi";
+import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 const INITIAL_PARAMS = {
   name: "",
@@ -12,52 +14,56 @@ const INITIAL_PARAMS = {
 };
 const Reviews = () => {
   const [params, setParams] = useState(INITIAL_PARAMS);
-  const [sValue, setSearchValue] = useState({});
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const a = Object.values(sValue).join("");
-  useEffect(() => {
-    getReviews();
-  }, []);
-  // getReviews
-  const getReviews = async (values) => {
-    setLoading(true);
-    let result = await apicall({
-      url: getUrl(values),
-    });
-    if (result?.data) {
-      setLoading(false);
-      setReviews(
-        Object.values(result.data.reviews).map((el, i) => ({ ...el, key: i }))
-      );
-    } else {
-      setLoading(false);
-    }
+  const [bottom, setBottom] = useState(false);
+  const navigate = useNavigate();
+  const {
+    data: reviewData,
+    isLoading: reviewLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    error,
+    isError,
+  } = useGetReviews(params);
+  // handle data when the there  is scroll in product table
+  const handleScroll = (event) => {
+    const condition =
+      event.target.scrollTop + event.target.offsetHeight + 100 >
+      event.target.scrollHeight;
+    setBottom(condition);
   };
-  const getUrl = (values) => {
-    let newUrl = "ProductReview?";
-    if (values?.customer) {
-      newUrl = newUrl + "name=" + values.customer;
-    }
-    if (values?.rating) {
-      newUrl = newUrl + "&rating=" + values.rating;
-    }
-    if (values?.message) {
-      newUrl = newUrl + "&message=" + values.message;
-    }
-    if (values?.photo) {
-      newUrl = newUrl + "&has_images=" + values.photo;
-    }
-    return newUrl;
-  };
-  // debounce  search
+  // Handle infinite scroll
   useDebounce(
     () => {
-      getReviews(sValue);
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
     },
-    500,
-    [a]
+    300,
+    [bottom]
   );
+  // getReviews
+  let getCustomerReviews = useMemo(() => {
+    let temp = [];
+    reviewData?.pages?.map((el) => {
+      temp = [...temp, ...Object.values(el?.data?.reviews || {})];
+    });
+    return temp || [];
+  }, [reviewData]);
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <Breadcrumb>
@@ -67,12 +73,12 @@ const Reviews = () => {
         </Breadcrumb.Item>
         <Breadcrumb.Item>Reviews</Breadcrumb.Item>
       </Breadcrumb>
-      <ReviewSearch
-        setSearchValue={setSearchValue}
-        params={params}
-        setParams={setParams}
+      <ReviewSearch params={params} setParams={setParams} />
+      <ReviewTable
+        handleScroll={handleScroll}
+        loading={reviewLoading || isFetchingNextPage}
+        reviews={getCustomerReviews}
       />
-      <ReviewTable loading={loading} reviews={reviews} />
     </div>
   );
 };
