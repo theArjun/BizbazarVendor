@@ -114,7 +114,7 @@ const LogosAndStyles = lazy(() =>
   import("./pages/Setting/LogosAndStyle/LogosAndStyle")
 );
 
-const Logs = lazy(() => import("./pages/Logs/Logs"));
+const Logs = lazy(() => import("./pages/Home/Home"));
 
 export const queryClient = new QueryClient();
 
@@ -122,8 +122,8 @@ function App() {
   const { darkMode } = useContext(DarkModeContext);
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
+      <Router basename="/BizbazarVendor" >
+        <Routes >
           <Route element={<PrivateRoutes />}>
             <Route
               element={
