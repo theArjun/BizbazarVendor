@@ -122,8 +122,8 @@ function App() {
   const { darkMode } = useContext(DarkModeContext);
   return (
     <QueryClientProvider client={queryClient}>
-      <Router basename="/BizbazarVendor" >
-        <Routes >
+      <Router>
+        <Routes>
           <Route element={<PrivateRoutes />}>
             <Route
               element={
