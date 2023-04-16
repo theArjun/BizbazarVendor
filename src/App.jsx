@@ -114,7 +114,7 @@ const LogosAndStyles = lazy(() =>
   import("./pages/Setting/LogosAndStyle/LogosAndStyle")
 );
 
-const Logs = lazy(() => import("./pages/Home/Home"));
+const Logs = lazy(() => import("./pages/Logs/Logs"));
 
 export const queryClient = new QueryClient();
 
