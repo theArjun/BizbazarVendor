@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./Midcontain.module.css";
 import { Image, Input } from "antd";
 
-function Midcontain({ orderDetail,setUpdateState,updateState }) {
+function Midcontain({ orderDetail, setUpdateState, updateState }) {
   const { TextArea } = Input;
   // console.log(orderDetail);
   return (
@@ -21,7 +21,7 @@ function Midcontain({ orderDetail,setUpdateState,updateState }) {
             <div>
               <Image
                 className={styles.imageTable}
-                src={dat?.main_pair?.detailed?.https_image_path}
+                src={dat?.main_pair?.detailed?.image_path}
               />
             </div>
             <div className={styles.code}>{dat?.product_code}</div>
@@ -58,11 +58,27 @@ function Midcontain({ orderDetail,setUpdateState,updateState }) {
       <div className={styles.notes}>
         <div>
           <div>Staff notes</div>
-          <TextArea  defaultValue={updateState.staffnotes || orderDetail?.details||"" } onChange={(a)=>setUpdateState((prev)=>({...prev,staffnotes:a.target.value}))} />
+          <TextArea
+            defaultValue={updateState.staffnotes || orderDetail?.details || ""}
+            onChange={(a) =>
+              setUpdateState((prev) => ({
+                ...prev,
+                staffnotes: a.target.value,
+              }))
+            }
+          />
         </div>
         <div>
           <div>Customer notes</div>
-          <TextArea defaultValue={updateState.customernotes || orderDetail?.notes||""}   onChange={(a)=>setUpdateState((prev)=>({...prev,customernotes:a.target.value}))}/>
+          <TextArea
+            defaultValue={updateState.customernotes || orderDetail?.notes || ""}
+            onChange={(a) =>
+              setUpdateState((prev) => ({
+                ...prev,
+                customernotes: a.target.value,
+              }))
+            }
+          />
         </div>
       </div>
     </div>

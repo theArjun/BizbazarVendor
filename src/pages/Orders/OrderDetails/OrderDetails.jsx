@@ -1,46 +1,66 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { apicall } from "../../../utils/apicall/apicall";
 import styles from "./OrderDetails.module.css";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Button, Result } from "antd";
 import Deatails from "./../../../pagecomponents/Orders/OrderDetails/Deatails/Deatails";
-import { Alert, Space, Spin } from 'antd';
+import { useGetOrderByID } from "../../../apis/OrdersApi";
+import { useNavigate } from "react-router-dom";
+import Spinner from "../../../component/Spinner/Spinner";
+import { useGetStatuses } from "../../../apis/StatusApi";
 
 function OrderDetails() {
   const param = useParams();
   const [orderDetail, setOrderDetails] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [referesh,setRefresh]=useState(false)
-
+  const [referesh, setRefresh] = useState(false);
+  const navigate = useNavigate();
   const [statusModalOpen, setStatusModalOpen] = useState({
     open: false,
     data: {},
     orderId: null,
   });
-
+  const {
+    data: orderData,
+    isLoading: orderLoading,
+    error,
+    isError,
+  } = useGetOrderByID(param.id);
+  const { data: statusData, isLoading: statusLoading } = useGetStatuses();
   useEffect(() => {
     if (statusModalOpen.open === true) {
       return;
     }
 
-    getOrderDetails();
-  }, [statusModalOpen.open,referesh]);
+    // getOrderDetails();
+  }, [statusModalOpen.open, referesh]);
+  useEffect(() => {
+    setOrderDetails(orderData?.data || {});
+  }, [orderData]);
+  // getting statuses
+  const getStatus = useMemo(() => {
+    if (statusData?.data) {
+      return statusData?.data?.statuses;
+    }
+    return [];
+  }, [statusData]);
 
-  const getOrderDetails = async () => {
-    setLoading(true);
-    const result = await apicall({
-      url: "VendorOrder/" + param.id,
-    });
-
-    setOrderDetails(result.data);
-    setLoading(false);
-  };
-
-  if (loading) {
-    return <>loading ....</>;
+  if (orderLoading || statusLoading) {
+    return <Spinner />;
   }
-
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <Breadcrumb>
@@ -51,11 +71,10 @@ function OrderDetails() {
         <Breadcrumb.Item>View Orders</Breadcrumb.Item>
       </Breadcrumb>
       <Deatails
-      referesh={referesh}
-      setRefresh={setRefresh}
         orderDetail={orderDetail}
         statusModalOpen={statusModalOpen}
         setStatusModalOpen={setStatusModalOpen}
+        status={getStatus}
       />
     </div>
   );

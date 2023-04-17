@@ -46,8 +46,8 @@ const General = ({ editData, categories, form }) => {
     }
   }, [taxChecked]);
   // get Tax  and set value to the state
-  const getTax = async () => {
-    if (taxData.data) {
+  const getTax = () => {
+    if (taxData?.data) {
       let tax = taxData?.data?.taxes?.filter((item) => {
         return item.tax === "VAT";
       });

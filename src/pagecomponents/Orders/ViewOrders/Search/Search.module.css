@@ -4,8 +4,11 @@
 .search_inputs {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   flex-wrap: wrap;
+}
+.search_inputs > * {
+  margin: 0 5px;
 }
 .price_container {
   display: flex;
@@ -13,6 +16,9 @@
   justify-content: center;
   height: fit-content;
   margin-top: 8px;
+}
+.price_container > div {
+  margin-bottom: 0px;
 }
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,

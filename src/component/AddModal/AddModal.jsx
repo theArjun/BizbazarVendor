@@ -1,16 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./AddModal.module.css";
 import { Modal, Input, Image, Checkbox, Table, InputNumber } from "antd";
-import { apicall } from "../../utils/apicall/apicall";
-import useDebounce from "../../utils/Hooks/useDebounce";
 import useWindowSize from "../../utils/Hooks/useWindowSize";
-
 const AddModal = ({ modalOpen, setModalOpen, condition_data, ids, setIds }) => {
   const [productList, setProductList] = useState([]);
-  const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
   const ref = useRef();
   const windowSize = useWindowSize();
+
   const handleClick = (e) => {
     if (ref.current && !ref.current.contains(e.target)) {
       setSearch("");
@@ -34,29 +31,6 @@ const AddModal = ({ modalOpen, setModalOpen, condition_data, ids, setIds }) => {
       setProductList([]);
     }
   }, [ids]);
-  const getUrl = (search) => {
-    return (
-      "products?is_search=Y" +
-      "&pname=" +
-      search +
-      `&page=${1}&items_per_page=${50}`
-    );
-  };
-
-  const getProducts = async () => {
-    const result = await apicall({
-      url: getUrl(),
-    });
-    setData(result.data.products);
-  };
-
-  useDebounce(
-    () => {
-      getProducts();
-    },
-    1200,
-    [search]
-  );
 
   const handleCheck = (e, object) => {
     if (e.target.checked) {

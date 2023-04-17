@@ -1,30 +1,43 @@
-import React, { useRef, useState, useCallback } from "react";
-import { Breadcrumb } from "antd";
+import React, { useState } from "react";
+import { Breadcrumb, Button, Result } from "antd";
 import styles from "./ViewOrders.module.css";
 import { ViewOrdersSearch, ViewOrdersTable } from "../..";
 import { useEffect } from "react";
-import { apicall } from "../../../utils/apicall/apicall";
+import { useNavigate } from "react-router-dom";
 import useDebounce from "../../../utils/Hooks/useDebounce";
-
+import { useGetOrders } from "../../../apis/OrdersApi";
+import { useMemo } from "react";
+import { useGetStatuses } from "../../../apis/StatusApi";
+const INITIAL_PARAMS = {
+  cname: "",
+  email: "",
+  phone: "",
+  order_id: "",
+  total_from: "",
+  total_to: "",
+  sort_order: "",
+  sort_by: "",
+};
 const ViewOrders = () => {
-  const [sValue, setSearchValue] = useState({});
-  const [status, setStatus] = useState([]);
+  const [params, setParams] = useState(INITIAL_PARAMS);
   const [order, setOrder] = useState([]);
-
-  const [loading, setLoading] = useState(false);
-
-  const page1 = useRef(1);
-
   const [statusModalOpen, setStatusModalOpen] = useState({
     open: false,
     data: {},
     orderId: null,
   });
-
   const [sortBy, setSortBy] = useState("");
-  const [sortColum, setSortingColum] = useState("");
   const [bottom, setBottom] = useState(false);
-  const a = Object.values(sValue).join("");
+  const navigate = useNavigate();
+  const {
+    data: ordersData,
+    isLoading: orderLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    error,
+    isError,
+  } = useGetOrders(params);
+  const { data: statusData, isLoading: statusLoading } = useGetStatuses();
   useEffect(() => {
     document
       .querySelector("#hello > div > div.ant-table-body")
@@ -36,7 +49,15 @@ const ViewOrders = () => {
         ?.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
+  // Getting orders
+  const getOrders = useMemo(() => {
+    let temp = [];
+    ordersData?.pages?.map((item, i) => {
+      temp = [...temp, ...item?.data?.orders];
+    });
+    return temp;
+  }, [ordersData]);
+  // handle scroll
   const handleScroll = (event) => {
     const condition =
       event.target.scrollTop + event.target.offsetHeight + 100 >
@@ -44,92 +65,53 @@ const ViewOrders = () => {
 
     setBottom(condition);
   };
-
+  // getting statuses
+  const getStatus = useMemo(() => {
+    if (statusData?.data) {
+      return statusData?.data?.statuses;
+    }
+    return [];
+  }, [statusData]);
+  // for sorting order
   useDebounce(
     () => {
-      page1.current = 1;
-      getOrder(sValue);
+      if (sortBy?.order) {
+        let temp = { ...params };
+        const orderType = sortBy?.order === "ascend" ? "asc" : "desc";
+        temp.sort_order = orderType;
+        const sortByType = sortBy?.field === "order_id" ? "order" : "date";
+        temp.sort_by = sortByType;
+        setParams(temp);
+      }
     },
-    1200,
-    [a]
+    300,
+    [sortBy]
   );
-
-  useEffect(() => {
-    getStatus();
-  }, []);
-
-  useEffect(() => {
-    getOrder(sValue);
-  }, [statusModalOpen.open, sortBy?.order, sortBy?.field]);
-
-  const getStatus = async () => {
-    const result = await apicall({
-      url: "statuses",
-    });
-
-    setStatus(result.data.statuses);
-  };
-
-  const getUrl = (values) => {
-    console.log(sValue);
-    let newUrl = "orders?is_search=Y";
-    if (values?.customer) {
-      newUrl = newUrl + "&cname=" + values.customer;
-    }
-    if (values?.email) {
-      newUrl = newUrl + "&email=" + values.email;
-    }
-    if (values?.phone) {
-      newUrl = newUrl + "&phone=" + values.phone;
-    }
-    if (values?.max_price) {
-      newUrl = newUrl + "&total_to=" + values.max_price;
-    }
-    if (values?.orderid) {
-      newUrl = newUrl + "&order_id=" + values.orderid;
-    }
-    if (values?.min_price) {
-      newUrl = newUrl + "&total_from=" + values.min_price;
-    }
-    if (sortBy?.order) {
-      const orderType = sortBy?.order === "ascend" ? "asc" : "desc";
-      newUrl = newUrl + "&sort_order=" + orderType;
-
-      const sortByType = sortBy?.field === "order_id" ? "order" : "date";
-      newUrl = newUrl + "&sort_by=" + sortByType;
-    }
-    return newUrl + `&page=${page1.current}&items_per_page=${50}`;
-  };
-
-  const getOrder = async (values) => {
-    setLoading(true);
-    const result = await apicall({
-      url: getUrl(values),
-    });
-    setOrder(result?.data?.orders);
-    setLoading(false);
-  };
-
-  const getMoreData = async (values) => {
-    setLoading(true);
-    const result = await apicall({
-      url: getUrl(values),
-    });
-    setOrder((prevOrder) => [...prevOrder, ...result?.data?.orders]);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    if (order.length < 50) {
-      return;
-    }
-    if (!bottom) {
-      return;
-    }
-    page1.current = page1.current + 1;
-    getMoreData(sValue);
-  }, [bottom]);
-
+  // Handle infinite scroll
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <Breadcrumb>
@@ -141,21 +123,18 @@ const ViewOrders = () => {
       </Breadcrumb>
       <ViewOrdersSearch
         order={order}
-        status={status}
-        setSearchValue={setSearchValue}
+        status={getStatus}
+        params={params}
+        setParams={setParams}
       />
       <ViewOrdersTable
-        order={order}
-        status={status}
-        page1={page1}
+        order={getOrders}
+        status={getStatus}
         statusModalOpen={statusModalOpen}
         setStatusModalOpen={setStatusModalOpen}
-        sortBy={sortBy}
-        sortColum={sortColum}
-        setSortingColum={setSortingColum}
         setSortBy={setSortBy}
         setOrder={setOrder}
-        loading={loading}
+        loading={orderLoading || isFetchingNextPage || statusLoading}
       />
     </div>
   );

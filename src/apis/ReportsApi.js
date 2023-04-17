@@ -1,6 +1,5 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import Axios from "../config/apiConfig";
-import { apicall } from "../utils/apicall/apicall";
 import { apicall2 } from "../utils/apicall/apicall2";
 const ITEM_PER_PAGE = 50;
 // getting monthly order report

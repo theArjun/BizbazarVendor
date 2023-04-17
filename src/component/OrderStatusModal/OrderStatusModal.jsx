@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-
 import { Button, Modal } from "antd";
 import { Input } from "antd";
 import { Checkbox } from "antd";
-import { apicall } from "../../utils/apicall/apicall";
 import "./index.css";
-
+import { useChangeOrderStatus } from "../../apis/OrdersApi";
+import { useQueryClient } from "@tanstack/react-query";
 function OrderStatusModal({ statusModalOpen, setStatusModalOpen }) {
   const { TextArea } = Input;
   const handleCancel = () => {
@@ -15,30 +14,26 @@ function OrderStatusModal({ statusModalOpen, setStatusModalOpen }) {
       orderId: null,
     });
   };
-
   const [notifyUser, setNotifyUser] = useState(true);
   const [notifyDepartment, setNotifyDepartment] = useState(true);
   const [notifyVendor, setNotifyVendor] = useState(true);
-
+  const { mutate, isLoading } = useChangeOrderStatus();
+  const queryClient = useQueryClient();
   const handleConfirm = async () => {
-    const result = await apicall({
-      method: "put",
-      url: "orders/" + statusModalOpen.orderId,
-      data: {
-        status: statusModalOpen?.data?.status,
-        notify_user: notifyUser ? "1" : "0",
-        notify_department: notifyDepartment ? "1" : "0",
-        notify_vendor: notifyVendor ? "1" : "0",
+    let data = {
+      order_id: statusModalOpen.orderId,
+      status: statusModalOpen?.data?.status,
+      notify_user: notifyUser ? "1" : "0",
+      notify_department: notifyDepartment ? "1" : "0",
+      notify_vendor: notifyVendor ? "1" : "0",
+    };
+    mutate(data, {
+      onSuccess: (res) => {
+        queryClient.invalidateQueries(["orders"]);
+        queryClient.invalidateQueries(["single_order"]);
+        handleCancel();
       },
     });
-    if (result.status === 200) {
-      handleCancel();
-      return;
-    }
-    if (result.status != 200) {
-      handleCancel();
-      return;
-    }
   };
 
   return (
@@ -78,7 +73,12 @@ function OrderStatusModal({ statusModalOpen, setStatusModalOpen }) {
 
       <div id="modalButtonFooter">
         {" "}
-        <Button key="submit" type="primary" onClick={handleConfirm}>
+        <Button
+          loading={isLoading}
+          key="submit"
+          type="primary"
+          onClick={handleConfirm}
+        >
           Confirm
         </Button>
       </div>

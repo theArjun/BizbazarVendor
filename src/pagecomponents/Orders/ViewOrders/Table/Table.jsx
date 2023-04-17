@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Table, Button } from "antd";
+import { Table } from "antd";
 import styles from "./Table.module.css";
 import { useNavigate } from "react-router-dom";
 import { Tag } from "antd";
@@ -11,13 +10,11 @@ import "./index.css";
 const ViewOrderTable = ({
   status,
   order,
-  // setPage,
   statusModalOpen,
   setStatusModalOpen,
   setSortBy,
   setOrder,
   loading,
-  page1,
 }) => {
   const windowSize = useWindowSize();
 
@@ -118,7 +115,6 @@ const ViewOrderTable = ({
       dataIndex: "status",
       key: "order_id",
       render: (text, obj) => getStatusTag(text, obj.order_id),
-      width: 100,
     },
     {
       title: "Phone",
@@ -158,7 +154,6 @@ const ViewOrderTable = ({
   };
 
   function onChange(pagination, filters, sorter, extra) {
-    page1.current = 1;
     setSortBy(sorter);
     setOrder([]);
   }
@@ -167,6 +162,7 @@ const ViewOrderTable = ({
     <div>
       <Table
         id="hello"
+        rowKey={"order_id"}
         columns={columns}
         loading={loading}
         dataSource={order}

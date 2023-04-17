@@ -53,10 +53,10 @@ function LeftContain({ orderDetail }) {
           src={`https://maps.google.com/maps?q=${
             orderDetail?.s_address || "pokhara"
           }&t=&z=11&ie=UTF8&iwloc=&output=embed`}
-          frameborder="0"
+          frameBorder="0"
           scrolling="no"
-          marginheight="0"
-          marginwidth="0"
+          marginHeight="0"
+          marginWidth="0"
         ></iframe>
       </div>
     </div>

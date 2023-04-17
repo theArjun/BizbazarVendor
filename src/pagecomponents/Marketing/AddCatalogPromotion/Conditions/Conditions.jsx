@@ -10,9 +10,8 @@ import {
   useGetPromotionUsers,
 } from "../../../../apis/PromotionApi";
 import AddModal from "../../../../component/AddModal/AddModal";
-import Spinner from "../../../../component/Spinner/Spinner";
 import { useGetFeatures } from "../../../../apis/FeatureApis";
-import { apicall } from "../../../../utils/apicall/apicall";
+import Axios from "../../../../config/apiConfig";
 const condition_features = {
   PRODUCT_PRICE: "price",
   PRODUCTS: "products",
@@ -82,15 +81,18 @@ function Conditions({
   const handleProductFeatureSelect = async (id) => {
     setVariants([]);
     try {
-      let result = await apicall({
-        url: `features/${id}`,
-      });
-      if (result?.data) {
-        let temp_variants = Object.values(result?.data?.variants)?.map(
-          (item, i) => ({ label: item?.variant, value: item?.variant_id })
+      Axios.get(`features/${id}`)
+        .then((result) => {
+          if (result?.data) {
+            let temp_variants = Object.values(result?.data?.variants)?.map(
+              (item, i) => ({ label: item?.variant, value: item?.variant_id })
+            );
+            setVariants(temp_variants);
+          }
+        })
+        .catch((error) =>
+          console.log("Error on getting feature ", error.message)
         );
-        setVariants(temp_variants);
-      }
     } catch (e) {
       console.log(e.message);
     }

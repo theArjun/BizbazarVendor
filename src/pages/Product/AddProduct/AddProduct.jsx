@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styles from "./AddProduct.module.css";
 import "./index.css";
 import {
@@ -12,7 +12,6 @@ import {
   Card,
 } from "antd";
 import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
-import { apicall } from "../../../utils/apicall/apicall";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useState, useEffect } from "react";
@@ -20,6 +19,8 @@ import { useNavigate } from "react-router-dom";
 import ImageUploader from "../../../component/ImageUploader/ImageUploader";
 import { useAddProduct } from "../../../apis/ProductApi";
 import Spinner from "../../../component/Spinner/Spinner";
+import { useGetCategories } from "../../../apis/CategoryApi";
+import { useGetTaxes } from "../../../apis/TaxApi";
 const AddProduct = () => {
   const navigate = useNavigate();
   // for toggling  fields button
@@ -27,12 +28,13 @@ const AddProduct = () => {
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState(true);
   const [pricing, setPricing] = useState(true);
-  const [categories, setCategories] = useState([]);
   const [description, setDescription] = useState("");
   const [taxChecked, setTaxChecked] = useState(false);
   const [vatId, setVatId] = useState([]);
   const [imageCount, setImageCount] = useState(0);
   const { isLoading, mutate, isError } = useAddProduct();
+  const { data: categoryData, isLoading: categoryLoading } = useGetCategories();
+  const { data: taxData } = useGetTaxes();
   const [uploadedImage, setUploadedImage] = useState({
     product_main_image_data: {},
     type_product_main_image_detailed: {},
@@ -58,7 +60,15 @@ const AddProduct = () => {
     { label: "Yes", value: "B" },
     { label: "No", value: "D" },
   ];
-
+  // Getting categories
+  const getCategories = useMemo(() => {
+    let cats = categoryData?.data?.categories?.map((item, index) => ({
+      label: item.category,
+      value: item.category_id,
+      id: item.category_id,
+    }));
+    return cats || [];
+  }, [categoryData]);
   useEffect(() => {
     if (taxChecked) {
       getTax();
@@ -66,13 +76,22 @@ const AddProduct = () => {
       setVatId([]);
     }
   }, [taxChecked]);
+  const prepareCategory = (ids) => {
+    let temp = {};
+    if (ids) {
+      ids?.map((el, i) => {
+        temp[i] = el;
+      });
+    }
+    return temp;
+  };
   // trigger while clicking  on create button if there is no any error at  client side
   const onFinish = async (values) => {
     const product_data = {
       products_data: [
         {
           ...values,
-          category_ids: getCategories(values.category),
+          category_ids: prepareCategory(values.category),
           tax_ids: vatId,
           ...uploadedImage,
         },
@@ -80,7 +99,7 @@ const AddProduct = () => {
     };
     mutate(product_data, {
       onSuccess: (response) => {
-        console.log(response, "is-product-created");
+        navigate("../products");
       },
       onError: (error) => {
         console.log(error, "adding-product-error");
@@ -91,46 +110,20 @@ const AddProduct = () => {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-  // This function is used to retrieve categories from database
-  const retrieveCategories = async () => {
-    // perform api call to retrieve data
-    const result = await apicall({
-      url: `categories`,
-    });
-    let category = result.data.categories.map((item, index) => ({
-      label: item.category,
-      value: item.category_id,
-      id: item.category_id,
-    }));
-    setCategories(category);
-  };
-  const getCategories = (a) => {
-    let temp = {};
-    if (a) {
-      a?.map((el, i) => {
-        temp[i] = el;
-      });
-    }
-    return temp;
-  };
   // this function is for category search
   const onSearch = (value) => {
     console.log("search:", value);
   };
   // get Tax  and set value to the state
   const getTax = async () => {
-    const result = await apicall({
-      url: "taxes",
-    });
-    if (result.data) {
-      let tax = result?.data?.taxes?.filter((item) => {
+    if (taxData?.data) {
+      let tax = taxData?.data?.taxes?.filter((item) => {
         return item.tax === "VAT";
       });
       setVatId([...tax[0].tax_id]);
     }
   };
-
-  if (isLoading) return <Spinner />;
+  if (isLoading || categoryLoading) return <Spinner />;
 
   return (
     <div className={styles.container}>
@@ -206,7 +199,6 @@ const AddProduct = () => {
                 name="category"
               >
                 <Select
-                  onClick={() => retrieveCategories()}
                   showSearch
                   mode="tags"
                   placeholder="Select a category"
@@ -217,7 +209,7 @@ const AddProduct = () => {
                       .toLowerCase()
                       .includes(input.toLowerCase())
                   }
-                  options={categories}
+                  options={getCategories}
                 />
               </Form.Item>
               <Form.Item

@@ -1,17 +1,35 @@
-import React, { useEffect, useState, forwardRef } from "react";
+import React, { useState } from "react";
 import styles from "./Search.module.css";
-import { Card, Form, Input, Button } from "antd";
+import { Card, Form, Input } from "antd";
+import useDebounce from "../../../../utils/Hooks/useDebounce";
 
-const ViewOrderSearch = ({ setSearchValue }) => {
+const ViewOrderSearch = ({ params, setParams }) => {
+  const [values, setValues] = useState(params);
+
+  useDebounce(
+    () => {
+      let temp = { ...params };
+      temp.cname = values.cname || "";
+      temp.email = values.email || "";
+      temp.phone = values.phone || "";
+      temp.order_id = values.order_id || "";
+      temp.total_from = values.total_from || "";
+      temp.total_to = values.total_to || "";
+      setParams(temp);
+    },
+    1200,
+    [values]
+  );
   const [form] = Form.useForm();
-
-  const onFinish = (values) => {};
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-
-  const onvaluechange = (a, values) => {
-    setSearchValue(values);
+  const onValueChange = (a, value) => {
+    let temp = { ...values };
+    temp.cname = value.customer;
+    temp.email = value.email;
+    temp.phone = value.phone;
+    temp.order_id = value.orderid;
+    temp.total_from = value.min_price;
+    temp.total_to = value.max_price;
+    setValues(temp);
   };
 
   return (
@@ -23,9 +41,7 @@ const ViewOrderSearch = ({ setSearchValue }) => {
           className={styles.form}
           name="basic"
           wrapperCol={{}}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          onValuesChange={onvaluechange}
+          onValuesChange={onValueChange}
           autoComplete="off"
         >
           <div className={styles.search_inputs}>
