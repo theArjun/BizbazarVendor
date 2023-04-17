@@ -45,7 +45,7 @@ const Products = () => {
     });
     setProducts(temp || []);
   }, [productData]);
-  //  for getting order reports
+  //  for getting categories
   let getCategories = useMemo(() => {
     if (categories?.data) {
       return categories?.data?.categories;

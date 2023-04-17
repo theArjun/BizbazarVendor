@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styles from "./ProductsOnModeration.module.css";
 import { ProductSearch, ProductTable } from "../..";
 import { useGetProducts } from "../../../apis/ProductApi";
 import { useEffect } from "react";
 import { useState } from "react";
 import useDebounce from "../../../utils/Hooks/useDebounce";
+import { useGetCategories } from "../../../apis/CategoryApi";
 
 const INITIAL_PARAMS = {
   product_name: "",
@@ -21,6 +22,7 @@ const ProductsOnModeration = () => {
   const [sortBy, setSortBy] = useState("");
   const [sortColum, setSortingColum] = useState("");
   const [params, setParams] = useState(INITIAL_PARAMS);
+  const { data: categories, isLoading: categoryLoading } = useGetCategories();
   const {
     data: productData,
     isLoading: productLoading,
@@ -34,6 +36,13 @@ const ProductsOnModeration = () => {
       event.target.scrollHeight;
     setBottom(condition);
   };
+  //  for getting categories
+  let getCategories = useMemo(() => {
+    if (categories?.data) {
+      return categories?.data?.categories;
+    }
+    return [];
+  }, [categories]);
   //let set products
   useEffect(() => {
     let temp = [];
@@ -82,14 +91,19 @@ const ProductsOnModeration = () => {
       <div className={styles.heading}>
         <div>Products on moderation</div>
       </div>
-      <ProductSearch params={params} hasStatus={true} setParams={setParams} />
+      <ProductSearch
+        params={params}
+        hasStatus={true}
+        categories={getCategories}
+        setParams={setParams}
+      />
       <ProductTable
         handleScroll={handleScroll}
         products={products}
         setSortBy={setSortBy}
         sortColum={sortColum}
         setSortingColum={setSortingColum}
-        loading={productLoading || nextLoading}
+        loading={productLoading || nextLoading || categoryLoading}
       />
     </div>
   );
