@@ -7,7 +7,8 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
-      "/api": "https://dev.bizbazar.com.np/",
+      // "/api": "https://dev.bizbazar.com.np/",
+      "/api": "https://orc.bizbazar.com.np/",
       // "/images": "https://dev.bizbazar.com.np",
     },
   },

@@ -43,12 +43,48 @@ export const useGetShippingMethodByID = (id) =>
     queryFn: () => Axios.get(`ShippingMethod/${id}`),
   });
 
+// Deleting shipping method
+export const useDeleteShippingMethod = () =>
+  useMutation({
+    mutationFn: (data) => Axios.delete(`ShippingMethod/`, { data: data }),
+    onSuccess: (res) => {
+      notification.success({ message: "Shipping method deleted successfully" });
+    },
+    onError: (err) => {
+      notification.error({
+        message: "Failed to delete. ",
+        description: err.message,
+      });
+    },
+  });
+
+// Changing status of shipping method
+export const useChangeShippingMethodStatus = () =>
+  useMutation({
+    mutationFn: (data) => Axios.post(`StatusTool/`, data),
+    onSuccess: (res) => {
+      notification.success({
+        message: "Shipping method status changed successfully",
+      });
+    },
+    onError: (err) => {
+      notification.error({
+        message: "Failed to change status. ",
+        description: err.message,
+      });
+    },
+  });
 export const useGetCarriers = () =>
   useQuery({
     queryKey: ["carriers"],
     queryFn: () => Axios.get(`ShippingMethod?carriers=1`),
   });
-
+// Getting  vendor carriers
+export const useGetVendorCarriers = () =>
+  useQuery({
+    queryKey: ["vendor_carriers"],
+    queryFn: () => Axios.get(`VendorCarrier`),
+  });
 export const useUpdateShippingMethod = () => {
   return useMutation({
     mutationFn: (data) => Axios.post(`ShippingMethod`, data),

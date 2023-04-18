@@ -1,12 +1,11 @@
 import { Input, Image, Checkbox, Table } from "antd";
 
 import React, { useState, useRef, useEffect } from "react";
-import { apicall } from "../../../../../../utils/apicall/apicall";
 import useDebounce from "../../../../../../utils/Hooks/useDebounce";
 import styles from "./Products.module.css";
 import "./index.css";
 import { InputNumber } from "antd";
-
+import Axios from "../../../../../../config/apiConfig";
 function Products({ productList, setProductList }) {
   const [load, setLoad] = useState(false);
   const [search, setSearch] = useState("");
@@ -25,20 +24,21 @@ function Products({ productList, setProductList }) {
     };
   }, []);
 
-  const getUrl = (search) => {
+  const getUrl = (search = "") => {
     return (
       "products?is_search=Y" +
-      "&pname=" +
+      "&q=" +
       search +
       `&page=${1}&items_per_page=${50}`
     );
   };
 
   const getProducts = async () => {
-    const result = await apicall({
-      url: getUrl(),
-    });
-    setData(result.data.products);
+    Axios.get(getUrl())
+      .then((result) => {
+        setData(result?.data?.products);
+      })
+      .catch((error) => console.log(error.message));
   };
 
   useDebounce(

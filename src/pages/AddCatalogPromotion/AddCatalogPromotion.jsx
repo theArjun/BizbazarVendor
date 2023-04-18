@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import styles from "./AddCatalogPromotion.module.css";
 import cx from "classnames";
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import {
   CatalogPromotionBonuses,
   CatalogPromotionConditions,
   CatalogPromotionGeneral,
 } from "..";
 import { Breadcrumb, Button, message } from "antd";
-import { apicall } from "../../utils/apicall/apicall";
+import { useCreatePromotion } from "../../apis/PromotionApi";
 function AddCatalogPromotion() {
   const [activeTab, setActiveTab] = useState("General");
   const [bonuses, setBonuses] = useState([]);
   const [conditions, setConditions] = useState([]);
   const [image, setImage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { mutate: createMutate, isLoading: createLoading } =
+    useCreatePromotion();
   const [generalData, setGeneralData] = useState({
     zone: "catalog",
     name: "",
@@ -29,6 +32,8 @@ function AddCatalogPromotion() {
     set: "all",
     set_value: 1,
   });
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const getDivision = () => {
     switch (activeTab) {
       case "General":
@@ -58,7 +63,6 @@ function AddCatalogPromotion() {
   };
   const createPromotion = async () => {
     if (generalData.name) {
-      setLoading(true);
       const formData = new FormData();
       let image_data = {
         promo_main_image_data: {
@@ -110,20 +114,12 @@ function AddCatalogPromotion() {
       } else {
         formData.append("promotion_data", JSON.stringify(prepareData));
       }
-      let result = await apicall({
-        url: "Promotions",
-        method: "post",
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "Access-Control-Allow-Origin": true,
+      createMutate(formData, {
+        onSuccess: (res) => {
+          queryClient.invalidateQueries(["promotions"]);
+          navigate("../promotions");
         },
       });
-
-      if (result) {
-        setLoading(false);
-      }
-      setLoading(false);
     } else {
       message.error("Name is necessary to create a promotion.");
     }
@@ -146,7 +142,11 @@ function AddCatalogPromotion() {
             <a href="">Add Catalog Promotion</a>
           </Breadcrumb.Item>
         </Breadcrumb>
-        <Button loading={loading} onClick={createPromotion} type="primary">
+        <Button
+          loading={createLoading}
+          onClick={createPromotion}
+          type="primary"
+        >
           Create promotion
         </Button>
       </div>

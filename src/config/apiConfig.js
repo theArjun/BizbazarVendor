@@ -3,7 +3,7 @@ import { config } from "./config";
 import { handleLogout } from "../utils/auth/auth";
 import { notification } from "antd";
 const Axios = axios.create({
-  timeout: 10000,
+  timeout: 1000,
 });
 
 Axios.interceptors.request.use((configuration) => {

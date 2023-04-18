@@ -1,36 +1,25 @@
-import React, { useEffect, useState, forwardRef } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Search.module.css";
-import { Card, Form, Input, Button, Radio } from "antd";
-import { Select, Space } from "antd";
+import { Card, Input, Radio } from "antd";
+import { Select } from "antd";
 
 import "./index.css";
-import { apicall } from "../../../../utils/apicall/apicall";
 import { DatePicker } from "antd";
-
-const { RangePicker } = DatePicker;
+import { useGetPayments } from "../../../../apis/ReportsApi";
 
 const Search = ({
   setSearchValue,
   sValue,
-  setLoad,
   setDload,
   setRadio,
   radio,
   page1,
 }) => {
   const [paymentmethod, setPaymentMethod] = useState([]);
-
+  const { data: paymentData } = useGetPayments();
   useEffect(() => {
-    getpayment();
-  }, []);
-
-  const getpayment = async () => {
-    const result = await apicall({
-      url: "payments",
-    });
-    setPaymentMethod(result.data.payments);
-  };
-
+    setPaymentMethod(paymentData?.data?.payments || []);
+  }, [paymentData]);
   return (
     <div className={styles.container} id="changeHere">
       <Card>

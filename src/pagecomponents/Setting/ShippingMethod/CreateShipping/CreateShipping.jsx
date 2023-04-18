@@ -5,9 +5,11 @@ import { Select } from "antd";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { message } from "antd";
-import { apicall } from "../../../../utils/apicall/apicall";
 import ImageUploader from "../../../../component/ImageUploader/ImageUploaderForPromotion";
-import { useCreateShippingMethods } from "../../../../apis/ShippingMethodApi";
+import {
+  useCreateShippingMethods,
+  useGetVendorCarriers,
+} from "../../../../apis/ShippingMethodApi";
 import { useQueryClient } from "@tanstack/react-query";
 const CheckboxGroup = Checkbox.Group;
 const USER_GROUPS = [
@@ -22,10 +24,11 @@ function CreateShipping({ open, setOpen }) {
   const [infoData, setInfoData] = useState({});
   const [image, setImage] = useState("");
   const { mutate, isLoading } = useCreateShippingMethods();
-
+  const { data: carriersData, isLoading: carrierLoading } =
+    useGetVendorCarriers();
   useEffect(() => {
     getCarrier();
-  }, []);
+  }, [carriersData]);
   // change usergroup handler
   const handleUserGroupChange = (value) => {
     let temp = { ...infoData };
@@ -36,19 +39,15 @@ function CreateShipping({ open, setOpen }) {
     temp.usergroup = values.slice(1);
     setInfoData(temp);
   };
+  // Function for getting carriers
   const getCarrier = async () => {
-    const result = await apicall({
-      url: "VendorCarrier",
-    });
-    if (result.status === 200) {
-      setCarrier(
-        Object.entries(result?.data?.carriers).map((dat, i) => ({
-          label: dat[1]?.name,
-          value: dat[0],
-          key: i,
-        }))
-      );
-    }
+    setCarrier(
+      Object.entries(carriersData?.data?.carriers || {}).map((dat, i) => ({
+        label: dat[1]?.name,
+        value: dat[0],
+        key: i,
+      }))
+    );
   };
   const onOkay = async () => {
     if (active) {

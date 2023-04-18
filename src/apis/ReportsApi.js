@@ -89,3 +89,10 @@ export const useGetProductCountReport = () =>
     queryFn: () => apicall2({ preurl: `VendorCountReport` }),
     onError: (error) => console.log(error),
   });
+
+// Getting  payments for account order details
+export const useGetPayments = () =>
+  useQuery({
+    queryKey: ["payments"],
+    queryFn: () => Axios.get(`payments`),
+  });

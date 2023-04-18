@@ -2,6 +2,22 @@ import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { notification } from "antd";
 import Axios from "../config/apiConfig";
 const ITEM_PER_PAGE = 50;
+// Creating promotion
+export const useCreatePromotion = () =>
+  useMutation({
+    mutationFn: (data) => Axios.post(`Promotions`, data),
+    onSuccess: (res) => {
+      notification.success({
+        message: "Promotion have been created successfully",
+      });
+    },
+    onError: (err) => {
+      notification.error({
+        message: "Failed to create promotion.",
+        description: err.message,
+      });
+    },
+  });
 export const useUpdatePromotion = () =>
   useMutation({
     mutationFn: (data) => Axios.post(`Promotions`, data),

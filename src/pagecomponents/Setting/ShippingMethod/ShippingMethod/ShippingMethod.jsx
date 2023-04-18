@@ -6,9 +6,12 @@ import CreateShipping from "./../CreateShipping/CreateShipping";
 import EditShipping from "../EditShipping/EditShipping";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 import { useNavigate } from "react-router-dom";
-import { apicall } from "../../../../utils/apicall/apicall";
 import { AiOutlineEye } from "react-icons/ai";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  useChangeShippingMethodStatus,
+  useDeleteShippingMethod,
+} from "../../../../apis/ShippingMethodApi";
 function ShippingMethod({
   open,
   setOpen,
@@ -26,6 +29,10 @@ function ShippingMethod({
 
   const windowSize = useWindowSize();
   const queryClient = useQueryClient();
+  const { mutate: deleteMutate, isLoading: deleteLoading } =
+    useDeleteShippingMethod();
+  const { mutate: statusMutate, isLoading: statusLoading } =
+    useChangeShippingMethodStatus();
   React.useEffect(() => {
     document
       .querySelector("#shiipmenttable > div > div.ant-table-body")
@@ -140,19 +147,20 @@ function ShippingMethod({
       onCancel: () => {
         setUpdate((dat) => !dat);
       },
+      okButtonProps: {
+        loading: deleteLoading,
+      },
       onOk: async () => {
-        const result = await apicall({
-          url: "ShippingMethod/",
-          method: "delete",
-          data: {
-            shipping_ids: Object.assign({}, selectedRowKeys),
+        let data = {
+          shipping_ids: Object.assign({}, selectedRowKeys),
+        };
+        deleteMutate(data, {
+          onSuccess: (res) => {
+            queryClient.invalidateQueries("shippings");
+            setUpdate((dat) => !dat);
+            setSelectedRowKeys([]);
           },
         });
-        if (result.status == 200) {
-          queryClient.invalidateQueries("shippings");
-          setUpdate((dat) => !dat);
-          setSelectedRowKeys([]);
-        }
       },
     });
   };
@@ -166,22 +174,23 @@ function ShippingMethod({
         setUpdate((dat) => !dat);
         setOpenStatusModal(false);
       },
+      okButtonProps: {
+        loading: statusLoading,
+      },
       onOk: async () => {
-        const result = await apicall({
-          url: "StatusTool/",
-          method: "post",
-          data: {
-            table_name: "shippings",
-            status: status,
-            id_name: "shipping_id",
-            ids: [...selectedRowKeys],
+        let data = {
+          table_name: "shippings",
+          status: status,
+          id_name: "shipping_id",
+          ids: [...selectedRowKeys],
+        };
+        statusMutate(data, {
+          onSuccess: (res) => {
+            queryClient.invalidateQueries("shippings");
+            setUpdate((dat) => !dat);
+            setOpenStatusModal(false);
           },
         });
-        if (result.status == 200) {
-          queryClient.invalidateQueries("shippings");
-          setUpdate((dat) => !dat);
-          setOpenStatusModal(false);
-        }
       },
     });
   };

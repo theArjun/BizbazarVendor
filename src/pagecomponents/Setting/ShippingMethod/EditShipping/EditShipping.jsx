@@ -1,55 +1,51 @@
 import React, { useEffect, useState } from "react";
 import styles from "./EditShipping.module.css";
-import { Checkbox, Modal, Input, Radio } from "antd";
+import { Checkbox, Modal, Input, Radio, Result, Button } from "antd";
 import { Select } from "antd";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 import { message, Upload } from "antd";
-import { apicall } from "../../../../utils/apicall/apicall";
-
+import { useNavigate } from "react-router-dom";
 import ImgCrop from "antd-img-crop";
+import {
+  useGetShippingMethodByID,
+  useGetVendorCarriers,
+} from "../../../../apis/ShippingMethodApi";
 
 function EditShipping({ id, openEdit, setOpenEdit }) {
   const [carrier, setCarrier] = useState([]);
   const [infoData, setInfoData] = useState({});
-  const [loading, setLoading] = useState(false);
   const [singleShipment, setSingleShipment] = useState({});
-
   const [fileList, setFileList] = useState([]);
-
+  const navigate = useNavigate();
+  const { data: carriersData, isLoading: carrierLoading } =
+    useGetVendorCarriers();
+  const {
+    data: shippingData,
+    isLoading: shippingLoading,
+    error,
+    isError,
+  } = useGetShippingMethodByID(id);
   useEffect(() => {
     getCarrier();
-  }, []);
+  }, [carriersData]);
 
   useEffect(() => {
     getSingleShipment();
-  }, [id]);
+  }, [id, shippingData]);
 
   const getSingleShipment = async () => {
-    setLoading(true);
-
-    const result = await apicall({
-      url: "ShippingMethod/" + id,
-    });
-    if (result.status === 200) {
-      setSingleShipment(result.data);
-    }
-    setLoading(false);
+    setSingleShipment(shippingData?.data || {});
   };
-
   const getCarrier = async () => {
-    const result = await apicall({
-      url: "VendorCarrier",
-    });
-    if (result.status === 200) {
-      setCarrier(
-        Object.entries(result.data.carriers).map((dat) => ({
-          label: dat[1]?.name,
-          value: dat[0],
-        }))
-      );
-    }
+    setCarrier(
+      Object.entries(carriersData?.data?.carriers || {}).map((dat, i) => ({
+        label: dat[1]?.name,
+        value: dat[0],
+        key: i,
+      }))
+    );
   };
 
   const onChange = ({ fileList: newFileList }) => {
@@ -83,7 +79,20 @@ function EditShipping({ id, openEdit, setOpenEdit }) {
     }
     return isJpgOrPng && isLt2M;
   };
-
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <Modal
       centered
@@ -93,7 +102,7 @@ function EditShipping({ id, openEdit, setOpenEdit }) {
       width={`95vw`}
       footer={[]}
     >
-      {loading ? (
+      {shippingLoading ? (
         <div>...loading</div>
       ) : (
         <div className={styles.container}>
