@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Table, Dropdown, Button, Tag } from "antd";
+import React from "react";
+import { Table, Tag } from "antd";
 import styles from "./Table.module.css";
-import { AiFillSetting } from "react-icons/ai";
-import { apicall } from "../../../../utils/apicall/apicall";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
-
-const ViewOrderTable = ({ callRequest, setCallRequest, status, loading }) => {
+import { useNavigate } from "react-router-dom";
+const ViewOrderTable = ({ callRequest, status, loading }) => {
   const windowSize = useWindowSize();
-
+  const navigate = useNavigate();
   const getStatusTag = (data, obj) => {
     const [statusOfRow] = status.filter((dat) => dat.status === data);
 
@@ -17,33 +15,47 @@ const ViewOrderTable = ({ callRequest, setCallRequest, status, loading }) => {
       </Tag>
     );
   };
+  const getTimeAndDate = (timeStamp) => {
+    const date = new Date(parseInt(timeStamp) * 1000);
+    const monthyear = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    });
 
+    const time = date.toLocaleString("en-US", {
+      hour: "2-digit",
+      minute: "numeric",
+    });
+    return monthyear + ", " + time;
+  };
   const columns = [
     {
-      title: "REQ ID",
+      title: "Req ID",
       dataIndex: "request_id",
       key: "request_id",
+      width: 100,
       render: (code) => <div style={{ color: "blue" }}>#{code}</div>,
     },
     {
-      title: "ORDER STATUS",
+      title: "Order status",
       dataIndex: "order_status",
       key: "request_id",
       render: (text, obj) => getStatusTag(text, obj.order_id),
     },
     {
-      title: "DATE",
+      title: "Request Date",
       dataIndex: "timestamp",
       key: "request_id",
-      render: (timestamp) => <p>{timestamp}</p>,
+      render: (timestamp) => getTimeAndDate(timestamp),
     },
     {
-      title: "CUSTOMER",
+      title: "Customer",
       dataIndex: "name",
       key: "request_id",
     },
     {
-      title: "PHONE",
+      title: "Phone",
       dataIndex: "phone",
       key: "request_id",
     },
@@ -51,6 +63,11 @@ const ViewOrderTable = ({ callRequest, setCallRequest, status, loading }) => {
       title: "Product",
       dataIndex: "product",
       key: "request_id",
+      render: (product, row) => (
+        <a onClick={() => navigate(`../products/${row?.product_id}`)}>
+          {product}{" "}
+        </a>
+      ),
     },
   ];
 
@@ -58,13 +75,14 @@ const ViewOrderTable = ({ callRequest, setCallRequest, status, loading }) => {
     <div>
       <Table
         id="cancelreq"
+        rowKey={"request_id"}
         columns={columns}
         dataSource={callRequest}
         loading={loading}
         pagination={false}
         scroll={{
           y: windowSize.height > 670 ? 530 : 330,
-          x: 1000,
+          x: 800,
         }}
       />
     </div>

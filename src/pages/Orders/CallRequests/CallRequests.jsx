@@ -1,31 +1,32 @@
 import React, { useState } from "react";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Button, Result } from "antd";
 import styles from "./CallRequests.module.css";
 import { CallRequestsSearch, CallRequestsTable } from "../..";
 import { useEffect } from "react";
-import { apicall } from "../../../utils/apicall/apicall";
-import { useRef } from "react";
 import useDebounce from "../../../utils/Hooks/useDebounce";
+import { useGetCallRequests } from "../../../apis/CallRequestsApi";
+import { useMemo } from "react";
+import { useGetStatuses } from "../../../apis/StatusApi";
+import { useNavigate } from "react-router-dom";
+const INITIAL_PARAMS = {
+  name: "",
+  id: "",
+  phone: "",
+};
 const CallRequests = () => {
-  const [callRequest, setCallRequest] = useState([]);
-  const [sValue, setSearchValue] = useState({});
+  const [params, setParams] = useState(INITIAL_PARAMS);
   const [bottom, setBottom] = useState(false);
-  const [status, setStatus] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const page = useRef(1);
-
-  const a = Object.values(sValue).join("");
-
-  useDebounce(
-    () => {
-      page.current = 1;
-      getCallRequest();
-    },
-    1000,
-    [a]
-  );
-
+  const navigate = useNavigate();
+  const {
+    data: callRequestData,
+    isLoading: callRequestLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    error,
+    isError,
+  } = useGetCallRequests(params);
+  const { data: statusData, isLoading: statusLoading } = useGetStatuses();
+  // Listening scrolling behavior
   useEffect(() => {
     document
       .querySelector("#cancelreq > div > div.ant-table-body ")
@@ -37,7 +38,6 @@ const CallRequests = () => {
         ?.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
   const handleScroll = (event) => {
     const condition =
       event.target.scrollTop + event.target.offsetHeight + 100 >
@@ -45,68 +45,46 @@ const CallRequests = () => {
 
     setBottom(condition);
   };
-
-  useEffect(() => {
-    getCallRequest();
-  }, []);
-
-  useEffect(() => {
-    getStatus();
-  }, []);
-
-  useEffect(() => {
-    if (!bottom) return;
-    page.current = page.current + 1;
-    getMoreCallRequest();
-  }, [bottom]);
-
-  const getStatus = async () => {
-    const result = await apicall({
-      url: "statuses",
+  // Getting call requests
+  const getCallRequests = useMemo(() => {
+    let temp = [];
+    callRequestData?.pages?.map((item, i) => {
+      temp = [...temp, ...item?.data?.call_requests];
     });
-
-    setStatus(result.data.statuses);
-  };
-
-  const getCallRequest = async () => {
-    setLoading(true);
-    const result = await apicall({
-      url: getUrl(sValue),
-    });
-
-    if (result.status === 200) {
-      setCallRequest(result?.data?.call_requests);
+    return temp;
+  }, [callRequestData]);
+  // getting statuses
+  const getStatus = useMemo(() => {
+    if (statusData?.data) {
+      return statusData?.data?.statuses;
     }
-    setLoading(false);
-  };
-
-  const getMoreCallRequest = async () => {
-    setLoading(true);
-    const result = await apicall({
-      url: getUrl(sValue),
-    });
-
-    if (result.status === 200) {
-      setCallRequest((prev) => [...prev, ...result?.data?.call_requests]);
-    }
-    setLoading(false);
-  };
-
-  const getUrl = (values) => {
-    let newUrl = "call_requests?is_search=Y";
-    if (values?.name) {
-      newUrl = newUrl + "&name=" + values.name;
-    }
-    if (values?.phone) {
-      newUrl = newUrl + "&phone=" + values.phone;
-    }
-    if (values?.id) {
-      newUrl = newUrl + "&id=" + values.id;
-    }
-
-    return newUrl + `&page=${page.current}&items_per_page=${50}`;
-  };
-
+    return [];
+  }, [statusData]);
+  // Handle infinite scroll
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <Breadcrumb>
@@ -116,16 +94,11 @@ const CallRequests = () => {
         </Breadcrumb.Item>
         <Breadcrumb.Item>Call Requests</Breadcrumb.Item>
       </Breadcrumb>
-      <CallRequestsSearch
-        callRequest={callRequest}
-        setCallRequest={setCallRequest}
-        setSearchValue={setSearchValue}
-      />
+      <CallRequestsSearch params={params} setParams={setParams} />
       <CallRequestsTable
-        callRequest={callRequest}
-        setCallRequest={setCallRequest}
-        status={status}
-        loading={loading}
+        callRequest={getCallRequests}
+        status={getStatus}
+        loading={callRequestLoading || isFetchingNextPage || statusLoading}
       />
     </div>
   );

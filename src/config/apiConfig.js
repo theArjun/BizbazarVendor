@@ -3,7 +3,7 @@ import { config } from "./config";
 import { handleLogout } from "../utils/auth/auth";
 import { notification } from "antd";
 const Axios = axios.create({
-  timeout: 1000,
+  timeout: 10000,
 });
 
 Axios.interceptors.request.use((configuration) => {
@@ -12,8 +12,10 @@ Axios.interceptors.request.use((configuration) => {
   const token = localStorage.getItem("token");
   configuration.baseURL = BASE_URL;
   configuration.auth = {
-    username: token ? token : config.ADMIN_USERNAME,
-    password: token ? "" : config.ADMIN_API_KEY,
+    // username: token ? token : config.ADMIN_USERNAME,
+    // password: token ? "" : config.ADMIN_API_KEY,
+    username: config.ADMIN_USERNAME,
+    password: config.ADMIN_API_KEY,
   };
   return configuration;
 });

@@ -152,7 +152,7 @@ const ProductDetail = ({ data }) => {
               {" "}
               <b>{data?.product?.product_code}</b>
             </Text>
-            <div>रु{parseFloat(data?.product?.price).toFixed(2)}</div>
+            <div>रु{parseFloat(data?.product?.price || 0).toFixed(2)}</div>
           </div>
         </div>
         <div className={styles.customer_info}>

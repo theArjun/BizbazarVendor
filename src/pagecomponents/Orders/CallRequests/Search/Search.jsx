@@ -1,18 +1,28 @@
 import React from "react";
 import styles from "./Search.module.css";
 import { Card, Form, Input, Button } from "antd";
-const Search = ({ setSearchValue }) => {
+import { useState } from "react";
+import useDebounce from "../../../../utils/Hooks/useDebounce";
+const Search = ({ params, setParams }) => {
+  const [searchValues, setSearchValues] = useState(params);
+  useDebounce(
+    () => {
+      let temp = { ...params };
+      temp.id = searchValues.id || "";
+      temp.name = searchValues.name || "";
+      temp.phone = searchValues.phone || "";
+      setParams(temp);
+    },
+    500,
+    [searchValues]
+  );
   const [form] = Form.useForm();
-  const onFinish = (values) => {
-    console.log("Success:", values);
-    // console.log(getAllOrders())
-  };
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-
-  const onvaluechange = (b, a) => {
-    setSearchValue(a);
+  const onValueChange = (b, values) => {
+    let temp = { ...searchValues };
+    temp.id = values.id;
+    temp.name = values.name;
+    temp.phone = values.phone;
+    setSearchValues(temp);
   };
 
   return (
@@ -23,10 +33,7 @@ const Search = ({ setSearchValue }) => {
           form={form}
           className={styles.form}
           name="basic"
-          onValuesChange={onvaluechange}
-          wrapperCol={{}}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
+          onValuesChange={onValueChange}
           autoComplete="off"
         >
           <div className={styles.search_inputs}>

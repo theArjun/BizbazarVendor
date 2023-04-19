@@ -117,7 +117,7 @@ function AddCatalogPromotion() {
       createMutate(formData, {
         onSuccess: (res) => {
           queryClient.invalidateQueries(["promotions"]);
-          navigate("../promotions");
+          navigate("../Marketing/Promotions");
         },
       });
     } else {

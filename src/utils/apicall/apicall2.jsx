@@ -31,8 +31,8 @@ export const apicall2 = async ({
       data: data,
       body: body,
       auth: {
-        username: token ? token : config.ADMIN_USERNAME,
-        password: token ? "" : config.ADMIN_API_KEY,
+        username: config.ADMIN_USERNAME,
+        password: config.ADMIN_API_KEY,
       },
       headers: {
         "Content-Type": "application/json",

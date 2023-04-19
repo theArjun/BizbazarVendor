@@ -121,21 +121,18 @@ const Search = ({
               <DatePicker
                 className={styles.date}
                 onChange={(e, a) => {
-                  const temp = sValue;
+                  const temp = { ...sValue };
                   temp.startDate = a;
-
-                  setDload((d) => !d);
+                  setSearchValue(temp);
                 }}
               />
               {"-"}
               <DatePicker
                 className={styles.date}
                 onChange={(e, a) => {
-                  const temp = sValue;
+                  const temp = { ...sValue };
                   temp.endDate = a;
                   setSearchValue(temp);
-
-                  setDload((d) => !d);
                 }}
               />
             </div>
@@ -149,7 +146,6 @@ const Search = ({
                 checked={radio === "O" ? true : false}
                 onClick={() => {
                   setRadio("O");
-                  page1.current = 1;
                 }}
               >
                 Order Created Date{" "}
@@ -159,7 +155,6 @@ const Search = ({
                 checked={radio === "S" ? true : false}
                 onClick={() => {
                   setRadio("S");
-                  page1.current = 1;
                 }}
               >
                 Settlement Date

@@ -1,13 +1,25 @@
 import React, { useRef, useState, useCallback } from "react";
-import { Breadcrumb } from "antd";
+import { Breadcrumb, Button, Result } from "antd";
 import styles from "./AccountOrderDetails.module.css";
 import { useEffect } from "react";
 import { apicall2 } from "../../../utils/apicall/apicall2";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 import AccountOrderDetailsSearch from "./../../../pagecomponents/Reports/AccountOrderDetails/Search/Search";
 import AccountOrderDetailsTable from "../../../pagecomponents/Reports/AccountOrderDetails/Table/Table";
-
+import { useGetAccountingOrderDetails } from "../../../apis/ReportsApi";
+import { useMemo } from "react";
+const INITIAL_PARAMS = {
+  order_id: "",
+  customer: "",
+  phone: "",
+  payment_id: "",
+  account_status: "",
+  filter_date: "",
+  time_from: "",
+  time_to: "",
+};
 const AccountOrderDetails = () => {
+  const [params, setParams] = useState(INITIAL_PARAMS);
   const [sValue, setSearchValue] = useState({});
   const [status, setStatus] = useState([]);
   const [accountOrderDetails, setAccountOrderDetails] = useState([]);
@@ -20,7 +32,14 @@ const AccountOrderDetails = () => {
   const [sortColum, setSortingColum] = useState("");
   const [bottom, setBottom] = useState(false);
   const stateChange = Object.values(sValue).join("");
-
+  const {
+    data: reportData,
+    isLoading: reportLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    error,
+    isError,
+  } = useGetAccountingOrderDetails(params);
   useDebounce(
     () => {
       getAccountOrderDetails(sValue);
@@ -47,7 +66,34 @@ const AccountOrderDetails = () => {
       event.target.scrollHeight;
     setBottom(condition);
   };
-
+  //  for getting Accounting order data
+  let getAccountOrderData = useMemo(() => {
+    let temp = [];
+    reportData?.pages?.map((el) => {
+      temp = [...temp, ...el?.data];
+    });
+    return temp || [];
+  }, [reportData]);
+  // handling Search value change
+  useDebounce(
+    () => {
+      let temp = { ...params };
+      let sdate = sValue.startDate.split("-");
+      let edate = sValue.endDate.split("-");
+      temp.order_id = sValue.orderno || "";
+      temp.customer = sValue.customername || "";
+      temp.phone = sValue.customerphone || "";
+      temp.payment_id = sValue.paymentmethod || "";
+      temp.account_status = sValue.accountstatus || "";
+      temp.time_from = sdate[2] + "/" + sdate[1] + "/" + sdate[0] || "";
+      temp.time_to = edate[2] + "/" + edate[1] + "/" + edate[0] || "";
+      temp.filter_date = radio || "";
+      console.log(temp);
+      setParams(temp);
+    },
+    500,
+    [sValue, radio]
+  );
   useEffect(() => {
     getAccountOrderDetails(sValue);
   }, [load, sortBy?.order, sortBy?.field, radio]);
@@ -165,7 +211,31 @@ const AccountOrderDetails = () => {
     }
     setLoading(false);
   };
-
+  // Handle infinite scroll
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
+  if (isError) {
+    return (
+      <Result
+        status={error?.response?.status}
+        title={error?.response?.status}
+        subTitle={error?.message}
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
   return (
     <div className={styles.container}>
       <Breadcrumb>
@@ -184,16 +254,8 @@ const AccountOrderDetails = () => {
         page1={page1}
       />
       <AccountOrderDetailsTable
-        setAccountOrderDetails={setAccountOrderDetails}
-        accountOrderDetails={accountOrderDetails}
-        status={status}
-        page1={page1}
-        sortBy={sortBy}
-        sortColum={sortColum}
-        setSortingColum={setSortingColum}
-        setSortBy={setSortBy}
-        loading={loading}
-        setLoad={setLoad}
+        accountOrderDetails={getAccountOrderData}
+        loading={reportLoading || isFetchingNextPage}
       />
     </div>
   );

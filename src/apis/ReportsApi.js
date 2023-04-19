@@ -1,7 +1,8 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import Axios from "../config/apiConfig";
-import { apicall2 } from "../utils/apicall/apicall2";
+const { id } = JSON.parse(localStorage.getItem("userinfo"));
 const ITEM_PER_PAGE = 50;
+
 // getting monthly order report
 export const useGetMonthlyReport = (params) =>
   useInfiniteQuery({
@@ -18,6 +19,7 @@ export const useGetMonthlyReport = (params) =>
     },
     refetchOnWindowFocus: false,
   });
+
 // Getting vendor transaction details
 export const useGetVendorTransactionDetails = (params) =>
   useInfiniteQuery({
@@ -34,6 +36,7 @@ export const useGetVendorTransactionDetails = (params) =>
     },
     refetchOnWindowFocus: false,
   });
+
 // getting  coupon voucher reports
 export const useGetCouponVoucherReport = (params) =>
   useInfiniteQuery({
@@ -50,6 +53,7 @@ export const useGetCouponVoucherReport = (params) =>
     },
     refetchOnWindowFocus: false,
   });
+
 // Getting gift cards
 export const useGetGiftCards = (params) =>
   useInfiniteQuery({
@@ -66,6 +70,7 @@ export const useGetGiftCards = (params) =>
     },
     refetchOnWindowFocus: false,
   });
+
 // Getting order details
 export const useGetOrderDetails = (params) =>
   useInfiniteQuery({
@@ -82,11 +87,28 @@ export const useGetOrderDetails = (params) =>
     },
     refetchOnWindowFocus: false,
   });
+
+// Getting Accounting order details
+export const useGetAccountingOrderDetails = (params) =>
+  useInfiniteQuery({
+    queryKey: ["accounting_order_details", params],
+    queryFn: ({ pageParam = 1 }) =>
+      Axios.get(
+        `AccountOrderDetail/${id}?page=${pageParam}&items_per_page=${ITEM_PER_PAGE}&order_id=${params.order_id}&customer=${params.customer}&phone=${params.phone}&payment_id=${params.payment_id}&account_status=${params.account_status}&filter_date=${params.filter_date}&time_from=${params.time_from}&time_to=${params.time_to}`
+      ),
+    getNextPageParam: (lastPage, pages) => {
+      if (lastPage?.data?.report?.length < ITEM_PER_PAGE) {
+        return;
+      }
+      return (lastPage.nextCursor = parseInt(lastPage?.data?.search?.page) + 1);
+    },
+  });
+
 // Getting product count report
 export const useGetProductCountReport = () =>
   useQuery({
     queryKey: ["vendor_count_report"],
-    queryFn: () => apicall2({ preurl: `VendorCountReport` }),
+    queryFn: () => Axios.get(`VendorCountReport/${id}`),
     onError: (error) => console.log(error),
   });
 
