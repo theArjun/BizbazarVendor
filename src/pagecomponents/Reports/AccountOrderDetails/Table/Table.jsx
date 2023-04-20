@@ -5,16 +5,11 @@ import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
 import { CSVLink } from "react-csv";
 import { useReactToPrint } from "react-to-print";
-
 const AccountOrderDetailsTable = ({ accountOrderDetails, loading }) => {
   const windowSize = useWindowSize();
-
   const [print, setPrint] = useState(false);
-
   const componentRef = useRef();
-
   const navigate = useNavigate();
-
   const getTimeAndDate = (timeStamp) => {
     const date = new Date(parseInt(timeStamp) * 1000);
     const monthyear = date.toLocaleString("en-US", {
@@ -29,14 +24,12 @@ const AccountOrderDetailsTable = ({ accountOrderDetails, loading }) => {
     });
     return monthyear + ", " + time;
   };
-
   const columns = [
     {
-      title: "Date And Time",
+      title: "Date and time",
       dataIndex: "timestamp",
       key: "order_id",
       render: (text) => getTimeAndDate(text),
-      sorter: (a, b) => {},
     },
     {
       title: "Order Id",
@@ -51,16 +44,15 @@ const AccountOrderDetailsTable = ({ accountOrderDetails, loading }) => {
         </div>
       ),
       width: 140,
-      sorter: (a, b) => {},
     },
     {
-      title: "CUSTOMER",
+      title: "Customer",
       dataIndex: "customer",
       key: "order_id",
       render: (text, dat) => <div>{text}</div>,
     },
     {
-      title: "TOTAL ORDER VALUE",
+      title: "Total order value",
       dataIndex: "subtotal",
     },
     {
@@ -77,49 +69,50 @@ const AccountOrderDetailsTable = ({ accountOrderDetails, loading }) => {
     },
 
     {
-      title: "PAYMENT METHOD",
+      title: "Payment method",
       dataIndex: "payment_method",
       key: "order_id",
     },
     {
-      title: "SHIPMENT AMOUNT",
+      title: "Shipment amount",
       dataIndex: "shipping_cost",
       key: "order_id",
     },
     {
-      title: "VENDOR PAYABLE AMOUNT",
+      title: "Vendor payable amount",
       dataIndex: "vendor_payable_amount",
       key: "order_id",
     },
     {
-      title: "REMAINING AMOUNT",
+      title: "Remaining amount",
       dataIndex: "remaining_amount",
       key: "order_id",
     },
     {
-      title: "GIFT CARD AMOUNT USED",
+      title: "Gif card amount used",
       dataIndex: "gift_card_amount_used",
       render: (text) => <>{text || 0}</>,
     },
     {
-      title: "PRODUCT NAME",
+      title: "Product name",
       dataIndex: "product_name",
       render: (text) => <>{text}</>,
     },
     {
-      title: "PRODUCT CATEGORY",
+      title: "Product category",
       dataIndex: "product_category",
     },
     {
-      title: "SETTLEMENT STATUS",
+      title: "Settlement status",
       dataIndex: "settlement_status",
     },
     {
-      title: "SETTLEMENT DATE",
+      title: "Settlement date",
       dataIndex: "settlement_date",
+      render: (text) => getTimeAndDate(text),
     },
     {
-      title: "CASH VENDOR SETTLEMENT",
+      title: "Cash vendor settlement",
       dataIndex: "cash_vendor_settlement",
     },
   ];
@@ -145,7 +138,7 @@ const AccountOrderDetailsTable = ({ accountOrderDetails, loading }) => {
         dataSource={accountOrderDetails}
         pagination={false}
         scroll={{
-          y: windowSize.height > 670 ? 500 : 300,
+          y: windowSize.height > 670 ? 450 : 300,
           x: 2500,
         }}
       />

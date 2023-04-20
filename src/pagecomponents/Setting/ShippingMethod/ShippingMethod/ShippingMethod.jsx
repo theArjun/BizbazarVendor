@@ -231,7 +231,7 @@ function ShippingMethod({
         rowKey={"shipping_id"}
         pagination={false}
         scroll={{
-          y: windowSize.height > 670 ? 400 : 300,
+          y: windowSize.height > 670 ? 450 : 300,
           x: 1000,
         }}
       />

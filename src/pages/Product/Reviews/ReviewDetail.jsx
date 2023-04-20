@@ -86,6 +86,7 @@ const ReviewDetail = () => {
                   type="primary"
                   onClick={submitMessage}
                   loading={replyLoading}
+                  disabled={!replyMessage}
                 >
                   {review?.reply?.reply ? "Update reply" : "Add reply"}
                 </Button>

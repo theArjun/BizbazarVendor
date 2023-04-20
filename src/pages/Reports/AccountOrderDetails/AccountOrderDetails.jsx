@@ -1,8 +1,7 @@
-import React, { useRef, useState, useCallback } from "react";
+import React, { useState } from "react";
 import { Breadcrumb, Button, Result } from "antd";
 import styles from "./AccountOrderDetails.module.css";
 import { useEffect } from "react";
-import { apicall2 } from "../../../utils/apicall/apicall2";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 import AccountOrderDetailsSearch from "./../../../pagecomponents/Reports/AccountOrderDetails/Search/Search";
 import AccountOrderDetailsTable from "../../../pagecomponents/Reports/AccountOrderDetails/Table/Table";
@@ -20,18 +19,9 @@ const INITIAL_PARAMS = {
 };
 const AccountOrderDetails = () => {
   const [params, setParams] = useState(INITIAL_PARAMS);
-  const [sValue, setSearchValue] = useState({});
-  const [status, setStatus] = useState([]);
-  const [accountOrderDetails, setAccountOrderDetails] = useState([]);
+  const [sValue, setSearchValue] = useState(INITIAL_PARAMS);
   const [radio, setRadio] = useState("O");
-  const [loading, setLoading] = useState(false);
-  const [load, setLoad] = useState(false);
-  const [dload, setDload] = useState(false);
-  const page1 = useRef(1);
-  const [sortBy, setSortBy] = useState("");
-  const [sortColum, setSortingColum] = useState("");
   const [bottom, setBottom] = useState(false);
-  const stateChange = Object.values(sValue).join("");
   const {
     data: reportData,
     isLoading: reportLoading,
@@ -40,14 +30,6 @@ const AccountOrderDetails = () => {
     error,
     isError,
   } = useGetAccountingOrderDetails(params);
-  useDebounce(
-    () => {
-      getAccountOrderDetails(sValue);
-    },
-    1200,
-    [stateChange, dload]
-  );
-
   useEffect(() => {
     document
       .querySelector("#reportaccount > div > div.ant-table-body")
@@ -78,139 +60,19 @@ const AccountOrderDetails = () => {
   useDebounce(
     () => {
       let temp = { ...params };
-      let sdate = sValue.startDate.split("-");
-      let edate = sValue.endDate.split("-");
-      temp.order_id = sValue.orderno || "";
-      temp.customer = sValue.customername || "";
-      temp.phone = sValue.customerphone || "";
-      temp.payment_id = sValue.paymentmethod || "";
-      temp.account_status = sValue.accountstatus || "";
-      temp.time_from = sdate[2] + "/" + sdate[1] + "/" + sdate[0] || "";
-      temp.time_to = edate[2] + "/" + edate[1] + "/" + edate[0] || "";
+      temp.order_id = sValue.order_id || "";
+      temp.customer = sValue.customer || "";
+      temp.phone = sValue.phone || "";
+      temp.payment_id = sValue.payment_id || "";
+      temp.account_status = sValue.account_status || "";
+      temp.time_from = sValue.time_from || "";
+      temp.time_to = sValue.time_to || "";
       temp.filter_date = radio || "";
-      console.log(temp);
       setParams(temp);
     },
     500,
     [sValue, radio]
   );
-  useEffect(() => {
-    getAccountOrderDetails(sValue);
-  }, [load, sortBy?.order, sortBy?.field, radio]);
-
-  const getPostUrl = (searchValue) => {
-    let initial = true;
-    let postUrl = "?";
-
-    if (searchValue.orderno && searchValue.orderno.length > 0) {
-      if (!initial) {
-        postUrl = postUrl + "&";
-      }
-      postUrl = postUrl + "order_id=" + searchValue.orderno;
-      initial = false;
-    }
-    if (searchValue.customername && searchValue.customername.length > 0) {
-      if (!initial) {
-        postUrl = postUrl + "&";
-      }
-      postUrl = postUrl + "customer=" + searchValue.customername;
-      initial = false;
-    }
-    if (searchValue.customerphone && searchValue.customerphone.length > 0) {
-      if (!initial) {
-        postUrl = postUrl + "&";
-      }
-      postUrl = postUrl + "phone=" + searchValue.customerphone;
-      initial = false;
-    }
-    if (searchValue.paymentmethod && searchValue.paymentmethod.length > 0) {
-      if (!initial) {
-        postUrl = postUrl + "&";
-      }
-      postUrl = postUrl + "payment_id=" + searchValue.paymentmethod;
-      initial = false;
-    }
-    if (searchValue.accountstatus && searchValue.accountstatus.length > 0) {
-      if (!initial) {
-        postUrl = postUrl + "&";
-      }
-      postUrl = postUrl + "account_status=" + searchValue.accountstatus;
-      initial = false;
-    }
-    if (searchValue.startDate && searchValue.startDate.length > 1) {
-      if (!initial) {
-        postUrl = postUrl + "&";
-      }
-      let sdate = searchValue.startDate.split("-");
-      postUrl =
-        postUrl + "time_from=" + sdate[2] + "/" + sdate[1] + "/" + sdate[0];
-      initial = false;
-    }
-    if (searchValue.endDate && searchValue.endDate.length > 1) {
-      if (!initial) {
-        postUrl = postUrl + "&";
-      }
-      let edate = searchValue.endDate.split("-");
-      postUrl =
-        postUrl + "time_to=" + +edate[2] + "/" + edate[1] + "/" + edate[0];
-      initial = false;
-    }
-    if (sortBy?.order) {
-      if (!initial) {
-        postUrl = postUrl + "&";
-      }
-      const orderType = sortBy?.order === "ascend" ? "asc" : "desc";
-      postUrl = postUrl + "sort_order=" + orderType;
-      initial = false;
-      const sortByType = sortBy?.field;
-      if (!initial) {
-        postUrl = postUrl + "&";
-      }
-      postUrl = postUrl + "sort_by=" + sortByType;
-      initial = false;
-    }
-    if (!initial) {
-      postUrl = postUrl + "&";
-    }
-    postUrl = postUrl + "filter_date=" + radio;
-    return postUrl + `&page=${page1.current}&items_per_page=${50}`;
-  };
-
-  const getAccountOrderDetails = async () => {
-    setLoading(true);
-    const result = await apicall2({
-      preurl: "AccountOrderDetail",
-      posturl: getPostUrl(sValue),
-    });
-
-    if (result?.status === 200) {
-      setAccountOrderDetails(result.data);
-    }
-    setLoading(false);
-  };
-  useEffect(() => {
-    if (accountOrderDetails.length < 50) {
-      return;
-    }
-    if (!bottom) {
-      return;
-    }
-    page1.current = page1.current + 1;
-    getMoreAccountOrderDetails(sValue);
-  }, [bottom]);
-
-  const getMoreAccountOrderDetails = async () => {
-    setLoading(true);
-    const result = await apicall2({
-      preurl: "AccountOrderDetail",
-      posturl: getPostUrl(sValue),
-    });
-
-    if (result?.status === 200) {
-      setAccountOrderDetails((prev) => [...prev, ...result.data]);
-    }
-    setLoading(false);
-  };
   // Handle infinite scroll
   useDebounce(
     () => {
@@ -243,15 +105,10 @@ const AccountOrderDetails = () => {
         <Breadcrumb.Item>Account Orders Details</Breadcrumb.Item>
       </Breadcrumb>
       <AccountOrderDetailsSearch
-        setAccountOrderDetails={setAccountOrderDetails}
-        status={status}
         setSearchValue={setSearchValue}
         sValue={sValue}
-        setLoad={setLoad}
-        setDload={setDload}
         radio={radio}
         setRadio={setRadio}
-        page1={page1}
       />
       <AccountOrderDetailsTable
         accountOrderDetails={getAccountOrderData}

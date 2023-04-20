@@ -203,7 +203,7 @@ const ReviewTable = ({ loading, handleScroll, reviews }) => {
           rowExpandable: (record) => record.message,
         }}
         scroll={{
-          y: windowSize.height > 670 ? 500 : 200,
+          y: windowSize.height > 670 ? 450 : 200,
           x: 1000,
         }}
       />

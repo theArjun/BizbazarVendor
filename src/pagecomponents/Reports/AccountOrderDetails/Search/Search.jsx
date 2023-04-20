@@ -7,14 +7,7 @@ import "./index.css";
 import { DatePicker } from "antd";
 import { useGetPayments } from "../../../../apis/ReportsApi";
 
-const Search = ({
-  setSearchValue,
-  sValue,
-  setDload,
-  setRadio,
-  radio,
-  page1,
-}) => {
+const Search = ({ setSearchValue, sValue, setRadio, radio }) => {
   const [paymentmethod, setPaymentMethod] = useState([]);
   const { data: paymentData } = useGetPayments();
   useEffect(() => {
@@ -28,11 +21,11 @@ const Search = ({
             Order No.
             <Input
               type="number"
-              value={sValue?.orderno}
+              value={sValue?.order_id}
               onChange={(e) =>
                 setSearchValue({
                   ...sValue,
-                  orderno: e.target.value,
+                  order_id: e.target.value,
                 })
               }
             />
@@ -41,11 +34,11 @@ const Search = ({
             Customer
             <Input
               type="text"
-              value={sValue?.customername}
+              value={sValue?.customer}
               onChange={(e) =>
                 setSearchValue({
                   ...sValue,
-                  customername: e.target.value,
+                  customer: e.target.value,
                 })
               }
             />
@@ -54,11 +47,11 @@ const Search = ({
             Customer phone
             <Input
               type="number"
-              value={sValue?.customerphone}
+              value={sValue?.phone}
               onChange={(e) =>
                 setSearchValue({
                   ...sValue,
-                  customerphone: e.target.value,
+                  phone: e.target.value,
                 })
               }
             />
@@ -72,7 +65,7 @@ const Search = ({
               onChange={(e) => {
                 setSearchValue({
                   ...sValue,
-                  paymentmethod: e,
+                  payment_id: e,
                 });
               }}
               options={[
@@ -96,7 +89,7 @@ const Search = ({
               onChange={(e) =>
                 setSearchValue({
                   ...sValue,
-                  accountstatus: e,
+                  account_status: e,
                 })
               }
               options={[
@@ -122,7 +115,9 @@ const Search = ({
                 className={styles.date}
                 onChange={(e, a) => {
                   const temp = { ...sValue };
-                  temp.startDate = a;
+                  let sdate = a.split("-");
+                  temp.time_from =
+                    sdate[2] + "/" + sdate[1] + "/" + sdate[0] || "";
                   setSearchValue(temp);
                 }}
               />
@@ -131,7 +126,9 @@ const Search = ({
                 className={styles.date}
                 onChange={(e, a) => {
                   const temp = { ...sValue };
-                  temp.endDate = a;
+                  let edate = a.split("-");
+                  temp.time_to =
+                    edate[2] + "/" + edate[1] + "/" + edate[0] || "";
                   setSearchValue(temp);
                 }}
               />

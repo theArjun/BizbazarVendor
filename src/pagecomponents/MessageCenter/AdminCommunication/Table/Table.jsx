@@ -87,7 +87,7 @@ const AdminCommunicationTable = ({ loading, data, handleScroll }) => {
         dataSource={data}
         pagination={false}
         scroll={{
-          y: windowSize.height > 670 ? 500 : 300,
+          y: windowSize.height > 670 ? 450 : 200,
           x: 1000,
         }}
       />

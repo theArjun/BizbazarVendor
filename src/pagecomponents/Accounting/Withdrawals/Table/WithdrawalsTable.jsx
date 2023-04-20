@@ -91,7 +91,7 @@ const WithdrawalsTable = ({ handleScroll, loading, data, status }) => {
         dataSource={data}
         pagination={false}
         scroll={{
-          y: windowSize.height > 670 ? 400 : 200,
+          y: windowSize.height > 670 ? 450 : 200,
           x: 1000,
         }}
       />

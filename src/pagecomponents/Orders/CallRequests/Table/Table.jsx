@@ -81,7 +81,7 @@ const ViewOrderTable = ({ callRequest, status, loading }) => {
         loading={loading}
         pagination={false}
         scroll={{
-          y: windowSize.height > 670 ? 530 : 330,
+          y: windowSize.height > 670 ? 450 : 200,
           x: 800,
         }}
       />

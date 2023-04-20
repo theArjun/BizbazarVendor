@@ -97,10 +97,10 @@ export const useGetAccountingOrderDetails = (params) =>
         `AccountOrderDetail/${id}?page=${pageParam}&items_per_page=${ITEM_PER_PAGE}&order_id=${params.order_id}&customer=${params.customer}&phone=${params.phone}&payment_id=${params.payment_id}&account_status=${params.account_status}&filter_date=${params.filter_date}&time_from=${params.time_from}&time_to=${params.time_to}`
       ),
     getNextPageParam: (lastPage, pages) => {
-      if (lastPage?.data?.report?.length < ITEM_PER_PAGE) {
+      if (lastPage?.data?.length < ITEM_PER_PAGE) {
         return;
       }
-      return (lastPage.nextCursor = parseInt(lastPage?.data?.search?.page) + 1);
+      return (lastPage.nextCursor = parseInt(pages?.length) + 1);
     },
   });
 

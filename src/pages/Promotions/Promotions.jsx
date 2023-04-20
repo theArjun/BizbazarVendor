@@ -238,7 +238,7 @@ function Promotions() {
           columns={columns}
           dataSource={promotionsData}
           scroll={{
-            y: windowSize.height > 670 ? 500 : 300,
+            y: windowSize.height > 670 ? 450 : 200,
             x: 700,
           }}
         />
