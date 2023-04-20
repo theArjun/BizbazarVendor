@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { Breadcrumb, Button, Result } from "antd";
 import { MonthlyOrderReportSearch, MonthlyOrderReportTable } from "../..";
 import { useGetMonthlyReport } from "../../../apis/ReportsApi";
-import { useGetStatuses } from "../../../apis/StatusApi";
 import { useMemo } from "react";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 const INITIAL_PARAMS = {
@@ -27,7 +26,6 @@ const MonthlyOrderReport = () => {
     isError,
     error,
   } = useGetMonthlyReport(params);
-  const { data: statusData, isLoading: statusLoading } = useGetStatuses();
   // handle data when the there  is scroll in product table
   const handleScroll = (event) => {
     const condition =
@@ -51,12 +49,15 @@ const MonthlyOrderReport = () => {
     return temp || [];
   }, [reportData]);
   // status data
-  const getStatus = () => {
-    if (statusData) {
-      return statusData?.data?.statuses;
+  const getStatus = useMemo(() => {
+    if (reportData?.pages) {
+      let statuses = Object.values(
+        reportData?.pages?.at(0)?.data?.order_statuses || {}
+      );
+      return statuses;
     }
     return [];
-  };
+  }, [reportData]);
   // getUserGroups
   const getUserGroups = () => {
     let temp = reportData?.pages?.at(-1)?.data?.usergroups || {};
@@ -97,7 +98,7 @@ const MonthlyOrderReport = () => {
         <Breadcrumb.Item>Monthly order reports</Breadcrumb.Item>
       </Breadcrumb>
       <MonthlyOrderReportSearch
-        status={getStatus()}
+        status={getStatus}
         userGroup={getUserGroups()}
         params={params}
         setParams={setParams}
@@ -106,7 +107,7 @@ const MonthlyOrderReport = () => {
         handleScroll={handleScroll}
         data={getReportData}
         loading={reportLoading || isFetchingNextPage}
-        status={getStatus()}
+        status={getStatus}
       />
     </div>
   );
