@@ -38,6 +38,7 @@
 
 .tableContain {
   margin-top: 10px;
+  height: 300px;
 }
 .tableContain > div > div > div > div > div > div > table {
   width: inherit;

@@ -157,6 +157,10 @@ function Conditions({
             >
               Add products
             </Button>
+            <div className={styles.count_text}>
+              Products count:{" "}
+              {ids.split(",")[0] === "" ? 0 : ids.split(",").length}
+            </div>
           </div>
         );
       case condition_features.PURCHASED_PRODUCTS:
@@ -186,6 +190,10 @@ function Conditions({
             >
               Add products
             </Button>
+            <div className={styles.count_text}>
+              Products count:{" "}
+              {ids.split(",")[0] === "" ? 0 : ids.split(",").length}
+            </div>
           </div>
         );
       case condition_features.USERS:
@@ -213,6 +221,10 @@ function Conditions({
             >
               Add users
             </Button>
+            <div className={styles.count_text}>
+              Categories count:{" "}
+              {ids.split(",")[0] === "" ? 0 : ids.split(",").length}
+            </div>
           </div>
         );
       case condition_features.PRODUCT_FEATURE:
@@ -295,6 +307,10 @@ function Conditions({
             >
               Add categories
             </Button>
+            <div className={styles.count_text}>
+              Categories count:{" "}
+              {ids.split(",")[0] === "" ? 0 : ids.split(",").length}
+            </div>
           </div>
         );
       case condition_features.USER_GROUP:

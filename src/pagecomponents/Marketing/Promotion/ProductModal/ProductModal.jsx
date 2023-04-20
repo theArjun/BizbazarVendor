@@ -3,6 +3,7 @@ import styles from "./ProductModal.module.css";
 import { Modal, Input, Image, Checkbox, Table } from "antd";
 import useDebounce from "../../../../utils/Hooks/useDebounce";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
+import { AiFillDelete } from "react-icons/ai";
 const ProductModal = ({ modalOpen, setModalOpen, productData }) => {
   const [productList, setProductList] = useState([]);
   const [data, setData] = useState([]);
@@ -101,16 +102,37 @@ const ProductModal = ({ modalOpen, setModalOpen, productData }) => {
       dataIndex: "status",
       render: (status) => <div>{getProductStatus(status)}</div>,
     },
+    {
+      title: "Action",
+      dataIndex: "",
+      width: 100,
+      render: (a, row) => (
+        <a
+          onClick={() => {
+            let remainingProducts = productList?.filter(
+              (item) => item?.product_id !== row?.product_id
+            );
+            setProductList(remainingProducts);
+          }}
+        >
+          {<AiFillDelete size={22} color="red" />}
+        </a>
+      ),
+    },
   ];
 
   return (
     <Modal
+      maskClosable={false}
       title="Add products"
       centered
       open={modalOpen}
       className={styles.variation_modal}
       onOk={() => setModalOpen(false)}
-      onCancel={() => setModalOpen(false)}
+      onCancel={() => {
+        setProductList([]);
+        setModalOpen(false);
+      }}
       width={1000}
     >
       <div className={styles.tabcontain}>
@@ -156,8 +178,8 @@ const ProductModal = ({ modalOpen, setModalOpen, productData }) => {
             columns={columns}
             pagination={false}
             scroll={{
-              y: windowSize.height > 670 ? 300 : 200,
-              x: 1000,
+              y: windowSize.height > 670 ? 250 : 200,
+              x: 700,
             }}
           />
         </div>

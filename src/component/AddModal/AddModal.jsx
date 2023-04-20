@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./AddModal.module.css";
 import { Modal, Input, Image, Checkbox, Table, InputNumber } from "antd";
 import useWindowSize from "../../utils/Hooks/useWindowSize";
+import { AiFillDelete } from "react-icons/ai";
 const AddModal = ({ modalOpen, setModalOpen, condition_data, ids, setIds }) => {
   const [productList, setProductList] = useState([]);
   const [search, setSearch] = useState("");
@@ -98,15 +99,36 @@ const AddModal = ({ modalOpen, setModalOpen, condition_data, ids, setIds }) => {
       dataIndex: "status",
       render: (status) => <div>{getProductStatus(status)}</div>,
     },
+    {
+      title: "Action",
+      dataIndex: "",
+      width: 100,
+      render: (a, row, i) => (
+        <a
+          onClick={() => {
+            let remainingProducts = productList?.filter(
+              (item, index) => index !== i
+            );
+            setProductList(remainingProducts);
+          }}
+        >
+          {<AiFillDelete size={22} color="red" />}
+        </a>
+      ),
+    },
   ];
   return (
     <Modal
+      maskClosable={false}
       title="Add products"
       centered
       open={modalOpen}
       onOk={() => setModalOpen(false)}
       className={styles.variation_modal}
-      onCancel={() => setModalOpen(false)}
+      onCancel={() => {
+        setProductList([]);
+        setModalOpen(false);
+      }}
       width={1000}
     >
       <div className={styles.tabcontain}>
@@ -114,7 +136,7 @@ const AddModal = ({ modalOpen, setModalOpen, condition_data, ids, setIds }) => {
           <h2>Promotion products</h2>
           <div ref={ref} className={styles.relative}>
             <Input
-              placeholder="Search Product"
+              placeholder="Click here to select"
               type="text"
               onFocus={() => setSearch(" ")}
               value={search}
@@ -148,7 +170,7 @@ const AddModal = ({ modalOpen, setModalOpen, condition_data, ids, setIds }) => {
             columns={columns}
             pagination={false}
             scroll={{
-              y: windowSize.height > 670 ? 200 : 200,
+              y: windowSize.height > 670 ? 250 : 200,
               x: 800,
             }}
           />

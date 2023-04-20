@@ -22,4 +22,10 @@
 }
 .particular_condition > * {
   margin: 0 5px;
+  display: flex;
+  align-items: center;
+}
+.count_text {
+  font-size: 16px;
+  font-weight: 400;
 }

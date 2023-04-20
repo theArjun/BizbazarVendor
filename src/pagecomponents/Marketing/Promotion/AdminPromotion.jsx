@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styles from "./Promotion.module.css";
-import { Breadcrumb, Button, Table, } from "antd";
+import { Breadcrumb, Button, Table } from "antd";
 import ProductModal from "./ProductModal/ProductModal";
 import useWindowSize from "../../../utils/Hooks/useWindowSize";
 import { useGetPromotionProducts } from "../../../apis/PromotionApi";
-const AdminPromotion = ({ data , loading}) => {
+const AdminPromotion = ({ data, loading }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const windowSize = useWindowSize();
   const { isLoading: productLoading, data: productData } =
@@ -13,9 +13,10 @@ const AdminPromotion = ({ data , loading}) => {
     try {
       let product_ids = String(ids);
       let arr_ids = product_ids.slice(9).split(",");
-      let products = productData?.data?.products?.filter((item, i) => arr_ids.includes(String(item?.product_id))
+      let products = productData?.data?.products?.filter((item, i) =>
+        arr_ids.includes(String(item?.product_id))
       );
-     return products
+      return products;
     } catch (err) {
       console.log("Error  has occured", err);
     }
@@ -77,7 +78,7 @@ const AdminPromotion = ({ data , loading}) => {
             columns={columns}
             pagination={false}
             scroll={{
-              y: windowSize.height > 670 ? 300 : 200,
+              y: windowSize.height > 670 ? 450 : 200,
               x: 1000,
             }}
           />

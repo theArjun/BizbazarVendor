@@ -22,10 +22,12 @@ function OrderStatusModal({ statusModalOpen, setStatusModalOpen }) {
   const handleConfirm = async () => {
     let data = {
       order_id: statusModalOpen.orderId,
-      status: statusModalOpen?.data?.status,
-      notify_user: notifyUser ? "1" : "0",
-      notify_department: notifyDepartment ? "1" : "0",
-      notify_vendor: notifyVendor ? "1" : "0",
+      data: {
+        status: statusModalOpen?.data?.status,
+        notify_user: notifyUser ? "1" : "0",
+        notify_department: notifyDepartment ? "1" : "0",
+        notify_vendor: notifyVendor ? "1" : "0",
+      },
     };
     mutate(data, {
       onSuccess: (res) => {

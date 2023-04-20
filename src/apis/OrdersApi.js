@@ -21,7 +21,7 @@ export const useGetOrders = (params) =>
 // change order status
 export const useChangeOrderStatus = () =>
   useMutation({
-    mutationFn: (data) => Axios.put(`orders/${data.order_id}`, data),
+    mutationFn: (data) => Axios.put(`orders/${data.order_id}`, data.data),
     onSuccess: (res) => {
       notification.success({ message: "Order status changed successfully" });
     },
