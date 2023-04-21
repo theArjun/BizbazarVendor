@@ -6,7 +6,10 @@ import "./index.css";
 import { handlelogin } from "../../utils/auth/auth";
 import { useLogin } from "../../apis/LoginApi";
 import { notification } from "antd";
+import AgreementModal from "../../component/AgreementModal/AgreementModal";
 function Login() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [data, setData] = useState({});
   const { mutate, isLoading } = useLogin();
   const navigate = useNavigate();
   const [form] = Form.useForm();
@@ -19,9 +22,15 @@ function Login() {
     };
     mutate(data, {
       onSuccess: (result) => {
-        handlelogin(result.data);
-        notification.success({ message: "Login successful!" });
-        navigate("/");
+        let isFirstLogin = sessionStorage.getItem("first_login");
+        if (isFirstLogin) {
+          handlelogin(result.data);
+          notification.success({ message: "Login successful!" });
+          navigate("/");
+        } else {
+          setData(result?.data);
+          setModalOpen(true);
+        }
       },
     });
   };
@@ -101,6 +110,11 @@ function Login() {
           </div>
         </Card>
       </div>
+      <AgreementModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        data={data}
+      />
     </div>
   );
 }

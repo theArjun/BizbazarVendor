@@ -1,0 +1,53 @@
+.modal {
+  display: block; /* Hide the modal by default */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.close_modal {
+  display: none;
+}
+.modal_content {
+  position: relative;
+  padding: 20px 40px;
+  background-color: #fff;
+  margin: 10px auto;
+  max-width: 600px;
+  height: calc(100vh - 190px);
+  text-align: justify;
+  /* border-radius: 4px; */
+}
+.terms {
+  margin-left: 40px;
+}
+.modal h2 {
+  margin-top: 0;
+  text-align: center;
+}
+.footer_content {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  /* margin-right: 35px; */
+  background-color: #fff;
+}
+.modal_buttons > * {
+  margin-left: 10px;
+}
+.modal_buttons {
+  padding: 20px 40px;
+  float: right;
+}
+.modal_content_body {
+  height: calc(100% - 60px);
+  overflow-y: scroll;
+}
+.modal_content_body::-webkit-scrollbar {
+  display: none;
+}
