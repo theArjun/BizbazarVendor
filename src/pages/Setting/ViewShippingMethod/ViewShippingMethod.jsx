@@ -135,14 +135,14 @@ function EditShipping() {
       }));
     let temp_rate =
       Object.values(generalData?.data?.rates || {})?.filter(
-        (el, i) => el?.status === "A" && el?.rate_id
+        (el, i) => (el?.status === "D" || el?.status === "A") && el?.rate_id
       ) || [];
     let temp_all_rate =
       Object.values(generalData?.data?.rates || {})?.filter(
         (el, i) => el?.status === "A"
       ) || [];
     setAllDestination(temp_all_rate);
-    setHaveRate(temp_rate);
+    setHaveRate(temp_rate.reverse());
     setDestinations(temp);
   };
   // submit changes

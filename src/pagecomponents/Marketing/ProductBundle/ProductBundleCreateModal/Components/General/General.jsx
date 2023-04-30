@@ -1,4 +1,4 @@
-import { Button, Input } from "antd";
+import { Button, DatePicker, Input } from "antd";
 import React, { useState } from "react";
 import styles from "./General.module.css";
 import ReactQuill from "react-quill";
@@ -56,7 +56,7 @@ function General() {
     <div className={styles.container}>
       <label className={styles.label}>
         <div>
-          Name<label>*</label>:
+          Name<label style={{ color: "red" }}>*</label>:
         </div>
 
         <Input className={styles.nameInput} type="text" />
@@ -99,11 +99,11 @@ function General() {
       </label>
       <label className={styles.label}>
         <div>Available from:</div>
-        <input className={styles.checkbox} type="date" />
+        <DatePicker onChange={""} className={styles.date_picker} />
       </label>
       <label className={styles.label}>
         <div>Available to:</div>
-        <input className={styles.checkbox} type="date" />
+        <DatePicker onChange={""} className={styles.date_picker} />
       </label>
       <label className={styles.label}>
         <div>Priority:</div>

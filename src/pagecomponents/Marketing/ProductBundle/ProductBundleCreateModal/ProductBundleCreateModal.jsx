@@ -4,11 +4,9 @@ import styles from "./ProductBundleCreateModal.module.css";
 import cx from "classnames";
 import General from "./Components/General/General";
 import Products from "./Components/Products/Products";
-
 function ProductBundleCreateModal({ openCreateModal, setOpenCreateModal }) {
   const [activeTab, setActiveTab] = useState("General");
   const [productList, setProductList] = useState([]);
-
   const getDivision = () => {
     switch (activeTab) {
       case "General":
@@ -25,6 +23,7 @@ function ProductBundleCreateModal({ openCreateModal, setOpenCreateModal }) {
       title="Create Product Bundle"
       centered
       open={openCreateModal}
+      okText="Create"
       onOk={() => setOpenCreateModal(false)}
       onCancel={() => setOpenCreateModal(false)}
       width={1000}

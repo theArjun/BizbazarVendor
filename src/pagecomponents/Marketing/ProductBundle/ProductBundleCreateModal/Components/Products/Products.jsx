@@ -1,17 +1,28 @@
-import { Input, Image, Checkbox, Table } from "antd";
+import { Input, Image, Checkbox, Table, Spin } from "antd";
 
 import React, { useState, useRef, useEffect } from "react";
 import useDebounce from "../../../../../../utils/Hooks/useDebounce";
 import styles from "./Products.module.css";
 import "./index.css";
 import { InputNumber } from "antd";
-import Axios from "../../../../../../config/apiConfig";
+import { useGetProducts } from "../../../../../../apis/ProductApi";
+import { useMemo } from "react";
+const INITIAL_PARAM = {
+  product_name: "",
+};
 function Products({ productList, setProductList }) {
+  const [params, setParams] = useState(INITIAL_PARAM);
+  const [bottom, setBottom] = useState(false);
   const [load, setLoad] = useState(false);
   const [search, setSearch] = useState("");
-  const [data, setData] = useState([]);
+  const [name, setName] = useState("");
   const ref = useRef();
-
+  const {
+    data: productData,
+    isLoading: productLoading,
+    isFetchingNextPage: nextLoading,
+    fetchNextPage,
+  } = useGetProducts(params);
   const handleClick = (e) => {
     if (ref.current && !ref.current.contains(e.target)) {
       setSearch("");
@@ -23,32 +34,50 @@ function Products({ productList, setProductList }) {
       document.removeEventListener("click", handleClick);
     };
   }, []);
-
-  const getUrl = (search = "") => {
-    return (
-      "products?is_search=Y" +
-      "&q=" +
-      search +
-      `&page=${1}&items_per_page=${50}`
-    );
+  // handle data when the there  is scroll in product table
+  const handleScroll = (event) => {
+    const condition =
+      event.target.scrollTop + event.target.offsetHeight + 100 >
+      event.target.scrollHeight;
+    setBottom(condition);
   };
+  useEffect(() => {
+    document
+      .querySelector("#productList")
+      ?.addEventListener("scroll", handleScroll);
 
-  const getProducts = async () => {
-    Axios.get(getUrl())
-      .then((result) => {
-        setData(result?.data?.products);
-      })
-      .catch((error) => console.log(error.message));
-  };
-
+    return () => {
+      document
+        .querySelector("#productList")
+        ?.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
+  const getProductsData = useMemo(() => {
+    let temp = [];
+    productData?.pages?.map((el) => {
+      temp = [...temp, ...el?.data?.products];
+    });
+    return temp || [];
+  }, [productData]);
+  // Setting name of product
   useDebounce(
     () => {
-      getProducts();
+      setParams({ ...params, product_name: name });
     },
-    1200,
-    [search]
+    500,
+    [name]
   );
-
+  // Handle infinite scroll
+  useDebounce(
+    () => {
+      if (!bottom) {
+        return;
+      }
+      fetchNextPage();
+    },
+    300,
+    [bottom]
+  );
   const handleCheck = (e, object) => {
     if (e.target.checked) {
       setProductList([
@@ -222,12 +251,14 @@ function Products({ productList, setProductList }) {
           placeholder="Search Product"
           type="text"
           onFocus={() => setSearch(" ")}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
         />
         {search.length > 0 && (
-          <div className={styles.absolute}>
-            {data?.map((dat, i) => (
+          <div className={styles.absolute} id="productList">
+            {getProductsData?.map((dat, i) => (
               <div key={i} className={styles.tableRow}>
                 <Checkbox
                   checked={getChecked(productList, dat)}
@@ -238,10 +269,17 @@ function Products({ productList, setProductList }) {
 
                 <div style={{ marginLeft: "10px" }}>
                   <div>{dat.product}</div>
-                  <div>{dat.product_id}</div>
+                  <div>{dat.product_code}</div>
                 </div>
               </div>
             ))}
+            {productLoading || nextLoading ? (
+              <div className={styles.loadingSpinner}>
+                <Spin />
+              </div>
+            ) : (
+              ""
+            )}
           </div>
         )}
       </div>

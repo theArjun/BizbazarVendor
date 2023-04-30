@@ -34,5 +34,6 @@
 
 .tabcontain {
   padding: 20px;
-  min-height: 60vh;
+  height: 60vh;
+  overflow-y: scroll;
 }

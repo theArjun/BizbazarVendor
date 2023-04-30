@@ -283,9 +283,9 @@ const Variations = ({ data, variations, editID }) => {
             setSave(false);
           }}
           options={Object.values(
-            variations.filter((el) => el.id == item.feature_id)[0].object[
+            variations.filter((el) => el.id == item.feature_id)?.at(0)?.object[
               "variants"
-            ]
+            ] || {}
           ).map((item, i) => ({ label: item.variant, value: item.variant_id }))}
         />
       </div>

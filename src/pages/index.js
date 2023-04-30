@@ -160,6 +160,12 @@ const LogList = React.lazy(() =>
 const LogSearch = React.lazy(() =>
   import("../pagecomponents/Logs/Search/Search")
 );
+const ProductBundleSearch = React.lazy(() =>
+  import("../pagecomponents/Marketing/ProductBundle/Search/Search")
+);
+const ProductBundleTable = React.lazy(() =>
+  import("../pagecomponents/Marketing/ProductBundle/Table/Table")
+);
 
 export {
   ProductTable,
@@ -211,4 +217,6 @@ export {
   ShippingSuppliers,
   LogList,
   LogSearch,
+  ProductBundleSearch,
+  ProductBundleTable,
 };

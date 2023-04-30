@@ -3,6 +3,7 @@ import { Input, Select, Table } from "antd";
 import useWindowSize from "../../../../../../utils/Hooks/useWindowSize";
 import { AiFillDelete, AiFillEdit, AiFillEye } from "react-icons/ai";
 import { useState } from "react";
+import "./table.css";
 import EditConditionsModal from "./EditConditionsModal";
 const RatesTable = ({
   shippingTimeRates,
@@ -242,6 +243,7 @@ const RatesTable = ({
           y: windowSize.height > 670 ? 300 : 200,
           x: 1800,
         }}
+        rowClassName={(record) => (record?.status == "D" ? "disabled-row" : "")}
       />
       <EditConditionsModal
         modalOpen={modalOpen}

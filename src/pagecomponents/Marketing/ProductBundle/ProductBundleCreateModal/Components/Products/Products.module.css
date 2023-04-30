@@ -16,7 +16,14 @@
   max-height: 50vh;
   overflow-y: scroll;
 }
-
+.loadingSpinner {
+  position: fixed;
+  width: fit-content;
+  height: fit-content;
+  bottom: 50%;
+  left: 50%;
+  z-index: 2;
+}
 .tableRow {
   display: flex;
   margin: 10px 0;

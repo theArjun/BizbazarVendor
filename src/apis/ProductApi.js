@@ -20,7 +20,13 @@ export const useGetProducts = (params) =>
     queryKey: ["products", params],
     queryFn: ({ pageParam = 1 }) =>
       Axios.get(
-        `products?page=${pageParam}&items_per_page=${ITEM_PER_PAGE}&status=${params.status}&q=${params.product_name}&cid=${params.category}&price_from=${params.price_from}&price_to=${params.price_to}&sort_order=${params.sort_order}&sort_by=${params.sort_by}`
+        `products?page=${pageParam}&items_per_page=${ITEM_PER_PAGE}&status=${
+          params.status || ""
+        }&q=${params.product_name || ""}&cid=${
+          params.category || ""
+        }&price_from=${params.price_from || ""}&price_to=${
+          params.price_to || ""
+        }&sort_order=${params.sort_order || ""}&sort_by=${params.sort_by || ""}`
       ),
     getNextPageParam: (lastPage, pages) => {
       if (lastPage?.data?.products?.length < ITEM_PER_PAGE) {
