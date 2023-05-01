@@ -188,13 +188,19 @@ function Promotions() {
   }
   return (
     <div className={styles.container}>
-      <div className={styles.breadcumb}>
+      <div className={styles.breadcrumb}>
         <Breadcrumb>
           <Breadcrumb.Item>Marketing</Breadcrumb.Item>
           <Breadcrumb.Item>
             <a href="">Promotions</a>
           </Breadcrumb.Item>
         </Breadcrumb>
+        <Button
+          className={styles.buttonAddCatalog}
+          onClick={() => navigate("/Marketing/Add Catalog Promotion")}
+        >
+          Add Catalog Promotion
+        </Button>
       </div>
       <div className={styles.container}>
         <div className={styles.action_buttons}>
@@ -243,12 +249,6 @@ function Promotions() {
           }}
         />
       </div>
-      <Button
-        className={styles.buttonAddCatalog}
-        onClick={() => navigate("/Marketing/Add Catalog Promotion")}
-      >
-        Add Catalog Promotion
-      </Button>
     </div>
   );
 }

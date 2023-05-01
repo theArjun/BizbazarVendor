@@ -89,6 +89,9 @@ const ExplorePromotion = lazy(() =>
 const ProductBundles = lazy(() =>
   import("./pages/ProductBundles/ProductBundles")
 );
+const SingleProductBundle = lazy(() =>
+  import("./pages/ProductBundles/Edit/SingleProductBundle")
+);
 
 const Accounting = lazy(() => import("./pages/Accounting/Accounting"));
 
@@ -113,7 +116,27 @@ const ViewShippingMethod = lazy(() =>
 const LogosAndStyles = lazy(() =>
   import("./pages/Setting/LogosAndStyle/LogosAndStyle")
 );
-
+const OrderReports = lazy(() =>
+  import("./pages/Sales/OrderReports/OrderReports")
+);
+const RewardPoint = lazy(() => import("./pages/Sales/RewardPoint/RewardPoint"));
+const ProductDistributionOnCategory = lazy(() =>
+  import(
+    "./pages/Sales/ProductDistributionOnCategory/ProductDistributionOnCategory"
+  )
+);
+const TopFiftyCustomers = lazy(() =>
+  import("./pages/Sales/TopFiftyCustomers/TopFiftyCustomers")
+);
+const TopTenCategories = lazy(() =>
+  import("./pages/Sales/TopTenCategories/TopTenCategories")
+);
+const TopTwentyProducts = lazy(() =>
+  import("./pages/Sales/TopTwentyProducts/TopTwentyProducts")
+);
+const PaymentMethods = lazy(() =>
+  import("./pages/Sales/PaymentMethods/PaymentMethods")
+);
 const Logs = lazy(() => import("./pages/Logs/Logs"));
 
 export const queryClient = new QueryClient();
@@ -192,6 +215,69 @@ function App() {
                 </SuspenseWrapper>
               }
               path="/orders/Return Request"
+            ></Route>
+            {/** Order Reports*/}
+            <Route
+              element={
+                <SuspenseWrapper>
+                  <OrderReports />
+                </SuspenseWrapper>
+              }
+              path="/Sales/Order reports"
+            ></Route>
+            {/** Reward point*/}
+            <Route
+              element={
+                <SuspenseWrapper>
+                  <RewardPoint />
+                </SuspenseWrapper>
+              }
+              path="/Sales/Reward Point"
+            ></Route>
+            {/** Product distribution on category */}
+            <Route
+              element={
+                <SuspenseWrapper>
+                  <ProductDistributionOnCategory />
+                </SuspenseWrapper>
+              }
+              path="/Sales/Product Distribution On Category"
+            ></Route>
+            {/** Top fifty customers*/}
+            <Route
+              element={
+                <SuspenseWrapper>
+                  <TopFiftyCustomers />
+                </SuspenseWrapper>
+              }
+              path="/Sales/Top 50 Customers"
+            ></Route>
+            {/** Top 10 Categories*/}
+            <Route
+              element={
+                <SuspenseWrapper>
+                  <TopTenCategories />
+                </SuspenseWrapper>
+              }
+              path="/Sales/Top 10 Categories"
+            ></Route>
+            {/** Top 20 Products*/}
+            <Route
+              element={
+                <SuspenseWrapper>
+                  <TopTwentyProducts />
+                </SuspenseWrapper>
+              }
+              path="/Sales/Top 20 Products"
+            ></Route>
+            {/** Payment Methods*/}
+            <Route
+              element={
+                <SuspenseWrapper>
+                  <PaymentMethods />
+                </SuspenseWrapper>
+              }
+              path="/Sales/Payment Methods"
             ></Route>
             {/** product routing */}
             <Route
@@ -325,6 +411,15 @@ function App() {
                 </SuspenseWrapper>
               }
               path="/Marketing/Product Bundles"
+            ></Route>
+            {/** Single Product Bundles*/}
+            <Route
+              element={
+                <SuspenseWrapper>
+                  <SingleProductBundle />
+                </SuspenseWrapper>
+              }
+              path="/Marketing/Product Bundles/:id"
             ></Route>
             {/**Accounting*/}
             <Route

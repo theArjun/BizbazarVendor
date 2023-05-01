@@ -25,6 +25,7 @@
     "jodit": "^3.24.5",
     "jodit-react": "^1.3.36",
     "jspdf": "^2.5.1",
+    "openapi": "^1.0.1",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.0",
     "react-csv": "^2.2.2",

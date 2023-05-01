@@ -10,28 +10,28 @@ function ProductBundles() {
   const [openCreateModal, setOpenCreateModal] = useState(false);
   return (
     <div className={styles.containerWrapper}>
-      <div className={styles.breadcumb}>
+      <div className={styles.breadcrumb}>
         <Breadcrumb>
           <Breadcrumb.Item>Marketing</Breadcrumb.Item>
           <Breadcrumb.Item>
             <a href="">Product Bundles</a>
           </Breadcrumb.Item>
         </Breadcrumb>
+        <Button
+          className={styles.createProductBundle}
+          onClick={() => setOpenCreateModal(true)}
+        >
+          Create Product Bundle
+        </Button>
       </div>
       <div className={styles.container}>
         <ProductBundleSearch />
-        <ProductBundleTable />
+        <ProductBundleTable data={[{ name: "Test product bundle" }]} />
       </div>
       <ProductBundleCreateModal
         openCreateModal={openCreateModal}
         setOpenCreateModal={setOpenCreateModal}
       />
-      <Button
-        className={styles.createProductBundle}
-        onClick={() => setOpenCreateModal(true)}
-      >
-        Create Product Bundle
-      </Button>
     </div>
   );
 }

@@ -6,23 +6,24 @@
   margin-top: 10px;
 }
 
-.breadcumb {
-  margin: 10px 0;
-  transform: translateX(10px);
-  align-self: start;
+.breadcrumb {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .container {
   position: relative;
 }
-.buttonAddCatalog {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-.promotion_name{
+.promotion_name {
   font-weight: 500;
 }
-.action_buttons > *{
-margin:0 5px;
+.action_buttons > * {
+  margin: 0 5px;
+}
+@media screen and (max-width: 410px) {
+  .buttonAddCatalog {
+    margin-left: auto;
+    margin-right: 0;
+  }
 }

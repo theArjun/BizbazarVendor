@@ -166,6 +166,16 @@ const ProductBundleSearch = React.lazy(() =>
 const ProductBundleTable = React.lazy(() =>
   import("../pagecomponents/Marketing/ProductBundle/Table/Table")
 );
+const ProductBundleGeneralTab = React.lazy(() =>
+  import(
+    "../pagecomponents/Marketing/ProductBundle/ProductBundleCreateModal/Components/General/General"
+  )
+);
+const ProductBundleProductTab = React.lazy(() =>
+  import(
+    "../pagecomponents/Marketing/ProductBundle/ProductBundleCreateModal/Components/Products/Products"
+  )
+);
 
 export {
   ProductTable,
@@ -219,4 +229,6 @@ export {
   LogSearch,
   ProductBundleSearch,
   ProductBundleTable,
+  ProductBundleGeneralTab,
+  ProductBundleProductTab,
 };

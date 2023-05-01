@@ -8,10 +8,11 @@
   position: relative;
 }
 
-.breadcumb {
+.breadcrumb {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
   margin: 10px 0;
-  transform: translateX(10px);
-  align-self: start;
 }
 
 .search {
@@ -38,8 +39,9 @@
   color: rgba(0, 0, 255, 0.572);
 }
 
-.createProductBundle {
-  position: absolute;
-  right: 0;
-  top: -10px;
+@media screen and (max-width: 410px) {
+  .createProductBundle {
+    margin-left: auto;
+    margin-right: 0;
+  }
 }

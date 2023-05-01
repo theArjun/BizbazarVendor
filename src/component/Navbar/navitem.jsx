@@ -17,6 +17,33 @@ export const navItem = [
     ],
   },
   {
+    navName: "Sales",
+    dropdown: [
+      {
+        subNav: "Order Reports",
+      },
+      {
+        subNav: "Reward Point",
+      },
+      {
+        subNav: "Product Distribution On Category",
+      },
+      {
+        subNav: "Top 50 Customers",
+      },
+      {
+        subNav: "Top 10 Categories",
+      },
+      {
+        subNav: "Top 20 Products",
+      },
+      {
+        subNav: "Payment Methods",
+      },
+    ],
+  },
+
+  {
     navName: "Products",
 
     dropdown: [
