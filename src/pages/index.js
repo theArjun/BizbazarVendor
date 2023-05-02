@@ -176,7 +176,25 @@ const ProductBundleProductTab = React.lazy(() =>
     "../pagecomponents/Marketing/ProductBundle/ProductBundleCreateModal/Components/Products/Products"
   )
 );
-
+const ProductsSales = React.lazy(() =>
+  import("../pagecomponents/Sales/OrderReports/ProductsSales/ProductsSales")
+);
+const CategoriesSales = React.lazy(() =>
+  import("../pagecomponents/Sales/OrderReports/CategoriesSales/CategoriesSales")
+);
+const MostActiveCustomers = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/OrderReports/MostActiveCustomers/MostActiveCustomers"
+  )
+);
+const ShippingCostPerOrder = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/OrderReports/ShippingCostPerOrder/ShippingCostPerOrder"
+  )
+);
+const OrderStatuses = React.lazy(() =>
+  import("../pagecomponents/Sales/OrderReports/OrderStatuses/OrderStatuses")
+);
 export {
   ProductTable,
   ReviewSearch,
@@ -231,4 +249,9 @@ export {
   ProductBundleTable,
   ProductBundleGeneralTab,
   ProductBundleProductTab,
+  ProductsSales,
+  CategoriesSales,
+  MostActiveCustomers,
+  ShippingCostPerOrder,
+  OrderStatuses,
 };

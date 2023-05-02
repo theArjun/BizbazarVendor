@@ -34,7 +34,7 @@ const SingleProductBundle = () => {
           Save changes
         </Button>
       </div>
-      <Card className={styles.tab_container_card}>
+      <div className={styles.tab_container_card}>
         <div className={styles.product_bundle_top}>
           <div className={styles.tabWrapper}>
             {["General", "Products"].map((dat, i) => (
@@ -52,7 +52,7 @@ const SingleProductBundle = () => {
           </div>
         </div>
         <div className={styles.tabcontain}>{getDivision()}</div>
-      </Card>
+      </div>
     </div>
   );
 };
