@@ -19,23 +19,23 @@ const data = [
     value: 4,
   },
 ];
-// Getting percentage  for each order status
-const getPercentage = (value = 0) => {
-  let values = data.reduce((accumulator, currentValue) => {
-    accumulator.push(parseInt(currentValue.value));
-    return accumulator;
-  }, []);
-  return ((value / Math.max(...values)) * 100).toFixed(2);
-};
-// Getting total
-const getTotalValue = () => {
-  let total = data.reduce((accumulator, currentValue) => {
-    accumulator = accumulator + currentValue.value;
-    return accumulator;
-  }, 0);
-  return total;
-};
 const OrderStatuses = () => {
+  // Getting percentage  for each order status
+  const getPercentage = (value = 0) => {
+    let values = data.reduce((accumulator, currentValue) => {
+      accumulator.push(parseInt(currentValue.value));
+      return accumulator;
+    }, []);
+    return ((value / Math.max(...values)) * 100).toFixed(2);
+  };
+  // Getting total
+  const getTotalValue = () => {
+    let total = data.reduce((accumulator, currentValue) => {
+      accumulator = accumulator + currentValue.value;
+      return accumulator;
+    }, 0);
+    return total;
+  };
   return (
     <div className={styles.order_statuses}>
       <div className={styles.order_statuses_container}>

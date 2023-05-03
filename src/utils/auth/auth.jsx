@@ -4,7 +4,7 @@ export const handleLogout = async () => {
 };
 
 export const handlelogin = (result) => {
-  localStorage.setItem("token", result?.token);
+  document.cookie = `token=${result?.token}`;
   const userInfo = {
     user_id: result.user_info.user_id,
     name: result.user_info.firstname + " " + result.user_info.lastname,

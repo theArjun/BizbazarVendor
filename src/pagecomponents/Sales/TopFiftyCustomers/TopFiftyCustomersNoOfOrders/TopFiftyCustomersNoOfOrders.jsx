@@ -1,43 +1,37 @@
 import React from "react";
-import styles from "./ShippingCostPerOrder.module.css";
+import styles from "./TopFiftyCustomersNoOfOrders.module.css";
 import { Progress } from "antd";
-import { useNavigate } from "react-router-dom";
 const data = [
   {
-    label: "1344",
-    value: 20,
-  },
-  {
-    label: "9863",
-    value: 10,
-  },
-  {
-    label: "4245",
+    label: "Backordered",
     value: 30,
   },
   {
-    label: "8437",
+    label: "Awaiting call",
     value: 4,
   },
   {
-    label: "661344",
-    value: 330,
+    label: "Canceled",
+    value: 20,
   },
   {
-    label: "5696",
-    value: 1050,
+    label: "Complete",
+    value: 10,
   },
   {
-    label: "5665",
-    value: 630,
+    label: "Backordered",
+    value: 30,
   },
   {
-    label: "5656",
+    label: "Awaiting call",
     value: 4,
+  },
+  {
+    label: "Backordered",
+    value: 30,
   },
 ];
-const ShippingCostPerOrder = () => {
-  const navigate = useNavigate();
+const TopFiftyCustomersNoOfOrders = () => {
   // Getting percentage  for each order status
   const getPercentage = (value = 0) => {
     let values = data.reduce((accumulator, currentValue) => {
@@ -55,23 +49,18 @@ const ShippingCostPerOrder = () => {
     return total;
   };
   return (
-    <div className={styles.shipping_cost}>
-      <div className={styles.shipping_cost_container}>
-        <div className={styles.shipping_cost_header}>
-          <div>Orders</div>
+    <div className={styles.top_fifty_customers}>
+      <div className={styles.top_fifty_customers_container}>
+        <div className={styles.top_fifty_customers_header}>
+          <div>Users</div>
           <div>Total</div>
         </div>
         <div className={styles.data_container}>
           {data.map((item, i) => {
             return (
-              <div className={styles.single_shipping_cost} key={i}>
+              <div className={styles.single_top_fifty_customers} key={i}>
                 <div>
-                  <a
-                    href="#"
-                    onClick={() =>
-                      navigate(`../Orders/orders details/${item.label}`)
-                    }
-                  >{`${i + 1}. Order #${item.label}`}</a>
+                  <div>{`${i + 1}. ${item.label}`}</div>
                   <div>
                     <Progress
                       percent={getPercentage(item.value)}
@@ -83,15 +72,14 @@ const ShippingCostPerOrder = () => {
                     />
                   </div>
                 </div>
-                <div className={styles.progress_value}> रु {item.value}</div>
+                <div className={styles.progress_value}> {item.value}</div>
               </div>
             );
           })}
         </div>
-        <div className={styles.total_value}> Total: रु {getTotalValue()}</div>
+        <div className={styles.total_value}> Total: {getTotalValue()}</div>
       </div>
     </div>
   );
 };
-
-export default ShippingCostPerOrder;
+export default TopFiftyCustomersNoOfOrders;

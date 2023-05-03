@@ -195,6 +195,41 @@ const ShippingCostPerOrder = React.lazy(() =>
 const OrderStatuses = React.lazy(() =>
   import("../pagecomponents/Sales/OrderReports/OrderStatuses/OrderStatuses")
 );
+const TopFiftyCustomersNoOfOrders = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/TopFiftyCustomers/TopFiftyCustomersNoOfOrders/TopFiftyCustomersNoOfOrders"
+  )
+);
+const TopFiftyCustomersOrderSales = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/TopFiftyCustomers/TopFiftyCustomersOrderSales/TopFiftyCustomersOrderSales"
+  )
+);
+const TopTwentyVendors = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/TopTenCategories/TopTwentyVendors/TopTwentyVendors"
+  )
+);
+const TopTenCategoriesItemSold = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/TopTenCategories/TopTenCategoriesItemSold/TopTenCategoriesItemSold"
+  )
+);
+const TopTenCategoriesItemSoldTable = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/TopTenCategories/TopTenCategoriesItemSoldTable/TopTenCategoriesItemSoldTable"
+  )
+);
+const TopTenCategoriesCost = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/TopTenCategories/TopTenCategoriesCost/TopTenCategoriesCost"
+  )
+);
+const TopTenCategoriesCostTable = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/TopTenCategories/TopTenCategoriesCostTable/TopTenCategoriesCostTable"
+  )
+);
 export {
   ProductTable,
   ReviewSearch,
@@ -254,4 +289,11 @@ export {
   MostActiveCustomers,
   ShippingCostPerOrder,
   OrderStatuses,
+  TopFiftyCustomersNoOfOrders,
+  TopFiftyCustomersOrderSales,
+  TopTenCategoriesCostTable,
+  TopTenCategoriesCost,
+  TopTenCategoriesItemSold,
+  TopTenCategoriesItemSoldTable,
+  TopTwentyVendors,
 };
