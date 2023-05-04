@@ -2,7 +2,7 @@
   display: flex;
   justify-content: flex-start;
   margin-left: 10%;
-  height: 400px;
+  height: 500px;
   aspect-ratio: 1/1;
   flex-grow: 1;
 }

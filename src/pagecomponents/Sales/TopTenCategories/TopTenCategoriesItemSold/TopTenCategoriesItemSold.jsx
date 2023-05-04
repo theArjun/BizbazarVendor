@@ -32,13 +32,7 @@ const TopTenCategoriesItemSold = () => {
         Top 10 categories item sold visualization.
       </div>
       <div className={styles.pie_chart_container}>
-        <Chart
-          type="pie"
-          series={[44, 55, 13, 43, 22, 47]}
-          options={options}
-          height="100%"
-          width="95%"
-        />
+        <Chart type="pie" series={[44, 55, 13, 43, 22, 47]} options={options} />
       </div>
     </div>
   );
