@@ -230,6 +230,27 @@ const TopTenCategoriesCostTable = React.lazy(() =>
     "../pagecomponents/Sales/TopTenCategories/TopTenCategoriesCostTable/TopTenCategoriesCostTable"
   )
 );
+const TopTwentyProductsItemSoldTable = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/TopTwentyProducts/TopTwentyProductsItemSoldTable/TopTwentyProductsItemSoldTable"
+  )
+);
+
+const TopTwentyProductsItemSold = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/TopTwentyProducts/TopTwentyProductsItemSold/TopTwentyProductsItemSold"
+  )
+);
+const TopTwentyProductsCost = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/TopTwentyProducts/TopTwentyProductsCost/TopTwentyProductsCost"
+  )
+);
+const TopTwentyProductsCostTable = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/TopTwentyProducts/TopTwentyProductsCostTable/TopTwentyProductsCostTable"
+  )
+);
 export {
   ProductTable,
   ReviewSearch,
@@ -296,4 +317,8 @@ export {
   TopTenCategoriesItemSold,
   TopTenCategoriesItemSoldTable,
   TopTwentyVendors,
+  TopTwentyProductsCost,
+  TopTwentyProductsCostTable,
+  TopTwentyProductsItemSold,
+  TopTwentyProductsItemSoldTable,
 };

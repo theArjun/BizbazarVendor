@@ -39,7 +39,7 @@ const TopTenCategories = () => {
         <Breadcrumb>
           <Breadcrumb.Item>Sales</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="">Order Reports</a>
+            <a href="">Top 10 Categories</a>
           </Breadcrumb.Item>
           <Breadcrumb.Item>{active}</Breadcrumb.Item>
         </Breadcrumb>

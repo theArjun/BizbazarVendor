@@ -1,30 +1,6 @@
 import React from "react";
-import styles from "./TopTenCategoriesCostTable.module.css";
+import styles from "./TopTwentyProductsItemSoldTable.module.css";
 const data = [
-  {
-    label: "Backordered",
-    value: 30,
-  },
-  {
-    label: "Awaiting call",
-    value: 4,
-  },
-  {
-    label: "Canceled",
-    value: 20,
-  },
-  {
-    label: "Complete",
-    value: 10,
-  },
-  {
-    label: "Backordered",
-    value: 30,
-  },
-  {
-    label: "Awaiting call",
-    value: 4,
-  },
   {
     label: "Backordered",
     value: 30,
@@ -42,7 +18,7 @@ const data = [
     value: 30,
   },
 ];
-const TopTenCategoriesCostTable = () => {
+const TopTwentyProductsItemSoldTable = () => {
   // Getting percentage  for each order status
   const getPercentage = (value = 0) => {
     let values = data.reduce((accumulator, currentValue) => {
@@ -84,4 +60,4 @@ const TopTenCategoriesCostTable = () => {
   );
 };
 
-export default TopTenCategoriesCostTable;
+export default TopTwentyProductsItemSoldTable;

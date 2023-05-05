@@ -1,7 +1,7 @@
 import React, { lazy } from "react";
-import styles from "./TopTenCategoriesItemSold.module.css";
+import styles from "./TopTwentyProductsItemSold.module.css";
 const Chart = lazy(() => import("react-apexcharts"));
-const TopTenCategoriesItemSold = () => {
+const TopTwentyProductsItemSold = () => {
   let options = {
     legend: {
       position: "bottom",
@@ -44,4 +44,4 @@ const TopTenCategoriesItemSold = () => {
   );
 };
 
-export default TopTenCategoriesItemSold;
+export default TopTwentyProductsItemSold;

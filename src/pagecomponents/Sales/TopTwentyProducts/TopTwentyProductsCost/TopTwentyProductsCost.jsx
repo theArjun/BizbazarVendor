@@ -1,7 +1,7 @@
 import React, { lazy } from "react";
-import styles from "./TopTenCategoriesCost.module.css";
+import styles from "./TopTwentyProductsCost.module.css";
 const Chart = lazy(() => import("react-apexcharts"));
-const TopTenCategoriesCost = () => {
+const TopTwentyProductsCost = () => {
   const series = [
     {
       data: [21, 22, 10, 28, 16, 21, 13, 30],
@@ -67,4 +67,4 @@ const TopTenCategoriesCost = () => {
   );
 };
 
-export default TopTenCategoriesCost;
+export default TopTwentyProductsCost;

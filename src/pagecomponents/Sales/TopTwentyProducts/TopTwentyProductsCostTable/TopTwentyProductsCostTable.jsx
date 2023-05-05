@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./TopTenCategoriesCostTable.module.css";
+import styles from "./TopTwentyProductsCostTable.module.css";
 const data = [
   {
     label: "Backordered",
@@ -42,7 +42,7 @@ const data = [
     value: 30,
   },
 ];
-const TopTenCategoriesCostTable = () => {
+const TopTwentyProductsCostTable = () => {
   // Getting percentage  for each order status
   const getPercentage = (value = 0) => {
     let values = data.reduce((accumulator, currentValue) => {
@@ -84,4 +84,4 @@ const TopTenCategoriesCostTable = () => {
   );
 };
 
-export default TopTenCategoriesCostTable;
+export default TopTwentyProductsCostTable;
