@@ -5,12 +5,19 @@ import cx from "classnames";
 import {
   TopFiftyCustomersOrderSales,
   TopFiftyCustomersNoOfOrders,
+  SearchForSalesReport,
 } from "../..";
 const tabs = [
   "Top 50 Customers- Order Sales",
   "Top 50 Customers - No. of Orders",
 ];
+const INITIAL_PARAMS = {
+  period: "C",
+  time_from: "",
+  time_to: "",
+};
 const TopFiftyCustomers = () => {
+  const [params, setParams] = useState(INITIAL_PARAMS);
   const [active, setActive] = useState(tabs[0]);
   const getContainerFromTab = () => {
     switch (active) {
@@ -31,6 +38,7 @@ const TopFiftyCustomers = () => {
           <Breadcrumb.Item>{active}</Breadcrumb.Item>
         </Breadcrumb>
       </div>
+      <SearchForSalesReport params={params} setParams={setParams} />
       <div className={styles.tabContainer}>
         <div className={styles.left}>
           {tabs.map((dat, i) => (

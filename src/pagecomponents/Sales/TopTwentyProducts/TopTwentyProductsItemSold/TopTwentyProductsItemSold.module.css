@@ -2,11 +2,11 @@
   display: flex;
   justify-content: flex-start;
   margin-left: 10%;
-  height: 500px;
   aspect-ratio: 1/1;
   flex-grow: 1;
 }
 .categories_item_sold {
+  height: calc(100vh - 390px);
   display: flex;
   flex-direction: column;
 }

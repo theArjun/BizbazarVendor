@@ -36,5 +36,5 @@
   padding: 10px;
 }
 .tab_content_body > div {
-  min-height: calc(100vh - 260px);
+  min-height: calc(100vh - 435px);
 }

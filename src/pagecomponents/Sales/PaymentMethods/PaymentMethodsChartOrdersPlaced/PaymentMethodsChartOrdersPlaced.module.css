@@ -6,7 +6,7 @@
   flex-grow: 1;
 }
 .categories_item_sold {
-  height: calc(100vh - 390px);
+  height: calc(100vh - 380px);
   display: flex;
   flex-direction: column;
 }

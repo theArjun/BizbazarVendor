@@ -1,5 +1,5 @@
 .bar_chart_container {
-  height: 500px;
+  height: calc(100vh - 435px);
   aspect-ratio: 5/2;
   flex-grow: 1;
 }

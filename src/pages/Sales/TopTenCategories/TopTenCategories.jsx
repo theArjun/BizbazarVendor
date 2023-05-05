@@ -8,6 +8,7 @@ import {
   TopTenCategoriesItemSoldTable,
   TopTenCategoriesCostTable,
   TopTwentyVendors,
+  SearchForSalesReport,
 } from "../..";
 const tabs = [
   "Top 20 Vendors",
@@ -16,7 +17,13 @@ const tabs = [
   "Top 10 Categories - Items Sold (table)",
   "Top 10 Categories - Cost (table)",
 ];
+const INITIAL_PARAMS = {
+  period: "C",
+  time_from: "",
+  time_to: "",
+};
 const TopTenCategories = () => {
+  const [params, setParams] = useState(INITIAL_PARAMS);
   const [active, setActive] = useState(tabs[0]);
   //Getting tab content
   const getContainerFromTab = () => {
@@ -44,6 +51,7 @@ const TopTenCategories = () => {
           <Breadcrumb.Item>{active}</Breadcrumb.Item>
         </Breadcrumb>
       </div>
+      <SearchForSalesReport params={params} setParams={setParams} />
       <div className={styles.tabContainer}>
         <div className={styles.left}>
           {tabs.map((dat, i) => (

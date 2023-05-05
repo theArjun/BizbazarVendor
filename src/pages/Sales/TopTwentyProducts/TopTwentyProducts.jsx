@@ -3,18 +3,25 @@ import styles from "./TopTwentyProducts.module.css";
 import { Breadcrumb } from "antd";
 import cx from "classnames";
 import {
+  SearchForSalesReport,
   TopTwentyProductsCost,
   TopTwentyProductsCostTable,
   TopTwentyProductsItemSold,
   TopTwentyProductsItemSoldTable,
 } from "../..";
 const tabs = [
-  "Top 10 Products - Items Sold",
-  "Top 10 Products - Cost",
-  "Top 10 Products - Cost (table)",
-  "Top 10 Products - Items Sold (table)",
+  "Top 20 Products - Items Sold",
+  "Top 20 Products - Cost",
+  "Top 20 Products - Cost (table)",
+  "Top 20 Products - Items Sold (table)",
 ];
+const INITIAL_PARAMS = {
+  period: "C",
+  time_from: "",
+  time_to: "",
+};
 const TopTwentyProducts = () => {
+  const [params, setParams] = useState(INITIAL_PARAMS);
   const [active, setActive] = useState(tabs[0]);
   //Getting tab content
   const getContainerFromTab = () => {
@@ -40,6 +47,7 @@ const TopTwentyProducts = () => {
           <Breadcrumb.Item>{active}</Breadcrumb.Item>
         </Breadcrumb>
       </div>
+      <SearchForSalesReport params={params} setParams={setParams} />
       <div className={styles.tabContainer}>
         <div className={styles.left}>
           {tabs.map((dat, i) => (

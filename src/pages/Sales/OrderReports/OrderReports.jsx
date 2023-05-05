@@ -9,6 +9,7 @@ import {
   ShippingCostPerOrder,
   OrderStatuses,
 } from "../..";
+import { SearchForSalesReport } from "../..";
 const tabs = [
   "Products sales - Cost (table)",
   "Categories sales - Cost (table)",
@@ -16,8 +17,13 @@ const tabs = [
   "Shipping cost per order",
   "Order statuses",
 ];
-
+const INITIAL_PARAMS = {
+  period: "C",
+  time_from: "",
+  time_to: "",
+};
 const OrderReports = () => {
+  const [params, setParams] = useState(INITIAL_PARAMS);
   const [active, setActive] = useState(tabs[0]);
   const getContainerFromTab = () => {
     switch (active) {
@@ -44,6 +50,7 @@ const OrderReports = () => {
           <Breadcrumb.Item>{active}</Breadcrumb.Item>
         </Breadcrumb>
       </div>
+      <SearchForSalesReport params={params} setParams={setParams} />
       <div className={styles.tabContainer}>
         <div className={styles.left}>
           {tabs.map((dat, i) => (

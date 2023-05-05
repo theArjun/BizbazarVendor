@@ -251,6 +251,20 @@ const TopTwentyProductsCostTable = React.lazy(() =>
     "../pagecomponents/Sales/TopTwentyProducts/TopTwentyProductsCostTable/TopTwentyProductsCostTable"
   )
 );
+const PaymentMethodsChartCost = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/PaymentMethods/PaymentMethodsChartCost/PaymentMethodsChartCost"
+  )
+);
+const PaymentMethodsChartOrdersPlaced = React.lazy(() =>
+  import(
+    "../pagecomponents/Sales/PaymentMethods/PaymentMethodsChartOrdersPlaced/PaymentMethodsChartOrdersPlaced"
+  )
+);
+
+const SearchForSalesReport = React.lazy(() =>
+  import("../component/SearchForSalesReport/SearchForSalesReport")
+);
 export {
   ProductTable,
   ReviewSearch,
@@ -321,4 +335,7 @@ export {
   TopTwentyProductsCostTable,
   TopTwentyProductsItemSold,
   TopTwentyProductsItemSoldTable,
+  PaymentMethodsChartOrdersPlaced,
+  PaymentMethodsChartCost,
+  SearchForSalesReport,
 };
