@@ -9,13 +9,13 @@ const Axios = axios.create({
 Axios.interceptors.request.use((configuration) => {
   const { id } = JSON.parse(localStorage.getItem("userinfo")) || { id: "" };
   const BASE_URL = id ? `/api/vendors/${id}/` : `/api/`;
-  // const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
   configuration.baseURL = BASE_URL;
   configuration.auth = {
-    // username: token ? token : config.ADMIN_USERNAME,
-    // password: token ? "" : config.ADMIN_API_KEY,
-    username: config.ADMIN_USERNAME,
-    password: config.ADMIN_API_KEY,
+    username: token ? token : config.ADMIN_USERNAME,
+    password: token ? "" : config.ADMIN_API_KEY,
+    // username: config.ADMIN_USERNAME,
+    // password: config.ADMIN_API_KEY,
   };
   return configuration;
 });

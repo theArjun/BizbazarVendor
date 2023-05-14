@@ -1,4 +1,4 @@
-import { Button, Input } from "antd";
+import { Button, DatePicker, Input } from "antd";
 import React, { useEffect, useState } from "react";
 import styles from "./General.module.css";
 import ReactQuill from "react-quill";

@@ -9,7 +9,6 @@ export default defineConfig({
     proxy: {
       // "/api": "https://dev.bizbazar.com.np/",
       "/api": "https://orc.bizbazar.com.np/",
-      // "/images": "https://dev.bizbazar.com.np",
     },
   },
 
