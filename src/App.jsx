@@ -321,7 +321,7 @@ function App() {
                   <Edit />
                 </SuspenseWrapper>
               }
-              path="/products/:id"
+              path="/Products/:id"
             ></Route>
             {/** product Reviews */}
             <Route

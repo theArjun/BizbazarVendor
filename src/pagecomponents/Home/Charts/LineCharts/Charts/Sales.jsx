@@ -66,7 +66,7 @@ const Sales = ({ styles, data }) => {
   return (
     <React.Fragment>
       <Chart
-        type="line"
+        type="area"
         series={series}
         options={options}
         width="100%"

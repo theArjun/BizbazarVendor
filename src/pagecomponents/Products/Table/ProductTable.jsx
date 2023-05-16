@@ -72,7 +72,7 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
     setProductId(id);
     window.localstorage.setItem("productRowId", JSON.stringify(id));
     if (method === "detail") {
-      navigate("products");
+      navigate("Products");
     }
   };
 
@@ -131,7 +131,7 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
     {
       key: "1",
       label: (
-        <a onClick={() => navigate("../products/" + productId)}>
+        <a onClick={() => navigate("../Products/" + productId)}>
           Edit <AiFillEdit />
         </a>
       ),
@@ -166,7 +166,7 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
             alt={""}
           />
           <div className={styles.product_name}>
-            <a onClick={() => navigate(`../products/` + row?.product_id)}>
+            <a onClick={() => navigate(`../Products/` + row?.product_id)}>
               <strong>
                 {row["product"]?.length > 15
                   ? row["product"].substring(0, 15) + "..."

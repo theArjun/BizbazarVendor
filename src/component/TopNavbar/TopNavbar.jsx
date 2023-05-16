@@ -151,7 +151,11 @@ function TopNavbar() {
                         activeLink.sub === datum.subNav ? styles.bgColor : null
                       )}
                       onClick={() => {
-                        navigate(`${dat.navName}/${datum.subNav}`);
+                        navigate(
+                          datum.subNav === "Products"
+                            ? `${datum.subNav}`
+                            : `${dat.navName}/${datum.subNav}`
+                        );
                         setOpenSideBar((prev) => !prev);
                       }}
                     >
