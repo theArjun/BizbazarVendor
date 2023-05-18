@@ -14,6 +14,9 @@ export const navItem = [
       {
         subNav: "Return Request",
       },
+      {
+        subNav: "Shipments",
+      },
     ],
   },
   {

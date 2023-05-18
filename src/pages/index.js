@@ -265,6 +265,13 @@ const PaymentMethodsChartOrdersPlaced = React.lazy(() =>
 const SearchForSalesReport = React.lazy(() =>
   import("../component/SearchForSalesReport/SearchForSalesReport")
 );
+
+const SearchForShipment = React.lazy(() =>
+  import("../pagecomponents/Orders/Shipments/Search/Search")
+);
+const TableForShipment = React.lazy(() =>
+  import("../pagecomponents/Orders/Shipments/Table/Table")
+);
 export {
   ProductTable,
   ReviewSearch,
@@ -338,4 +345,6 @@ export {
   PaymentMethodsChartOrdersPlaced,
   PaymentMethodsChartCost,
   SearchForSalesReport,
+  SearchForShipment,
+  TableForShipment,
 };
