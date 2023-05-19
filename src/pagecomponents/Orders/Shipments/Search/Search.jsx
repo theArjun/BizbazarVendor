@@ -9,11 +9,9 @@ const Search = ({ params, setParams }) => {
     () => {
       let temp = { ...params };
       temp.cname = values.cname || "";
-      temp.email = values.email || "";
-      temp.phone = values.phone || "";
       temp.order_id = values.order_id || "";
-      temp.total_from = values.total_from || "";
-      temp.total_to = values.total_to || "";
+      temp.full_order_shipment = values.full_order_shipment || "";
+      temp.status = values.status || "";
       setParams(temp);
     },
     1200,
@@ -23,11 +21,9 @@ const Search = ({ params, setParams }) => {
   const onValueChange = (a, value) => {
     let temp = { ...values };
     temp.cname = value.customer;
-    temp.email = value.email;
-    temp.phone = value.phone;
-    temp.order_id = value.orderid;
-    temp.total_from = value.min_price;
-    temp.total_to = value.max_price;
+    temp.order_id = value.order_id;
+    temp.full_order_shipment = value.full_order_shipment;
+    temp.status = value.status;
     setValues(temp);
   };
 
@@ -59,8 +55,8 @@ const Search = ({ params, setParams }) => {
                 showSearch
                 allowClear
                 options={[
-                  { label: "OK", value: "O" },
-                  { label: "Pending", value: "P" },
+                  { label: "OK", value: "OK" },
+                  { label: "Pending", value: "Pending" },
                 ]}
               />
             </Form.Item>

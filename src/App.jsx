@@ -46,6 +46,9 @@ const ShippingMethod = lazy(() =>
 );
 const ViewOrders = lazy(() => import("./pages/Orders/ViewOrders/ViewOrders"));
 const Shipments = lazy(() => import("./pages/Orders/Shipments/Shipments"));
+const ViewShipment = lazy(() =>
+  import("./pages/Orders/Shipments/ViewShipment/ViewShipment")
+);
 const CallRequests = lazy(() =>
   import("./pages/Orders/CallRequests/CallRequests")
 );
@@ -207,6 +210,15 @@ function App() {
                 </SuspenseWrapper>
               }
               path="/Orders/Shipments"
+            ></Route>
+            {/**Shipments */}
+            <Route
+              element={
+                <SuspenseWrapper>
+                  <ViewShipment />
+                </SuspenseWrapper>
+              }
+              path="/Orders/Shipments/:id"
             ></Route>
             {/** Cancel orders*/}
             <Route
