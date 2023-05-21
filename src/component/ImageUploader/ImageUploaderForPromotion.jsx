@@ -12,7 +12,7 @@ const getBase64 = (file) =>
 const ImageUploaderForPromotion = ({
   message,
   setImage,
-  imageList,
+  imageList = [],
   deleteImage,
   setDeleteImage,
   logoData,
@@ -22,9 +22,12 @@ const ImageUploaderForPromotion = ({
   const [upload, setUpload] = useState(true);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
-  const [fileList, setFileList] = useState(
-    imageList.length ? [...imageList] : []
-  );
+  const [fileList, setFileList] = useState([]);
+
+  useEffect(() => {
+    console.log(fileList, imageList, "image--");
+    setFileList(imageList);
+  }, [imageList]);
   let insertImage = (e) => {
     let image_type = e.target.files[0].name.split(".").pop();
     if (image_type === "jpeg" || image_type === "png" || image_type === "jpg") {
@@ -109,7 +112,6 @@ const ImageUploaderForPromotion = ({
             >
               {fileList.length >= 8 ? null : uploadButton}
             </Upload>
-
             <Modal
               open={previewOpen}
               title={previewTitle}

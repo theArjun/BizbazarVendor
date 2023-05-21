@@ -5,6 +5,7 @@ export const useGetThemes = () =>
   useQuery({
     queryKey: ["themes"],
     queryFn: () => Axios.get("Themes"),
+    refetchOnWindowFocus: false,
   });
 
 export const useUpdateTheme = () =>
