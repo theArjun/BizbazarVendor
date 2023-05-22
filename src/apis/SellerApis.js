@@ -5,6 +5,7 @@ export const useGetSellerInformation = () =>
   useQuery({
     queryKey: ["seller_information"],
     queryFn: () => Axios.get(`Companies`),
+    refetchOnWindowFocus: false,
   });
 export const useUpdateSeller = () =>
   useMutation({

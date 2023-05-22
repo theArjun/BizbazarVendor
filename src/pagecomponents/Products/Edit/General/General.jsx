@@ -12,6 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateProduct } from "../../../../apis/ProductApi";
 import Spinner from "../../../../component/Spinner/Spinner";
 import { useGetTaxes } from "../../../../apis/TaxApi";
+import { useGeneralContext } from "../../../../ContextProvider/ContextProvider";
 const General = ({ editData, categories, form }) => {
   // for toggling  fields button
   const [info, setInfo] = useState(true);
@@ -34,6 +35,7 @@ const General = ({ editData, categories, form }) => {
     product_main_image_data: {},
     product_additional_image_data: {},
   });
+  const imageContext = useGeneralContext();
   const { isLoading, mutate } = useUpdateProduct();
   const { data: taxData } = useGetTaxes();
   const queryClient = useQueryClient();
@@ -167,6 +169,7 @@ const General = ({ editData, categories, form }) => {
     // lets update the product
     mutate(final_data, {
       onSuccess: (response) => {
+        imageContext.setImageCount({ type: "IMAGE_COUNT", value: 0 });
         queryClient.invalidateQueries(["single_product", String(product_id)]);
       },
     });

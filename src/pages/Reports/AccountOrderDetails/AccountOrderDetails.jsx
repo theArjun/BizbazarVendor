@@ -3,6 +3,7 @@ import { Breadcrumb, Button, Result } from "antd";
 import styles from "./AccountOrderDetails.module.css";
 import { useEffect } from "react";
 import useDebounce from "../../../utils/Hooks/useDebounce";
+import { useNavigate } from "react-router-dom";
 import AccountOrderDetailsSearch from "./../../../pagecomponents/Reports/AccountOrderDetails/Search/Search";
 import AccountOrderDetailsTable from "../../../pagecomponents/Reports/AccountOrderDetails/Table/Table";
 import { useGetAccountingOrderDetails } from "../../../apis/ReportsApi";
@@ -22,6 +23,7 @@ const AccountOrderDetails = () => {
   const [sValue, setSearchValue] = useState(INITIAL_PARAMS);
   const [radio, setRadio] = useState("O");
   const [bottom, setBottom] = useState(false);
+  const navigate = useNavigate();
   const {
     data: reportData,
     isLoading: reportLoading,

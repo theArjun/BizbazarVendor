@@ -90,6 +90,7 @@ export const useGetProductById = (id) =>
   useQuery({
     queryKey: ["single_product", id],
     queryFn: () => Axios.get(`products/${id}`),
+    refetchOnWindowFocus: false,
   });
 export const useUpdateProduct = () =>
   useMutation({
@@ -109,6 +110,7 @@ export const useGetSeoPath = (id) =>
   useQuery({
     queryKey: ["seo_path"],
     queryFn: () => Axios.get(`products/${id}/ProductSeo`),
+    refetchOnWindowFocus: false,
   });
 // update function for updating seo path
 export const useUpdateSeoPath = () =>
@@ -149,6 +151,7 @@ export const useGetProductReviews = (id) =>
   useQuery({
     queryKey: ["product_reviews", id],
     queryFn: () => Axios.get(`ProductReview?product_id=${id}`),
+    refetchOnWindowFocus: false,
   });
 // get product Features
 
@@ -156,6 +159,7 @@ export const useGetProductFeatures = (id) =>
   useQuery({
     queryKey: ["product_features", id],
     queryFn: () => Axios.get(`products/${id}/ProductFeature`),
+    refetchOnWindowFocus: false,
   });
 // Function  for bulk addition
 export const useCreateBulkProducts = () =>
@@ -220,6 +224,7 @@ export const useGetFeatureVariants = (id) =>
   useQuery({
     queryKey: ["feature_variants"],
     queryFn: () => Axios.get(`products/${id}/ProductVariation`),
+    refetchOnWindowFocus: false,
   });
 // Getting Product variation group
 export const useGetProductVariationGroup = (id) =>

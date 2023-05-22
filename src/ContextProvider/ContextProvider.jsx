@@ -4,6 +4,7 @@ import { createContext, useState } from "react";
 
 const initialValues = {
   plan: "",
+  imageChangeCount: 0,
 };
 
 const generalReducer = (state = initialValues, actions) => {
@@ -12,6 +13,11 @@ const generalReducer = (state = initialValues, actions) => {
       return {
         ...state,
         plan: actions.value,
+      };
+    case "IMAGE_COUNT":
+      return {
+        ...state,
+        imageChangeCount: actions.value,
       };
     default:
       return state;
@@ -27,9 +33,13 @@ export const GeneralContextProvider = ({ children }) => {
   const setPlan = ({ type, value }) => {
     dispatch({ type, value });
   };
+  const setImageCount = ({ type, value }) => {
+    dispatch({ type, value });
+  };
   const stateAndMethods = {
     generalState,
     setPlan,
+    setImageCount,
   };
   return (
     <GeneralContext.Provider value={stateAndMethods}>

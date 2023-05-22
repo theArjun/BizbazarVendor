@@ -93,6 +93,7 @@ export const useGetPromotionById = (id) =>
     queryKey: ["single_promotion", id],
     queryFn: () =>
       Axios.get(`Promotions?promotion_id=${id}&extend[]=get_images&expand=1`),
+    refetchOnWindowFocus: false,
   });
 
 export const useGetPromotionProducts = () =>

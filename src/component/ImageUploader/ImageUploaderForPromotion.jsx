@@ -25,7 +25,6 @@ const ImageUploaderForPromotion = ({
   const [fileList, setFileList] = useState([]);
 
   useEffect(() => {
-    console.log(fileList, imageList, "image--");
     setFileList(imageList);
   }, [imageList]);
   let insertImage = (e) => {

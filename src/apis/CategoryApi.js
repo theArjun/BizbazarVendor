@@ -4,4 +4,5 @@ export const useGetCategories = () =>
   useQuery({
     queryKey: ["categories"],
     queryFn: () => Axios.get(`categories`),
+    refetchOnWindowFocus: false,
   });

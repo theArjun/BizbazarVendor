@@ -78,12 +78,14 @@ export const useGetCarriers = () =>
   useQuery({
     queryKey: ["carriers"],
     queryFn: () => Axios.get(`ShippingMethod?carriers=1`),
+    refetchOnWindowFocus: false,
   });
 // Getting  vendor carriers
 export const useGetVendorCarriers = () =>
   useQuery({
     queryKey: ["vendor_carriers"],
     queryFn: () => Axios.get(`VendorCarrier`),
+    refetchOnWindowFocus: false,
   });
 export const useUpdateShippingMethod = () => {
   return useMutation({
@@ -103,25 +105,30 @@ export const useGetCountries = () =>
   useQuery({
     queryKey: ["countries"],
     queryFn: () => Axios.get(`ShippingMethod?countries=1`),
+    refetchOnWindowFocus: false,
   });
 export const useGetStates = () =>
   useQuery({
     queryKey: ["states"],
     queryFn: () => Axios.get(`ShippingMethod?states=1`),
+    refetchOnWindowFocus: false,
   });
 
 export const useGetRecipient = () =>
   useQuery({
     queryKey: ["shipping_recipient"],
     queryFn: () => Axios.get(`ShippingMethod?recipient=1`),
+    refetchOnWindowFocus: false,
   });
 export const useGetSender = () =>
   useQuery({
     queryKey: ["shipping_sender"],
     queryFn: () => Axios.get(`ShippingMethod?sender=1`),
+    refetchOnWindowFocus: false,
   });
 export const useGetStoreFrontData = (id) =>
   useQuery({
     queryKey: ["storefronts"],
     queryFn: () => Axios.get(`ShippingMethod/${id}?storefronts=1`),
+    refetchOnWindowFocus: false,
   });

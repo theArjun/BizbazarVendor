@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { Upload, Modal } from "antd";
 import { useUploadImage } from "../../apis/ImageUploaderApi";
+import { useGeneralContext } from "../../ContextProvider/ContextProvider";
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -25,9 +26,19 @@ const ImageUploaderForEdit = ({
   const [upload, setUpload] = useState(true);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
-  const [fileList, setFileList] = useState(imageList ? [...imageList] : []);
+  const [fileList, setFileList] = useState([...imageList]);
   const { mutate, isLoading } = useUploadImage();
-
+  const imageContext = useGeneralContext();
+  useEffect(() => {
+    let abortController = new AbortController();
+    // Code is here
+    if (imageContext.generalState.imageChangeCount === 0) {
+      setFileList(imageList);
+    }
+    return () => {
+      abortController.abort();
+    };
+  }, [imageContext.generalState, imageList]);
   useEffect(() => {
     if (isLoading) {
       setLoading(true);
@@ -121,6 +132,7 @@ const ImageUploaderForEdit = ({
   };
   const handleChange = ({ fileList: newFileList }) => {
     if (upload) {
+      imageContext.setImageCount({ type: "IMAGE_COUNT", value: 1 });
       setFileList(newFileList);
     }
   };
