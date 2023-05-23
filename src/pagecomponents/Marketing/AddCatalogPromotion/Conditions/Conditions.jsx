@@ -6,12 +6,12 @@ import { useState } from "react";
 import data from "./data.json";
 import {
   useGetPromotionProducts,
-  useGetPromotionCategories,
   useGetPromotionUsers,
 } from "../../../../apis/PromotionApi";
 import AddModal from "../../../../component/AddModal/AddModal";
 import { useGetFeatures } from "../../../../apis/FeatureApis";
 import Axios from "../../../../config/apiConfig";
+import { useGetCategories } from "../../../../apis/CategoryApi";
 const condition_features = {
   PRODUCT_PRICE: "price",
   PRODUCTS: "products",
@@ -46,7 +46,7 @@ function Conditions({
     data: categoryData,
     isError: categoryError,
     isLoading: categoryLoading,
-  } = useGetPromotionCategories();
+  } = useGetCategories();
   const {
     data: usersData,
     isError: userError,

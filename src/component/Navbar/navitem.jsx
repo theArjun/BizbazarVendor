@@ -56,6 +56,9 @@ export const navItem = [
       {
         subNav: "Reviews",
       },
+      {
+        subNav: "Categories",
+      },
     ],
   },
   {

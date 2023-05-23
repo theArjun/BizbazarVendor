@@ -70,7 +70,7 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
   };
   const setSelectedRow = async (id, method) => {
     setProductId(id);
-    window.localstorage.setItem("productRowId", JSON.stringify(id));
+    localStorage.setItem("productRowId", JSON.stringify(id));
     if (method === "detail") {
       navigate("Products");
     }
@@ -130,28 +130,21 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
   const items = [
     {
       key: "1",
-      label: (
-        <a onClick={() => navigate("../Products/" + productId)}>
-          Edit <AiFillEdit />
-        </a>
-      ),
+      label: "Edit product",
     },
     {
       key: "2",
-      label: (
-        <a
-          rel="noopener noreferrer"
-          href="#"
-          className={styles.action_items}
-          onClick={() => showConfirm("Are you sure to delete?", "", productId)}
-        >
-          Delete
-          <AiFillDelete />
-        </a>
-      ),
+      label: "Delete product",
     },
   ];
-
+  // On action items clicked
+  const onActionItemsClick = (id, events) => {
+    if (events.key === "2") {
+      showConfirm("Are you sure to delete?", "", id);
+    } else {
+      navigate(`/Products/${id}`);
+    }
+  };
   const columns = [
     {
       title: "Name/Code",
@@ -197,21 +190,14 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
       key: "action",
       dataIndex: ["product_id"],
       render: (id) => (
-        <div
-          className={styles.product_action}
-          onClick={() => setSelectedRow(id)}
+        <Dropdown
+          menu={{ items, onClick: (e) => onActionItemsClick(id, e) }}
+          arrow
         >
-          <Dropdown
-            menu={{
-              items,
-            }}
-            placement="bottom"
-            arrow
-            trigger={["click"]}
-          >
-            <AiFillSetting size={20} className={styles.icons} />
-          </Dropdown>
-        </div>
+          <Button>
+            <AiFillSetting size={20} color="primary" />
+          </Button>
+        </Dropdown>
       ),
     },
     {
