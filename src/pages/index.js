@@ -272,21 +272,38 @@ const SearchForShipment = React.lazy(() =>
 const TableForShipment = React.lazy(() =>
   import("../pagecomponents/Orders/Shipments/Table/Table")
 );
+const CategoryData = React.lazy(() =>
+  import("../pagecomponents/Categories/CategoryData/CategoryData")
+);
+const CategoryTotalData = React.lazy(() =>
+  import("../pagecomponents/Categories/TotalData/TotalData")
+);
+const CategoryNest = React.lazy(() =>
+  import("../pagecomponents/Categories/ViewCategory/CategoryNest/CategoryNest")
+);
+const SingleCategory = React.lazy(() =>
+  import(
+    "../pagecomponents/Categories/ViewCategory/SingleCategory/SingleCategory"
+  )
+);
 export {
-  ProductTable,
-  ReviewSearch,
-  ReviewTable,
+  //Orders
   ViewOrdersTable,
   ViewOrdersSearch,
-  ProductSearch,
   CallRequestsSearch,
   CallRequestsTable,
   ReturnRequestsTable,
   ReturnRequestsSearch,
+  SearchForShipment,
+  TableForShipment,
+  //Accounting
   TransactionTable,
   TransactionSearch,
   WithdrawalTable,
   WithdrawalSearch,
+  //Products
+  ProductTable,
+  ProductSearch,
   EditGeneral,
   EditShipping,
   EditFeatures,
@@ -294,18 +311,27 @@ export {
   EditSeo,
   EditQuantityDiscount,
   EditVariations,
+  ReviewSearch,
+  ReviewTable,
+  ParticularReview,
+  CategoryData,
+  CategoryTotalData,
+  CategoryNest,
+  SingleCategory,
+  //MessageCenter
   CustomerCommunicationSearch,
   CustomerCommunicationTable,
   AdminCommunicationSearch,
   AdminCommunicationTable,
   AdditionField,
   AdditionTable,
-  ParticularReview,
+  //Promotions
   CatalogPromotionBonuses,
   CatalogPromotionConditions,
   CatalogPromotionGeneral,
   AdminPromotion,
   VendorPromotion,
+  //SellerInformation
   SellerGeneral,
   SellerDescription,
   SellerTermsAndConditions,
@@ -314,18 +340,22 @@ export {
   Logos,
   MonthlyOrderReportTable,
   MonthlyOrderReportSearch,
+  //Shipping method
   ShippingMethodGeneral,
   ShippingAdditionalSetting,
   ShippingTimeRates,
   TestRateCalculation,
   StoreFronts,
   ShippingSuppliers,
+  //Logs
   LogList,
   LogSearch,
+  //ProductBundle
   ProductBundleSearch,
   ProductBundleTable,
   ProductBundleGeneralTab,
   ProductBundleProductTab,
+  //Sales
   ProductsSales,
   CategoriesSales,
   MostActiveCustomers,
@@ -345,6 +375,4 @@ export {
   PaymentMethodsChartOrdersPlaced,
   PaymentMethodsChartCost,
   SearchForSalesReport,
-  SearchForShipment,
-  TableForShipment,
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./Product.module.css";
 import "./index.css";
 import { AiFillSetting } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Col, Row, Breadcrumb, Dropdown, Result, Button } from "antd";
 import { HiPlus } from "react-icons/hi";
 import { ProductSearch, ProductTable } from "..";
@@ -161,9 +161,8 @@ const Products = () => {
         <Row>
           <Col span={8}>
             <Breadcrumb>
-              <Breadcrumb.Item>Home</Breadcrumb.Item>
               <Breadcrumb.Item>
-                <a href="">Products</a>
+                <Link to="/">Home</Link>
               </Breadcrumb.Item>
               <Breadcrumb.Item>Products</Breadcrumb.Item>
             </Breadcrumb>
@@ -199,7 +198,7 @@ const Products = () => {
         setSortBy={setSortBy}
         sortColum={sortColum}
         setSortingColum={setSortingColum}
-        loading={productLoading || nextLoading || categoryLoading}
+        loading={productLoading || nextLoading}
       />
     </div>
   );

@@ -1,0 +1,24 @@
+.category_content {
+  /* background-color: rgb(225, 228, 231); */
+  box-shadow: var(--box-shadow);
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  column-gap: 5px;
+  margin-top: 10px;
+}
+.category_content_left {
+  background-color: white;
+  height: calc(100vh - 215px);
+  overflow-y: scroll;
+  padding: 15px;
+}
+.category_content_right {
+  background-color: white;
+  padding: 15px;
+}
+@media screen and (max-width: 900px) {
+  .category_content {
+    grid-template-columns: 1fr;
+    row-gap: 5px;
+  }
+}

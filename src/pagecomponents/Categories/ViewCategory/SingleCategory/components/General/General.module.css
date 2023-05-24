@@ -1,0 +1,17 @@
+.category_general > h4 {
+  margin: 10px 0;
+  font-weight: 500;
+}
+.category_general > div {
+  padding-left: 20px;
+}
+.category_general_container {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  margin: 20px 0;
+}
+@media screen and (max-width: 995px) {
+  .category_general_container {
+    grid-template-columns: 1fr;
+  }
+}

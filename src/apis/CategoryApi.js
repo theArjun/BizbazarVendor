@@ -6,3 +6,9 @@ export const useGetCategories = () =>
     queryFn: () => Axios.get(`categories?items_per_page=1000000`),
     refetchOnWindowFocus: false,
   });
+export const useGetCategoryByID = (id) =>
+  useQuery({
+    queryKey: ["categories", id],
+    queryFn: () => Axios.get(`categories/${id}`),
+    refetchOnWindowFocus: false,
+  });

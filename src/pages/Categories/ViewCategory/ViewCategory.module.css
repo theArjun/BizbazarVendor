@@ -1,0 +1,14 @@
+.single_category_main_container {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  column-gap: 5px;
+  margin-top: 10px;
+}
+@media screen and (max-width: 810px) {
+  .single_category_main_container {
+    grid-template-columns: 1fr;
+  }
+  .category_nest {
+    display: none;
+  }
+}

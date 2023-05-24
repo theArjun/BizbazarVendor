@@ -1,0 +1,9 @@
+.total_data_container_item {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px;
+}
+.total_data > h4 {
+  margin: 0;
+  margin-bottom: 10px;
+}
