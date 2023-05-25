@@ -1,0 +1,9 @@
+.addons_content_body {
+  margin: 15px 20px;
+  display: grid;
+  grid-template-columns: 170px 1fr;
+}
+.addons_content > h4 {
+  margin: 10px 0;
+  font-weight: 500;
+}

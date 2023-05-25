@@ -3,32 +3,20 @@ import styles from "./Categories.module.css";
 import { Breadcrumb } from "antd";
 import { Link } from "react-router-dom";
 import { CategoryData, CategoryTotalData } from "..";
-import { useGetCategories } from "../../apis/CategoryApi";
+import { useGetNestedCategories } from "../../apis/CategoryApi";
 import { useMemo } from "react";
+import Spinner from "../../component/Spinner/Spinner";
 const Categories = () => {
-  const { data, isLoading, error, isError } = useGetCategories();
-  function createNestedObject(arr) {
-    if (arr.length === 0) {
-      return {};
-    }
-
-    const nestedObj = {};
-    const key = arr[0];
-    arr.shift(); // Remove the first element from the array
-
-    nestedObj[key] = createNestedObject(arr);
-    return nestedObj;
-  }
-
+  const { data, isLoading, error, isError } = useGetNestedCategories();
   const categoryData = useMemo(() => {
-    let result = {};
-    let temp = data?.data?.categories || [];
-    temp.forEach((item, i) => {
-      let id_path = String(item.id_path).split("/");
-      id_path.pop(-1);
-    });
-    console.log(result);
+    return data?.data?.categories?.storefront_0?.subcategories || [];
   }, [data]);
+  const totalData = useMemo(() => {
+    return data?.data?.categories_stats || {};
+  }, [data]);
+  if (isLoading) {
+    return <Spinner />;
+  }
   return (
     <div className={styles.categories}>
       <div className={styles.breadcrumb}>
@@ -41,10 +29,10 @@ const Categories = () => {
       </div>
       <div className={styles.category_content}>
         <div className={styles.category_content_left}>
-          <CategoryData />
+          <CategoryData data={categoryData} />
         </div>
         <div className={styles.category_content_right}>
-          <CategoryTotalData />
+          <CategoryTotalData data={totalData} />
         </div>
       </div>
     </div>

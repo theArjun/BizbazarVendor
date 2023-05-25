@@ -371,7 +371,9 @@ function App() {
             <Route
               element={
                 <SuspenseWrapper>
-                  <Categories />
+                  <GeneralContextProvider>
+                    <Categories />
+                  </GeneralContextProvider>
                 </SuspenseWrapper>
               }
               path="/Categories"
@@ -380,7 +382,9 @@ function App() {
             <Route
               element={
                 <SuspenseWrapper>
-                  <ViewCategory />
+                  <GeneralContextProvider>
+                    <ViewCategory />
+                  </GeneralContextProvider>
                 </SuspenseWrapper>
               }
               path="/Categories/:id"

@@ -5,6 +5,7 @@ import { createContext, useState } from "react";
 const initialValues = {
   plan: "",
   imageChangeCount: 0,
+  nestedCategories: [],
 };
 
 const generalReducer = (state = initialValues, actions) => {
@@ -18,6 +19,11 @@ const generalReducer = (state = initialValues, actions) => {
       return {
         ...state,
         imageChangeCount: actions.value,
+      };
+    case "NESTED_CATEGORIES":
+      return {
+        ...state,
+        nestedCategories: actions.value,
       };
     default:
       return state;
@@ -36,10 +42,14 @@ export const GeneralContextProvider = ({ children }) => {
   const setImageCount = ({ type, value }) => {
     dispatch({ type, value });
   };
+  const setNestedCategories = ({ type, value }) => {
+    dispatch({ type, value });
+  };
   const stateAndMethods = {
     generalState,
     setPlan,
     setImageCount,
+    setNestedCategories,
   };
   return (
     <GeneralContext.Provider value={stateAndMethods}>

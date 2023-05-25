@@ -2,25 +2,46 @@ import React from "react";
 import styles from "./General.module.css";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
-import { Checkbox, Image, Tag } from "antd";
+import { Checkbox, Image, Input, Tag } from "antd";
 const General = ({ data }) => {
   const options = [
     {
-      label: "Apple",
-      value: "Apple",
+      label: "All",
+      value: "all",
+      disabled: true,
     },
     {
-      label: "Pear",
-      value: "Pear",
+      label: "Guest",
+      value: "guest",
+      disabled: true,
     },
     {
-      label: "Orange",
+      label: "Registered user",
       value: "Orange",
+      disabled: true,
+    },
+    {
+      label: "Apply to all subcategories",
+      value: "apply_to_all",
+      disabled: true,
     },
   ];
   const onChange = (checkedValues) => {
     console.log("checked = ", checkedValues);
   };
+  const getStatusTag = (status) => {
+    switch (status) {
+      case "A":
+        return <Tag color="green">Active</Tag>;
+      case "H":
+        return <Tag color="purple">Hidden</Tag>;
+      case "D":
+        return <Tag color="red">Disabled</Tag>;
+      default:
+        return <Tag color="cyan">Unknown</Tag>;
+    }
+  };
+  // Getting time and date function
   const getTimeAndDate = (timeStamp) => {
     const date = new Date(parseInt(timeStamp) * 1000);
     const monthyear = date.toLocaleString("en-US", {
@@ -49,7 +70,12 @@ const General = ({ data }) => {
         </div>{" "}
         <div className={styles.category_general_container}>
           <div className={styles.label}>Storefront:</div>
-          <div className={styles.value}>{data?.storefront_id}</div>
+          <div className={styles.value}>
+            <Input
+              disabled
+              value={data?.storefront_id === "0" ? "All storefronts" : ""}
+            />
+          </div>
         </div>{" "}
         <div className={styles.category_general_container}>
           <div className={styles.label}>Description:</div>
@@ -57,15 +83,13 @@ const General = ({ data }) => {
             <ReactQuill
               theme="snow"
               value={data?.description}
-              // onChange={setDescription}
+              readOnly={true}
             />
           </div>
         </div>
         <div className={styles.category_general_container}>
           <div className={styles.label}>Status:</div>
-          <div className={styles.value}>
-            <Tag color="maroon">{data?.status}</Tag>
-          </div>
+          <div className={styles.value}>{getStatusTag(data?.status)}</div>
         </div>
         <div className={styles.category_general_container}>
           <div className={styles.label}>Images:</div>

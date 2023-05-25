@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import cx from "classnames";
 import styles from "./SingleCategory.module.css";
 import General from "./components/General/General";
+import Addons from "./components/Addons/Addons";
 const tabs = ["General", "Add-ons", "Appearance", "Transaction Fee"];
 const SingleCategory = ({ data }) => {
   const [active, setActive] = useState("General");
   const getContainerFromTab = () => {
     switch (active) {
       case tabs[1]:
-        return <div>Add ons</div>;
+        return <Addons data={data} />;
       case tabs[2]:
         return <div>Appearance</div>;
       case tabs[3]:

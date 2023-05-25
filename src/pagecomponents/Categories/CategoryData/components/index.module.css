@@ -1,5 +1,24 @@
-.panel_header {
+.panel_header_title {
   color: blue;
   width: fit-content;
   cursor: pointer;
+}
+.panel_header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.panel_header_content {
+  display: flex;
+  /* flex-wrap: wrap; */
+}
+.panel_header_content > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 5px;
+}
+@media screen and (max-width: 1000px) {
+  .panel_header {
+    flex-direction: column;
+  }
 }

@@ -3,16 +3,23 @@ import styles from "./ViewCategory.module.css";
 import { Link, useParams } from "react-router-dom";
 import { Breadcrumb } from "antd";
 import { CategoryNest, SingleCategory } from "../..";
-import { useGetCategoryByID } from "../../../apis/CategoryApi";
+import {
+  useGetCategoryByID,
+  useGetNestedCategories,
+} from "../../../apis/CategoryApi";
 import Spinner from "../../../component/Spinner/Spinner";
 const ViewCategory = () => {
   const { id: category_id } = useParams("id");
   const { data, isLoading, isError, error } = useGetCategoryByID(category_id);
-
+  const { data: categoriesData, isLoading: dataLoading } =
+    useGetNestedCategories();
+  const categories = useMemo(() => {
+    return categoriesData?.data?.categories?.storefront_0?.subcategories || [];
+  }, [categoriesData]);
   const categoryData = useMemo(() => {
     return data?.data || {};
   }, [data]);
-  if (isLoading) {
+  if (isLoading || dataLoading) {
     return <Spinner />;
   }
   return (
@@ -29,7 +36,7 @@ const ViewCategory = () => {
         </Breadcrumb>
       </div>
       <div className={styles.single_category_main_container}>
-        <CategoryNest panelKey={category_id} />
+        <CategoryNest data={categories} panelKey={category_id} />
         <SingleCategory data={categoryData} />
       </div>
     </div>
