@@ -18,7 +18,7 @@ import { useGetProfileInformation } from "../../apis/ProfileApi";
 import { useMemo } from "react";
 
 function TopNavbar() {
-  let { user_id } = JSON.parse(localStorage.getItem("userinfo"));
+  let { user_id } = JSON.parse(sessionStorage.getItem("userinfo"));
   const windowsize = useWindowSize();
   const navigate = useNavigate();
   const locate = useLocation();

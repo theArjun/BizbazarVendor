@@ -1,11 +1,11 @@
 export const handleLogout = async () => {
-  localStorage.clear();
+  sessionStorage.clear();
   location.reload();
 };
 
 export const handlelogin = (result) => {
-  document.cookie = `token=${result?.token}`;
-  localStorage.setItem("token", result?.token);
+  localStorage.setItem("isFirstLogin", "1");
+  sessionStorage.setItem("token", result?.token);
   const userInfo = {
     user_id: result.user_info.user_id,
     name: result.user_info.firstname + " " + result.user_info.lastname,
@@ -13,5 +13,5 @@ export const handlelogin = (result) => {
     email: result.user_info.email,
     phone: result.user_info.phone,
   };
-  localStorage.setItem("userinfo", JSON.stringify(userInfo));
+  sessionStorage.setItem("userinfo", JSON.stringify(userInfo));
 };

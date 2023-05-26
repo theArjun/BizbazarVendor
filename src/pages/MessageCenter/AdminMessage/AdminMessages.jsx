@@ -11,7 +11,7 @@ import {
   useSendAdminMessage,
 } from "../../../apis/MessageCenterApi";
 const { Text } = Typography;
-const { user_id } = JSON.parse(localStorage.getItem("userinfo"));
+const { user_id } = JSON.parse(sessionStorage.getItem("userinfo"));
 const AdminMessages = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState([]);

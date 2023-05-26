@@ -22,7 +22,7 @@ function Login() {
     };
     mutate(data, {
       onSuccess: (result) => {
-        let isFirstLogin = document.cookie;
+        let isFirstLogin = localStorage.getItem("isFirstLogin");
         if (isFirstLogin) {
           handlelogin(result.data);
           notification.success({ message: "Login successful!" });

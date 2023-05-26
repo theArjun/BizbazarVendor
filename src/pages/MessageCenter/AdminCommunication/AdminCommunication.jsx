@@ -13,7 +13,7 @@ import {
 } from "../../../apis/MessageCenterApi";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 const { TextArea } = Input;
-const { id } = JSON.parse(localStorage.getItem("userinfo"));
+const { id } = JSON.parse(sessionStorage.getItem("userinfo"));
 const INITIAL_MESSAGE = {
   thread: {
     object_type: "",

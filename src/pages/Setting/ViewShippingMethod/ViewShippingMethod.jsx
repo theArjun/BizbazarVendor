@@ -31,7 +31,7 @@ const tabs = [
   "Storefronts",
   "Suppliers",
 ];
-const { id: company_id } = JSON.parse(localStorage.getItem("userinfo"));
+const { id: company_id } = JSON.parse(sessionStorage.getItem("userinfo"));
 function EditShipping() {
   const [singleShipment, setSingleShipment] = useState({});
   const [destinations, setDestinations] = useState([]);

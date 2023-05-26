@@ -7,7 +7,7 @@ import Navbar from "./../component/Navbar/Navbar";
 const PrivateRoutes = () => {
   const windowSize = useWindowSize();
 
-  return localStorage.getItem("userinfo") ? (
+  return sessionStorage.getItem("userinfo") ? (
     <div
       className={styles.container}
       style={{ height: windowSize.height + "px" }}

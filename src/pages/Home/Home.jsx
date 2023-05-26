@@ -25,7 +25,7 @@ import DateRangePickerComp from "../../pagecomponents/Home/RangePicker/Rangepick
 import ProductCountReport from "./../../pagecomponents/Reports/ProductCountReport/ProductCountReport";
 import { useGetDashboardData } from "../../apis/DashboardApi";
 import { useCreateAdminMessage } from "../../apis/MessageCenterApi";
-const { id } = JSON.parse(localStorage.getItem("userinfo"));
+const { id } = JSON.parse(sessionStorage.getItem("userinfo"));
 const { TextArea } = Input;
 
 const INITIAL_MESSAGE = {

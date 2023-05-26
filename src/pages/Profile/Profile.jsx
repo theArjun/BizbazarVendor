@@ -23,7 +23,7 @@ import {
 } from "../../apis/ProfileApi";
 import { useMemo } from "react";
 const Profile = () => {
-  const userInfo = JSON.parse(localStorage.getItem("userinfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userinfo"));
   const [pradesh, setPradesh] = useState("");
   const [cities, setCities] = useState([]);
   const [isShipping, setIsShipping] = useState(false);

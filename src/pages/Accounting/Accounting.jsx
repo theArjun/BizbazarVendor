@@ -19,7 +19,7 @@ const Accounting = () => {
     useCreateNewWithdrawal();
   const { data: statusData } = useGetStatuses();
   // getting userInformation
-  let user = JSON.parse(localStorage.getItem("userinfo"));
+  let user = JSON.parse(sessionStorage.getItem("userinfo"));
 
   // getting status of transaction detail
   const getStatus = useMemo(() => {

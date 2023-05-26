@@ -12,7 +12,7 @@ function ResetPassword() {
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
-    localStorage.setItem("login", true);
+    sessionStorage.setItem("login", true);
     navigate("/");
   };
   const onFinishFailed = (errorInfo) => {

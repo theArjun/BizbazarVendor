@@ -5,7 +5,7 @@ import { AdminPromotion, VendorPromotion } from "..";
 import Spinner from "../../component/Spinner/Spinner";
 import { useGetPromotionById } from "../../apis/PromotionApi";
 const ExplorePromotion = () => {
-  const user = JSON.parse(localStorage.getItem("userinfo"));
+  const user = JSON.parse(sessionStorage.getItem("userinfo"));
   const param = useParams("id");
   const [promotion, setPromotion] = useState("");
   const [pageStatus, setPageStatus] = useState("");

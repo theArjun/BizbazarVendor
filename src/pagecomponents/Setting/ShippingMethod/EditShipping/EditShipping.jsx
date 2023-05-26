@@ -259,7 +259,7 @@ function EditShipping({ id, openEdit, setOpenEdit }) {
           <div className={styles.section}>
             <label>Owner :</label>{" "}
             <div style={{ display: "flex" }}>
-              {JSON.parse(localStorage.getItem("userinfo"))?.name}
+              {JSON.parse(sessionStorage.getItem("userinfo"))?.name}
               <div />
             </div>
           </div>

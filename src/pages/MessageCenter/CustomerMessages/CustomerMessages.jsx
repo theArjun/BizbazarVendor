@@ -41,7 +41,7 @@ const data = [
     desc: "Importer Details:Rashi Peripherals Pvt. Ltd. Rashi Complex,A Building, Survey186, Dongaripada, Poman Village, Vasai Bhiwandi Road, Dist. Thane,Maharastra 401208, India",
   },
 ];
-const { user_id } = JSON.parse(localStorage.getItem("userinfo"));
+const { user_id } = JSON.parse(sessionStorage.getItem("userinfo"));
 const CustomerMessages = () => {
   const [message, setMessage] = useState([]);
   const { id } = useParams();

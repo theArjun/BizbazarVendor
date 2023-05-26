@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import Axios from "../config/apiConfig";
-const { id } = JSON.parse(localStorage.getItem("userinfo"));
+const { id } = JSON.parse(sessionStorage.getItem("userinfo"));
 const ITEM_PER_PAGE = 50;
 
 // getting monthly order report

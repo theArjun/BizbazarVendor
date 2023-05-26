@@ -72,7 +72,7 @@ function CreateShipping({ open, setOpen }) {
         delivery_time: infoData.time,
         description: infoData.description,
         usergroup_ids: infoData.usergroup,
-        company_id: JSON.parse(localStorage.getItem("userinfo"))?.id,
+        company_id: JSON.parse(sessionStorage.getItem("userinfo"))?.id,
         min_weight: infoData.min,
         max_weight: infoData.max,
         available_delivery_date: "N",
@@ -265,7 +265,7 @@ function CreateShipping({ open, setOpen }) {
         <div className={styles.section}>
           <label>Owner :</label>{" "}
           <div style={{ display: "flex" }}>
-            {JSON.parse(localStorage.getItem("userinfo"))?.name}
+            {JSON.parse(sessionStorage.getItem("userinfo"))?.name}
 
             <div />
           </div>

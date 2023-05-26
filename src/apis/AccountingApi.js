@@ -3,7 +3,7 @@ import Axios from "../config/apiConfig";
 import { notification } from "antd";
 const ITEM_PER_PAGE = 50;
 // getting userInformation
-let { id } = JSON.parse(localStorage.getItem("userinfo"));
+let { id } = JSON.parse(sessionStorage.getItem("userinfo"));
 // Getting Accounting transaction  data
 export const useGetTransactions = (params) =>
   useInfiniteQuery({
