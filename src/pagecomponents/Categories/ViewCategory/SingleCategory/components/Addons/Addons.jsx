@@ -22,7 +22,7 @@ const Addons = ({ data }) => {
         </div>
         <div className={styles.addons_content_body}>
           <div>Age limit:</div>
-          <div>{`${data?.age_limit} years`}</div>
+          <div>{`${data?.age_limit || "0"} years`}</div>
         </div>
         <div className={styles.addons_content_body}>
           <div>Warning message:</div>

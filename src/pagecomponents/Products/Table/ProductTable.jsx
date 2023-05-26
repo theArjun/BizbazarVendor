@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Space, Table, Dropdown, Image, Button, Modal, Tag } from "antd";
 import styles from "./Table.module.css";
-import { AiFillEdit, AiFillDelete, AiFillSetting } from "react-icons/ai";
+import { AiFillSetting } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import useWindowSize from "../../../utils/Hooks/useWindowSize";
 import {
@@ -65,17 +65,10 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
     deleteBulkMutate(final_delete_ids, {
       onSuccess: (res) => {
         queryClient.invalidateQueries(["products"]);
+        queryClient.invalidateQueries(["category_products"]);
       },
     });
   };
-  const setSelectedRow = async (id, method) => {
-    setProductId(id);
-    localStorage.setItem("productRowId", JSON.stringify(id));
-    if (method === "detail") {
-      navigate("Products");
-    }
-  };
-
   //UpdateProduct status
   const updateProductStatus = (id, status) => {
     // change status
@@ -84,6 +77,7 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
       {
         onSuccess: (res) => {
           queryClient.invalidateQueries(["products"]);
+          queryClient.invalidateQueries(["category_products"]);
         },
       }
     );

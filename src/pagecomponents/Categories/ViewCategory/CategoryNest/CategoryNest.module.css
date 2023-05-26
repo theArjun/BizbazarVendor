@@ -3,7 +3,7 @@
   padding: 15px;
   box-shadow: var(--box-shadow);
   border-radius: var(--border-radius);
-  height: calc(100vh - 210px);
+  height: calc(100vh - 220px);
   overflow-y: scroll;
 }
 @media screen and (max-width: 810px) {

@@ -73,6 +73,9 @@ const Categories = lazy(() => import("./pages/Categories/Categories"));
 const ViewCategory = lazy(() =>
   import("./pages/Categories/ViewCategory/ViewCategory")
 );
+const ViewCategoryProducts = lazy(() =>
+  import("./pages/Categories/ViewProducts/ViewProducts")
+);
 
 const CustomerCommunication = lazy(() =>
   import("./pages/MessageCenter/CustomerCommunication/CustomerCommunication")
@@ -388,6 +391,17 @@ function App() {
                 </SuspenseWrapper>
               }
               path="/Categories/:id"
+            ></Route>{" "}
+            {/** View Category */}
+            <Route
+              element={
+                <SuspenseWrapper>
+                  <GeneralContextProvider>
+                    <ViewCategoryProducts />
+                  </GeneralContextProvider>
+                </SuspenseWrapper>
+              }
+              path="/Categories/:id/Products"
             ></Route>
             {/**Message Center */}
             {/**Customer Commnunications */}

@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { config } from "./src/config/config";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -8,7 +9,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       // "/api": "https://dev.bizbazar.com.np/",
-      "/api": "https://orc.bizbazar.com.np/",
+      "/api": config.BASE_URL,
     },
   },
 

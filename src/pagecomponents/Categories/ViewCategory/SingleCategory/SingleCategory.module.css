@@ -1,7 +1,7 @@
 .single_category {
   background-color: white;
   box-shadow: var(--box-shadow);
-  height: calc(100vh - 210px);
+  height: calc(100vh - 220px);
   padding: 15px;
   border-radius: var(--border-radius);
   overflow-y: scroll;

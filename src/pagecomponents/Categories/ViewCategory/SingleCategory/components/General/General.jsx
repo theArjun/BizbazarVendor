@@ -26,9 +26,7 @@ const General = ({ data }) => {
       disabled: true,
     },
   ];
-  const onChange = (checkedValues) => {
-    console.log("checked = ", checkedValues);
-  };
+  // Function for getting  tags of status
   const getStatusTag = (status) => {
     switch (status) {
       case "A":
@@ -125,11 +123,7 @@ const General = ({ data }) => {
         <div className={styles.category_general_container}>
           <div className={styles.label}>User groups:</div>
           <div className={styles.value}>
-            <Checkbox.Group
-              options={options}
-              defaultValue={["Pear"]}
-              onChange={onChange}
-            />
+            <Checkbox.Group options={options} />
           </div>
         </div>
         <div className={styles.category_general_container}>

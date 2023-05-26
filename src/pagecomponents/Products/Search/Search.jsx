@@ -3,7 +3,7 @@ import styles from "./Search.module.css";
 import { Card, Form, Input, Select } from "antd";
 import "./index.css";
 import useDebounce from "../../../utils/Hooks/useDebounce";
-const Search = ({ params, setParams, hasStatus, categories }) => {
+const Search = ({ params, setParams, hasStatus, categories, category }) => {
   const [form] = Form.useForm();
   const [values, setValues] = useState({
     name: "",
@@ -93,25 +93,27 @@ const Search = ({ params, setParams, hasStatus, categories }) => {
                 </Form.Item>
               </div>
             </div>
-            <Form.Item
-              id="req"
-              label="Search in categories"
-              name="category"
-              style={{ width: "200px" }}
-            >
-              <Select
-                allowClear
-                showSearch
-                placeholder="Select a category"
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={cats}
-              />
-            </Form.Item>
+            {!category && (
+              <Form.Item
+                id="req"
+                label="Search in categories"
+                name="category"
+                style={{ width: "200px" }}
+              >
+                <Select
+                  allowClear
+                  showSearch
+                  placeholder="Select a category"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    (option?.label ?? "")
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  options={cats}
+                />
+              </Form.Item>
+            )}
             {hasStatus ? (
               ""
             ) : (

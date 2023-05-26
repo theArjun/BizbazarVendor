@@ -3,17 +3,19 @@ import cx from "classnames";
 import styles from "./SingleCategory.module.css";
 import General from "./components/General/General";
 import Addons from "./components/Addons/Addons";
-const tabs = ["General", "Add-ons", "Appearance", "Transaction Fee"];
-const SingleCategory = ({ data }) => {
+import Appearance from "./components/Appearance/Appearance";
+import Transaction from "./components/TransactionFee/Transaction";
+const tabs = ["General", "Add-ons", "Appearance", "Transaction fee"];
+const SingleCategory = ({ data, category_fee = {} }) => {
   const [active, setActive] = useState("General");
   const getContainerFromTab = () => {
     switch (active) {
       case tabs[1]:
         return <Addons data={data} />;
       case tabs[2]:
-        return <div>Appearance</div>;
+        return <Appearance data={data} />;
       case tabs[3]:
-        return <div>Transaction Fee</div>;
+        return <Transaction data={category_fee} />;
 
       default:
         return <General data={data} />;
