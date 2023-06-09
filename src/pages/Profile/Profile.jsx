@@ -4,7 +4,7 @@ import { countries } from "./countries";
 import "./index.css";
 import states from "./state.json";
 import Spinner from "../../component/Spinner/Spinner";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Form,
@@ -15,6 +15,7 @@ import {
   Checkbox,
   Card,
   Result,
+  InputNumber,
 } from "antd";
 import { useState, useEffect } from "react";
 import {
@@ -99,17 +100,27 @@ const Profile = () => {
       } else {
         mutate(data, {
           onSuccess: (res) => {
+             let temp_data= {...userInfo}
+             temp_data.name= values.firstname +' '+values.lastname;
+             temp_data.phone=values.phone
+             sessionStorage.setItem('userinfo', JSON.stringify(temp_data))
             queryClient.invalidateQueries(["profile"]);
           },
         });
       }
     }
   };
-  const onSearch = (value) => {
-    console.log("search:", value);
-  };
+ 
   const onSelect = (value) => {
     setPradesh(value);
+  };
+  // Phone number validator 
+  const validatePhoneNumber = (_, value) => {
+    const phoneNumberRegex = /^\d{10}$/; // Validates a 10-digit phone number
+    if (value && !phoneNumberRegex.test(value)) {
+      return Promise.reject('Please enter a valid phone number!');
+    }
+    return Promise.resolve();
   };
   if (profileLoading) {
     return <Spinner />;
@@ -133,9 +144,9 @@ const Profile = () => {
       <div className={styles.breadcrumb_create_btn}>
         <div className="breadcrumb">
           <Breadcrumb>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item><Link to={'/'}> Home</Link></Breadcrumb.Item>
             <Breadcrumb.Item>
-              <a href="">Account setting</a>
+             Account setting 
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -164,16 +175,18 @@ const Profile = () => {
             s_zipcode: vendorData?.s_zipcode,
           }}
         >
+          <div className={styles.action_btn}>
           <Form.Item style={{ float: "right" }} name="submit_btn">
-            <Button type="primary" htmlType="submit" loading={updateLoading}>
+            <Button  type="primary" htmlType="submit" loading={updateLoading}>
               Save Changes
             </Button>
           </Form.Item>
+          </div>
           <div className={styles.information}>
             <div className="information_title">
-              <h2 className={styles.title_header}>Account information</h2>
+              <h4 className={styles.title_header}>Account information</h4>
             </div>
-            <Card className={styles.information_container}>
+            <div className={styles.information_container}>
               <div className={styles.name_container}>
                 <Form.Item
                   label=" First Name"
@@ -213,11 +226,15 @@ const Profile = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Please enter your phone!",
+                    message: "Enter a phone number",
+                   
                   },
+                  {
+                    validator: validatePhoneNumber
+                  }
                 ]}
               >
-                <Input type="number" />
+                <InputNumber min={1} style={{width:'100%'}} addonBefore={'+977'} />
               </Form.Item>
               <div className={styles.name_container}>
                 <Form.Item
@@ -260,19 +277,18 @@ const Profile = () => {
               >
                 <Input type="email" />
               </Form.Item>
-            </Card>
+            </div>
           </div>
           <div className={styles.options}>
             <div className="information_title">
-              <h2 className={styles.title_header}>Billing address</h2>
+              <h4 className={styles.title_header}>Billing address</h4>
             </div>
-            <Card className={styles.options_container}>
+            <div className={styles.options_container}>
               <Form.Item label="Address" name="b_address">
                 <Input type="address" />
               </Form.Item>
               <Form.Item label="Country" name="b_country">
                 <Select
-                  onSearch={onSearch}
                   showSearch
                   options={countries.map((option) => ({
                     label: option.name,
@@ -304,18 +320,18 @@ const Profile = () => {
               <Form.Item label="Zip/postal code" name="b_zipcode">
                 <Input type="text" vlaue="" pattern="\d*" />
               </Form.Item>
-            </Card>
+            </div>
           </div>
           <div className={styles.pricing}>
             <div className="pricing_title" onClick={() => setPricing(!pricing)}>
-              <h2 className={styles.title_header}>Shipping address</h2>{" "}
+              <h4 className={styles.title_header}>Shipping address</h4>{" "}
             </div>
             <Form.Item>
               <Checkbox onChange={() => setIsShipping((prev) => !prev)}>
                 Are shipping and billing addresses the same?
               </Checkbox>
             </Form.Item>
-            <Card className={!isShipping ? "" : styles.area_disabled}>
+            <div className={!isShipping ? "" : styles.area_disabled}>
               <Form.Item
                 label="Address"
                 name={isShipping ? "b_address" : "s_address"}
@@ -327,7 +343,6 @@ const Profile = () => {
                 name={isShipping ? "b_country" : "s_country"}
               >
                 <Select
-                  onSearch={onSearch}
                   showSearch
                   options={countries.map((option) => ({
                     label: option.name,
@@ -364,7 +379,7 @@ const Profile = () => {
               >
                 <Input type="text" vlaue="" pattern="\d*" />
               </Form.Item>
-            </Card>
+            </div>
           </div>
         </Form>
       </div>

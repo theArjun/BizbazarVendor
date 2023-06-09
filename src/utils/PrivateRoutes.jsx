@@ -17,7 +17,8 @@ const PrivateRoutes = () => {
 
       <div
         className={styles.midContainer}
-        style={{ height: `${windowSize.height - 78 - 65}px` }}
+        // style={{ height: `${windowSize.height - 78 - 65}px` }}
+        style={{ height: `${windowSize.height - 50}px` }}
       >
         <div className={styles.outletContain}>
           <Outlet />

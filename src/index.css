@@ -20,9 +20,10 @@
   --theme-page-background: #f6f6f6;
   --theme-page-background-sub: #ffffff;
   --box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  --border-radus: 4px;
+  --border-radius: 4px;
   --top-padding: 70px;
   --primary-color: #9b78ec;
+  --primary-color-light: #c4b1f385;
 }
 
 .dark {

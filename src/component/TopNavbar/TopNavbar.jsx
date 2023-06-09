@@ -18,7 +18,7 @@ import { useGetProfileInformation } from "../../apis/ProfileApi";
 import { useMemo } from "react";
 
 function TopNavbar() {
-  let { user_id } = JSON.parse(sessionStorage.getItem("userinfo"));
+  let { user_id,name, phone } = JSON.parse(sessionStorage.getItem("userinfo"));
   const windowsize = useWindowSize();
   const navigate = useNavigate();
   const locate = useLocation();
@@ -74,15 +74,15 @@ function TopNavbar() {
           <div>
             <div className={styles.profileName}>
               <span>
-                {getProfileData?.firstname ? getProfileData?.firstname : ""}
+                {getProfileData?.firstname ? getProfileData?.firstname : String(name).split(' ')[0]}
               </span>
               &nbsp;
               <span>
-                {getProfileData?.lastname ? getProfileData?.lastname : ""}
+                {getProfileData?.lastname ? getProfileData?.lastname : String(name).split(' ')[1]}
               </span>
             </div>
             <div className={styles.profilerole}>
-              {getProfileData?.phone ? getProfileData?.phone : ""}
+              {getProfileData?.phone ? getProfileData?.phone : phone}
             </div>
           </div>
 

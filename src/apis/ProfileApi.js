@@ -6,7 +6,7 @@ export const useGetProfileInformation = (id) =>
   useQuery({
     queryKey: ["profile"],
     queryFn: () => Axios.get(`VendorProfile/${id}?details=1`),
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
   });
 // Now update profile information
 export const useUpdateProfile = () =>

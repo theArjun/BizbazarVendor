@@ -1,0 +1,5 @@
+.option_input_items{
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    margin: 20px 0;
+  }

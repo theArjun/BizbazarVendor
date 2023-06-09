@@ -1,0 +1,37 @@
+
+.option_variants{
+    /* position: relative;
+    width: fit-content; */
+}
+.variant_adder_field{
+    position: initial;
+    top: 0;
+}
+.section {
+    display: flex;
+    align-items: end;
+    margin: 10px 0;
+    padding: 10px;
+}
+  .section > * {
+      margin: 0 3px;
+  }
+  .variant_data_holder{
+    margin-top: 10px;
+  }
+  .section_action_btn{
+      display: flex;
+    }
+    .section_action_btn > div{
+        margin: 0 10px;
+    }
+    .section_content{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .section_content_holder{
+      background-color: rgb(237, 228, 243);
+      margin-bottom: 1px;
+
+  }

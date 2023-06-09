@@ -25,6 +25,8 @@ import {
   ParticularReview,
 } from "../..";
 import { useMemo } from "react";
+import { AiFillEye } from "react-icons/ai";
+import { config } from "../../../config/config";
 const tabs = [
   "General",
   "Shipping properties",
@@ -194,6 +196,7 @@ const Edit = () => {
             <Breadcrumb.Item>Edit</Breadcrumb.Item>
           </Breadcrumb>
         </div>
+          <div className={styles.preview_btn}><Button onClick={()=>window.open(`${config.BASE_URL}${getProductDetail?.seo_name}/?action=preview`)} ><AiFillEye size={20}/></Button></div>
       </div>
       <div className={styles.tabContainer}>
         <div className={styles.left}>

@@ -42,7 +42,6 @@ const EditConditionsModal = ({
     }
   };
   const handleDelete = (deleteKey) => {
-    console.log(deleteKey);
     const temp = [...haveRate];
     delete temp[modalData?.index]?.rate_value[modalData?.rate_value][deleteKey];
     setHaveRate(temp);
