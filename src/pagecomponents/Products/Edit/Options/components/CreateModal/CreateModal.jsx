@@ -1,46 +1,12 @@
 import React, { useState } from "react";
 import styles from "./CreateModal.module.css";
-import { Modal } from "antd";
+import { Modal, message } from "antd";
 import cx from "classnames";
 import General from "./components/General/General";
 import Variants from "./components/Variants/Variants";
-let data = [
-  {
-    name: "Apple",
-    more: false,
-    position: 0,
-    modifier: "1200",
-    type: "%",
-    status: "A",
-  },
-  {
-    name: "Mango",
-    more: false,
-    position: 0,
-    modifier: "1200",
-    type: "रु",
-    status: "D",
-  },
-  {
-    name: "Grapes",
-    more: false,
-    position: 0,
-    modifier: "1200",
-    type: "रु ",
-    status: "A",
-  },
-  {
-    name: "Watermelon",
-    more: false,
-    position: 0,
-    modifier: "1200",
-    type: "%",
-    status: "D",
-  },
-];
 function CreateModal({ openCreateModal, setOpenCreateModal }) {
   const [activeTab, setActiveTab] = useState("General");
-  const [variants, setVariants] = useState(data);
+  const [variants, setVariants] = useState([]);
   const getDivision = () => {
     switch (activeTab) {
       case "Variants":
@@ -49,13 +15,36 @@ function CreateModal({ openCreateModal, setOpenCreateModal }) {
         return <General />;
     }
   };
+  // Checking duplicate array of objects
+  const checkDuplicateVariants = (array = []) => {
+    // Using Array.prototype.some()
+    const hasDuplicate = array.some((obj, index) => {
+      return array.some((innerObj, innerIndex) => {
+        return innerIndex !== index && innerObj.name.trim() === obj.name.trim();
+      });
+    });
+    return hasDuplicate;
+  };
+  //  handle create variants
+  const handleCreateVariants = () => {
+    let emptyNameCount = variants.filter((item) => !item?.name);
+    if (emptyNameCount.length) {
+      message.error("Variants name must not be empty!");
+    } else {
+      if (checkDuplicateVariants(variants)) {
+        message.error("Duplicate variants detected!");
+      } else {
+        setOpenCreateModal(false);
+      }
+    }
+  };
   return (
     <Modal
       title="Create Option"
       centered
       open={openCreateModal}
       okText="Create"
-      onOk={() => setOpenCreateModal(false)}
+      onOk={() => handleCreateVariants()}
       onCancel={() => setOpenCreateModal(false)}
       width={1000}
     >

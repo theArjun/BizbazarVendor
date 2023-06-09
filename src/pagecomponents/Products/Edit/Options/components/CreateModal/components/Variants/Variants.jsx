@@ -7,36 +7,49 @@ import {
   AiOutlineCaretRight,
   AiTwotoneDelete,
 } from "react-icons/ai";
+import ImageUploaderForPromotion from "../../../../../../../../component/ImageUploader/ImageUploaderForPromotion";
 const Variants = ({ variants, setVariants }) => {
   const amount_types = [
     { label: "रु", value: "रु" },
     { label: "%", value: "%" },
   ];
   const [type, setType] = useState("रु");
+
   const onFinish = (values) => {
-    const isNew = variants.filter((el) => el.name === values.name);
+    const isNew = variants.filter(
+      (el) => el.name.trim() === values.name.trim()
+    );
     if (isNew.length) {
       message.warning(`${values.name} variant already exists!`);
     } else {
-      let temp = [...variants, { ...values, type: type }];
+      let temp = [
+        ...variants,
+        {
+          position: values?.position || "",
+          modifier: values?.modifier || "",
+          status: values?.status || "",
+          name: values?.name.trim(),
+          type: type,
+        },
+      ];
       setVariants(temp);
     }
   };
-  // handle delete 
-  const handleDelete=(index)=>{
-    let temp= [...variants]
-    temp.filter((item, i)=>{
-      return index!==i
-    })
-    setVariants(temp)
-  }
+  // handle delete
+  const handleDelete = (name) => {
+    let temp = [...variants];
+    let filteredData = temp.filter((item, i) => {
+      return item.name !== name;
+    });
+    setVariants(filteredData);
+  };
   return (
     <div className={styles.option_variants}>
       <div className={styles.variant_adder_field}>
         <Form layout="vertical" onFinish={onFinish}>
           <div className={styles.section}>
             <Form.Item name="position" label="Position">
-              <InputNumber style={{ width: "70px" }} min={0} />
+              <InputNumber type="number" style={{ width: "70px" }} min={0} />
             </Form.Item>
             <Form.Item
               name="name"
@@ -90,9 +103,15 @@ const Variants = ({ variants, setVariants }) => {
                   <div className={styles.section}>
                     <div className={styles.section_item}>
                       <InputNumber
+                        type="number"
                         value={item?.position}
                         style={{ width: "70px" }}
                         min={0}
+                        onChange={(e) => {
+                          let temp = [...variants];
+                          temp[i].position = e;
+                          setVariants(temp);
+                        }}
                       />
                     </div>
                     <div className={styles.section_item}>
@@ -100,6 +119,11 @@ const Variants = ({ variants, setVariants }) => {
                         value={item?.name}
                         type="text"
                         style={{ minWidth: "150px" }}
+                        onChange={(e) => {
+                          let temp = [...variants];
+                          temp[i].name = e.target.value;
+                          setVariants(temp);
+                        }}
                       />
                     </div>
                     <div className={styles.section_item}>
@@ -108,11 +132,20 @@ const Variants = ({ variants, setVariants }) => {
                         type="number"
                         min={0}
                         style={{ minWidth: "150px" }}
+                        onChange={(e) => {
+                          let temp = [...variants];
+                          temp[i].modifier = e;
+                          setVariants(temp);
+                        }}
                         addonAfter={
                           <Select
                             value={item?.type}
                             options={amount_types}
-                            onChange={(e) => setType(e)}
+                            onChange={(e) => {
+                              let temp = [...variants];
+                              temp[i].type = e;
+                              setVariants(temp);
+                            }}
                           />
                         }
                       />
@@ -125,6 +158,11 @@ const Variants = ({ variants, setVariants }) => {
                           { label: "Disabled", value: "D" },
                         ]}
                         style={{ minWidth: "100px" }}
+                        onChange={(e) => {
+                          let temp = [...variants];
+                          temp[i].status = e;
+                          setVariants(temp);
+                        }}
                       />
                     </div>
                   </div>
@@ -147,7 +185,7 @@ const Variants = ({ variants, setVariants }) => {
                     </div>
                     <div
                       className={styles.section_item}
-                      onClick={() => handleDelete(i)}
+                      onClick={() => handleDelete(item?.name)}
                     >
                       <AiTwotoneDelete
                         style={{ cursor: "pointer" }}
@@ -163,7 +201,7 @@ const Variants = ({ variants, setVariants }) => {
                       textAlign: "center",
                     }}
                   >
-                    <Image height={150} width={150} />
+                    <ImageUploaderForPromotion image />
                   </div>
                 )}
               </div>
