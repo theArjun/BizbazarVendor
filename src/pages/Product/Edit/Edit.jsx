@@ -9,7 +9,9 @@ import {
   useGetFeatureVariants,
   useGetProductById,
   useGetProductFeatures,
+  useGetProductOptions,
   useGetProductReviews,
+  useGetSelectedOptions,
   useGetSeoPath,
 } from "../../../apis/ProductApi";
 import { useGetCategories } from "../../../apis/CategoryApi";
@@ -53,6 +55,8 @@ const Edit = () => {
   const { isLoading: reviewLoading, data: reviewData } = useGetProductReviews(
     param.id
   );
+  const { data: selectedOptions, isLoading: optionLoading } =
+    useGetSelectedOptions(param.id);
   const { isLoading: featureLoading, data: featureData } =
     useGetProductFeatures(param.id);
   const { isLoading: featureVariantsLoading, data: featureVariantData } =
@@ -96,7 +100,14 @@ const Edit = () => {
     }
     return [];
   }, [featureData]);
-
+  // get Selected options
+  const optionsData = useMemo(() => {
+    return Object.values(selectedOptions?.data || {});
+  }, [selectedOptions]);
+  // get Selected options
+  const optionKeys = useMemo(() => {
+    return Object.keys(selectedOptions?.data || {});
+  }, [selectedOptions]);
   // get SEO path
   const getSeoPath = useMemo(() => {
     if (seoData) {
@@ -119,7 +130,13 @@ const Edit = () => {
       case tabs[1]:
         return <EditShipping data={getProductDetail} />;
       case tabs[2]:
-        return <EditOptions />;
+        return (
+          <EditOptions
+            options_data={optionsData}
+            option_keys={optionKeys}
+            loading={optionLoading}
+          />
+        );
       case tabs[3]:
         return (
           <EditFeatures
@@ -196,7 +213,17 @@ const Edit = () => {
             <Breadcrumb.Item>Edit</Breadcrumb.Item>
           </Breadcrumb>
         </div>
-          <div className={styles.preview_btn}><Button onClick={()=>window.open(`${config.BASE_URL}${getProductDetail?.seo_name}/?action=preview`)} ><AiFillEye size={20}/></Button></div>
+        <div className={styles.preview_btn}>
+          <Button
+            onClick={() =>
+              window.open(
+                `${config.BASE_URL}${getProductDetail?.seo_name}/?action=preview`
+              )
+            }
+          >
+            <AiFillEye size={20} />
+          </Button>
+        </div>
       </div>
       <div className={styles.tabContainer}>
         <div className={styles.left}>

@@ -237,3 +237,24 @@ export const useGetProductVariationGroup = (id) =>
             resolve([]);
           }),
   });
+// Getting product options
+export const useGetProductOptions = () =>
+  useInfiniteQuery({
+    queryKey: ["product_options"],
+    queryFn: ({ pageParam = 1 }) =>
+      Axios.get(`options?page=${pageParam}&items_per_page=${ITEM_PER_PAGE}`),
+    getNextPageParam: (lastPage, pages) => {
+      if (lastPage?.data?.product_options?.length < ITEM_PER_PAGE) {
+        return;
+      }
+      return (lastPage.nextCursor = Number(lastPage?.data?.params?.page) + 1);
+    },
+    refetchOnWindowFocus: false,
+  });
+// Getting selected options only
+export const useGetSelectedOptions = (id) =>
+  useQuery({
+    queryKey: ["selected_options"],
+    queryFn: () => Axios.get(`options?product_id=${id}`),
+    refetchOnWindowFocus: false,
+  });

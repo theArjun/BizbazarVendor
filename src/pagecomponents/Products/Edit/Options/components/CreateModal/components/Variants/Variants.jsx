@@ -13,6 +13,7 @@ const Variants = ({ variants, setVariants }) => {
     { label: "रु", value: "रु" },
     { label: "%", value: "%" },
   ];
+  const [form] = Form.useForm();
   const [type, setType] = useState("रु");
 
   const onFinish = (values) => {
@@ -33,6 +34,7 @@ const Variants = ({ variants, setVariants }) => {
         },
       ];
       setVariants(temp);
+      form.resetFields();
     }
   };
   // handle delete
@@ -46,7 +48,7 @@ const Variants = ({ variants, setVariants }) => {
   return (
     <div className={styles.option_variants}>
       <div className={styles.variant_adder_field}>
-        <Form layout="vertical" onFinish={onFinish}>
+        <Form layout="vertical" onFinish={onFinish} form={form}>
           <div className={styles.section}>
             <Form.Item name="position" label="Position">
               <InputNumber type="number" style={{ width: "70px" }} min={0} />
