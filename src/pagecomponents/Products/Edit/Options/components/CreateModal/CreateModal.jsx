@@ -1,18 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./CreateModal.module.css";
 import { Modal, message } from "antd";
 import cx from "classnames";
 import General from "./components/General/General";
 import Variants from "./components/Variants/Variants";
-function CreateModal({ openCreateModal, setOpenCreateModal }) {
+function CreateModal({
+  openCreateModal,
+  setOpenCreateModal,
+  optionData,
+  setOptionData,
+  mode,
+  variants,
+  setVariants,
+}) {
   const [activeTab, setActiveTab] = useState("General");
-  const [variants, setVariants] = useState([]);
   const getDivision = () => {
     switch (activeTab) {
       case "Variants":
-        return <Variants variants={variants} setVariants={setVariants} />;
+        return (
+          <Variants
+            variants={
+              optionData?.variants
+                ? Object.values(optionData?.variants)
+                : variants
+            }
+            setVariants={setVariants}
+          />
+        );
       default:
-        return <General />;
+        return <General general={optionData} setGeneral={setOptionData} />;
     }
   };
   // Checking duplicate array of objects
@@ -20,27 +36,34 @@ function CreateModal({ openCreateModal, setOpenCreateModal }) {
     // Using Array.prototype.some()
     const hasDuplicate = array.some((obj, index) => {
       return array.some((innerObj, innerIndex) => {
-        return innerIndex !== index && innerObj.name.trim() === obj.name.trim();
+        return (
+          innerIndex !== index &&
+          innerObj.variant_name.trim() === obj.variant_name.trim()
+        );
       });
     });
     return hasDuplicate;
   };
   //  handle create variants
   const handleCreateVariants = () => {
-    let emptyNameCount = variants.filter((item) => !item?.name);
-    if (emptyNameCount.length) {
-      message.error("Variants name must not be empty!");
+    if (!optionData?.option_name) {
+      message.error("Option name is required");
     } else {
-      if (checkDuplicateVariants(variants)) {
-        message.error("Duplicate variants detected!");
+      let emptyNameCount = variants.filter((item) => !item?.variant_name);
+      if (emptyNameCount.length) {
+        message.error("Variants name must not be empty!");
       } else {
-        setOpenCreateModal(false);
+        if (checkDuplicateVariants(variants)) {
+          message.error("Duplicate variants detected!");
+        } else {
+          setOpenCreateModal(false);
+        }
       }
     }
   };
   return (
     <Modal
-      title="Create Option"
+      title={mode ? "" + optionData?.option_name : "Create option"}
       centered
       open={openCreateModal}
       okText="Create"

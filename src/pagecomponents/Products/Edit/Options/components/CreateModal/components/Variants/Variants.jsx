@@ -10,15 +10,15 @@ import {
 import ImageUploaderForPromotion from "../../../../../../../../component/ImageUploader/ImageUploaderForPromotion";
 const Variants = ({ variants, setVariants }) => {
   const amount_types = [
-    { label: "रु", value: "रु" },
-    { label: "%", value: "%" },
+    { label: "रु", value: "A" },
+    { label: "%", value: "P" },
   ];
   const [form] = Form.useForm();
   const [type, setType] = useState("रु");
 
   const onFinish = (values) => {
     const isNew = variants.filter(
-      (el) => el.name.trim() === values.name.trim()
+      (el) => el.variant_name.trim() === values.name.trim()
     );
     if (isNew.length) {
       message.warning(`${values.name} variant already exists!`);
@@ -29,8 +29,8 @@ const Variants = ({ variants, setVariants }) => {
           position: values?.position || "",
           modifier: values?.modifier || "",
           status: values?.status || "",
-          name: values?.name.trim(),
-          type: type,
+          variant_name: values?.name.trim(),
+          modifier_type: type,
         },
       ];
       setVariants(temp);
@@ -41,7 +41,7 @@ const Variants = ({ variants, setVariants }) => {
   const handleDelete = (name) => {
     let temp = [...variants];
     let filteredData = temp.filter((item, i) => {
-      return item.name !== name;
+      return item.variant_name !== name;
     });
     setVariants(filteredData);
   };
@@ -118,12 +118,12 @@ const Variants = ({ variants, setVariants }) => {
                     </div>
                     <div className={styles.section_item}>
                       <Input
-                        value={item?.name}
+                        value={item?.variant_name}
                         type="text"
                         style={{ minWidth: "150px" }}
                         onChange={(e) => {
                           let temp = [...variants];
-                          temp[i].name = e.target.value;
+                          temp[i].variant_name = e.target.value;
                           setVariants(temp);
                         }}
                       />
@@ -141,11 +141,11 @@ const Variants = ({ variants, setVariants }) => {
                         }}
                         addonAfter={
                           <Select
-                            value={item?.type}
+                            value={item?.modifier_type}
                             options={amount_types}
                             onChange={(e) => {
                               let temp = [...variants];
-                              temp[i].type = e;
+                              temp[i].modifier_type = e;
                               setVariants(temp);
                             }}
                           />
@@ -187,7 +187,7 @@ const Variants = ({ variants, setVariants }) => {
                     </div>
                     <div
                       className={styles.section_item}
-                      onClick={() => handleDelete(item?.name)}
+                      onClick={() => handleDelete(item?.variant_name)}
                     >
                       <AiTwotoneDelete
                         style={{ cursor: "pointer" }}
