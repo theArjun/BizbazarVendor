@@ -8,7 +8,7 @@ import {
   AiTwotoneDelete,
 } from "react-icons/ai";
 import ImageUploaderForPromotion from "../../../../../../../../component/ImageUploader/ImageUploaderForPromotion";
-const Variants = ({ variants, setVariants }) => {
+const Variants = ({ variants, setVariants, isMyOption }) => {
   const amount_types = [
     { label: "रु", value: "A" },
     { label: "%", value: "P" },
@@ -48,7 +48,12 @@ const Variants = ({ variants, setVariants }) => {
   return (
     <div className={styles.option_variants}>
       <div className={styles.variant_adder_field}>
-        <Form layout="vertical" onFinish={onFinish} form={form}>
+        <Form
+          layout="vertical"
+          onFinish={onFinish}
+          form={form}
+          disabled={!isMyOption}
+        >
           <div className={styles.section}>
             <Form.Item name="position" label="Position">
               <InputNumber type="number" style={{ width: "70px" }} min={0} />
@@ -105,6 +110,7 @@ const Variants = ({ variants, setVariants }) => {
                   <div className={styles.section}>
                     <div className={styles.section_item}>
                       <InputNumber
+                        disabled={!isMyOption}
                         type="number"
                         value={item?.position}
                         style={{ width: "70px" }}
@@ -118,6 +124,7 @@ const Variants = ({ variants, setVariants }) => {
                     </div>
                     <div className={styles.section_item}>
                       <Input
+                        disabled={!isMyOption}
                         value={item?.variant_name}
                         type="text"
                         style={{ minWidth: "150px" }}
@@ -130,6 +137,7 @@ const Variants = ({ variants, setVariants }) => {
                     </div>
                     <div className={styles.section_item}>
                       <InputNumber
+                        disabled={!isMyOption}
                         value={item?.modifier}
                         type="number"
                         min={0}
@@ -141,6 +149,7 @@ const Variants = ({ variants, setVariants }) => {
                         }}
                         addonAfter={
                           <Select
+                            disabled={!isMyOption}
                             value={item?.modifier_type}
                             options={amount_types}
                             onChange={(e) => {
@@ -154,6 +163,7 @@ const Variants = ({ variants, setVariants }) => {
                     </div>
                     <div className={styles.section_item}>
                       <Select
+                        disabled={!isMyOption}
                         value={item?.status}
                         options={[
                           { label: "Active", value: "A" },
@@ -185,16 +195,18 @@ const Variants = ({ variants, setVariants }) => {
                         )}
                       </div>
                     </div>
-                    <div
-                      className={styles.section_item}
-                      onClick={() => handleDelete(item?.variant_name)}
-                    >
-                      <AiTwotoneDelete
-                        style={{ cursor: "pointer" }}
-                        color="red"
-                        size={18}
-                      />
-                    </div>
+                    {isMyOption && (
+                      <div
+                        className={styles.section_item}
+                        onClick={() => handleDelete(item?.variant_name)}
+                      >
+                        <AiTwotoneDelete
+                          style={{ cursor: "pointer" }}
+                          color="red"
+                          size={18}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
                 {item?.more && (

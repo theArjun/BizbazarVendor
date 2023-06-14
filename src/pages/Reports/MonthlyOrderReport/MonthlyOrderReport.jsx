@@ -77,20 +77,6 @@ const MonthlyOrderReport = () => {
     300,
     [bottom]
   );
-  if (isError) {
-    return (
-      <Result
-        status={error?.response?.status}
-        title={error?.response?.status}
-        subTitle={error?.message}
-        extra={
-          <Button type="primary" onClick={() => navigate("/")}>
-            Back Home
-          </Button>
-        }
-      />
-    );
-  }
   return (
     <div className={styles.container}>
       <Breadcrumb>

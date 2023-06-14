@@ -43,50 +43,47 @@ const Features = ({ features, selected_features, editID }) => {
   const getExtraFeatures = () => {
     let extra_features = features.filter((item) => item.feature_type == "G");
     return (
-      <div key={"this is features"}>
+      <div key={"this is features"} className={styles.extra_features}>
         {extra_features.map((extra, i) => {
           return (
             <div key={i}>
               <h3>{extra.description}</h3>
-              <Card>
-                {Object.values(extra.subfeatures).map((subfeature, index) => {
-                  return (
-                    <div key={index}>
-                      <Form.Item
-                        name={subfeature?.description}
-                        label={subfeature?.description}
-                      >
-                        <Select
-                          showSearch
-                          defaultValue={
-                            selected_features[subfeature?.feature_id]
-                              ?.variant_id
-                          }
-                          onChange={handleSelectChange}
-                          optionFilterProp="children"
-                          filterOption={(input, option) =>
-                            (option?.label ?? "")
-                              .toLowerCase()
-                              .includes(input.toLowerCase())
-                          }
-                          options={
-                            subfeature.variants
-                              ? Object.values(subfeature.variants).map(
-                                  (variant) => ({
-                                    label: variant.variant,
-                                    value: variant.variant_id,
-                                    feature: subfeature.feature_id,
-                                    type: variant.feature_type,
-                                  })
-                                )
-                              : []
-                          }
-                        />
-                      </Form.Item>
-                    </div>
-                  );
-                })}
-              </Card>
+              {Object.values(extra.subfeatures).map((subfeature, index) => {
+                return (
+                  <div key={index}>
+                    <Form.Item
+                      name={subfeature?.description}
+                      label={subfeature?.description}
+                    >
+                      <Select
+                        showSearch
+                        defaultValue={
+                          selected_features[subfeature?.feature_id]?.variant_id
+                        }
+                        onChange={handleSelectChange}
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                          (option?.label ?? "")
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        options={
+                          subfeature.variants
+                            ? Object.values(subfeature.variants).map(
+                                (variant) => ({
+                                  label: variant.variant,
+                                  value: variant.variant_id,
+                                  feature: subfeature.feature_id,
+                                  type: variant.feature_type,
+                                })
+                              )
+                            : []
+                        }
+                      />
+                    </Form.Item>
+                  </div>
+                );
+              })}
             </div>
           );
         })}
@@ -97,7 +94,7 @@ const Features = ({ features, selected_features, editID }) => {
   const getMainFeatures = () => {
     let m_features = features.filter((item, i) => item.feature_type == "S");
     return (
-      <Card>
+      <div>
         {m_features.map((item, index) => {
           return (
             <div key={index}>
@@ -123,7 +120,7 @@ const Features = ({ features, selected_features, editID }) => {
             </div>
           );
         })}
-      </Card>
+      </div>
     );
   };
   if (isLoading) {
@@ -131,7 +128,6 @@ const Features = ({ features, selected_features, editID }) => {
   }
   return (
     <div className={styles.feature_container}>
-      {isLoading ? <Spinner /> : ""}
       <Form
         form={form}
         name="features"
@@ -147,8 +143,10 @@ const Features = ({ features, selected_features, editID }) => {
         </Form.Item>
         <br />
         <br />
-        {getMainFeatures()}
-        <div>{getExtraFeatures()}</div>
+        <div className={styles.features_wrapper}>
+          <div className={styles.main_features}>{getMainFeatures()}</div>
+          {getExtraFeatures()}
+        </div>
       </Form>
     </div>
   );

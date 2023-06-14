@@ -14,21 +14,32 @@ function CreateModal({
   setVariants,
 }) {
   const [activeTab, setActiveTab] = useState("General");
+  const { id } = JSON.parse(sessionStorage.getItem("userinfo"));
+  // Checking whether  vendor option data or not
+  const isMyOption = () => {
+    if (String(id) !== optionData?.company_id && optionData?.company_id) {
+      return false;
+    }
+    return true;
+  };
   const getDivision = () => {
     switch (activeTab) {
       case "Variants":
         return (
           <Variants
-            variants={
-              optionData?.variants
-                ? Object.values(optionData?.variants)
-                : variants
-            }
+            variants={variants}
+            isMyOption={isMyOption()}
             setVariants={setVariants}
           />
         );
       default:
-        return <General general={optionData} setGeneral={setOptionData} />;
+        return (
+          <General
+            general={optionData}
+            setGeneral={setOptionData}
+            isMyOption={isMyOption()}
+          />
+        );
     }
   };
   // Checking duplicate array of objects
@@ -67,6 +78,11 @@ function CreateModal({
       centered
       open={openCreateModal}
       okText="Create"
+      okButtonProps={{
+        style: {
+          display: isMyOption() ? "inline" : "none",
+        },
+      }}
       onOk={() => handleCreateVariants()}
       onCancel={() => setOpenCreateModal(false)}
       width={1000}

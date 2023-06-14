@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Edit.module.css";
 import { Breadcrumb, Result, Form, Button } from "antd";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { GeneralContextProvider } from "../../../ContextProvider/ContextProvider";
 import Spinner from "../../../component/Spinner/Spinner";
@@ -206,11 +206,13 @@ const Edit = () => {
       <div className={styles.breadcrumb_create_btn}>
         <div className="breadcrumb">
           <Breadcrumb>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
             <Breadcrumb.Item>
-              <a href="">Products</a>
+              <Link to="/">Home</Link>
             </Breadcrumb.Item>
-            <Breadcrumb.Item>Edit</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <Link to="/Products">Products</Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item>{active}</Breadcrumb.Item>
           </Breadcrumb>
         </div>
         <div className={styles.preview_btn}>

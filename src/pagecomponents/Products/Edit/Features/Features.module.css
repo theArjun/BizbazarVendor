@@ -1,13 +1,37 @@
-.electronics_title{
-    display: flex;
-    align-items: center;
-    cursor: pointer;
+.electronics_title {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
-.close_electro{
-    display: none;
+.feature_container {
+  background-color: white;
+  padding: 10px;
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
 }
-.export_title{
-    display: flex;
-    align-items: center;
-    cursor: pointer;
+.features_wrapper {
+  width: 100%;
+  height: calc(100vh - 320px);
+  overflow-y: scroll;
+  padding-right: 10px;
+}
+.main_features > div > div > div > div {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  column-gap: 10px;
+}
+
+.extra_features > div > div > div > div {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  column-gap: 10px;
+}
+
+.close_electro {
+  display: none;
+}
+.export_title {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }

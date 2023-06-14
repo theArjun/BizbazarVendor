@@ -84,18 +84,17 @@ const Options = ({ options_data = [], option_keys = [] }) => {
           )}
           {options_data?.map((el, i) => {
             return (
-              <div key={i} className={styles.option_item}>
-                <Link
-                  to="#"
-                  onClick={() => {
-                    setOpenCreateModal(true);
-                    setEditMode(true);
-                    setOptionData({ ...el });
-                    setVariants(Object.values(el?.variants));
-                  }}
-                >
-                  {el?.option_name}
-                </Link>
+              <div
+                key={i}
+                className={styles.option_item}
+                onClick={() => {
+                  setOpenCreateModal(true);
+                  setEditMode(true);
+                  setOptionData({ ...el });
+                  setVariants([...Object.values(el?.variants || {})]);
+                }}
+              >
+                {el?.option_name}
               </div>
             );
           })}

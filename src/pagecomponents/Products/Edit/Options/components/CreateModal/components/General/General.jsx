@@ -3,7 +3,7 @@ import { Checkbox, Input, InputNumber, Select } from "antd";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import styles from "./General.module.css";
-const General = ({ general, setGeneral }) => {
+const General = ({ general, setGeneral, isMyOption }) => {
   return (
     <div className={styles.option_general}>
       <div className={styles.option_input_items}>
@@ -12,6 +12,7 @@ const General = ({ general, setGeneral }) => {
         </div>
         <div className={styles.value}>
           <Input
+            disabled={!isMyOption}
             type="text"
             value={general.option_name}
             onChange={(e) =>
@@ -24,6 +25,7 @@ const General = ({ general, setGeneral }) => {
         <div className={styles.label}>Position:</div>
         <div className={styles.value}>
           <InputNumber
+            disabled={!isMyOption}
             type="number"
             min={0}
             value={general.position}
@@ -41,6 +43,7 @@ const General = ({ general, setGeneral }) => {
           <Select
             style={{ minWidth: "100px" }}
             value={general.option_type}
+            disabled={!isMyOption}
             onChange={(e) => setGeneral((el) => ({ ...el, option_type: e }))}
             options={[
               { label: "Checkbox", value: "C" },
@@ -54,6 +57,7 @@ const General = ({ general, setGeneral }) => {
         <div className={styles.value}>
           <ReactQuill
             type="snow"
+            readOnly={!isMyOption}
             value={general.description}
             onChange={(e) => setGeneral((el) => ({ ...el, description: e }))}
           />
@@ -63,6 +67,7 @@ const General = ({ general, setGeneral }) => {
         <div className={styles.label}>Required:</div>
         <div className={styles.value}>
           <Checkbox
+            disabled={!isMyOption}
             checked={general.required}
             onChange={(e) =>
               setGeneral((el) => ({ ...el, required: e.target.checked }))
@@ -74,6 +79,7 @@ const General = ({ general, setGeneral }) => {
         <div className={styles.label}>Missing variants handling:</div>
         <div className={styles.value}>
           <Select
+            disabled={!isMyOption}
             style={{ minWidth: "100px" }}
             value={general.missing_variants_handling}
             onChange={(e) =>

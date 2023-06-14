@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./Shipping.module.css";
 import "./index.css";
-import { Form, Input, Checkbox, Button, Card } from "antd";
+import { Form, Input, Checkbox, Button, Card, InputNumber } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateProduct } from "../../../../apis/ProductApi";
 import Spinner from "../../../../component/Spinner/Spinner";
@@ -25,7 +25,7 @@ const Shipping = ({ data }) => {
     console.log("Failed:", errorInfo);
   };
   const onItemChange = (e) => {
-    const value = e?.target.value;
+    const value = e;
     if (value == "" || value == 0) {
       setItemsInBox(false);
     } else {
@@ -65,20 +65,20 @@ const Shipping = ({ data }) => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Form.Item style={{ float: "right" }}>
+        <Form.Item style={{ float: "right" }} className={styles.save_btn}>
           <Button type="primary" htmlType="submit">
             Save changes
           </Button>
         </Form.Item>
         <br />
         <br />
-        <Card>
+        <div className={styles.shipping_body}>
           <Form.Item
             label="Weight (Kg)"
             name="weight"
             extra="Non-downloadable products with zero weight are handled as having minimal possible non-zero weight."
           >
-            <Input className={styles.short_form} />
+            <InputNumber type="Number" min={0} className={styles.short_form} />
           </Form.Item>
 
           <Form.Item
@@ -91,7 +91,7 @@ const Shipping = ({ data }) => {
             />
           </Form.Item>
           <Form.Item label="Shipping freight(रु)" name="shipping_freight">
-            <Input />
+            <InputNumber type="Number" min={0} />
           </Form.Item>
 
           <Form.Item
@@ -99,12 +99,20 @@ const Shipping = ({ data }) => {
             extra="Use this field to define the minimum and maximum number of product items to be shipped in a separate box. Enter a non-zero value and specify the box dimensions below."
           >
             <div className={styles.items_in_box}>
-              <Form.Item name="min_items_in_box" style={{ width: "50px" }}>
-                <Input onChange={(e) => onItemChange(e)} />
+              <Form.Item name="min_items_in_box">
+                <InputNumber
+                  type="Number"
+                  min={0}
+                  onChange={(e) => onItemChange(e)}
+                />
               </Form.Item>
               <Form.Item>-</Form.Item>
-              <Form.Item name="max_items_in_box" style={{ width: "50px" }}>
-                <Input onChange={(e) => onItemChange(e)} />
+              <Form.Item name="max_items_in_box">
+                <InputNumber
+                  type="Number"
+                  min={0}
+                  onChange={(e) => onItemChange(e)}
+                />
               </Form.Item>
             </div>
           </Form.Item>
@@ -114,23 +122,23 @@ const Shipping = ({ data }) => {
             name="box_length"
             className={itemsInBox ? styles.short_form : styles.disable_form}
           >
-            <Input />
+            <InputNumber type="Number" min={0} />
           </Form.Item>
           <Form.Item
             label="Box width"
             name="box_width"
             className={itemsInBox ? styles.short_form : styles.disable_form}
           >
-            <Input />
+            <InputNumber type="Number" min={0} />
           </Form.Item>
           <Form.Item
             label="Box height"
             name="box_height"
             className={itemsInBox ? styles.short_form : styles.disable_form}
           >
-            <Input />
+            <InputNumber type="Number" min={0} />
           </Form.Item>
-        </Card>
+        </div>
       </Form>
     </div>
   );
