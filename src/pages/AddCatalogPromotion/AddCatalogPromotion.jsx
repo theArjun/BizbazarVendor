@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./AddCatalogPromotion.module.css";
 import cx from "classnames";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   CatalogPromotionBonuses,
   CatalogPromotionConditions,
@@ -137,6 +137,9 @@ function AddCatalogPromotion() {
     <React.Fragment>
       <div className={styles.breadcumb}>
         <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
           <Breadcrumb.Item>Marketing</Breadcrumb.Item>
           <Breadcrumb.Item>
             <a href="">Add Catalog Promotion</a>

@@ -4,7 +4,6 @@ import { TransactionTable, TransactionSearch } from "../..";
 import { useGetTransactions } from "../../../apis/AccountingApi";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 import { useNavigate } from "react-router-dom";
-import { Button, Result } from "antd";
 const INITIAL_PARAMS = {
   payout_type: "",
   approval_status: "",
@@ -49,20 +48,6 @@ const Transactions = ({ status }) => {
     300,
     [bottom]
   );
-  if (isError) {
-    return (
-      <Result
-        status={error?.response?.status}
-        title={error?.response?.status}
-        subTitle={error?.message}
-        extra={
-          <Button type="primary" onClick={() => navigate("/")}>
-            Back Home
-          </Button>
-        }
-      />
-    );
-  }
   return (
     <div>
       <TransactionSearch

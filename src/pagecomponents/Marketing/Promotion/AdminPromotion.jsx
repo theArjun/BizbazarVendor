@@ -4,7 +4,8 @@ import { Breadcrumb, Button, Table } from "antd";
 import ProductModal from "./ProductModal/ProductModal";
 import useWindowSize from "../../../utils/Hooks/useWindowSize";
 import { useGetPromotionProducts } from "../../../apis/PromotionApi";
-const AdminPromotion = ({ data, loading }) => {
+import { Link } from "react-router-dom";
+const AdminPromotion = ({ data, loading, id }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const windowSize = useWindowSize();
   const { isLoading: productLoading, data: productData } =
@@ -51,10 +52,14 @@ const AdminPromotion = ({ data, loading }) => {
     <div className={styles.container.admin_promotion}>
       <div className={styles.breadcrumb}>
         <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home </Link>
+          </Breadcrumb.Item>
           <Breadcrumb.Item>Marketing</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="">Edit Catalog Promotion</a>
+            <Link to="/Marketing/Promotions">Promotions</Link>
           </Breadcrumb.Item>
+          <Breadcrumb.Item>{id}</Breadcrumb.Item>
         </Breadcrumb>
       </div>
       <div className={styles.top_section}>

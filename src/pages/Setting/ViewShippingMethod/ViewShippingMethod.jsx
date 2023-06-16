@@ -8,7 +8,7 @@ import {
   ShippingMethodGeneral,
 } from "../..";
 import { Breadcrumb, Button, Result } from "antd";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import styles from "./ViewShippingMethod.module.css";
 import cx from "classnames";
 import { useQueryClient } from "@tanstack/react-query";
@@ -294,12 +294,14 @@ function EditShipping() {
     <div>
       <div className={styles.breadcrumb}>
         <Breadcrumb>
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link>Home</Link>
+          </Breadcrumb.Item>
           <Breadcrumb.Item>
             <a href="">Settings</a>
           </Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="">Shipping Methods</a>
+            <Link to="/Setting/Shipping Methods">Shipping Methods</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>{id}</Breadcrumb.Item>
         </Breadcrumb>

@@ -15,6 +15,7 @@ const INITIAL_VALUES = {
   option_type: "C",
   description: "Write your description here.",
   required: "N",
+  comment: "",
   missing_variants_handling: "M",
 };
 const Options = ({ options_data = [], option_keys = [] }) => {

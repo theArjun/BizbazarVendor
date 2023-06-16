@@ -1,6 +1,6 @@
 import React from "react";
-import { useParams } from "react-router-dom";
-import { Form, Input, Button, Typography, Result } from "antd";
+import { Link, useParams } from "react-router-dom";
+import { Form, Input, Button, Typography, Result, Breadcrumb } from "antd";
 import styles from "./AdminMessages.module.css";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -84,6 +84,19 @@ const AdminMessages = () => {
   }
   return (
     <div className={styles.messages}>
+      <Breadcrumb>
+        <Breadcrumb.Item>
+          <Link to="/">Home</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>Message Center</Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <Link to="/Message Center/Admins Communications">
+            {" "}
+            Admin Communications
+          </Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>thread #{id}</Breadcrumb.Item>
+      </Breadcrumb>
       <div>
         <div className={styles.main_content}>
           <div className={styles.message_container}>

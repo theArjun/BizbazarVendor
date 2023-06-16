@@ -1,8 +1,11 @@
-.title_header{
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-  .close_container{
-    display: none;
-  }
+.title_header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.close_container {
+  display: none;
+}
+.pricing {
+  padding-bottom: 100px;
+}

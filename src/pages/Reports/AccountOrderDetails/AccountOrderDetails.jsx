@@ -3,7 +3,7 @@ import { Breadcrumb, Button, Result } from "antd";
 import styles from "./AccountOrderDetails.module.css";
 import { useEffect } from "react";
 import useDebounce from "../../../utils/Hooks/useDebounce";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AccountOrderDetailsSearch from "./../../../pagecomponents/Reports/AccountOrderDetails/Search/Search";
 import AccountOrderDetailsTable from "../../../pagecomponents/Reports/AccountOrderDetails/Table/Table";
 import { useGetAccountingOrderDetails } from "../../../apis/ReportsApi";
@@ -88,10 +88,15 @@ const AccountOrderDetails = () => {
   );
   return (
     <div className={styles.container}>
-      <Breadcrumb>
-        <Breadcrumb.Item>Reports</Breadcrumb.Item>
-        <Breadcrumb.Item>Account Orders Details</Breadcrumb.Item>
-      </Breadcrumb>
+      <div className={styles.breadcrumb}>
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>Reports</Breadcrumb.Item>
+          <Breadcrumb.Item>Account Orders Details</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
       <AccountOrderDetailsSearch
         setSearchValue={setSearchValue}
         sValue={sValue}

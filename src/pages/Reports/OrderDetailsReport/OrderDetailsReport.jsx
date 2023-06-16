@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Breadcrumb, Button, Result } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./OrderDetailsReport.module.css";
 import OrderDetailsReportSearch from "../../../pagecomponents/Reports/OrderDetailsReport/Search/Search";
 import AccountOrderDetailsTable from "../../../pagecomponents/Reports/OrderDetailsReport/Table/Table";
@@ -62,10 +62,15 @@ const OrderDetailsReport = () => {
   );
   return (
     <div className={styles.container}>
-      <Breadcrumb>
-        <Breadcrumb.Item>Reports</Breadcrumb.Item>
-        <Breadcrumb.Item>Order Details</Breadcrumb.Item>
-      </Breadcrumb>
+      <div className={styles.breadcrumb}>
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link className={styles.breadcrumb}>Home</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>Reports</Breadcrumb.Item>
+          <Breadcrumb.Item>Order Details</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
       <OrderDetailsReportSearch params={params} setParams={setParams} />
       <AccountOrderDetailsTable
         status={getOrderStatus()}

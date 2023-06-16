@@ -6,7 +6,7 @@ import { Breadcrumb, Modal, Form, Input, Button, Result } from "antd";
 import { HiPlus } from "react-icons/hi";
 import { useQueryClient } from "@tanstack/react-query";
 import { notification } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   getVendorAdminMessages,
   useCreateAdminMessage,
@@ -120,6 +120,9 @@ const AdminCommunication = () => {
     <div>
       <div className={styles.top_nav}>
         <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
           <Breadcrumb.Item>Message Center</Breadcrumb.Item>
           <Breadcrumb.Item>Admin Communications</Breadcrumb.Item>
         </Breadcrumb>

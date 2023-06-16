@@ -12,6 +12,7 @@ export const useGetTransactions = (params) =>
       Axios.get(
         `BizbazarAccounting/${id}?page=${pageParam}&items_per_page=${ITEM_PER_PAGE}&payout_type=${params.payout_type}&approval_status=${params.approval_status}&time_from=${params.time_from}&time_to=${params.time_to}`
       ),
+    refetchOnWindowFocus: false,
     getNextPageParam: (lastPage, pages) => {
       if (lastPage?.data?.length < ITEM_PER_PAGE) {
         return;
@@ -27,6 +28,7 @@ export const useGetWithdrawals = (params) =>
       Axios.get(
         `BizbazarAccounting/${id}?is_search=Y&selected_section=withdrawals&page=${pageParam}&items_per_page=${ITEM_PER_PAGE}&approval_status=${params.approval_status}&time_from=${params.time_from}&time_to=${params.time_to}`
       ),
+    refetchOnWindowFocus: false,
     getNextPageParam: (lastPage, pages) => {
       if (lastPage?.data?.length < ITEM_PER_PAGE) {
         return;

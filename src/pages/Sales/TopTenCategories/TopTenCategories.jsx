@@ -10,6 +10,7 @@ import {
   TopTwentyVendors,
   SearchForSalesReport,
 } from "../..";
+import { Link } from "react-router-dom";
 const tabs = [
   "Top 20 Vendors",
   "Top 10 Categories - Items Sold",
@@ -44,9 +45,12 @@ const TopTenCategories = () => {
     <div className={styles.top_ten_categories_container}>
       <div className="breadcrumb">
         <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
           <Breadcrumb.Item>Sales</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="">Top 10 Categories</a>
+            <Link to="/Sales/Top 10 Categories">Top 10 Categories</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>{active}</Breadcrumb.Item>
         </Breadcrumb>

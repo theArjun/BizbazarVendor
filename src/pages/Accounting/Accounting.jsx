@@ -10,6 +10,7 @@ import { useCreateNewWithdrawal } from "../../apis/AccountingApi";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetStatuses } from "../../apis/StatusApi";
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 const Accounting = () => {
   const tabs = ["Transactions", "Balance withdrawals"];
   const [active, setActive] = useState(tabs[0]);
@@ -70,10 +71,11 @@ const Accounting = () => {
     <div className={styles.container}>
       <div className="breadcrumb">
         <Breadcrumb>
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="">Accounting</a>
+            <Link to="/">Home</Link>
           </Breadcrumb.Item>
+          <Breadcrumb.Item>Accounting</Breadcrumb.Item>
+          <Breadcrumb.Item>{active}</Breadcrumb.Item>
         </Breadcrumb>
         <div className={styles.tabContainer}>
           <div className={styles.left}>

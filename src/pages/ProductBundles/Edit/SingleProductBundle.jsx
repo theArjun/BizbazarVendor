@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./SingleProductBundle.module.css";
 import cx from "classnames";
 import { ProductBundleGeneralTab, ProductBundleProductTab } from "../..";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Card, Button, Breadcrumb } from "antd";
 const SingleProductBundle = () => {
   const [activeTab, setActiveTab] = useState("General");
@@ -25,6 +25,9 @@ const SingleProductBundle = () => {
     <div className="product_bundle">
       <div className={styles.breadcrumb}>
         <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
           <Breadcrumb.Item>Marketing</Breadcrumb.Item>
           <Breadcrumb.Item>
             <a href="">Edit Product Bundle</a>

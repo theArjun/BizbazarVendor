@@ -60,9 +60,11 @@ const Shipments = () => {
   return (
     <div className={styles.shipment}>
       <Breadcrumb>
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
         <Breadcrumb.Item>
-          <Link href="">Orders</Link>
+          <Link to="/">Home</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <Link to="/Orders/View Orders">Orders</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>Shipments</Breadcrumb.Item>
       </Breadcrumb>

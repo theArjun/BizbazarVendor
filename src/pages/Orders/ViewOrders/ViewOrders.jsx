@@ -3,7 +3,7 @@ import { Breadcrumb, Button, Result } from "antd";
 import styles from "./ViewOrders.module.css";
 import { ViewOrdersSearch, ViewOrdersTable } from "../..";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 import { useGetOrders } from "../../../apis/OrdersApi";
 import { useMemo } from "react";
@@ -115,9 +115,11 @@ const ViewOrders = () => {
   return (
     <div className={styles.container}>
       <Breadcrumb>
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
         <Breadcrumb.Item>
-          <a href="">Orders</a>
+          <Link to="/">Home</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <Link to="/Orders/View Orders">Orders</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>View Orders</Breadcrumb.Item>
       </Breadcrumb>

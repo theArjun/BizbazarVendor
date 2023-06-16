@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Breadcrumb, Button, Result } from "antd";
 import styles from "./VendorTransactionDetails.module.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 import VendorTransactionDetailsSearch from "../../../pagecomponents/Reports/VendorTransactionDetails/Search/Search";
 import VendorTransactionsReportTable from "../../../pagecomponents/Reports/VendorTransactionDetails/Table/Table";
@@ -52,10 +52,15 @@ const VendorTransactionDetails = () => {
   );
   return (
     <div className={styles.container}>
-      <Breadcrumb>
-        <Breadcrumb.Item>Reports</Breadcrumb.Item>
-        <Breadcrumb.Item>Vendor Transaction Details</Breadcrumb.Item>
-      </Breadcrumb>
+      <div className={styles.breadcrumb}>
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>Reports</Breadcrumb.Item>
+          <Breadcrumb.Item>Vendor Transaction Details</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
       <VendorTransactionDetailsSearch params={params} setParams={setParams} />
       <VendorTransactionsReportTable
         accountOrderDetails={getTransactionReportData}

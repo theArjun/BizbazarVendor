@@ -1,10 +1,11 @@
 import React from "react";
 import styles from "./ProductBundles.module.css";
-import { Breadcrumb, Table } from "antd";
-import { Input, Button } from "antd";
+import { Breadcrumb } from "antd";
+import { Button } from "antd";
 import { ProductBundleSearch, ProductBundleTable } from "..";
 import ProductBundleCreateModal from "../../pagecomponents/Marketing/ProductBundle/ProductBundleCreateModal/ProductBundleCreateModal";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function ProductBundles() {
   const [openCreateModal, setOpenCreateModal] = useState(false);
@@ -12,10 +13,11 @@ function ProductBundles() {
     <div className={styles.containerWrapper}>
       <div className={styles.breadcrumb}>
         <Breadcrumb>
-          <Breadcrumb.Item>Marketing</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="">Product Bundles</a>
+            <Link to="/">Home</Link>
           </Breadcrumb.Item>
+          <Breadcrumb.Item>Marketing</Breadcrumb.Item>
+          <Breadcrumb.Item>Product Bundles</Breadcrumb.Item>
         </Breadcrumb>
         <Button
           className={styles.createProductBundle}

@@ -64,11 +64,13 @@ function OrderDetails() {
   return (
     <div className={styles.container}>
       <Breadcrumb>
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
         <Breadcrumb.Item>
-          <a href="">Orders</a>
+          <Link to="/">Home</Link>
         </Breadcrumb.Item>
-        <Breadcrumb.Item>View Orders</Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <Link to="/Orders/View Orders">Orders</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>{param.id}</Breadcrumb.Item>
       </Breadcrumb>
       <Deatails
         orderDetail={orderDetail}

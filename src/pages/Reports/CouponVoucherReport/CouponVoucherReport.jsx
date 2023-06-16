@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Breadcrumb, Button, Result } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./CouponVoucherReport.module.css";
 import { useEffect } from "react";
 import CouponVoucherReportSearch from "../../../pagecomponents/Reports/CouponVoucherReport/Search/Search";
@@ -78,10 +78,15 @@ const CouponVoucherReport = () => {
   );
   return (
     <div className={styles.container}>
-      <Breadcrumb>
-        <Breadcrumb.Item>Reports</Breadcrumb.Item>
-        <Breadcrumb.Item>Coupon Voucher Reports</Breadcrumb.Item>
-      </Breadcrumb>
+      <div className={styles.breadcrumb}>
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>Reports</Breadcrumb.Item>
+          <Breadcrumb.Item>Coupon Voucher Reports</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
       <CouponVoucherReportSearch
         params={params}
         setParams={setParams}

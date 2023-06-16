@@ -7,6 +7,7 @@ import {
   TopFiftyCustomersNoOfOrders,
   SearchForSalesReport,
 } from "../..";
+import { Link } from "react-router-dom";
 const tabs = [
   "Top 50 Customers- Order Sales",
   "Top 50 Customers - No. of Orders",
@@ -31,9 +32,12 @@ const TopFiftyCustomers = () => {
     <div className={styles.top_fifty_customers_container}>
       <div className="breadcrumb">
         <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
           <Breadcrumb.Item>Sales</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="">Order Reports</a>
+            <Link to="/Sales/Top 50 Customers">Top 50 Customers</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>{active}</Breadcrumb.Item>
         </Breadcrumb>

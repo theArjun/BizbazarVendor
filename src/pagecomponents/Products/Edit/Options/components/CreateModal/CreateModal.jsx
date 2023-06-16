@@ -74,10 +74,10 @@ function CreateModal({
   };
   return (
     <Modal
-      title={mode ? "" + optionData?.option_name : "Create option"}
+      title={mode ? "Edit your option" : "Create option"}
       centered
       open={openCreateModal}
-      okText="Create"
+      okText={mode ? "Save changes" : "Create"}
       okButtonProps={{
         style: {
           display: isMyOption() ? "inline" : "none",

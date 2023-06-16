@@ -11,7 +11,8 @@ import {
 import Conditions from "../AddCatalogPromotion/Conditions/Conditions";
 import Bonuses from "../AddCatalogPromotion/Bonuses/Bonuses";
 import Spinner from "../../../component/Spinner/Spinner";
-const VendorPromotion = ({ data }) => {
+import { Link } from "react-router-dom";
+const VendorPromotion = ({ data, id }) => {
   const [activeTab, setActiveTab] = useState("General");
   const [bonuses, setBonuses] = useState([]);
   const [conditions, setConditions] = useState([]);
@@ -38,7 +39,7 @@ const VendorPromotion = ({ data }) => {
   });
   const { isLoading, mutate, isError } = useUpdatePromotion();
   const { mutateAsync: deleteImageMutate } = useDeletePromotionImage();
-  const queryClient=useQueryClient();
+  const queryClient = useQueryClient();
   const getDivision = () => {
     switch (activeTab) {
       case "General":
@@ -138,7 +139,10 @@ const VendorPromotion = ({ data }) => {
         // Lets update promotion through mutate
         mutate(formData, {
           onSuccess: (response) => {
-            queryClient.invalidateQueries(['single_promotion',data?.promotion_id])
+            queryClient.invalidateQueries([
+              "single_promotion",
+              data?.promotion_id,
+            ]);
           },
           onError: (error) => {
             console.log("error on updating promotion, ", error);
@@ -199,10 +203,14 @@ const VendorPromotion = ({ data }) => {
     <React.Fragment>
       <div className={styles.breadcrumb}>
         <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home </Link>
+          </Breadcrumb.Item>
           <Breadcrumb.Item>Marketing</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="">Edit Catalog Promotion</a>
+            <Link to="/Marketing/Promotions">Promotions</Link>
           </Breadcrumb.Item>
+          <Breadcrumb.Item>{id}</Breadcrumb.Item>
         </Breadcrumb>
         <Button onClick={savePromotion} type="primary">
           Save changes

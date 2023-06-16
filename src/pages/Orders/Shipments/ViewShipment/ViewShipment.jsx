@@ -136,11 +136,15 @@ const ViewShipment = () => {
     <div className={styles.view_shipment}>
       <div className={styles.breadcrumb}>
         <Breadcrumb>
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <Link href="">Orders</Link>
+            <Link to="/">Home</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item>Shipments</Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link to="/Orders/View Orders">Orders</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>
+            <Link to="/Orders/Shipments">Shipments</Link>
+          </Breadcrumb.Item>
           <Breadcrumb.Item>{id}</Breadcrumb.Item>
         </Breadcrumb>
         <div className={styles.action_buttons}>

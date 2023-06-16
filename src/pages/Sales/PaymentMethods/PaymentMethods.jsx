@@ -7,6 +7,7 @@ import {
   SearchForSalesReport,
 } from "../..";
 import { Breadcrumb } from "antd";
+import { Link } from "react-router-dom";
 const tabs = [
   "Payment methods chart - Orders placed",
   "Payment methods chart - Cost",
@@ -32,9 +33,12 @@ const PaymentMethods = () => {
     <div className={styles.top_ten_categories_container}>
       <div className="breadcrumb">
         <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
           <Breadcrumb.Item>Sales</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="">Top 20 Products</a>
+            <Link to="/Sales/Payment Methods">Payment methods</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>{active}</Breadcrumb.Item>
         </Breadcrumb>

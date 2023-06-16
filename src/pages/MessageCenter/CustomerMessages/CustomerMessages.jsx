@@ -1,6 +1,15 @@
 import React from "react";
-import { useParams } from "react-router-dom";
-import { Card, Form, Input, Button, Image, Typography, Result } from "antd";
+import { Link, useParams } from "react-router-dom";
+import {
+  Card,
+  Form,
+  Input,
+  Button,
+  Image,
+  Typography,
+  Result,
+  Breadcrumb,
+} from "antd";
 import { useNavigate } from "react-router-dom";
 import styles from "./CustomerMessages.module.css";
 import { useState } from "react";
@@ -118,6 +127,20 @@ const CustomerMessages = () => {
   }
   return (
     <div className={styles.messages}>
+      <Breadcrumb>
+        <Breadcrumb.Item>
+          <Link to="/">Home</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>Message Center</Breadcrumb.Item>
+        <Breadcrumb.Item>
+          {" "}
+          <Link to="/Message Center/Customer Communications">
+            {" "}
+            Customer Communications
+          </Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>thread #{id}</Breadcrumb.Item>
+      </Breadcrumb>
       <div>
         <div className={styles.main_content}>
           <div className={styles.message_container}>

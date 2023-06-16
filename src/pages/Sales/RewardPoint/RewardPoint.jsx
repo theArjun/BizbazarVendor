@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "./RewardPoint.module.css";
 import { Breadcrumb } from "antd";
 import { SearchForSalesReport } from "../..";
+import { Link } from "react-router-dom";
 const INITIAL_PARAMS = {
   period: "C",
   time_from: "",
@@ -13,10 +14,11 @@ const RewardPoint = () => {
     <div className={styles.reward_point_container}>
       <div className="breadcrumb">
         <Breadcrumb>
-          <Breadcrumb.Item>Sales</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="">Reward Point</a>
+            <Link to="/">Home</Link>
           </Breadcrumb.Item>
+          <Breadcrumb.Item>Sales</Breadcrumb.Item>
+          <Breadcrumb.Item>Reward Point</Breadcrumb.Item>
         </Breadcrumb>
       </div>
       <SearchForSalesReport params={params} setParams={setParams} />

@@ -15,7 +15,7 @@ import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ImageUploader from "../../../component/ImageUploader/ImageUploader";
 import { useAddProduct } from "../../../apis/ProductApi";
 import Spinner from "../../../component/Spinner/Spinner";
@@ -130,12 +130,11 @@ const AddProduct = () => {
       <div className={styles.breadcrumb_create_btn}>
         <div className="breadcrumb">
           <Breadcrumb>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
             <Breadcrumb.Item>
-              <a href="">Products</a>
+              <Link to="/">Home</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>
-              <a href="">Products</a>
+              <Link to="/Products">Products</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>Add Products</Breadcrumb.Item>
           </Breadcrumb>

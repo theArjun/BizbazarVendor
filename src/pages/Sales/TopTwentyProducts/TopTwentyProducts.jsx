@@ -9,6 +9,7 @@ import {
   TopTwentyProductsItemSold,
   TopTwentyProductsItemSoldTable,
 } from "../..";
+import { Link } from "react-router-dom";
 const tabs = [
   "Top 20 Products - Items Sold",
   "Top 20 Products - Cost",
@@ -40,9 +41,12 @@ const TopTwentyProducts = () => {
     <div className={styles.top_ten_categories_container}>
       <div className="breadcrumb">
         <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
           <Breadcrumb.Item>Sales</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="">Top 20 Products</a>
+            <Link to="/Sales/Top 20 Products">Top 20 Products</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>{active}</Breadcrumb.Item>
         </Breadcrumb>

@@ -33,8 +33,6 @@
 
 .tabcontain {
   padding: 20px;
-  height: 60vh;
-  overflow-y: scroll;
 }
 .tab_container_card {
   margin-top: 10px;

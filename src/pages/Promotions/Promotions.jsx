@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Promotions.module.css";
-import { Breadcrumb, Button, Table, Select, Tag, Result } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Breadcrumb, Button, Table, Select, Tag, Result, Modal } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -12,6 +12,7 @@ import {
 import useWindowSize from "../../utils/Hooks/useWindowSize";
 import useDebounce from "../../utils/Hooks/useDebounce";
 import { useMemo } from "react";
+const { confirm } = Modal;
 function Promotions() {
   const [bottom, setBottom] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -58,6 +59,7 @@ function Promotions() {
     300,
     [bottom]
   );
+
   let promotionsData = useMemo(() => {
     let temp = [];
     promotionData?.pages?.map((el) => {
@@ -67,6 +69,20 @@ function Promotions() {
     });
     return temp || [];
   }, [promotionData]);
+  // delete confirmation
+  function showConfirm(title, message = "") {
+    confirm({
+      title: title,
+      content: message,
+      async onOk() {
+        deletePromotions();
+      },
+      onCancel() {
+        setSelectedRowKeys([]);
+      },
+    });
+  }
+
   //  set Status of product
   const getPromotionStatus = (status) => {
     switch (status) {
@@ -95,7 +111,7 @@ function Promotions() {
     mutate(delete_data, {
       onSuccess: (response) => {
         queryClient.invalidateQueries(["promotions"]);
-        console.log(response, "promotion updated success");
+        setSelectedRowKeys([]);
       },
       onError: (error) => {
         console.log("error on updating promotion, ", error);
@@ -113,7 +129,7 @@ function Promotions() {
     mutateStatus(status_data, {
       onSuccess: (response) => {
         queryClient.invalidateQueries(["promotions"]);
-        console.log(response, "promotion updated success");
+        setSelectedRowKeys([]);
       },
       onError: (error) => {
         console.log("error on updating promotion, ", error);
@@ -172,24 +188,14 @@ function Promotions() {
     onChange: onSelectChange,
   };
   const hasSelected = selectedRowKeys.length > 0;
-  if (isError) {
-    return (
-      <Result
-        status={error?.response?.status}
-        title={error?.response?.status}
-        subTitle={error?.message}
-        extra={
-          <Button type="primary" onClick={() => navigate("/")}>
-            Back Home
-          </Button>
-        }
-      />
-    );
-  }
+
   return (
     <div className={styles.container}>
       <div className={styles.breadcrumb}>
         <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
           <Breadcrumb.Item>Marketing</Breadcrumb.Item>
           <Breadcrumb.Item>
             <a href="">Promotions</a>
@@ -204,7 +210,10 @@ function Promotions() {
       </div>
       <div className={styles.container}>
         <div className={styles.action_buttons}>
-          <Button disabled={!hasSelected} onClick={deletePromotions}>
+          <Button
+            disabled={!hasSelected}
+            onClick={() => showConfirm("Are you sure to delete ?", "")}
+          >
             Delete
           </Button>
           <Select

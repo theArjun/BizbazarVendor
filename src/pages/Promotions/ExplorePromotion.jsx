@@ -53,9 +53,11 @@ const ExplorePromotion = () => {
     return <Spinner />;
   }
   if (promotion?.company_id == user.id) {
-    return <VendorPromotion data={promotion} />;
+    return <VendorPromotion data={promotion} id={param.id} />;
   } else {
-    return <AdminPromotion data={promotion} loading={isLoading} />;
+    return (
+      <AdminPromotion data={promotion} loading={isLoading} id={param.id} />
+    );
   }
 };
 

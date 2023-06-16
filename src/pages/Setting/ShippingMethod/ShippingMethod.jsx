@@ -6,8 +6,8 @@ import ShippingMethod from "./../../../pagecomponents/Setting/ShippingMethod/Shi
 import StoresAndPickup from "./../../../pagecomponents/Setting/ShippingMethod/StoresAndPickup/StoresAndPickup";
 import { useGetShippingMethods } from "../../../apis/ShippingMethodApi";
 import { useEffect } from "react";
-import { Button, Result } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Breadcrumb } from "antd";
+import { Link } from "react-router-dom";
 const tabs = ["Shipping Method", "Rate Areas", "Stores And pickup Points"];
 
 function ShippingMethodPage() {
@@ -15,8 +15,7 @@ function ShippingMethodPage() {
   const [open, setOpen] = useState(false);
   const [bottom, setBottom] = useState(false);
   const [update, setUpdate] = useState(false);
-  const [shipings, setShippings] = React.useState([]);
-  const navigate = useNavigate();
+  const [shippings, setShippings] = React.useState([]);
   const {
     data: shippingData,
     isLoading: shippingLoading,
@@ -50,20 +49,6 @@ function ShippingMethodPage() {
     }
     fetchNextPage();
   }, [bottom]);
-  if (isError) {
-    return (
-      <Result
-        status={error?.response?.status}
-        title={error?.response?.status}
-        subTitle={error?.message}
-        extra={
-          <Button type="primary" onClick={() => navigate("/")}>
-            Back Home
-          </Button>
-        }
-      />
-    );
-  }
   const getContainerFromTab = () => {
     switch (active) {
       case "Shipping Method":
@@ -73,7 +58,7 @@ function ShippingMethodPage() {
             setOpen={setOpen}
             open={open}
             setUpdate={setUpdate}
-            shipings={shipings}
+            shippings={shippings}
             setBottom={setBottom}
           />
         );
@@ -84,7 +69,16 @@ function ShippingMethodPage() {
     }
   };
   return (
-    <div>
+    <div className={styles.shipping_method}>
+      <div className={styles.breadcrumb}>
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>Setting</Breadcrumb.Item>
+          <Breadcrumb.Item> Shipping Methods</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
       <div className={styles.tabContainer}>
         <div className={styles.left}>
           {tabs.map((dat, i) => (

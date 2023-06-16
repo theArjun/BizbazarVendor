@@ -3,7 +3,7 @@ import { CustomerCommunicationSearch, CustomerCommunicationTable } from "../..";
 import { Breadcrumb, Button, Result } from "antd";
 import { getVendorCustomerMessages } from "../../../apis/MessageCenterApi";
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 const INITIAL_PARAMS = {
   time_from: "",
@@ -67,6 +67,9 @@ const CustomerCommunication = () => {
   return (
     <div>
       <Breadcrumb>
+        <Breadcrumb.Item>
+          <Link to="/">Home</Link>
+        </Breadcrumb.Item>
         <Breadcrumb.Item>Message Center</Breadcrumb.Item>
         <Breadcrumb.Item>Customer Communications</Breadcrumb.Item>
       </Breadcrumb>

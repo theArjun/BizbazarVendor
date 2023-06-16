@@ -15,7 +15,7 @@ import {
 function ShippingMethod({
   open,
   setOpen,
-  shipings,
+  shippings,
   setBottom,
   setUpdate,
   loading,
@@ -217,8 +217,8 @@ function ShippingMethod({
             </Button>
           </>
         ) : null}
-        <Button style={{ margin: "0 0 0 10px" }} onClick={() => setOpen(true)}>
-          Create
+        <Button className={styles.create_btn} onClick={() => setOpen(true)}>
+          Create shipping method
         </Button>
       </div>
 
@@ -226,7 +226,7 @@ function ShippingMethod({
         id="shiipmenttable"
         loading={loading}
         rowSelection={rowSelection}
-        dataSource={shipings}
+        dataSource={shippings}
         columns={columns}
         rowKey={"shipping_id"}
         pagination={false}

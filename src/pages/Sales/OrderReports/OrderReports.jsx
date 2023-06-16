@@ -10,6 +10,7 @@ import {
   OrderStatuses,
 } from "../..";
 import { SearchForSalesReport } from "../..";
+import { Link } from "react-router-dom";
 const tabs = [
   "Products sales - Cost (table)",
   "Categories sales - Cost (table)",
@@ -43,9 +44,12 @@ const OrderReports = () => {
     <div className={styles.order_report_container}>
       <div className="breadcrumb">
         <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
           <Breadcrumb.Item>Sales</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="">Order Reports</a>
+            <Link to="/Sales/Order Reports">Order Reports</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>{active}</Breadcrumb.Item>
         </Breadcrumb>

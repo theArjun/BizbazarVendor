@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./MonthlyOrderReport.module.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Breadcrumb, Button, Result } from "antd";
 import { MonthlyOrderReportSearch, MonthlyOrderReportTable } from "../..";
 import { useGetMonthlyReport } from "../../../apis/ReportsApi";
@@ -79,10 +79,15 @@ const MonthlyOrderReport = () => {
   );
   return (
     <div className={styles.container}>
-      <Breadcrumb>
-        <Breadcrumb.Item>Reports</Breadcrumb.Item>
-        <Breadcrumb.Item>Monthly order reports</Breadcrumb.Item>
-      </Breadcrumb>
+      <div className={styles.breadcrumb}>
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>Reports</Breadcrumb.Item>
+          <Breadcrumb.Item>Monthly order reports</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
       <MonthlyOrderReportSearch
         status={getStatus}
         userGroup={getUserGroups()}

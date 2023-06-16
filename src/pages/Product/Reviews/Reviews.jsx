@@ -4,7 +4,7 @@ import styles from "./Reviews.module.css";
 import { Breadcrumb, Button, Result } from "antd";
 import { useGetReviews } from "../../../apis/ReviewsApi";
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 const INITIAL_PARAMS = {
   name: "",
@@ -67,9 +67,11 @@ const Reviews = () => {
   return (
     <div className={styles.container}>
       <Breadcrumb>
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
         <Breadcrumb.Item>
-          <a href="">Products</a>
+          <Link to="/">Home</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <Link to="/Products">Products</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>Reviews</Breadcrumb.Item>
       </Breadcrumb>

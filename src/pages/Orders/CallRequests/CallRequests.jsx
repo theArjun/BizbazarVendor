@@ -7,7 +7,7 @@ import useDebounce from "../../../utils/Hooks/useDebounce";
 import { useGetCallRequests } from "../../../apis/CallRequestsApi";
 import { useMemo } from "react";
 import { useGetStatuses } from "../../../apis/StatusApi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const INITIAL_PARAMS = {
   name: "",
   id: "",
@@ -71,26 +71,15 @@ const CallRequests = () => {
     300,
     [bottom]
   );
-  if (isError) {
-    return (
-      <Result
-        status={error?.response?.status}
-        title={error?.response?.status}
-        subTitle={error?.message}
-        extra={
-          <Button type="primary" onClick={() => navigate("/")}>
-            Back Home
-          </Button>
-        }
-      />
-    );
-  }
+
   return (
     <div className={styles.container}>
       <Breadcrumb>
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
         <Breadcrumb.Item>
-          <a href="">Orders</a>
+          <Link to="/">Home</Link>
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <Link to="/Orders/View Orders">Orders</Link>
         </Breadcrumb.Item>
         <Breadcrumb.Item>Call Requests</Breadcrumb.Item>
       </Breadcrumb>
@@ -98,7 +87,7 @@ const CallRequests = () => {
       <CallRequestsTable
         callRequest={getCallRequests}
         status={getStatus}
-        loading={callRequestLoading || isFetchingNextPage || statusLoading}
+        loading={callRequestLoading || isFetchingNextPage}
       />
     </div>
   );

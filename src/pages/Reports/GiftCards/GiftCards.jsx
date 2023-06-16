@@ -5,7 +5,7 @@ import GiftCardsSearch from "../../../pagecomponents/Reports/GiftCards/Search/Se
 import GiftCardsTable from "../../../pagecomponents/Reports/GiftCards/Table/Table";
 import { useGetGiftCards } from "../../../apis/ReportsApi";
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 const INITIAL_PARAMS = {
   gift_card_number: "",
@@ -55,10 +55,15 @@ const GiftCards = () => {
   );
   return (
     <div className={styles.container}>
-      <Breadcrumb>
-        <Breadcrumb.Item>Reports</Breadcrumb.Item>
-        <Breadcrumb.Item>Gift Cards</Breadcrumb.Item>
-      </Breadcrumb>
+      <div className={styles.breadcrumb}>
+        <Breadcrumb>
+          <Breadcrumb.Item>
+            <Link to="/">Home</Link>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>Reports</Breadcrumb.Item>
+          <Breadcrumb.Item>Gift Cards</Breadcrumb.Item>
+        </Breadcrumb>
+      </div>
       <GiftCardsSearch params={params} setParams={setParams} />
       <GiftCardsTable
         giftData={getGiftCardsReportData}

@@ -42,7 +42,7 @@
 .positionabsolute {
   position: absolute;
   right: 0;
-  top: -6px;
+  top: 0;
 }
 
 .print {
