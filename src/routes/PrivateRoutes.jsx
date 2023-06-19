@@ -43,6 +43,9 @@ const CallRequests = lazy(() =>
 const ReturnRequests = lazy(() =>
   import("../pages/Orders/ReturnRequests/ReturnRequests")
 );
+const ViewReturnRequests = lazy(() =>
+  import("../pages/Orders/ReturnRequests/ViewReturnRequests/ViewReturnRequests")
+);
 const Products = lazy(() => import("../pages/Product/Products"));
 const ProductsOnModeration = lazy(() =>
   import("../pages/Product/ProductsOnModeration/ProductsOnModeration")
@@ -223,14 +226,24 @@ export default [
     path="/orders/Call Request"
     key="call_request"
   ></Route>,
+  //  Route for return requests
   <Route
     element={
       <SuspenseWrapper>
         <ReturnRequests />
       </SuspenseWrapper>
     }
-    path="/orders/Return Request"
+    path="/Orders/Return Request"
     key="return_request"
+  ></Route>,
+  <Route
+    element={
+      <SuspenseWrapper>
+        <ViewReturnRequests />
+      </SuspenseWrapper>
+    }
+    path="/Orders/Return Request/:id"
+    key="view_return_request"
   ></Route>,
   <Route
     element={
