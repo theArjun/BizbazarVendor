@@ -3,8 +3,8 @@ import { Breadcrumb, Button, Result } from "antd";
 import styles from "./VendorTransactionDetails.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import useDebounce from "../../../utils/Hooks/useDebounce";
-import VendorTransactionDetailsSearch from "../../../pagecomponents/Reports/VendorTransactionDetails/Search/Search";
-import VendorTransactionsReportTable from "../../../pagecomponents/Reports/VendorTransactionDetails/Table/Table";
+import VendorTransactionDetailsSearch from "../../../features/Reports/VendorTransactionDetails/Search/Search";
+import VendorTransactionsReportTable from "../../../features/Reports/VendorTransactionDetails/Table/Table";
 import { useGetVendorTransactionDetails } from "../../../apis/ReportsApi";
 const INITIAL_PARAMS = {
   time_from: "",

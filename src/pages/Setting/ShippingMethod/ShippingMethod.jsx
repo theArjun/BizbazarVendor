@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styles from "./ShippingMethod.module.css";
 import cx from "classnames";
-import RateAreas from "./../../../pagecomponents/Setting/ShippingMethod/RateAreas/RateAreas";
-import ShippingMethod from "./../../../pagecomponents/Setting/ShippingMethod/ShippingMethod/ShippingMethod";
-import StoresAndPickup from "./../../../pagecomponents/Setting/ShippingMethod/StoresAndPickup/StoresAndPickup";
+import RateAreas from "./../../../features/Setting/ShippingMethod/RateAreas/RateAreas";
+import ShippingMethod from "./../../../features/Setting/ShippingMethod/ShippingMethod/ShippingMethod";
+import StoresAndPickup from "./../../../features/Setting/ShippingMethod/StoresAndPickup/StoresAndPickup";
 import { useGetShippingMethods } from "../../../apis/ShippingMethodApi";
 import { useEffect } from "react";
 import { Breadcrumb } from "antd";

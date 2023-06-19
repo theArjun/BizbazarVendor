@@ -54,7 +54,23 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
       onCancel() {},
     });
   }
-
+  // delete bulk product confirmation
+  function showBulkConfirm(title, message = "", ids) {
+    confirm({
+      title: title,
+      content: message,
+      async onOk() {
+        try {
+          deleteSelectedProduct(ids);
+        } catch (e) {
+          return console.log("Oops errors!");
+        }
+      },
+      onCancel() {
+        setSelectedRowKeys([]);
+      },
+    });
+  }
   //This  is for product deletion of multiple products
   const deleteSelectedProduct = async (ids) => {
     let final_delete_ids = { product_ids: {} };
@@ -64,6 +80,7 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
     // delete bulk api call
     deleteBulkMutate(final_delete_ids, {
       onSuccess: (res) => {
+        setSelectedRowKeys([]);
         queryClient.invalidateQueries(["products"]);
         queryClient.invalidateQueries(["category_products"]);
       },
@@ -264,7 +281,13 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
       <div style={{ backgroundColor: "white", padding: "10px" }}>
         <Button
           type="primary"
-          onClick={() => deleteSelectedProduct(selectedRowKeys)}
+          onClick={() =>
+            showBulkConfirm(
+              "Are you sure to delete selected products?",
+              "",
+              selectedRowKeys
+            )
+          }
           disabled={!hasSelected}
         >
           Delete

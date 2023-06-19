@@ -4,6 +4,9 @@
   justify-content: space-between;
   align-items: center;
 }
+.action_btn {
+  margin-left: auto;
+}
 .tabContainer > div.left {
   display: flex;
   width: 100%;

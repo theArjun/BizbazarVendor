@@ -20,6 +20,9 @@
 .view_shipment_content_right {
   background-color: white;
 }
+.action_buttons {
+  margin-left: auto;
+}
 .top_content,
 .mid_content,
 .bottom_content {

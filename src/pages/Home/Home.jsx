@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Home.module.css";
-import LineCharts from "../../pagecomponents/Home/Charts/LineCharts/LineCharts";
-import BarCharts from "../../pagecomponents/Home/Charts/Barcharts/Barcharts";
-import AnalyticsCard from "./../../pagecomponents/Home/Cards/AnalyticsCard/AnalyticsCard";
+import LineCharts from "../../features/Home/Charts/LineCharts/LineCharts";
+import BarCharts from "../../features/Home/Charts/Barcharts/Barcharts";
+import AnalyticsCard from "./../../features/Home/Cards/AnalyticsCard/AnalyticsCard";
 import { Button, Form, Input, Modal, Result } from "antd";
-import RecentOrders from "./../../pagecomponents/Home/RecentOrders/RecentOrders";
-import RecentActivities from "./../../pagecomponents/Home/RecentActivities/RecentActivities";
-import CurrentPlanUsage from "./../../pagecomponents/Home/CurrentPlanUsage/CurrentPlanUsage";
+import RecentOrders from "./../../features/Home/RecentOrders/RecentOrders";
+import RecentActivities from "./../../features/Home/RecentActivities/RecentActivities";
+import CurrentPlanUsage from "./../../features/Home/CurrentPlanUsage/CurrentPlanUsage";
 import Spinner from "../../component/Spinner/Spinner";
 import { useNavigate } from "react-router-dom";
 import { Typography } from "antd";
@@ -21,8 +21,8 @@ import {
   FolderOpenOutlined,
   InsertRowAboveOutlined,
 } from "@ant-design/icons";
-import DateRangePickerComp from "../../pagecomponents/Home/RangePicker/Rangepicker";
-import ProductCountReport from "./../../pagecomponents/Reports/ProductCountReport/ProductCountReport";
+import DateRangePickerComp from "../../features/Home/RangePicker/Rangepicker";
+import ProductCountReport from "./../../features/Reports/ProductCountReport/ProductCountReport";
 import { useGetDashboardData } from "../../apis/DashboardApi";
 import { useCreateAdminMessage } from "../../apis/MessageCenterApi";
 const { id } = JSON.parse(sessionStorage.getItem("userinfo"));

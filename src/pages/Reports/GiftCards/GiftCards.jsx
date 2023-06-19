@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Breadcrumb, Button, Result } from "antd";
 import styles from "./GiftCards.module.css";
-import GiftCardsSearch from "../../../pagecomponents/Reports/GiftCards/Search/Search";
-import GiftCardsTable from "../../../pagecomponents/Reports/GiftCards/Table/Table";
+import GiftCardsSearch from "../../../features/Reports/GiftCards/Search/Search";
+import GiftCardsTable from "../../../features/Reports/GiftCards/Table/Table";
 import { useGetGiftCards } from "../../../apis/ReportsApi";
 import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";

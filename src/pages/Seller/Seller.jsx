@@ -4,7 +4,7 @@ import cx from "classnames";
 import Spinner from "../../component/Spinner/Spinner";
 import { Breadcrumb, Button, message, Form, Modal, Result } from "antd";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   SellerDescription,
@@ -262,10 +262,10 @@ const Seller = () => {
       <div className={styles.breadcrumb_create_btn}>
         <div className={styles.breadcrumb}>
           <Breadcrumb>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
             <Breadcrumb.Item>
-              <a href="">Seller information</a>
+              <Link>Home</Link>
             </Breadcrumb.Item>
+            <Breadcrumb.Item>Seller information</Breadcrumb.Item>
           </Breadcrumb>
         </div>
         <Button

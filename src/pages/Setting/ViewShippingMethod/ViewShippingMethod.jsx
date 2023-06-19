@@ -295,17 +295,15 @@ function EditShipping() {
       <div className={styles.breadcrumb}>
         <Breadcrumb>
           <Breadcrumb.Item>
-            <Link>Home</Link>
+            <Link to="/">Home</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <a href="">Settings</a>
-          </Breadcrumb.Item>
+          <Breadcrumb.Item>Settings</Breadcrumb.Item>
           <Breadcrumb.Item>
             <Link to="/Setting/Shipping Methods">Shipping Methods</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>{id}</Breadcrumb.Item>
         </Breadcrumb>
-        <div>
+        <div className={styles.action_btn}>
           <Button className={styles.button1} onClick={() => navigate(-1)}>
             Back
           </Button>

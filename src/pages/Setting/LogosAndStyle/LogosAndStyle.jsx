@@ -3,7 +3,7 @@ import { Breadcrumb, Button } from "antd";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetThemes, useUpdateTheme } from "../../../apis/LogosAndStylesApi";
 import Spinner from "../../../component/Spinner/Spinner";
-import Logo from "../../../pagecomponents/Setting/LogosAndStyle/Logos/Logo";
+import Logo from "../../../features/Setting/LogosAndStyle/Logos/Logo";
 import styles from "./LogosAndStyle.module.css";
 
 const INITIAL_THEME_CONDITION = {

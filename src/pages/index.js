@@ -1,264 +1,246 @@
 import React from "react";
 const ProductTable = React.lazy(() =>
-  import("../pagecomponents/Products/Table/ProductTable")
+  import("../features/Products/Table/ProductTable")
 );
 const ReviewSearch = React.lazy(() =>
-  import("../pagecomponents/Products/Reviews/Search/Search")
+  import("../features/Products/Reviews/Search/Search")
 );
 const ReviewTable = React.lazy(() =>
-  import("../pagecomponents/Products/Reviews/Table/ReviewTable")
+  import("../features/Products/Reviews/Table/ReviewTable")
 );
 const ProductSearch = React.lazy(() =>
-  import("../pagecomponents/Products/Search/Search")
+  import("../features/Products/Search/Search")
 );
 const ViewOrdersTable = React.lazy(() =>
-  import("../pagecomponents/Orders/ViewOrders/Table/Table")
+  import("../features/Orders/ViewOrders/Table/Table")
 );
 const ViewOrdersSearch = React.lazy(() =>
-  import("../pagecomponents/Orders/ViewOrders/Search/Search")
+  import("../features/Orders/ViewOrders/Search/Search")
 );
 const CallRequestsSearch = React.lazy(() =>
-  import("../pagecomponents/Orders/CallRequests/Search/Search")
+  import("../features/Orders/CallRequests/Search/Search")
 );
 const CallRequestsTable = React.lazy(() =>
-  import("../pagecomponents/Orders/CallRequests/Table/Table")
+  import("../features/Orders/CallRequests/Table/Table")
 );
 const ReturnRequestsTable = React.lazy(() =>
-  import("../pagecomponents/Orders/ReturnRequests/Table/Table")
+  import("../features/Orders/ReturnRequests/Table/Table")
 );
 const ReturnRequestsSearch = React.lazy(() =>
-  import("../pagecomponents/Orders/ReturnRequests/Search/Search")
+  import("../features/Orders/ReturnRequests/Search/Search")
 );
 const TransactionTable = React.lazy(() =>
-  import("../pagecomponents/Accounting/Transaction/Table/TransactionTable")
+  import("../features/Accounting/Transaction/Table/TransactionTable")
 );
 const TransactionSearch = React.lazy(() =>
-  import("../pagecomponents/Accounting/Transaction/Search/Search")
+  import("../features/Accounting/Transaction/Search/Search")
 );
 const WithdrawalTable = React.lazy(() =>
-  import("../pagecomponents/Accounting/Withdrawals/Table/WithdrawalsTable")
+  import("../features/Accounting/Withdrawals/Table/WithdrawalsTable")
 );
 const WithdrawalSearch = React.lazy(() =>
-  import("../pagecomponents/Accounting/Withdrawals/Search/Search")
+  import("../features/Accounting/Withdrawals/Search/Search")
 );
 const EditGeneral = React.lazy(() =>
-  import("../pagecomponents/Products/Edit/General/General")
+  import("../features/Products/Edit/General/General")
 );
 const EditShipping = React.lazy(() =>
-  import("../pagecomponents/Products/Edit/Shipping/Shipping")
+  import("../features/Products/Edit/Shipping/Shipping")
 );
 const EditFeatures = React.lazy(() =>
-  import("../pagecomponents/Products/Edit/Features/Features")
+  import("../features/Products/Edit/Features/Features")
 );
 const EditOptions = React.lazy(() =>
-  import("../pagecomponents/Products/Edit/Options/Options")
+  import("../features/Products/Edit/Options/Options")
 );
-const EditSeo = React.lazy(() =>
-  import("../pagecomponents/Products/Edit/Seo/Seo")
-);
+const EditSeo = React.lazy(() => import("../features/Products/Edit/Seo/Seo"));
 const EditQuantityDiscount = React.lazy(() =>
-  import("../pagecomponents/Products/Edit/QuantityDiscounts/QuantityDiscounts")
+  import("../features/Products/Edit/QuantityDiscounts/QuantityDiscounts")
 );
 const EditVariations = React.lazy(() =>
-  import("../pagecomponents/Products/Edit/Variations/Variations")
+  import("../features/Products/Edit/Variations/Variations")
 );
 const CustomerCommunicationSearch = React.lazy(() =>
-  import("../pagecomponents/MessageCenter/CustomerCommunication/Search/Search")
+  import("../features/MessageCenter/CustomerCommunication/Search/Search")
 );
 const CustomerCommunicationTable = React.lazy(() =>
-  import("../pagecomponents/MessageCenter/CustomerCommunication/Table/Table")
+  import("../features/MessageCenter/CustomerCommunication/Table/Table")
 );
 const AdminCommunicationSearch = React.lazy(() =>
-  import("../pagecomponents/MessageCenter/AdminCommunication/Search/Search")
+  import("../features/MessageCenter/AdminCommunication/Search/Search")
 );
 const AdminCommunicationTable = React.lazy(() =>
-  import("../pagecomponents/MessageCenter/AdminCommunication/Table/Table")
+  import("../features/MessageCenter/AdminCommunication/Table/Table")
 );
 const AdditionField = React.lazy(() =>
-  import("../pagecomponents/Products/BulkAddition/AdditionField/AdditionField")
+  import("../features/Products/BulkAddition/AdditionField/AdditionField")
 );
 const AdditionTable = React.lazy(() =>
-  import("../pagecomponents/Products/BulkAddition/AdditionTable/AdditionTable")
+  import("../features/Products/BulkAddition/AdditionTable/AdditionTable")
 );
 const ParticularReview = React.lazy(() =>
-  import("../pagecomponents/Products/Edit/Reviews/Reviews")
+  import("../features/Products/Edit/Reviews/Reviews")
 );
 const CatalogPromotionGeneral = React.lazy(() =>
-  import("../pagecomponents/Marketing/AddCatalogPromotion/General/General")
+  import("../features/Marketing/AddCatalogPromotion/General/General")
 );
 const CatalogPromotionBonuses = React.lazy(() =>
-  import("../pagecomponents/Marketing/AddCatalogPromotion/Bonuses/Bonuses")
+  import("../features/Marketing/AddCatalogPromotion/Bonuses/Bonuses")
 );
 const CatalogPromotionConditions = React.lazy(() =>
-  import(
-    "../pagecomponents/Marketing/AddCatalogPromotion/Conditions/Conditions"
-  )
+  import("../features/Marketing/AddCatalogPromotion/Conditions/Conditions")
 );
 const AdminPromotion = React.lazy(() =>
-  import("../pagecomponents/Marketing/Promotion/AdminPromotion")
+  import("../features/Marketing/Promotion/AdminPromotion")
 );
 const VendorPromotion = React.lazy(() =>
-  import("../pagecomponents/Marketing/Promotion/VendorPromotion")
+  import("../features/Marketing/Promotion/VendorPromotion")
 );
 const SellerGeneral = React.lazy(() =>
-  import("../pagecomponents/Seller/General/General")
+  import("../features/Seller/General/General")
 );
 const SellerDescription = React.lazy(() =>
-  import("../pagecomponents/Seller/Description/Description")
+  import("../features/Seller/Description/Description")
 );
 const SellerTermsAndConditions = React.lazy(() =>
-  import("../pagecomponents/Seller/TermsAndConditions/TermsAndConditions")
+  import("../features/Seller/TermsAndConditions/TermsAndConditions")
 );
-const SellerPlan = React.lazy(() =>
-  import("../pagecomponents/Seller/Plan/Plan")
-);
-const SellerLogos = React.lazy(() =>
-  import("../pagecomponents/Seller/Logos/Logos")
-);
+const SellerPlan = React.lazy(() => import("../features/Seller/Plan/Plan"));
+const SellerLogos = React.lazy(() => import("../features/Seller/Logos/Logos"));
 const Logos = React.lazy(() =>
-  import("../pagecomponents/Setting/LogosAndStyle/Logos/Logo")
+  import("../features/Setting/LogosAndStyle/Logos/Logo")
 );
 const MonthlyOrderReportTable = React.lazy(() =>
-  import("../pagecomponents/Reports/MonthlyOrderReport/Table/Table")
+  import("../features/Reports/MonthlyOrderReport/Table/Table")
 );
 const MonthlyOrderReportSearch = React.lazy(() =>
-  import("../pagecomponents/Reports/MonthlyOrderReport/Search/Search")
+  import("../features/Reports/MonthlyOrderReport/Search/Search")
 );
 const ShippingMethodGeneral = React.lazy(() =>
-  import(
-    "../pagecomponents/Setting/ShippingMethod/EditShipping/General/General"
-  )
+  import("../features/Setting/ShippingMethod/EditShipping/General/General")
 );
 const ShippingTimeRates = React.lazy(() =>
   import(
-    "../pagecomponents/Setting/ShippingMethod/EditShipping/ShippingTimeRates/ShippingTimeRates"
+    "../features/Setting/ShippingMethod/EditShipping/ShippingTimeRates/ShippingTimeRates"
   )
 );
 const ShippingAdditionalSetting = React.lazy(() =>
   import(
-    "../pagecomponents/Setting/ShippingMethod/EditShipping/AdditionalSettings/AdditionalSettings"
+    "../features/Setting/ShippingMethod/EditShipping/AdditionalSettings/AdditionalSettings"
   )
 );
 const TestRateCalculation = React.lazy(() =>
   import(
-    "../pagecomponents/Setting/ShippingMethod/EditShipping/TestRateCalculation/TestRateCalculation"
+    "../features/Setting/ShippingMethod/EditShipping/TestRateCalculation/TestRateCalculation"
   )
 );
 const StoreFronts = React.lazy(() =>
   import(
-    "../pagecomponents/Setting/ShippingMethod/EditShipping/StoreFronts/StoreFronts"
+    "../features/Setting/ShippingMethod/EditShipping/StoreFronts/StoreFronts"
   )
 );
 const ShippingSuppliers = React.lazy(() =>
-  import(
-    "../pagecomponents/Setting/ShippingMethod/EditShipping/Suppliers/Suppliers"
-  )
+  import("../features/Setting/ShippingMethod/EditShipping/Suppliers/Suppliers")
 );
-const LogList = React.lazy(() =>
-  import("../pagecomponents/Logs/LogList/LogList")
-);
-const LogSearch = React.lazy(() =>
-  import("../pagecomponents/Logs/Search/Search")
-);
+const LogList = React.lazy(() => import("../features/Logs/LogList/LogList"));
+const LogSearch = React.lazy(() => import("../features/Logs/Search/Search"));
 const ProductBundleSearch = React.lazy(() =>
-  import("../pagecomponents/Marketing/ProductBundle/Search/Search")
+  import("../features/Marketing/ProductBundle/Search/Search")
 );
 const ProductBundleTable = React.lazy(() =>
-  import("../pagecomponents/Marketing/ProductBundle/Table/Table")
+  import("../features/Marketing/ProductBundle/Table/Table")
 );
 const ProductBundleGeneralTab = React.lazy(() =>
   import(
-    "../pagecomponents/Marketing/ProductBundle/ProductBundleCreateModal/Components/General/General"
+    "../features/Marketing/ProductBundle/ProductBundleCreateModal/Components/General/General"
   )
 );
 const ProductBundleProductTab = React.lazy(() =>
   import(
-    "../pagecomponents/Marketing/ProductBundle/ProductBundleCreateModal/Components/Products/Products"
+    "../features/Marketing/ProductBundle/ProductBundleCreateModal/Components/Products/Products"
   )
 );
 const ProductsSales = React.lazy(() =>
-  import("../pagecomponents/Sales/OrderReports/ProductsSales/ProductsSales")
+  import("../features/Sales/OrderReports/ProductsSales/ProductsSales")
 );
 const CategoriesSales = React.lazy(() =>
-  import("../pagecomponents/Sales/OrderReports/CategoriesSales/CategoriesSales")
+  import("../features/Sales/OrderReports/CategoriesSales/CategoriesSales")
 );
 const MostActiveCustomers = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/OrderReports/MostActiveCustomers/MostActiveCustomers"
+    "../features/Sales/OrderReports/MostActiveCustomers/MostActiveCustomers"
   )
 );
 const ShippingCostPerOrder = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/OrderReports/ShippingCostPerOrder/ShippingCostPerOrder"
+    "../features/Sales/OrderReports/ShippingCostPerOrder/ShippingCostPerOrder"
   )
 );
 const OrderStatuses = React.lazy(() =>
-  import("../pagecomponents/Sales/OrderReports/OrderStatuses/OrderStatuses")
+  import("../features/Sales/OrderReports/OrderStatuses/OrderStatuses")
 );
 const TopFiftyCustomersNoOfOrders = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/TopFiftyCustomers/TopFiftyCustomersNoOfOrders/TopFiftyCustomersNoOfOrders"
+    "../features/Sales/TopFiftyCustomers/TopFiftyCustomersNoOfOrders/TopFiftyCustomersNoOfOrders"
   )
 );
 const TopFiftyCustomersOrderSales = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/TopFiftyCustomers/TopFiftyCustomersOrderSales/TopFiftyCustomersOrderSales"
+    "../features/Sales/TopFiftyCustomers/TopFiftyCustomersOrderSales/TopFiftyCustomersOrderSales"
   )
 );
 const TopTwentyVendors = React.lazy(() =>
-  import(
-    "../pagecomponents/Sales/TopTenCategories/TopTwentyVendors/TopTwentyVendors"
-  )
+  import("../features/Sales/TopTenCategories/TopTwentyVendors/TopTwentyVendors")
 );
 const TopTenCategoriesItemSold = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/TopTenCategories/TopTenCategoriesItemSold/TopTenCategoriesItemSold"
+    "../features/Sales/TopTenCategories/TopTenCategoriesItemSold/TopTenCategoriesItemSold"
   )
 );
 const TopTenCategoriesItemSoldTable = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/TopTenCategories/TopTenCategoriesItemSoldTable/TopTenCategoriesItemSoldTable"
+    "../features/Sales/TopTenCategories/TopTenCategoriesItemSoldTable/TopTenCategoriesItemSoldTable"
   )
 );
 const TopTenCategoriesCost = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/TopTenCategories/TopTenCategoriesCost/TopTenCategoriesCost"
+    "../features/Sales/TopTenCategories/TopTenCategoriesCost/TopTenCategoriesCost"
   )
 );
 const TopTenCategoriesCostTable = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/TopTenCategories/TopTenCategoriesCostTable/TopTenCategoriesCostTable"
+    "../features/Sales/TopTenCategories/TopTenCategoriesCostTable/TopTenCategoriesCostTable"
   )
 );
 const TopTwentyProductsItemSoldTable = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/TopTwentyProducts/TopTwentyProductsItemSoldTable/TopTwentyProductsItemSoldTable"
+    "../features/Sales/TopTwentyProducts/TopTwentyProductsItemSoldTable/TopTwentyProductsItemSoldTable"
   )
 );
 
 const TopTwentyProductsItemSold = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/TopTwentyProducts/TopTwentyProductsItemSold/TopTwentyProductsItemSold"
+    "../features/Sales/TopTwentyProducts/TopTwentyProductsItemSold/TopTwentyProductsItemSold"
   )
 );
 const TopTwentyProductsCost = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/TopTwentyProducts/TopTwentyProductsCost/TopTwentyProductsCost"
+    "../features/Sales/TopTwentyProducts/TopTwentyProductsCost/TopTwentyProductsCost"
   )
 );
 const TopTwentyProductsCostTable = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/TopTwentyProducts/TopTwentyProductsCostTable/TopTwentyProductsCostTable"
+    "../features/Sales/TopTwentyProducts/TopTwentyProductsCostTable/TopTwentyProductsCostTable"
   )
 );
 const PaymentMethodsChartCost = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/PaymentMethods/PaymentMethodsChartCost/PaymentMethodsChartCost"
+    "../features/Sales/PaymentMethods/PaymentMethodsChartCost/PaymentMethodsChartCost"
   )
 );
 const PaymentMethodsChartOrdersPlaced = React.lazy(() =>
   import(
-    "../pagecomponents/Sales/PaymentMethods/PaymentMethodsChartOrdersPlaced/PaymentMethodsChartOrdersPlaced"
+    "../features/Sales/PaymentMethods/PaymentMethodsChartOrdersPlaced/PaymentMethodsChartOrdersPlaced"
   )
 );
 
@@ -267,24 +249,22 @@ const SearchForSalesReport = React.lazy(() =>
 );
 
 const SearchForShipment = React.lazy(() =>
-  import("../pagecomponents/Orders/Shipments/Search/Search")
+  import("../features/Orders/Shipments/Search/Search")
 );
 const TableForShipment = React.lazy(() =>
-  import("../pagecomponents/Orders/Shipments/Table/Table")
+  import("../features/Orders/Shipments/Table/Table")
 );
 const CategoryData = React.lazy(() =>
-  import("../pagecomponents/Categories/CategoryData/CategoryData")
+  import("../features/Categories/CategoryData/CategoryData")
 );
 const CategoryTotalData = React.lazy(() =>
-  import("../pagecomponents/Categories/TotalData/TotalData")
+  import("../features/Categories/TotalData/TotalData")
 );
 const CategoryNest = React.lazy(() =>
-  import("../pagecomponents/Categories/ViewCategory/CategoryNest/CategoryNest")
+  import("../features/Categories/ViewCategory/CategoryNest/CategoryNest")
 );
 const SingleCategory = React.lazy(() =>
-  import(
-    "../pagecomponents/Categories/ViewCategory/SingleCategory/SingleCategory"
-  )
+  import("../features/Categories/ViewCategory/SingleCategory/SingleCategory")
 );
 export {
   //Orders

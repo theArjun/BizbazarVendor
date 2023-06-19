@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./OrderDetails.module.css";
 import { Breadcrumb, Button, Result } from "antd";
-import Deatails from "./../../../pagecomponents/Orders/OrderDetails/Deatails/Deatails";
+import Deatails from "./../../../features/Orders/OrderDetails/Deatails/Deatails";
 import { useGetOrderByID } from "../../../apis/OrdersApi";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../../../component/Spinner/Spinner";

@@ -3,7 +3,7 @@ import styles from "./ProductBundles.module.css";
 import { Breadcrumb } from "antd";
 import { Button } from "antd";
 import { ProductBundleSearch, ProductBundleTable } from "..";
-import ProductBundleCreateModal from "../../pagecomponents/Marketing/ProductBundle/ProductBundleCreateModal/ProductBundleCreateModal";
+import ProductBundleCreateModal from "../../features/Marketing/ProductBundle/ProductBundleCreateModal/ProductBundleCreateModal";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 

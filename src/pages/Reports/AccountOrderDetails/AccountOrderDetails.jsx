@@ -4,8 +4,8 @@ import styles from "./AccountOrderDetails.module.css";
 import { useEffect } from "react";
 import useDebounce from "../../../utils/Hooks/useDebounce";
 import { Link, useNavigate } from "react-router-dom";
-import AccountOrderDetailsSearch from "./../../../pagecomponents/Reports/AccountOrderDetails/Search/Search";
-import AccountOrderDetailsTable from "../../../pagecomponents/Reports/AccountOrderDetails/Table/Table";
+import AccountOrderDetailsSearch from "./../../../features/Reports/AccountOrderDetails/Search/Search";
+import AccountOrderDetailsTable from "../../../features/Reports/AccountOrderDetails/Table/Table";
 import { useGetAccountingOrderDetails } from "../../../apis/ReportsApi";
 import { useMemo } from "react";
 const INITIAL_PARAMS = {

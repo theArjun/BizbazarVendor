@@ -3,7 +3,7 @@ import React from "react";
 import styles from "./ViewRateAreas.module.css";
 import cx from "classnames";
 import { Table } from "antd";
-import GeneralRateAreas from "../../../../pagecomponents/Setting/ShippingMethod/RateAreas/Components/General";
+import GeneralRateAreas from "../../../../features/Setting/ShippingMethod/RateAreas/Components/General";
 
 const tabs = ["General", "Pickup"];
 
