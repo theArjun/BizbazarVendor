@@ -263,7 +263,7 @@ const Seller = () => {
         <div className={styles.breadcrumb}>
           <Breadcrumb>
             <Breadcrumb.Item>
-              <Link>Home</Link>
+              <Link to="/">Home</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>Seller information</Breadcrumb.Item>
           </Breadcrumb>

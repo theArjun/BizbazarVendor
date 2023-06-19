@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {Table, Dropdown,Button } from "antd";
+import { Table, Dropdown, Button } from "antd";
 import styles from "./Table.module.css";
 import { AiFillSetting } from "react-icons/ai";
 const data = [
@@ -8,66 +8,65 @@ const data = [
     price: 2554,
     quantity: 5,
     code: "#12545",
-    status:{
-      status:'Confirmed',
-      update_by:'Admin Admin'
+    status: {
+      status: "Confirmed",
+      update_by: "Admin Admin",
     },
-    date:{
-      date:'11/29/2022',
-      time:'15:07'
+    date: {
+      date: "11/29/2022",
+      time: "15:07",
     },
-    customer:'Vision Computer',
-    phone:'9805335201',
-    settlement:'Unsettled',
-    total:56
+    customer: "Vision Computer",
+    phone: "9805335201",
+    settlement: "Unsettled",
+    total: 56,
   },
   {
     key: "2",
     price: 2474,
     quantity: 25,
     code: "#12545",
-    status:{
-      status:'Confirmed',
-      update_by:'Admin Admin'
+    status: {
+      status: "Confirmed",
+      update_by: "Admin Admin",
     },
-    date:{
-      date:'11/29/2022',
-      time:'15:07'
+    date: {
+      date: "11/29/2022",
+      time: "15:07",
     },
-    customer:'Vision Computer',
-    phone:'9805335201',
-    settlement:'Unsettled',
-    total:89
+    customer: "Vision Computer",
+    phone: "9805335201",
+    settlement: "Unsettled",
+    total: 89,
   },
   {
     key: "3",
     price: 5554,
     quantity: 65,
     code: "#12545",
-    status:{
-      status:'Confirmed',
-      update_by:'Admin Admin'
+    status: {
+      status: "Confirmed",
+      update_by: "Admin Admin",
     },
-    date:{
-      date:'11/29/2022',
-      time:'15:07'
+    date: {
+      date: "11/29/2022",
+      time: "15:07",
     },
-    customer:'Vision Computer',
-    phone:'9805335201',
-    settlement:'Unsettled',
-    total:45
+    customer: "Vision Computer",
+    phone: "9805335201",
+    settlement: "Unsettled",
+    total: 45,
   },
 ];
-var gross_total=0;
-const ViewOrderTable =  () => {
-  const[tableData,setTableData]=useState([])
+var gross_total = 0;
+const ViewOrderTable = () => {
+  const [tableData, setTableData] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-   useEffect(()=>{
-    setTableData(data)
-      
-      //  return await gross_total;
-    
-  },[data]);
+  useEffect(() => {
+    setTableData(data);
+
+    //  return await gross_total;
+  }, [data]);
   const items = [
     {
       key: "1",
@@ -84,75 +83,57 @@ const ViewOrderTable =  () => {
   ];
   const columns = [
     {
-      title: "ID",
+      title: "Id",
       dataIndex: "code",
       key: "code",
-      render: (code) => (
-        <a href="#">Order {code}</a>
-      ),
+      render: (code) => <a href="#">Order {code}</a>,
     },
     {
-      title: "STATUS",
+      title: "Status",
       dataIndex: "status",
       key: "price",
-      render:(status)=>(
+      render: (status) => (
         <div className={styles.order_status}>
-        <Button style={{width:'fit-content'}} type="primary" id="status">{status.status}</Button>
-        <label htmlFor="#status">{status.update_by}</label>
+          <Button style={{ width: "fit-content" }} type="primary" id="status">
+            {status.status}
+          </Button>
+          <label htmlFor="#status">{status.update_by}</label>
         </div>
-      )
+      ),
     },
     {
-      title: "DATE",
+      title: "Date",
       dataIndex: "date",
       key: "date",
-      render:(date)=>(
-            <p>{date.date+','+date.time}</p>
-      )
+      render: (date) => <p>{date.date + "," + date.time}</p>,
     },
+
     {
-      title: "CUSTOMER",
+      title: "Customer",
       dataIndex: "customer",
       key: "customer",
-    
     },
     {
-      title: "PHONE",
-      dataIndex: "phone",
-      key: "phone",
-    
-    },
-    {
-      title: "SETTLEMENT STATUS",
-      dataIndex: "settlement",
-      key: "settlement",
-    
-    },
-    {
-      title: "ACTION",
+      title: "Action",
       key: "action",
       dataIndex: "action",
-      render: (action) => (
-        <div className={styles.product_action}>
-          <Dropdown
-            menu={{
-              items,
-            }}
-            placement="bottom"
-            arrow
-          >
-            <AiFillSetting size={20} className={styles.icons} />
-          </Dropdown>
-        </div>
-      ),
     },
     {
-      title: "TOTAL",
-      dataIndex:'total',
-      key: "total",
-      render: (total) => (
-        <p>रु{total}</p>
-      ),
+      title: "Order ID",
+      dataIndex: "order_id",
+      key: "order_id",
+    },
+    {
+      title: "Return charge",
+      dataIndex: "return_charge",
+      key: "return_charge",
+    },
+
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+      render: (total) => <p>रु{total}</p>,
     },
   ];
   const onSelectChange = (newSelectedRowKeys) => {
@@ -198,13 +179,21 @@ const ViewOrderTable =  () => {
   };
   return (
     <div>
-      <Table rowSelection={rowSelection} columns={columns} dataSource={tableData} pagination={false} scroll={{
-        x: 1000,
-        // y: 300,
-      }} />
+      <Table
+        rowSelection={rowSelection}
+        columns={columns}
+        dataSource={tableData}
+        pagination={false}
+        scroll={{
+          x: 1000,
+          // y: 300,
+        }}
+      />
       <div className={styles.gross_total}>
         <p>Gross Total: {}</p>
-        <h4>Total Paid <span style={{color:'green'}}>रु{0}</span></h4>
+        <h4>
+          Total Paid <span style={{ color: "green" }}>रु{0}</span>
+        </h4>
       </div>
     </div>
   );
