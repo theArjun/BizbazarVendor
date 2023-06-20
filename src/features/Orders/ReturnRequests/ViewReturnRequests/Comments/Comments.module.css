@@ -1,0 +1,6 @@
+.comments_text_area {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: end;
+}

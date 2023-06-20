@@ -266,6 +266,23 @@ const CategoryNest = React.lazy(() =>
 const SingleCategory = React.lazy(() =>
   import("../features/Categories/ViewCategory/SingleCategory/SingleCategory")
 );
+//Return requests
+const RequestInformationTable = React.lazy(() =>
+  import(
+    "../features/Orders/ReturnRequests/ViewReturnRequests/ProductInformationTable/Table"
+  )
+);
+const Actions = React.lazy(() =>
+  import("../features/Orders/ReturnRequests/ViewReturnRequests/Actions/Actions")
+);
+const History = React.lazy(() =>
+  import("../features/Orders/ReturnRequests/ViewReturnRequests/History/History")
+);
+const Comments = React.lazy(() =>
+  import(
+    "../features/Orders/ReturnRequests/ViewReturnRequests/Comments/Comments"
+  )
+);
 export {
   //Orders
   ViewOrdersTable,
@@ -276,6 +293,11 @@ export {
   ReturnRequestsSearch,
   SearchForShipment,
   TableForShipment,
+  RequestInformationTable,
+  Actions,
+  History,
+  Comments,
+
   //Accounting
   TransactionTable,
   TransactionSearch,

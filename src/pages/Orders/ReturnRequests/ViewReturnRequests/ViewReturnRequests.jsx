@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 import styles from "./ViewReturnRequests.module.css";
 import { Breadcrumb } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { AiOutlineCar, AiOutlineTags } from "react-icons/ai";
 import { FiUser } from "react-icons/fi";
 import cx from "classnames";
+import {
+  Actions,
+  Comments,
+  History,
+  RequestInformationTable,
+  ReturnRequestsTable,
+} from "../../..";
 const tabs = [
   "Return products information",
   "Declined products information",
@@ -14,18 +21,19 @@ const tabs = [
 ];
 const ViewReturnRequests = () => {
   const [active, setActive] = useState(tabs[0]);
+  const { id } = useParams("id");
   const getContainerFromTab = () => {
     switch (active) {
       case tabs[1]:
-        return <div>Declined products information</div>;
+        return <RequestInformationTable />;
       case tabs[2]:
-        return <div>Comments</div>;
+        return <Comments />;
       case tabs[3]:
-        return <div>Actions</div>;
+        return <Actions />;
       case tabs[4]:
-        return <div>History</div>;
+        return <History />;
       default:
-        return <div>Return products information</div>;
+        return <RequestInformationTable />;
     }
   };
   return (
@@ -39,6 +47,7 @@ const ViewReturnRequests = () => {
             <Link to="/Orders/View Orders">Orders</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>Return Requests</Breadcrumb.Item>
+          <Breadcrumb.Item>{id}</Breadcrumb.Item>
         </Breadcrumb>
       </div>
       <div className={styles.view_return_requests_body}>
@@ -59,8 +68,9 @@ const ViewReturnRequests = () => {
               ))}
             </div>
           </div>
-
-          {getContainerFromTab()}
+          <div className={styles.return_request_tabs}>
+            {getContainerFromTab()}
+          </div>
         </div>
         <div className={styles.view_return_requests_right}>
           <div className={styles.request_information}>

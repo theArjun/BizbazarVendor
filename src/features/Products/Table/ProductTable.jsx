@@ -303,7 +303,7 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
         pagination={false}
         onChange={onChange}
         scroll={{
-          y: windowSize.height > 670 ? 450 : 200,
+          y: windowSize.height > 670 ? 450 : 300,
           x: 1000,
         }}
       />
