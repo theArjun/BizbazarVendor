@@ -26,7 +26,7 @@ const ViewCategory = () => {
   }, [categoriesData]);
   // Getting category details data
   const categoryData = useMemo(() => {
-    return data?.data || {};
+    return data?.data?.category_data || {};
   }, [data]);
   // Getting Fee data using useMemo
   const category_fee = useMemo(() => {

@@ -11,7 +11,7 @@ export const useGetCategories = () =>
 export const useGetCategoryByID = (id) =>
   useQuery({
     queryKey: ["categories", id],
-    queryFn: () => Axios.get(`categories/${id}`),
+    queryFn: () => Axios.get(`CategoryData/${id}`),
     refetchOnWindowFocus: false,
   });
 export const useGetNestedCategories = () =>

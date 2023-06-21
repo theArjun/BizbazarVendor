@@ -6,3 +6,11 @@
   grid-template-columns: 250px 1fr;
   margin: 20px 0;
 }
+.appearance_items > div > div {
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+.appearance_items > div > div > label {
+  margin: 10px 0;
+  margin-inline-start: 0 !important;
+}
