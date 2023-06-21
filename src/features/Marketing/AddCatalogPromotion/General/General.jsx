@@ -1,4 +1,4 @@
-import { Button, DatePicker, Input } from "antd";
+import { Button, DatePicker, Input, InputNumber } from "antd";
 import React, { useEffect, useState } from "react";
 import styles from "./General.module.css";
 import ReactQuill from "react-quill";
@@ -115,13 +115,14 @@ function General({
       </label>
       <label className={styles.label}>
         <div>Priority:</div>
-        <Input
+        <InputNumber
           className={styles.Priority}
-          type="text"
+          type="number"
+          min={0}
           value={generalData.priority}
           onChange={(e) => {
             let data = { ...generalData };
-            data.priority = e.target.value;
+            data.priority = e;
             setGeneralData(data);
           }}
         />
