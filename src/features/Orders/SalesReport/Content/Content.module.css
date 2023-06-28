@@ -1,0 +1,12 @@
+.content {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--theme-page-background-sub);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+  min-height: calc(100vh - 200px);
+}
+.contentContainer {
+  flex-grow: 1;
+}

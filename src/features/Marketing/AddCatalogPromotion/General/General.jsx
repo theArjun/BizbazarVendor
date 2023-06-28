@@ -5,7 +5,10 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { message } from "antd";
 import ImageUploaderForPromotion from "../../../../component/ImageUploader/ImageUploaderForPromotion";
-
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import dayjs from "dayjs";
+dayjs.extend(customParseFormat);
+const dateFormat = "YYYY-MM-DD";
 function General({
   data,
   setGeneralData,
@@ -15,6 +18,7 @@ function General({
   deleteImage,
   setDeleteImage,
 }) {
+  console.log(generalData.from_date);
   //function to get image
   const getImage = (image) => {
     if (!!image) {
@@ -36,7 +40,7 @@ function General({
     <div className={styles.container}>
       <label className={styles.label}>
         <div>
-          Name<label>*</label>:
+          Name<label style={{ color: "red" }}>*</label>:
         </div>
 
         <Input
@@ -78,40 +82,52 @@ function General({
       </label>
       <label className={styles.label}>
         <div>Image :</div>
-        <ImageUploaderForPromotion
-          image={image}
-          setImage={setImage}
-          imageList={getImage(data?.image)}
-          deleteImage={deleteImage}
-          setDeleteImage={setDeleteImage}
-          message={message}
-        />
+        <div className={styles.promotion_image}>
+          <ImageUploaderForPromotion
+            image={image}
+            setImage={setImage}
+            imageList={getImage(data?.image)}
+            deleteImage={deleteImage}
+            setDeleteImage={setDeleteImage}
+            message={message}
+          />
+        </div>
       </label>
       <label className={styles.label}>
         <div>Available from:</div>
-        <input
-          className={styles.checkbox}
-          type="date"
-          value={generalData.from_date}
-          onChange={(e) => {
-            let data = { ...generalData };
-            data.from_date = e.target.value;
-            setGeneralData(data);
-          }}
-        />
+        <div>
+          <DatePicker
+            allowClear={false}
+            className={styles.datePicker}
+            value={dayjs(generalData?.from_date)}
+            format={dateFormat}
+            onChange={(date) => {
+              let data = {
+                ...generalData,
+                from_date: date,
+              };
+              setGeneralData(data);
+            }}
+          />
+        </div>
       </label>
       <label className={styles.label}>
         <div>Available to:</div>
-        <input
-          className={styles.checkbox}
-          type="date"
-          value={generalData.to_date}
-          onChange={(e) => {
-            let data = { ...generalData };
-            data.to_date = e.target.value;
-            setGeneralData(data);
-          }}
-        />
+        <div>
+          <DatePicker
+            allowClear={false}
+            className={styles.datePicker}
+            value={dayjs(generalData?.to_date)}
+            format={dateFormat}
+            onChange={(date) => {
+              let data = {
+                ...generalData,
+                to_date: date,
+              };
+              setGeneralData(data);
+            }}
+          />
+        </div>
       </label>
       <label className={styles.label}>
         <div>Priority:</div>

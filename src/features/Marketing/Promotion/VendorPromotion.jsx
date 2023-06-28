@@ -71,7 +71,7 @@ const VendorPromotion = ({ data, id }) => {
   const getTimeAndDate = (timeStamp) => {
     const date = new Date(parseInt(timeStamp) * 1000);
     var month = String(date.getUTCMonth() + 1).padStart(2, "0"); //months from 1-12
-    var day = String(date.getUTCDate()).padStart(2, "0");
+    var day = String(date.getUTCDate() + 1).padStart(2, "0");
     var year = date.getUTCFullYear();
     let new_date = `${year}-${month}-${day}`;
     return new_date;
@@ -113,8 +113,8 @@ const VendorPromotion = ({ data, id }) => {
           promotion_id: data?.promotion_id,
           promotion_data: {
             ...generalData,
-            from_date: formatDate(generalData.from_date),
-            to_date: formatDate(generalData.to_date),
+            from_date: formatDate(generalData.from_date) || data?.from_date,
+            to_date: formatDate(generalData.to_date) || data?.to_date,
             bonuses: { ...temp_bonuses },
             conditions: {
               ...conditionValues,
@@ -191,12 +191,8 @@ const VendorPromotion = ({ data, id }) => {
   };
   // formatting date
   const formatDate = (date) => {
-    if (date) {
-      let date_arr = date.split("-");
-      let new_date = `${date_arr[2]}/${date_arr[1]}/${date_arr[0]}`;
-      return new_date;
-    }
-    return;
+    let myDate = new Date(date.$y, date.$M, date.$D);
+    return myDate.getTime() / 1000;
   };
   if (isLoading) return <Spinner />;
   return (

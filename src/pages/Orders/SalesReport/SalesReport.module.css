@@ -1,0 +1,50 @@
+.sales_report_wrapper {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 5px;
+}
+.tabs {
+  padding: 10px 0;
+  background-color: var(--theme-page-background-sub);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+}
+.tabs_wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.breadcrumb {
+  margin-bottom: 10px;
+}
+.toggle_side_bar {
+  margin-top: 10px;
+  display: none;
+  position: relative;
+  text-align: left;
+  left: -30px;
+}
+@media screen and (max-width: 768px) {
+  .sales_report_wrapper {
+    grid-template-columns: 1fr;
+    position: relative;
+  }
+  .toggle_side_bar {
+    display: inline;
+  }
+  .open_toggle_btn {
+    left: -10px;
+    text-align: right;
+  }
+  .tabs_wrapper {
+    width: 200px;
+    position: absolute;
+    top: 0;
+    right: -200px;
+    transition: all ease 0.5s;
+  }
+  .open_tabs_wrapper {
+    right: 0;
+    transition: all ease 0.5s;
+  }
+}

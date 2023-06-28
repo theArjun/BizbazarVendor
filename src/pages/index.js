@@ -248,6 +248,13 @@ const SearchForSalesReport = React.lazy(() =>
   import("../component/SearchForSalesReport/SearchForSalesReport")
 );
 
+const SalesContent = React.lazy(() =>
+  import("../features/Orders/SalesReport/Content/Content ")
+);
+const SalesTabs = React.lazy(() =>
+  import("../features/Orders/SalesReport/Tabs/Tabs")
+);
+
 const SearchForShipment = React.lazy(() =>
   import("../features/Orders/Shipments/Search/Search")
 );
@@ -297,6 +304,8 @@ export {
   Actions,
   History,
   Comments,
+  SalesContent,
+  SalesTabs,
 
   //Accounting
   TransactionTable,

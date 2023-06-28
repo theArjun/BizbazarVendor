@@ -92,7 +92,7 @@ const ImageUploaderForPromotion = ({
     </div>
   );
   return (
-    <React.Fragment>
+    <React.Fragment key={"image"}>
       <Form>
         <Form.Item name="image" onChange={insertImage}>
           <div

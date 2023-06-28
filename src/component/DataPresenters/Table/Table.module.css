@@ -1,0 +1,34 @@
+.data_container {
+  height: 100%;
+  overflow-y: scroll;
+}
+.top_fifty_customers {
+  padding: 0 20px;
+  /* max-width: 1000px; */
+}
+.total_value {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
+  padding: 0 20px;
+}
+.top_fifty_customers_header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  padding-right: 20px;
+  font-weight: 600;
+}
+.single_top_fifty_customers {
+  display: grid;
+  grid-template-columns: 1fr 100px;
+  justify-content: space-between;
+  background-color: aliceblue;
+  padding: 15px;
+  margin: 3px 0;
+}
+.progress_value {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}

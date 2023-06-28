@@ -1,5 +1,8 @@
 .container {
-  margin-top: 10px;
+  background-color: var(--theme-page-background-sub);
+  padding: 20px 0;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 .search_inputs {
   display: flex;

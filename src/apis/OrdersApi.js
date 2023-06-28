@@ -8,7 +8,7 @@ export const useGetOrders = (params) =>
     queryKey: ["orders", params],
     queryFn: ({ pageParam = 1 }) =>
       Axios.get(
-        `orders?isSearch=Y&page=${pageParam}&items_per_page=${ITEM_PER_PAGE}&cname=${params.cname}&email=${params.email}&phone=${params.phone}&order_id=${params.order_id}&total_from=${params.total_from}&total_to=${params.total_to}&sort_order=${params.sort_order}&sort_by=${params.sort_by}`
+        `VendorOrder?isSearch=Y&page=${pageParam}&items_per_page=${ITEM_PER_PAGE}&cname=${params.cname}&email=${params.email}&phone=${params.phone}&order_id=${params.order_id}&total_from=${params.total_from}&total_to=${params.total_to}&sort_order=${params.sort_order}&sort_by=${params.sort_by}`
       ),
     getNextPageParam: (lastPage, pages) => {
       if (lastPage?.data?.orders?.length < ITEM_PER_PAGE) {

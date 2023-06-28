@@ -34,6 +34,9 @@ const ShippingMethod = lazy(() =>
 );
 const ViewOrders = lazy(() => import("../pages/Orders/ViewOrders/ViewOrders"));
 const Shipments = lazy(() => import("../pages/Orders/Shipments/Shipments"));
+const SalesReport = lazy(() =>
+  import("../pages/Orders/SalesReport/SalesReport")
+);
 const ViewShipment = lazy(() =>
   import("../pages/Orders/Shipments/ViewShipment/ViewShipment")
 );
@@ -206,6 +209,16 @@ export default [
       </SuspenseWrapper>
     }
     path="/Orders/Shipments"
+    key="shipments"
+  />,
+  // Route for sales report
+  <Route
+    element={
+      <SuspenseWrapper>
+        <SalesReport />
+      </SuspenseWrapper>
+    }
+    path="/Orders/Sales Report"
     key="shipments"
   />,
   <Route

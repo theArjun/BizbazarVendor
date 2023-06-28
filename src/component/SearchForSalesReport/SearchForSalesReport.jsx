@@ -92,35 +92,33 @@ const SearchForSalesReport = ({ params, setParams }) => {
   };
   return (
     <div className={styles.container}>
-      <Card>
-        <Form
-          layout="vertical"
-          className={styles.form}
-          name="basic"
-          wrapperCol={{}}
-          autoComplete="off"
-          onValuesChange={onValueChange}
-        >
-          <div className={styles.search_inputs}>
-            <Form.Item label="Period" name="period" style={{ width: "200px" }}>
-              <Select
-                allowClear
-                showSearch
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={PERIOD}
-              />
-            </Form.Item>
-            <Form.Item id="date" label="Select Dates" name="dates">
-              <RangePicker disabled={enableDate} />
-            </Form.Item>
-          </div>
-        </Form>
-      </Card>
+      <Form
+        layout="vertical"
+        className={styles.form}
+        name="basic"
+        wrapperCol={{}}
+        autoComplete="off"
+        onValuesChange={onValueChange}
+      >
+        <div className={styles.search_inputs}>
+          <Form.Item label="Period" name="period" style={{ width: "200px" }}>
+            <Select
+              allowClear
+              showSearch
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
+              options={PERIOD}
+            />
+          </Form.Item>
+          <Form.Item id="date" label="Select Dates" name="dates">
+            <RangePicker disabled={enableDate} />
+          </Form.Item>
+        </div>
+      </Form>
     </div>
   );
 };

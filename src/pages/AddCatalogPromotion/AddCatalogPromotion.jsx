@@ -17,17 +17,20 @@ function AddCatalogPromotion() {
   const [image, setImage] = useState("");
   const { mutate: createMutate, isLoading: createLoading } =
     useCreatePromotion();
+
+  let date = new Date();
   const [generalData, setGeneralData] = useState({
     zone: "catalog",
     name: "",
     detailed_description: "",
     short_description: "",
-    from_date: 0,
-    to_date: 0,
+    from_date: date.getTime(),
+    to_date: date.getTime(),
     priority: 0,
     stop_other_rules: "N",
     status: "A",
   });
+
   const [conditionValues, setConditionValues] = useState({
     set: "all",
     set_value: 1,
@@ -97,8 +100,8 @@ function AddCatalogPromotion() {
         promotion_id: 0,
         promotion_data: {
           ...generalData,
-          from_date: formatDate(generalData.from_date),
-          to_date: formatDate(generalData.to_date),
+          from_date: formatDate(generalData.from_date) || date.getTime() / 1000,
+          to_date: formatDate(generalData.to_date) || date.getTime() / 1000,
           bonuses: { ...temp_bonuses },
           conditions: {
             ...conditionValues,
@@ -126,12 +129,8 @@ function AddCatalogPromotion() {
   };
   // formatting date
   const formatDate = (date) => {
-    if (date) {
-      let date_arr = date.split("-");
-      let new_date = `${date_arr[2]}/${date_arr[1]}/${date_arr[0]}`;
-      return new_date;
-    }
-    return;
+    let myDate = new Date(date.$y, date.$M, date.$D);
+    return myDate.getTime() / 1000;
   };
   return (
     <React.Fragment>

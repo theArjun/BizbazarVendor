@@ -145,7 +145,7 @@ const ProductDetail = ({ data }) => {
           <div className={styles.product_description}>
             <a
               href=""
-              onClick={() => navigate(`../products/${data?.product_id}`)}
+              onClick={() => navigate(`../Products/${data?.product_id}`)}
             >
               <b>{data?.product?.product}</b>
             </a>
