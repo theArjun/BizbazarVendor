@@ -1,62 +1,36 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SalesContent, SalesTabs, SearchForSalesReport } from "../..";
 import styles from "./SalesReport.module.css";
 import { Breadcrumb } from "antd";
 import { Link } from "react-router-dom";
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
+import { useGetSalesReport } from "../../../apis/SalesApi";
+import Spinner from "../../../component/Spinner/Spinner";
 const INITIAL_PARAMS = {
   period: "C",
   time_from: "",
   time_to: "",
 };
-const tabs = [
-  "Order Reports",
-  "Reward Point",
-  "Product distribution on category",
-  "Top 50 customers",
-  "Top 10 customers",
-  "Payment Methods",
-];
-const contentTabs = {
-  "Order Reports": {
-    tabs: [
-      "Product sales",
-      "Categories sales",
-      "Most active customer locations",
-      "Shipping cost per order ",
-      "Order status",
-    ],
-    data: {},
-  },
-  "Reward Point": {
-    tabs: ["Product sales", "Categories sales"],
-    data: {},
-  },
-  "Product distribution on category": {
-    tabs: ["Product sales"],
-    data: {},
-  },
-  "Top 50 customers": {
-    tabs: [
-      "Most active customer locations",
-      "Shipping cost per order ",
-      "Order status",
-    ],
-    data: {},
-  },
-  "Top 10 customers": {
-    tabs: ["Apple Actegi "],
-    data: {},
-  },
-  "Payment Methods": {
-    tabs: [],
-    data: {},
-  },
-};
 const SalesReport = () => {
   const [params, setParams] = useState(INITIAL_PARAMS);
-  const [active, setActive] = useState(tabs[0]);
+  const [active, setActive] = useState("");
   const [sideBar, setSideBar] = useState(false);
+  const { data: salesData, isLoading: salesLoading } = useGetSalesReport();
+
+  const navigationItems = useMemo(() => {
+    let data = salesData?.data?.navigation?.map((item, i) => ({
+      name: item?.title,
+      value: String(item?.href).split("=")[1],
+    }));
+    return data || [];
+  }, [salesData]);
+  // Set default navigation button
+  useEffect(() => {
+    setActive(salesData?.data?.table?.report_id);
+  }, [salesData?.data?.table]);
+  if (salesLoading) {
+    return <Spinner />;
+  }
   return (
     <div className={styles.sales_report}>
       <div className={styles.breadcrumb}>
@@ -68,12 +42,11 @@ const SalesReport = () => {
           <Breadcrumb.Item>
             <Link to="/Orders/Sales Report">Sales Report</Link>
           </Breadcrumb.Item>
-          <Breadcrumb.Item>{active}</Breadcrumb.Item>
         </Breadcrumb>
       </div>
       <div className={styles.sales_report_wrapper}>
         <div className={styles.sales_report_left}>
-          <SalesContent tabs={contentTabs[active].tabs} />
+          <SalesContent activeID={active} />
         </div>
         <div
           className={`${styles.tabs_wrapper}  ${
@@ -93,7 +66,11 @@ const SalesReport = () => {
             )}
           </div>
           <div className={styles.tabs}>
-            <SalesTabs active={active} setActive={setActive} tabs={tabs} />
+            <SalesTabs
+              active={active}
+              setActive={setActive}
+              tabs={navigationItems}
+            />
           </div>
           <SearchForSalesReport params={params} setParams={setParams} />
         </div>

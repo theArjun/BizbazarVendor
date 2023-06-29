@@ -9,12 +9,12 @@ const Tabs = ({ active, setActive, tabs = [] }) => {
           <div
             className={cx(
               styles.button,
-              active === dat ? styles.bgColor : null
+              active === dat.value ? styles.bgColor : null
             )}
             key={i}
-            onClick={() => setActive(dat)}
+            onClick={() => setActive(dat.value)}
           >
-            {dat}
+            {dat.name}
           </div>
         ))}
       </div>

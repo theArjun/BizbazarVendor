@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styles from "./Table.module.css";
 import { Progress } from "antd";
-const Table = () => {
+const Table = ({ table_data }) => {
+  const getTableData = useMemo(() => {
+    let temp = Object.values(table_data?.table?.elements);
+    let finalData = temp?.map((el) => ({
+      label: el?.full_description,
+      value: table_data?.table?.values[el?.element_hash][1],
+    }));
+    return finalData || [];
+  });
   const data = [
     {
       label: "Backordered",
@@ -42,7 +50,7 @@ const Table = () => {
   ];
   // Getting percentage  for each order status
   const getPercentage = (value = 0) => {
-    let values = data.reduce((accumulator, currentValue) => {
+    let values = getTableData.reduce((accumulator, currentValue) => {
       accumulator.push(parseInt(currentValue.value));
       return accumulator;
     }, []);
@@ -50,8 +58,8 @@ const Table = () => {
   };
   // Getting total
   const getTotalValue = () => {
-    let total = data.reduce((accumulator, currentValue) => {
-      accumulator = accumulator + currentValue.value;
+    let total = getTableData.reduce((accumulator, currentValue) => {
+      accumulator = accumulator + parseFloat(currentValue.value);
       return accumulator;
     }, 0);
     return total;
@@ -59,16 +67,16 @@ const Table = () => {
   return (
     <div className={styles.top_fifty_customers_container}>
       <div className={styles.top_fifty_customers_header}>
-        <div>Users</div>
+        <div>{table_data?.table?.parameter}</div>
         <div>Total</div>
       </div>
       <div className={styles.data_container}>
-        {data.map((item, i) => {
+        {getTableData.map((item, i) => {
           return (
             <div className={styles.single_top_fifty_customers} key={i}>
               <div>
-                <div>{`${i + 1}. ${item.label}`}</div>
-                <div>
+                <div> {item.label}</div>
+                <div className={styles.progressContainer}>
                   <Progress
                     percent={getPercentage(item.value)}
                     showInfo={false}
