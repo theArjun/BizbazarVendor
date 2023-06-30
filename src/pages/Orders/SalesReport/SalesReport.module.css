@@ -3,6 +3,9 @@
   grid-template-columns: 1fr 300px;
   gap: 5px;
 }
+.sales_report_left {
+  overflow-x: scroll;
+}
 .tabs {
   padding: 10px 0;
   background-color: var(--theme-page-background-sub);
@@ -43,6 +46,7 @@
     right: -200px;
     transition: all ease 0.5s;
   }
+
   .open_tabs_wrapper {
     right: 0;
     transition: all ease 0.5s;

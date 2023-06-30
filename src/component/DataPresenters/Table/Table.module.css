@@ -23,7 +23,6 @@
   display: grid;
   grid-template-columns: 1fr 100px;
   justify-content: space-between;
-  background-color: aliceblue;
   padding: 15px;
   margin: 3px 0;
 }
@@ -31,10 +30,4 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-}
-.progressContainer > div > div > div > div {
-  height: 16px !important;
-}
-.progressContainer > div > div > div {
-  border-radius: none;
 }

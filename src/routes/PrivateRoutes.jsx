@@ -121,29 +121,6 @@ const ViewShippingMethod = lazy(() =>
 const LogosAndStyles = lazy(() =>
   import("../pages/Setting/LogosAndStyle/LogosAndStyle")
 );
-const OrderReports = lazy(() =>
-  import("../pages/Sales/OrderReports/OrderReports")
-);
-const RewardPoint = lazy(() =>
-  import("../pages/Sales/RewardPoint/RewardPoint")
-);
-const ProductDistributionOnCategory = lazy(() =>
-  import(
-    "../pages/Sales/ProductDistributionOnCategory/ProductDistributionOnCategory"
-  )
-);
-const TopFiftyCustomers = lazy(() =>
-  import("../pages/Sales/TopFiftyCustomers/TopFiftyCustomers")
-);
-const TopTenCategories = lazy(() =>
-  import("../pages/Sales/TopTenCategories/TopTenCategories")
-);
-const TopTwentyProducts = lazy(() =>
-  import("../pages/Sales/TopTwentyProducts/TopTwentyProducts")
-);
-const PaymentMethods = lazy(() =>
-  import("../pages/Sales/PaymentMethods/PaymentMethods")
-);
 const Logs = lazy(() => import("../pages/Logs/Logs"));
 
 export default [
@@ -257,70 +234,6 @@ export default [
     }
     path="/Orders/Return Request/:id"
     key="view_return_request"
-  ></Route>,
-  <Route
-    element={
-      <SuspenseWrapper>
-        <OrderReports />
-      </SuspenseWrapper>
-    }
-    path="/Sales/Order reports"
-    key="order_reports"
-  ></Route>,
-  <Route
-    element={
-      <SuspenseWrapper>
-        <RewardPoint />
-      </SuspenseWrapper>
-    }
-    path="/Sales/Reward Point"
-    key="reward_point"
-  ></Route>,
-  <Route
-    element={
-      <SuspenseWrapper>
-        <ProductDistributionOnCategory />
-      </SuspenseWrapper>
-    }
-    path="/Sales/Product Distribution On Category"
-    key="product_distribution_on_category"
-  ></Route>,
-  <Route
-    element={
-      <SuspenseWrapper>
-        <TopFiftyCustomers />
-      </SuspenseWrapper>
-    }
-    path="/Sales/Top 50 Customers"
-    key="top_fifty_customers"
-  ></Route>,
-
-  <Route
-    element={
-      <SuspenseWrapper>
-        <TopTenCategories />
-      </SuspenseWrapper>
-    }
-    path="/Sales/Top 10 Categories"
-    key="top_ten_categories"
-  ></Route>,
-  <Route
-    element={
-      <SuspenseWrapper>
-        <TopTwentyProducts />
-      </SuspenseWrapper>
-    }
-    path="/Sales/Top 20 Products"
-    key="top_ten_products"
-  ></Route>,
-  <Route
-    element={
-      <SuspenseWrapper>
-        <PaymentMethods />
-      </SuspenseWrapper>
-    }
-    path="/Sales/Payment Methods"
-    key="payment_methods"
   ></Route>,
   <Route
     element={

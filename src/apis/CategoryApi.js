@@ -25,7 +25,7 @@ export const useGetCategoryProducts = (id, params) =>
     queryKey: ["category_products", id, params],
     queryFn: ({ pageParam = 1 }) =>
       Axios.get(
-        `categories/${id}/products?page=${pageParam}&&items_per_page=${ITEM_PER_PAGE}status=${params.status}&price_from=${params.price_from}&price_to=${params.price_to}&q=${params.product_name}&sort_order=${params.sort_order}&sort_by=${params.sort_by}`
+        `categories/${id}/products?page=${pageParam}&&items_per_page=${ITEM_PER_PAGE}&status=${params.status}&price_from=${params.price_from}&price_to=${params.price_to}&q=${params.product_name}&sort_order=${params.sort_order}&sort_by=${params.sort_by}`
       ),
     refetchOnWindowFocus: false,
     getNextPageParam: (lastPage, pages) => {

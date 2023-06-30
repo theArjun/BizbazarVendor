@@ -160,89 +160,6 @@ const ProductBundleProductTab = React.lazy(() =>
     "../features/Marketing/ProductBundle/ProductBundleCreateModal/Components/Products/Products"
   )
 );
-const ProductsSales = React.lazy(() =>
-  import("../features/Sales/OrderReports/ProductsSales/ProductsSales")
-);
-const CategoriesSales = React.lazy(() =>
-  import("../features/Sales/OrderReports/CategoriesSales/CategoriesSales")
-);
-const MostActiveCustomers = React.lazy(() =>
-  import(
-    "../features/Sales/OrderReports/MostActiveCustomers/MostActiveCustomers"
-  )
-);
-const ShippingCostPerOrder = React.lazy(() =>
-  import(
-    "../features/Sales/OrderReports/ShippingCostPerOrder/ShippingCostPerOrder"
-  )
-);
-const OrderStatuses = React.lazy(() =>
-  import("../features/Sales/OrderReports/OrderStatuses/OrderStatuses")
-);
-const TopFiftyCustomersNoOfOrders = React.lazy(() =>
-  import(
-    "../features/Sales/TopFiftyCustomers/TopFiftyCustomersNoOfOrders/TopFiftyCustomersNoOfOrders"
-  )
-);
-const TopFiftyCustomersOrderSales = React.lazy(() =>
-  import(
-    "../features/Sales/TopFiftyCustomers/TopFiftyCustomersOrderSales/TopFiftyCustomersOrderSales"
-  )
-);
-const TopTwentyVendors = React.lazy(() =>
-  import("../features/Sales/TopTenCategories/TopTwentyVendors/TopTwentyVendors")
-);
-const TopTenCategoriesItemSold = React.lazy(() =>
-  import(
-    "../features/Sales/TopTenCategories/TopTenCategoriesItemSold/TopTenCategoriesItemSold"
-  )
-);
-const TopTenCategoriesItemSoldTable = React.lazy(() =>
-  import(
-    "../features/Sales/TopTenCategories/TopTenCategoriesItemSoldTable/TopTenCategoriesItemSoldTable"
-  )
-);
-const TopTenCategoriesCost = React.lazy(() =>
-  import(
-    "../features/Sales/TopTenCategories/TopTenCategoriesCost/TopTenCategoriesCost"
-  )
-);
-const TopTenCategoriesCostTable = React.lazy(() =>
-  import(
-    "../features/Sales/TopTenCategories/TopTenCategoriesCostTable/TopTenCategoriesCostTable"
-  )
-);
-const TopTwentyProductsItemSoldTable = React.lazy(() =>
-  import(
-    "../features/Sales/TopTwentyProducts/TopTwentyProductsItemSoldTable/TopTwentyProductsItemSoldTable"
-  )
-);
-
-const TopTwentyProductsItemSold = React.lazy(() =>
-  import(
-    "../features/Sales/TopTwentyProducts/TopTwentyProductsItemSold/TopTwentyProductsItemSold"
-  )
-);
-const TopTwentyProductsCost = React.lazy(() =>
-  import(
-    "../features/Sales/TopTwentyProducts/TopTwentyProductsCost/TopTwentyProductsCost"
-  )
-);
-const TopTwentyProductsCostTable = React.lazy(() =>
-  import(
-    "../features/Sales/TopTwentyProducts/TopTwentyProductsCostTable/TopTwentyProductsCostTable"
-  )
-);
-const PaymentMethodsChartCost = React.lazy(() =>
-  import(
-    "../features/Sales/PaymentMethods/PaymentMethodsChartCost/PaymentMethodsChartCost"
-  )
-);
-const PaymentMethodsChartOrdersPlaced = React.lazy(() =>
-  import(
-    "../features/Sales/PaymentMethods/PaymentMethodsChartOrdersPlaced/PaymentMethodsChartOrdersPlaced"
-  )
-);
 
 const SearchForSalesReport = React.lazy(() =>
   import("../component/SearchForSalesReport/SearchForSalesReport")
@@ -306,6 +223,7 @@ export {
   Comments,
   SalesContent,
   SalesTabs,
+  SearchForSalesReport,
 
   //Accounting
   TransactionTable,
@@ -366,24 +284,4 @@ export {
   ProductBundleTable,
   ProductBundleGeneralTab,
   ProductBundleProductTab,
-  //Sales
-  ProductsSales,
-  CategoriesSales,
-  MostActiveCustomers,
-  ShippingCostPerOrder,
-  OrderStatuses,
-  TopFiftyCustomersNoOfOrders,
-  TopFiftyCustomersOrderSales,
-  TopTenCategoriesCostTable,
-  TopTenCategoriesCost,
-  TopTenCategoriesItemSold,
-  TopTenCategoriesItemSoldTable,
-  TopTwentyVendors,
-  TopTwentyProductsCost,
-  TopTwentyProductsCostTable,
-  TopTwentyProductsItemSold,
-  TopTwentyProductsItemSoldTable,
-  PaymentMethodsChartOrdersPlaced,
-  PaymentMethodsChartCost,
-  SearchForSalesReport,
 };

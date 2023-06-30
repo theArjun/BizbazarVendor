@@ -5,6 +5,7 @@ import PieChart from "../../../../component/DataPresenters/PieChart/PieChart";
 import { useGetSalesReportTableData } from "../../../../apis/SalesApi";
 import Spinner from "../../../../component/Spinner/Spinner";
 import { useMemo } from "react";
+import IntervalTable from "../../../../component/DataPresenters/IntervalTable/IntervalTable";
 
 const DataAnalyzer = ({ report_id, table_id }) => {
   //Getting table data
@@ -13,25 +14,33 @@ const DataAnalyzer = ({ report_id, table_id }) => {
     switch (type) {
       case "T":
         return <Table table_data={data} />;
-      case "bar":
+      case "B":
         return <BarChart />;
-      default:
+      case "P":
         return <PieChart />;
+      default:
+        return <IntervalTable data={data?.table || {}} />;
     }
   };
   const tableData = useMemo(() => {
     return data?.data || {};
   }, [data]);
   const tableType = useMemo(() => {
-    return data?.data?.table?.type;
+    try {
+      let temp = data?.data?.table?.intervals[0]?.interval_code === "total";
+      if (!temp) {
+        return "intervals";
+      }
+      return data?.data?.table?.type;
+    } catch (e) {
+      console.log(e.message);
+    }
   });
   if (isLoading) {
     return <Spinner />;
   }
   return (
-    <div className="data_analyzer">
-      {getDataPresenter(tableType, tableData)}
-    </div>
+    <React.Fragment>{getDataPresenter(tableType, tableData)}</React.Fragment>
   );
 };
 
