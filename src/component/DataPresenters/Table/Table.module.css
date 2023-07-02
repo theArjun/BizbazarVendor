@@ -1,5 +1,6 @@
 .data_container {
   height: calc(100vh - 310px);
+  position: relative;
   overflow-y: scroll;
 }
 .top_fifty_customers {

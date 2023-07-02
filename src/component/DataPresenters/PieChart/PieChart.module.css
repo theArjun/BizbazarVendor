@@ -1,4 +1,3 @@
 .pie_chart_container {
-  max-height: 500px;
-  max-width: 500px;
+  height: 100%;
 }

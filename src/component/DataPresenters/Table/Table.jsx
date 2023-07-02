@@ -1,7 +1,8 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import styles from "./Table.module.css";
 import { Progress } from "antd";
-const Table = ({ table_data }) => {
+import Spinner from "../../Spinner/Spinner";
+const Table = ({ table_data, handleScroll, loading }) => {
   const getTableData = useMemo(() => {
     let temp = Object.values(table_data?.table?.elements);
     let finalData = temp?.map((el) => ({
@@ -10,44 +11,17 @@ const Table = ({ table_data }) => {
     }));
     return finalData || [];
   });
-  const data = [
-    {
-      label: "Backordered",
-      value: 30,
-    },
-    {
-      label: "Awaiting call",
-      value: 4,
-    },
-    {
-      label: "Canceled",
-      value: 20,
-    },
-    {
-      label: "Complete",
-      value: 10,
-    },
-    {
-      label: "Backordered",
-      value: 30,
-    },
-    {
-      label: "Awaiting call",
-      value: 4,
-    },
-    {
-      label: "Backordered",
-      value: 30,
-    },
-    {
-      label: "Awaiting call",
-      value: 4,
-    },
-    {
-      label: "Backordered",
-      value: 30,
-    },
-  ];
+  useEffect(() => {
+    document
+      .querySelector("#progress")
+      ?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      document
+        .querySelector("#progress")
+        ?.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
   // Getting percentage  for each order status
   const getPercentage = (value = 0) => {
     let values = getTableData.reduce((accumulator, currentValue) => {
@@ -64,13 +38,15 @@ const Table = ({ table_data }) => {
     }, 0);
     return total;
   };
+
   return (
     <div className={styles.top_fifty_customers_container}>
       <div className={styles.top_fifty_customers_header}>
         <div>{table_data?.table?.parameter}</div>
         <div>Total</div>
       </div>
-      <div className={styles.data_container}>
+      {loading && <Spinner />}
+      <div className={styles.data_container} id="progress">
         {getTableData.map((item, i) => {
           return (
             <div className={styles.single_top_fifty_customers} key={i}>

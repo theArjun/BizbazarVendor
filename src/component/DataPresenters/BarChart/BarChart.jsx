@@ -1,10 +1,36 @@
 import React, { lazy } from "react";
 import styles from "./BarChart.module.css";
 const Chart = lazy(() => import("react-apexcharts"));
-const BarChart = () => {
+const BarChart = ({ data }) => {
+  // Getting labels
+  const getLabels = (barData) => {
+    try {
+      let temp = Object.values(barData?.elements || {});
+      let labels = temp?.reduce((accumulator, currentValues) => {
+        accumulator.push(currentValues?.full_description);
+        return accumulator;
+      }, []);
+      return labels;
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  // Getting values
+  const getValues = (barData) => {
+    try {
+      let temp = Object.values(barData?.elements);
+      let labels = temp?.reduce((accumulator, currentValues) => {
+        accumulator.push(currentValues?.element_id);
+        return accumulator;
+      }, []);
+      return labels;
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
   const series = [
     {
-      data: [21, 22, 10, 28, 16, 21, 13, 30],
+      data: getValues(data?.table),
     },
   ];
   const options = {
@@ -31,16 +57,7 @@ const BarChart = () => {
       show: false,
     },
     xaxis: {
-      categories: [
-        ["John", "Doe"],
-        ["Joe", "Smith"],
-        ["Jake", "Williams"],
-        "Amber",
-        ["Peter", "Brown"],
-        ["Mary", "Evans"],
-        ["David", "Wilson"],
-        ["Lily", "Roberts"],
-      ],
+      categories: getLabels(data?.table),
       labels: {
         style: {
           // colors: colors,
