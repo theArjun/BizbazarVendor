@@ -46,7 +46,7 @@ const SalesReport = () => {
       </div>
       <div className={styles.sales_report_wrapper}>
         <div className={styles.sales_report_left}>
-          <SalesContent activeID={active} />
+          <SalesContent activeID={active} params={params} />
         </div>
         <div
           className={`${styles.tabs_wrapper}  ${

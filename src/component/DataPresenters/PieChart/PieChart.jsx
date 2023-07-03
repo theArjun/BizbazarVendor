@@ -1,13 +1,14 @@
 import React, { lazy } from "react";
+import { Empty } from "antd";
 import styles from "./PieChart.module.css";
 const Chart = lazy(() => import("react-apexcharts"));
 const PieChart = ({ data }) => {
   // Getting labels
   const getLabels = (barData) => {
     try {
-      let temp = Object.values(barData?.elements || {});
+      let temp = barData?.pie_data || [];
       let labels = temp?.reduce((accumulator, currentValues) => {
-        accumulator.push(currentValues?.full_description);
+        accumulator.push(currentValues?.full_descr || "");
         return accumulator;
       }, []);
       return labels;
@@ -15,23 +16,35 @@ const PieChart = ({ data }) => {
       console.log(err.message);
     }
   };
+  // Getting values
+  const getValues = (barData) => {
+    try {
+      let temp = barData?.pie_data || [];
+      let labels = temp?.reduce((accumulator, currentValues) => {
+        accumulator.push(parseFloat(currentValues?.count || 0));
+        return accumulator;
+      }, []);
+      return labels;
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
   let options = {
     chart: {
       height: 350,
-      type: "donut",
       toolbar: {
-        show: false,
+        show: true,
       },
     },
     dataLabels: {
-      enabled: false,
+      enabled: true,
     },
-    series: [12, 45, 36],
+    series: getValues(data?.new_array),
     legend: {
       position: "bottom",
     },
 
-    labels: getLabels(data?.table),
+    labels: getLabels(data?.new_array),
     responsive: [
       {
         breakpoint: 480,
@@ -48,6 +61,9 @@ const PieChart = ({ data }) => {
       },
     ],
   };
+  if (!data?.new_array || !data.new_array?.pie_data) {
+    return <Empty className={styles.empty} />;
+  }
   return (
     <React.Fragment>
       <Chart

@@ -49,6 +49,7 @@ const IntervalTable = ({ data, rows = [], loading, handleScroll }) => {
   return (
     <div className={styles.tableContainer}>
       <Table
+        loading={loading}
         id="table"
         rowKey={data?.parameter}
         columns={columns}

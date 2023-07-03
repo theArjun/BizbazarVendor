@@ -7,7 +7,13 @@ import PrivateRoute from "./routes/PrivateRoutes";
 import { Result } from "antd";
 import PublicRoute from "./utils/PublicRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+    },
+  },
+});
 function App() {
   return (
     <QueryClientProvider client={queryClient}>

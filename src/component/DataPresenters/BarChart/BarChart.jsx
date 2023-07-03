@@ -1,13 +1,14 @@
 import React, { lazy } from "react";
+import { Empty } from "antd";
 import styles from "./BarChart.module.css";
 const Chart = lazy(() => import("react-apexcharts"));
 const BarChart = ({ data }) => {
   // Getting labels
   const getLabels = (barData) => {
     try {
-      let temp = Object.values(barData?.elements || {});
+      let temp = Object.values(barData?.column_data || {});
       let labels = temp?.reduce((accumulator, currentValues) => {
-        accumulator.push(currentValues?.full_description);
+        accumulator.push(currentValues?.full_descr || "");
         return accumulator;
       }, []);
       return labels;
@@ -18,31 +19,48 @@ const BarChart = ({ data }) => {
   // Getting values
   const getValues = (barData) => {
     try {
-      let temp = Object.values(barData?.elements);
-      let labels = temp?.reduce((accumulator, currentValues) => {
-        accumulator.push(currentValues?.element_id);
+      let temp = Object.values(barData?.column_data || {});
+      let values = temp?.reduce((accumulator, currentValues) => {
+        accumulator.push(parseFloat(currentValues?.value || 0));
         return accumulator;
       }, []);
-      return labels;
+      return values;
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
+  // Getting values
+  const getColors = (barData) => {
+    try {
+      let temp = Object.values(barData?.column_data || {});
+      let colors = temp?.reduce((accumulator, currentValues) => {
+        accumulator.push(currentValues?.color || "");
+        return accumulator;
+      }, []);
+      return colors;
     } catch (e) {
       console.log(e.message);
     }
   };
   const series = [
     {
-      data: getValues(data?.table),
+      name: "Value",
+      data: getValues(data?.new_array),
     },
   ];
   const options = {
+    fill: {
+      colors: getColors(data?.new_array),
+    },
     chart: {
       height: 350,
-      type: "bar",
       events: {
         click: function (chart, w, e) {
           // console.log(chart, w, e)
         },
       },
     },
+
     // colors: colors,
     plotOptions: {
       bar: {
@@ -57,7 +75,7 @@ const BarChart = ({ data }) => {
       show: false,
     },
     xaxis: {
-      categories: getLabels(data?.table),
+      categories: getLabels(data?.new_array),
       labels: {
         style: {
           // colors: colors,
@@ -66,6 +84,9 @@ const BarChart = ({ data }) => {
       },
     },
   };
+  if (!data?.new_array || !data.new_array?.column_data) {
+    return <Empty className={styles.empty} />;
+  }
   return (
     <Chart
       type="bar"

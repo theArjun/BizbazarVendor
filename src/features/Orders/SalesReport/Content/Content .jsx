@@ -5,7 +5,7 @@ import TabButtons from "../../../../component/TabButtons/TabButtons";
 import { useGetSingleSalesReport } from "../../../../apis/SalesApi";
 import Spinner from "../../../../component/Spinner/Spinner";
 import DataAnalyzer from "./DataAnalyzer";
-const Content = ({ activeID }) => {
+const Content = ({ activeID, params }) => {
   const [active, setActive] = useState("");
   const { data: salesData, isLoading: salesLoading } =
     useGetSingleSalesReport(activeID);
@@ -32,7 +32,7 @@ const Content = ({ activeID }) => {
         <TabButtons tabs={tabButtons} active={active} setActive={setActive} />
       </div>
       <div className={styles.contentContainer}>
-        <DataAnalyzer table_id={active} report_id={activeID} />
+        <DataAnalyzer table_id={active} report_id={activeID} params={params} />
       </div>
     </div>
   );

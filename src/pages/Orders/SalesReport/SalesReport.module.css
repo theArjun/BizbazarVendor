@@ -30,7 +30,6 @@
 @media screen and (max-width: 768px) {
   .sales_report_wrapper {
     grid-template-columns: 1fr;
-    position: relative;
   }
   .toggle_side_bar {
     display: inline;
@@ -42,8 +41,8 @@
   .tabs_wrapper {
     width: 200px;
     position: absolute;
-    top: 0;
-    right: -200px;
+    top: 49px;
+    right: -217px;
     transition: all ease 0.5s;
   }
 

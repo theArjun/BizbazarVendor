@@ -19,7 +19,7 @@ export const useGetSalesReportTableData = (report_id, table_id, params) => {
     queryKey: ["SingleReport", report_id, table_id, params],
     queryFn: () =>
       Axios.get(
-        `SalesReport/${report_id}?table_id=${table_id}&count=${params.count}&begin=0`
+        `SalesReport/${report_id}?table_id=${table_id}&count=${params.count}&begin=0&period=${params.period}&time_from=${params.time_from}&time_to=${params.time_to}`
       ),
     refetchOnWindowFocus: false,
     keepPreviousData: true,

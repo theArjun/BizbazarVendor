@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo } from "react";
+import { Empty } from "antd";
 import styles from "./Table.module.css";
 import { Progress } from "antd";
 import Spinner from "../../Spinner/Spinner";
-const Table = ({ table_data, handleScroll, loading }) => {
+const Table = React.memo(({ table_data, handleScroll, loading }) => {
+  let temp = Object.values(table_data?.table?.elements);
   const getTableData = useMemo(() => {
-    let temp = Object.values(table_data?.table?.elements);
     let finalData = temp?.map((el) => ({
       label: el?.full_description,
       value: table_data?.table?.values[el?.element_hash][1],
@@ -38,7 +39,9 @@ const Table = ({ table_data, handleScroll, loading }) => {
     }, 0);
     return total;
   };
-
+  if (!temp.length) {
+    return <Empty className={styles.empty} />;
+  }
   return (
     <div className={styles.top_fifty_customers_container}>
       <div className={styles.top_fifty_customers_header}>
@@ -71,6 +74,6 @@ const Table = ({ table_data, handleScroll, loading }) => {
       <div className={styles.total_value}> Total: {getTotalValue()}</div>
     </div>
   );
-};
+});
 
 export default Table;

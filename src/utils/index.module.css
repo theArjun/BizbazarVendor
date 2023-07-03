@@ -4,6 +4,7 @@
   width: 100%;
   /* display: flex; */
   padding-top: 78px;
+  position: relative;
 }
 /* 
 .midContainer::-webkit-scrollbar {
