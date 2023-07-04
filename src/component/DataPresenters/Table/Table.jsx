@@ -70,8 +70,8 @@ const Table = React.memo(({ table_data, handleScroll, loading }) => {
             </div>
           );
         })}
+        <div className={styles.total_value}> Total: {getTotalValue()}</div>
       </div>
-      <div className={styles.total_value}> Total: {getTotalValue()}</div>
     </div>
   );
 });

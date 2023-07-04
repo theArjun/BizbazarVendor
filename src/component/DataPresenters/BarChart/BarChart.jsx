@@ -21,7 +21,7 @@ const BarChart = ({ data }) => {
     try {
       let temp = Object.values(barData?.column_data || {});
       let values = temp?.reduce((accumulator, currentValues) => {
-        accumulator.push(parseFloat(currentValues?.value || 0));
+        accumulator.push(parseFloat(currentValues?.value || 0.0));
         return accumulator;
       }, []);
       return values;

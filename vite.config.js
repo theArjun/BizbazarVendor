@@ -6,8 +6,7 @@ import { config } from "./src/config/config";
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 80,
-    host: "172.16.0.48",
+    port: 3000,
     proxy: {
       // "/api": "https://dev.bizbazar.com.np/",
       "/api": config.BASE_URL,

@@ -64,7 +64,7 @@ const ViewOrderTable = ({ callRequest, status, loading }) => {
       dataIndex: "product",
       key: "request_id",
       render: (product, row) => (
-        <a onClick={() => navigate(`../products/${row?.product_id}`)}>
+        <a onClick={() => navigate(`../Products/${row?.product_id}`)}>
           {product}{" "}
         </a>
       ),

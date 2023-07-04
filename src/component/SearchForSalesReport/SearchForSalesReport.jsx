@@ -1,8 +1,11 @@
 import React from "react";
-import { Card, Form, Select, Input, DatePicker } from "antd";
+import { Form, Select, DatePicker } from "antd";
 import styles from "./SearchForSalesReport.module.css";
 import { useEffect } from "react";
 import { useState } from "react";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
 const { RangePicker } = DatePicker;
 const PERIOD = [
   {
@@ -54,7 +57,7 @@ const PERIOD = [
     value: "C",
   },
 ];
-const SearchForSalesReport = ({ params, setParams }) => {
+const SearchForSalesReport = ({ params, setParams, data }) => {
   const [enableDate, setEnableDate] = useState(true);
   useEffect(() => {
     if (params.period === "C") {
@@ -90,6 +93,14 @@ const SearchForSalesReport = ({ params, setParams }) => {
     }
     setParams(temp_date);
   };
+  // Getting  date format
+  const getDateFormat = (timestamp) => {
+    const date = new Date(timestamp * 1000);
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const day = date.getDate();
+    return year + "-" + month + "-" + day;
+  };
   return (
     <div className={styles.container}>
       <Form
@@ -106,6 +117,7 @@ const SearchForSalesReport = ({ params, setParams }) => {
               allowClear
               showSearch
               optionFilterProp="children"
+              defaultValue="C"
               filterOption={(input, option) =>
                 (option?.label ?? "")
                   .toLowerCase()
@@ -115,7 +127,13 @@ const SearchForSalesReport = ({ params, setParams }) => {
             />
           </Form.Item>
           <Form.Item id="date" label="Select Dates" name="dates">
-            <RangePicker disabled={enableDate} />
+            <RangePicker
+              disabled={enableDate}
+              defaultValue={[
+                data?.time_from ? dayjs(getDateFormat(data?.time_from)) : "",
+                data?.time_to ? dayjs(getDateFormat(data?.time_to)) : "",
+              ]}
+            />
           </Form.Item>
         </div>
       </Form>

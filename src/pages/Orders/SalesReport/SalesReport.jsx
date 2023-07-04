@@ -72,7 +72,11 @@ const SalesReport = () => {
               tabs={navigationItems}
             />
           </div>
-          <SearchForSalesReport params={params} setParams={setParams} />
+          <SearchForSalesReport
+            params={params}
+            setParams={setParams}
+            data={salesData?.data?.report || {}}
+          />
         </div>
       </div>
     </div>
