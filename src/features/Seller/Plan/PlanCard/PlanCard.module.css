@@ -40,8 +40,6 @@ li {
 }
 ul.inline > li {
   display: inline-block;
-  *display: inline;
-  *zoom: 1;
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -60,7 +58,7 @@ strong {
 }
 .vendor-plans-item {
   width: 210px;
-  background: #fbfbfb;
+  background: #5c5757;
   vertical-align: top;
   margin-right: 15px;
   margin-bottom: 15px;
@@ -96,7 +94,7 @@ strong {
 .plan_card {
   width: 250px;
   display: flex;
-  background-color: white;
+  background-color: var(--theme-page-background);
   justify-content: center;
   border-radius: 10px;
   height: 400px;
@@ -111,11 +109,10 @@ strong {
 }
 .selected {
   border: 1px solid #7367f0;
-  box-shadow: 0 0 50px #ccc;
+  box-shadow: var(--box-shadow);
 }
-.vendor-plan-content {
-  display: flex;
-  justify-content: center;
+.vendor_plan_content {
+  padding: 0 8px;
 }
 .vendor-plan-content > * {
   width: fit-content;

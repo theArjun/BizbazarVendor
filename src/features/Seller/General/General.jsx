@@ -58,7 +58,7 @@ const General = ({
             <div className="information_title">
               <h2 className={styles.title_header}>Information</h2>
             </div>
-            <Card className={styles.information_container}>
+            <div className={styles.information_container}>
               <Form.Item
                 label="Company"
                 name="company"
@@ -179,7 +179,7 @@ const General = ({
                   ></iframe>
                 </div>
               </Form.Item>
-            </Card>
+            </div>
           </div>
         </Form>
       </div>

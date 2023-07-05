@@ -9,7 +9,7 @@ const PlanCard = ({ selected, plan, changed, setChanged }) => {
       onClick={() => setChanged(plan?.plan_id)}
     >
       <div className="vendor-plans-item  " data-ca-plan-id="7">
-        <div className="vendor-plan-content">
+        <div className={styles.vendor_plan_content}>
           <h3 className="vendor-plan-header">{plan?.plan}</h3>
 
           <span className="vendor-plan-price">

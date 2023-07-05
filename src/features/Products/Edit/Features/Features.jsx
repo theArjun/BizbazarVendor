@@ -50,7 +50,7 @@ const Features = ({ features, selected_features, editID }) => {
               <h3>{extra.description}</h3>
               {Object.values(extra.subfeatures).map((subfeature, index) => {
                 return (
-                  <div key={index}>
+                  <div key={index} className={styles.input_items}>
                     <Form.Item
                       name={subfeature?.description}
                       label={subfeature?.description}
@@ -97,7 +97,7 @@ const Features = ({ features, selected_features, editID }) => {
       <div>
         {m_features.map((item, index) => {
           return (
-            <div key={index}>
+            <div key={index} className={styles.input_items}>
               <Form.Item name={item?.internal_name} label={item?.internal_name}>
                 <Select
                   onChange={handleSelectChange}

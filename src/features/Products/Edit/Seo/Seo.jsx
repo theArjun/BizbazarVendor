@@ -47,21 +47,21 @@ const Seo = ({ data, seoPath }) => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Form.Item style={{ float: "right" }}>
+        <Form.Item className={styles.save_btn}>
           <Button type="primary" htmlType="submit">
             Save changes
           </Button>
         </Form.Item>
-        <br />
-        <br />
-        <Card>
-          <div className={styles.seo_card}>
-            <div className={styles.seo_card_left}>
-              <h3>SEO</h3>
+        <div className={styles.seo_card}>
+          <div className={styles.seo_card_left}>
+            <h3>Seo</h3>
+            <div className={styles.input_items}>
               <Form.Item name="seo_name" label="SEO name">
                 <Input addonBefore={seoPath} />
               </Form.Item>
-              <h3>Meta data </h3>
+            </div>
+            <h3>Meta data </h3>
+            <div className={styles.input_items}>
               <Form.Item name="page_title" label="Page title">
                 <Input />
               </Form.Item>
@@ -72,37 +72,34 @@ const Seo = ({ data, seoPath }) => {
                 <TextArea />
               </Form.Item>
             </div>
-            <div className={styles.seo_card_right}>
-              <h3>Google rich snippets preview</h3>
-              <div className={styles.google_preview}>
-                <h4 style={{ color: "#1677ff" }}>
-                  {data?.page_title ? data.page_title : data.product}
-                </h4>
-                <Text type="success">https://dev.bizbazar.com.np/acme/</Text>
-                <div>
-                  <Text>
-                    {"रु" + Number.parseFloat(data?.price).toFixed(2)}
-                  </Text>
-                  -
-                  <Text>
-                    {data?.amount <= 0 ? (
-                      <span style={{ color: "red" }}>Out of stock</span>
-                    ) : (
-                      <span style={{ color: "green" }}>In stock</span>
-                    )}
-                  </Text>
-                </div>
-                <Text type="secondary">
-                  {data?.meta_description
-                    ? data?.meta_description
-                    : data?.full_description
-                        .replace(/<[^>]*>?/gm, "")
-                        .substring(0, 150) + "..."}
+          </div>
+          <div className={styles.seo_card_right}>
+            <h3>Google rich snippets preview</h3>
+            <div className={styles.google_preview}>
+              <h4 style={{ color: "#1677ff" }}>
+                {data?.page_title ? data.page_title : data.product}
+              </h4>
+              <Text type="success">https://dev.bizbazar.com.np/acme/</Text>
+              <div>
+                <Text>{"रु" + Number.parseFloat(data?.price).toFixed(2)}</Text>-
+                <Text>
+                  {data?.amount <= 0 ? (
+                    <span style={{ color: "red" }}>Out of stock</span>
+                  ) : (
+                    <span style={{ color: "green" }}>In stock</span>
+                  )}
                 </Text>
               </div>
+              <Text type="secondary">
+                {data?.meta_description
+                  ? data?.meta_description
+                  : data?.full_description
+                      .replace(/<[^>]*>?/gm, "")
+                      .substring(0, 150) + "..."}
+              </Text>
             </div>
           </div>
-        </Card>
+        </div>
       </Form>
     </div>
   );

@@ -71,9 +71,6 @@ export const navItem = [
       {
         subNav: "Logos And Styles",
       },
-      {
-        subNav: "Files",
-      },
     ],
   },
   {

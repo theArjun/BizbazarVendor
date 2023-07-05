@@ -7,7 +7,7 @@ import { AdditionField, AdditionTable } from "../..";
 import Spinner from "../../../component/Spinner/Spinner";
 import { useMemo } from "react";
 import { useCreateBulkProducts } from "../../../apis/ProductApi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGetCategories } from "../../../apis/CategoryApi";
 const BulkAddition = () => {
   const [products, setProducts] = useState([]);
@@ -51,7 +51,7 @@ const BulkAddition = () => {
         <Breadcrumb>
           <Breadcrumb.Item>Home</Breadcrumb.Item>
           <Breadcrumb.Item>
-            <a href="/products/Products">Products</a>
+            <Link to="/Products">Products</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>BulkProductAddition</Breadcrumb.Item>
         </Breadcrumb>

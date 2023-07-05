@@ -72,7 +72,7 @@ const Shipping = ({ data }) => {
         </Form.Item>
         <br />
         <br />
-        <div className={styles.shipping_body}>
+        <div className={styles.input_items}>
           <Form.Item
             label="Weight (Kg)"
             name="weight"

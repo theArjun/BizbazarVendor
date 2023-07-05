@@ -479,8 +479,6 @@ export default [
     path="/Setting/Logos And Styles"
     key="logos_and_styles"
   ></Route>,
-  // {/**Files*/}
-  <Route element={<>Files</>} path="/Setting/Files" key="files"></Route>,
   // {/**Reports*/}
   // {/**Account Ordes Details*/}
   <Route
