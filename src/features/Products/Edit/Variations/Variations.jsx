@@ -302,6 +302,7 @@ const Variations = ({ data, variations, editID }) => {
             width={70}
             src={!row["main_pair"] ? "" : row["main_pair"].detailed.image_path}
             alt={""}
+            fallback="/image_not_found.png"
           />
           <p>
             {" "}

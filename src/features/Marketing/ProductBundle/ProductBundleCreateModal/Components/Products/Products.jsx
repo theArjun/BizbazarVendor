@@ -132,7 +132,11 @@ function Products({ productList, setProductList }) {
       render: (text, dat) => (
         <div style={{ display: "flex" }}>
           {" "}
-          <Image width={50} src={dat?.main_pair?.detailed?.image_path} />
+          <Image
+            width={50}
+            src={dat?.main_pair?.detailed?.image_path}
+            fallback="/image_not_found.png"
+          />
           <div style={{ marginLeft: "10px" }}>
             <div>{dat.product}</div>
             <div>{dat.product_code}</div>
@@ -265,7 +269,11 @@ function Products({ productList, setProductList }) {
                   className={styles.checkbox}
                   onChange={(e) => handleCheck(e, dat)}
                 />
-                <Image width={50} src={dat?.main_pair?.detailed?.image_path} />
+                <Image
+                  width={50}
+                  src={dat?.main_pair?.detailed?.image_path}
+                  fallback="/image_not_found.png"
+                />
 
                 <div style={{ marginLeft: "10px" }}>
                   <div>{dat.product}</div>

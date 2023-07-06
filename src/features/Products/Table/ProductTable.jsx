@@ -168,6 +168,7 @@ const ProductTable = ({ loading, handleScroll, setSortBy, products }) => {
             width={50}
             src={!row["main_pair"] ? "" : row["main_pair"].detailed.image_path}
             alt={""}
+            fallback="/image_not_found.png"
           />
           <div className={styles.product_name}>
             <a onClick={() => navigate(`../Products/` + row?.product_id)}>

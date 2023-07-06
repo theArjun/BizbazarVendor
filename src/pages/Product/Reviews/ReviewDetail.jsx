@@ -140,6 +140,7 @@ const ProductDetail = ({ data }) => {
             <Image
               width={200}
               src={data?.product?.main_pair?.detailed?.image_path}
+              fallback="/image_not_found.png"
             />
           </div>
           <div className={styles.product_description}>
@@ -300,7 +301,14 @@ const ReviewDescription = ({ data }) => {
         <div>Customer photos:</div>
         <div>
           {Object.values(data?.images)?.map((el, i) => {
-            return <Image key={i} src={el?.detailed?.image_path} width={100} />;
+            return (
+              <Image
+                key={i}
+                src={el?.detailed?.image_path}
+                width={100}
+                fallback="/image_not_found.png"
+              />
+            );
           })}
         </div>
       </div>

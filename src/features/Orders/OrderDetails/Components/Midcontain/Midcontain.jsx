@@ -22,6 +22,7 @@ function Midcontain({ orderDetail, setUpdateState, updateState }) {
               <Image
                 className={styles.imageTable}
                 src={dat?.main_pair?.detailed?.image_path}
+                fallback="/image_not_found.png"
               />
             </div>
             <div className={styles.code}>{dat?.product_code}</div>

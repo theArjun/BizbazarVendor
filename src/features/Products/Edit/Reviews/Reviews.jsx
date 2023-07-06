@@ -109,7 +109,14 @@ const Reviews = ({ handleScroll, reviews }) => {
       render: (image) => (
         <React.Fragment>
           {Object.values(image)?.map((el, i) => {
-            return <Image key={i} width={50} src={el?.detailed?.image_path} />;
+            return (
+              <Image
+                key={i}
+                width={50}
+                src={el?.detailed?.image_path}
+                fallback="/image_not_found.png"
+              />
+            );
           })}
         </React.Fragment>
       ),

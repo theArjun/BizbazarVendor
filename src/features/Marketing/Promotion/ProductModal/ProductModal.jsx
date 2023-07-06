@@ -158,6 +158,7 @@ const ProductModal = ({ modalOpen, setModalOpen, productData }) => {
                     <Image
                       width={50}
                       src={dat?.main_pair?.detailed?.image_path}
+                      fallback="/image_not_found.png"
                     />
 
                     <div style={{ marginLeft: "10px" }}>

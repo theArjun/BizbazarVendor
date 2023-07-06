@@ -205,7 +205,12 @@ const CustomerMessages = () => {
             <div className={styles.product_details}>
               <h3>Product details</h3>
               <div className={styles.image_container}>
-                <Image width={200} src={data[0].image} alt={""} />
+                <Image
+                  width={200}
+                  src={data[0].image}
+                  fallback="/image_not_found.png"
+                  alt={""}
+                />
               </div>
               <p>
                 <b>{data[0].p_name}</b>

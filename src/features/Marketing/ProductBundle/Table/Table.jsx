@@ -24,7 +24,9 @@ const ProductBundleTable = ({ data }) => {
       title: "Image",
       dataIndex: "image",
       key: "image",
-      render: (image, row) => <Image src={image} />,
+      render: (image, row) => (
+        <Image src={image} fallback="/image_not_found.png" />
+      ),
     },
     {
       title: "Name",

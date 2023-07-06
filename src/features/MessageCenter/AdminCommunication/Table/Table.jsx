@@ -44,7 +44,12 @@ const AdminCommunicationTable = ({ loading, data, handleScroll }) => {
       key: "type",
       render: (text, row) => (
         <div>
-          <Image width={70} src={text} alt={"No image"} />
+          <Image
+            width={70}
+            src={text}
+            alt={"No image"}
+            fallback="/image_not_found.png"
+          />
         </div>
       ),
     },

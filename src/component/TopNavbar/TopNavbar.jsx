@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
-
+import { config } from "../../config/config";
 import styles from "./TopNavbar.module.css";
-import {
-  HiOutlineMail,
-  HiOutlinePencilAlt,
-  HiOutlineViewGrid,
-  HiOutlineMenuAlt1,
-  HiChevronDown,
-} from "react-icons/hi";
+import { HiOutlineMenuAlt1, HiChevronDown } from "react-icons/hi";
 import { Drawer } from "antd";
 import { navItem } from "../Navbar/navitem";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -16,14 +10,18 @@ import useWindowSize from "../../utils/Hooks/useWindowSize";
 import { handleLogout } from "../../utils/auth/auth";
 import { useGetProfileInformation } from "../../apis/ProfileApi";
 import { useMemo } from "react";
-
+import Axios from "../../config/apiConfig";
 function TopNavbar() {
-  let { user_id,name, phone } = JSON.parse(sessionStorage.getItem("userinfo"));
+  let { user_id, name, phone } = JSON.parse(sessionStorage.getItem("userinfo"));
   const windowsize = useWindowSize();
   const navigate = useNavigate();
   const locate = useLocation();
   const { data: profileData } = useGetProfileInformation(user_id);
-
+  const visitStore = async () => {
+    let company = await Axios.get("/Companies");
+    const seo_name = company?.data?.company_data?.seo_name;
+    window.open(`${config.BASE_URL}${seo_name}`, "_blank");
+  };
   const [activeLink, setAvtivelink] = useState({
     main: "",
     sub: "none",
@@ -56,9 +54,10 @@ function TopNavbar() {
   return (
     <div className={styles.container}>
       <div className={styles.desktopAndTab}>
-        <HiOutlineMail className={styles.icons} />
-        <HiOutlinePencilAlt className={styles.icons} />
-        <HiOutlineViewGrid className={styles.icons} />
+        <div className={styles.visit_store_text} onClick={() => visitStore()}>
+          {" "}
+          <span>Storefront</span>
+        </div>
       </div>
       <div className={styles.mobile}>
         <HiOutlineMenuAlt1
@@ -74,11 +73,15 @@ function TopNavbar() {
           <div>
             <div className={styles.profileName}>
               <span>
-                {getProfileData?.firstname ? getProfileData?.firstname : String(name).split(' ')[0]}
+                {getProfileData?.firstname
+                  ? getProfileData?.firstname
+                  : String(name).split(" ")[0]}
               </span>
               &nbsp;
               <span>
-                {getProfileData?.lastname ? getProfileData?.lastname : String(name).split(' ')[1]}
+                {getProfileData?.lastname
+                  ? getProfileData?.lastname
+                  : String(name).split(" ")[1]}
               </span>
             </div>
             <div className={styles.profilerole}>
@@ -121,6 +124,18 @@ function TopNavbar() {
           onClose={() => setOpenSideBar((prev) => !prev)}
           open={openSideBar}
         >
+          <div
+            className={styles.visit_store_text}
+            style={{
+              // background: "#c4b1f385",
+              color: "#9b78ec",
+              fontWeight: "400",
+              padding: "10px 0",
+            }}
+            onClick={() => visitStore()}
+          >
+            Storefront
+          </div>
           {navItem.map((dat, i) => (
             <div className={styles.navItem} key={i}>
               <div
