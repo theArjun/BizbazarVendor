@@ -18,8 +18,6 @@ const Withdrawals = ({ status, getWithdrawInformation }) => {
     isLoading: withdrawalLoading,
     isFetchingNextPage,
     fetchNextPage,
-    isError,
-    error,
   } = useGetWithdrawals(params);
   // handle data when the there  is scroll in product table
   const handleScroll = (event) => {

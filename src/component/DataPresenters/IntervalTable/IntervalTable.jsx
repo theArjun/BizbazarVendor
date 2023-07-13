@@ -7,7 +7,6 @@ const IntervalTable = ({ data, rows = [], loading, handleScroll }) => {
   let intervalArray = Object.values(data?.intervals || {});
   let intervalRows = Object.values(data?.elements || {});
   let intervalValues = data.values || {};
-
   useEffect(() => {
     document
       .querySelector("#table > div > div.ant-table-body")
@@ -46,6 +45,7 @@ const IntervalTable = ({ data, rows = [], loading, handleScroll }) => {
     },
     ...getIntervals(),
   ];
+
   return (
     <div className={styles.tableContainer}>
       <Table
@@ -57,7 +57,7 @@ const IntervalTable = ({ data, rows = [], loading, handleScroll }) => {
         pagination={false}
         scroll={{
           y: windowSize.height > 670 ? 450 : 300,
-          x: 700,
+          x: columns.length > 10 ? 1500 : 700,
         }}
       />
     </div>

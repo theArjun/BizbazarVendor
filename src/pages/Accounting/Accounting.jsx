@@ -8,8 +8,6 @@ import Withdrawals from "./Withdrawals/Withdrawals";
 import TextArea from "antd/es/input/TextArea";
 import { useCreateNewWithdrawal } from "../../apis/AccountingApi";
 import { useQueryClient } from "@tanstack/react-query";
-import { useGetStatuses } from "../../apis/StatusApi";
-import { useMemo } from "react";
 import { Link } from "react-router-dom";
 const Accounting = () => {
   const tabs = ["Transactions", "Balance withdrawals"];
@@ -18,17 +16,8 @@ const Accounting = () => {
   const queryClient = useQueryClient();
   const { mutate: createMutate, isLoading: createLoading } =
     useCreateNewWithdrawal();
-  const { data: statusData } = useGetStatuses();
   // getting userInformation
   let user = JSON.parse(sessionStorage.getItem("userinfo"));
-
-  // getting status of transaction detail
-  const getStatus = useMemo(() => {
-    if (statusData?.data) {
-      return statusData?.data?.statuses;
-    }
-    return [];
-  }, [statusData]);
 
   const showModal = () => {
     setOpen(true);
@@ -61,10 +50,10 @@ const Accounting = () => {
   const getContainerFromTab = () => {
     switch (active) {
       case tabs[1]:
-        return <Withdrawals status={getStatus} />;
+        return <Withdrawals />;
 
       default:
-        return <Transactions status={getStatus} />;
+        return <Transactions />;
     }
   };
   return (

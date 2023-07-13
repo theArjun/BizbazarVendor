@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./Table.module.css";
 import { Table, Tag } from "antd";
 import useWindowSize from "../../../../utils/Hooks/useWindowSize";
-const WithdrawalsTable = ({ handleScroll, loading, data, status }) => {
+const WithdrawalsTable = ({ handleScroll, loading, data }) => {
   const windowSize = useWindowSize();
   useEffect(() => {
     document
@@ -17,15 +17,17 @@ const WithdrawalsTable = ({ handleScroll, loading, data, status }) => {
   }, [handleScroll]);
 
   // getting status tag
-  const getStatusTag = (data, obj) => {
-    const [statusOfRow] = status.filter((dat) => dat.status === data);
-    return (
-      <div>
-        <Tag className={styles.dpContainer} color={statusOfRow?.params?.color}>
-          {statusOfRow?.description}
-        </Tag>
-      </div>
-    );
+  const getStatusTag = (status) => {
+    switch (status) {
+      case "P":
+        return <Tag color="yellow">Pending</Tag>;
+      case "C":
+        return <Tag color="green">Completed</Tag>;
+      case "D":
+        return <Tag color="orange">Declined</Tag>;
+      default:
+        return <Tag color="magenta">Unknown</Tag>;
+    }
   };
   // getting time and date
   const getTimeAndDate = (timeStamp) => {
@@ -48,7 +50,7 @@ const WithdrawalsTable = ({ handleScroll, loading, data, status }) => {
       dataIndex: "approval_status",
       data: "data",
       key: "product",
-      render: (text) => getStatusTag(text == "P" ? "G" : text),
+      render: (text) => getStatusTag(text),
     },
     {
       title: "Date",
