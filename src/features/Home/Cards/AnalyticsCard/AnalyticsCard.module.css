@@ -1,12 +1,17 @@
 .container {
   background-color: white;
-  width: 42%;
+  width: 46%;
   box-shadow: var(--box-shadow);
   height: 150px;
-  margin: 0 14px 14px 0px;
   border-radius: 4px;
 }
 
+@media (max-width: 780px) {
+  .container {
+    height: 120px;
+    width: 42%;
+  }
+}
 @media (max-width: 780px) {
   .container {
     height: 120px;

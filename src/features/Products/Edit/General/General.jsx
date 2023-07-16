@@ -40,7 +40,6 @@ const General = ({ editData, categories, form }) => {
     type_product_add_additional_image_detailed: {},
     file_product_add_additional_image_detailed: {},
     removed_image_pair_ids: {},
-    product_main_image_data: {},
     product_additional_image_data: {},
   });
   const imageContext = useGeneralContext();

@@ -13,7 +13,6 @@ import {
   Button,
   Input,
   Checkbox,
-  Card,
   Result,
   InputNumber,
 } from "antd";
@@ -28,10 +27,10 @@ const Profile = () => {
   const [pradesh, setPradesh] = useState("");
   const [cities, setCities] = useState([]);
   const [isShipping, setIsShipping] = useState(false);
-  const [confirm, setConfirm] = useState("");
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const provinces = [];
+  const [form] = Form.useForm();
   for (var key in states) {
     provinces.push(key);
   }
@@ -60,18 +59,8 @@ const Profile = () => {
     });
     setCities(demo);
   }, [pradesh]);
-  const handleValueChange = (a, values) => {
-    console.log(values);
-    if (values.t_password === "") {
-      setConfirm("");
-    }
-    if (values.c_password === "") {
-      setConfirm("");
-    }
-  };
   const onFinish = async (values) => {
     const data = {
-      user_id: userInfo.id,
       user_data: {
         ...values,
         company_id: userInfo.id,
@@ -100,25 +89,38 @@ const Profile = () => {
       } else {
         mutate(data, {
           onSuccess: (res) => {
-             let temp_data= {...userInfo}
-             temp_data.name= values.firstname +' '+values.lastname;
-             temp_data.phone=values.phone
-             sessionStorage.setItem('userinfo', JSON.stringify(temp_data))
+            let temp_data = { ...userInfo };
+            temp_data.name = values.firstname + " " + values.lastname;
+            temp_data.phone = values.phone;
+            sessionStorage.setItem("userinfo", JSON.stringify(temp_data));
             queryClient.invalidateQueries(["profile"]);
           },
         });
       }
     }
   };
- 
+
   const onSelect = (value) => {
     setPradesh(value);
   };
-  // Phone number validator 
+  // Phone number validator
   const validatePhoneNumber = (_, value) => {
     const phoneNumberRegex = /^\d{10}$/; // Validates a 10-digit phone number
     if (value && !phoneNumberRegex.test(value)) {
-      return Promise.reject('Please enter a valid phone number!');
+      return Promise.reject("Please enter a valid phone number!");
+    }
+    return Promise.resolve();
+  };
+  const validatePassword = (_, value) => {
+    var regex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+    if (!regex.test(form.getFieldValue("password"))) {
+      return Promise.reject(
+        new Error(
+          "Passwords must have uppercase, lowercase letters and have a special character and also must be length of 8."
+        )
+      );
+    } else if (value && value !== form.getFieldValue("password")) {
+      return Promise.reject(new Error("Passwords do not match"));
     }
     return Promise.resolve();
   };
@@ -144,20 +146,20 @@ const Profile = () => {
       <div className={styles.breadcrumb_create_btn}>
         <div className="breadcrumb">
           <Breadcrumb>
-            <Breadcrumb.Item><Link to={'/'}> Home</Link></Breadcrumb.Item>
             <Breadcrumb.Item>
-             Account setting 
+              <Link to={"/"}> Home</Link>
             </Breadcrumb.Item>
+            <Breadcrumb.Item>Account setting</Breadcrumb.Item>
           </Breadcrumb>
         </div>
       </div>
       <div className={styles.formContainer}>
         <Form
+          form={form}
           layout="vertical"
           name="basic"
           onFinish={onFinish}
           autoComplete="off"
-          onValuesChange={handleValueChange}
           initialValues={{
             email: vendorData?.email,
             phone: vendorData?.phone,
@@ -176,11 +178,11 @@ const Profile = () => {
           }}
         >
           <div className={styles.action_btn}>
-          <Form.Item style={{ float: "right" }} name="submit_btn">
-            <Button  type="primary" htmlType="submit" loading={updateLoading}>
-              Save Changes
-            </Button>
-          </Form.Item>
+            <Form.Item style={{ float: "right" }} name="submit_btn">
+              <Button type="primary" htmlType="submit" loading={updateLoading}>
+                Save Changes
+              </Button>
+            </Form.Item>
           </div>
           <div className={styles.information}>
             <div className="information_title">
@@ -227,43 +229,48 @@ const Profile = () => {
                   {
                     required: true,
                     message: "Enter a phone number",
-                   
                   },
                   {
-                    validator: validatePhoneNumber
-                  }
+                    validator: validatePhoneNumber,
+                  },
                 ]}
               >
-                <InputNumber min={1} style={{width:'100%'}} addonBefore={'+977'} />
+                <InputNumber
+                  min={1}
+                  style={{ width: "100%" }}
+                  addonBefore={"+977"}
+                />
               </Form.Item>
               <div className={styles.name_container}>
                 <Form.Item
+                  name="password"
                   label="Password"
-                  name="t_password"
                   style={{
                     width: "100%",
                   }}
                   rules={[
-                    {
-                      required: true,
-                      message: "",
-                    },
+                    { message: "Please enter your password" },
+                    { validator: validatePassword },
                   ]}
                 >
-                  <Input type="password" />
+                  <Input.Password />
                 </Form.Item>
                 <Form.Item
                   className={styles.left_margin}
                   label="Confirm password"
                   name="c_password"
+                  dependencies={["password"]}
+                  rules={[
+                    { message: "Please confirm your password" },
+                    { validator: validatePassword },
+                  ]}
                   style={{
                     width: "100%",
                   }}
                 >
-                  <Input type="password" />
+                  <Input.Password />
                 </Form.Item>
               </div>
-              <label style={{ color: "rgb(255, 53, 53)" }}>{confirm}</label>
               <Form.Item
                 label="Email"
                 name="email"

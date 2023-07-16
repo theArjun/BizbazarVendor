@@ -21,6 +21,8 @@
   display: flex;
   flex-wrap: wrap;
   height: fit-content;
+  gap: 14px;
+  margin-bottom: 14px;
 }
 .cardTitle {
   text-transform: capitalize;
