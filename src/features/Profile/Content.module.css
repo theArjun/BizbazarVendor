@@ -1,0 +1,41 @@
+.name_container {
+  width: 100%;
+  display: flex;
+}
+.left_margin {
+  margin-left: 10px;
+}
+.area_disabled {
+  pointer-events: none;
+  opacity: 0.7;
+}
+.action_btn {
+  position: absolute;
+  top: -10px;
+  right: 0;
+}
+.formContainer {
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  height: calc(100vh - 200px);
+  overflow-y: scroll;
+  padding: 20px;
+  margin-top: 10px;
+}
+.options > div > h4,
+.information > div > h4,
+.pricing > div > h4 {
+  margin: 0;
+  font-weight: 500;
+}
+.phone_verified {
+  color: green;
+  font-weight: 500;
+  margin: 0 10px;
+}
+.phone_unverified {
+  color: red;
+  font-weight: 500;
+  margin: 0 10px;
+}

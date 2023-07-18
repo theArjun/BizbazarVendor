@@ -10,7 +10,7 @@ const General = ({
   setGeneral,
   form,
 }) => {
-  const [state, setState] = useState("");
+  const [state, setState] = useState([]);
   const [location, setLocation] = useState("");
   useEffect(() => {
     getStates(vendorData?.country || "NP");

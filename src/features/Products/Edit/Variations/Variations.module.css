@@ -1,24 +1,30 @@
-.feature_main > *{
-    margin: 10px
+.feature_main > * {
+  margin: 10px;
 }
-.action_btn{
-    width: fit-content;
-    cursor: pointer;
+.action_btn {
+  width: fit-content;
+  cursor: pointer;
 }
-.right_buttons > *{
-    margin: 0 5px;
+.right_buttons > * {
+  margin: 0 5px;
 }
-.variation_modal> div >:nth-child(4){
-    display: block;
-    text-align: end;
-    background: transparent;
-    margin-top: 12px;
+.variation_modal > div > :nth-child(4) {
+  display: block;
+  text-align: end;
+  background: transparent;
+  margin-top: 12px;
 }
-.modal_body{
-   height: 450px;
-   overflow-y: scroll;
-   display: flex;
-   flex-direction: column;
-   justify-content: space-between;
-   overflow-x: hidden;
+.modal_body {
+  height: 450px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-x: hidden;
+}
+.image_and_name {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-weight: 500;
 }

@@ -293,21 +293,21 @@ const Variations = ({ data, variations, editID }) => {
   }));
   let columns = [
     {
-      title: "Name/Image",
+      title: "Image/Name",
       dataIndex: "product",
       key: "product",
+      width: 250,
       render: (item, row) => (
         <div className={styles.image_and_name}>
           <Image
-            width={70}
+            width={50}
             src={!row["main_pair"] ? "" : row["main_pair"].detailed.image_path}
             alt={""}
             fallback="/image_not_found.png"
           />
-          <p>
-            {" "}
-            <b>{row.product}</b>
-          </p>
+          <div className={styles.productName}>
+            {String(row.product).substring(0, 50)}
+          </div>
         </div>
       ),
     },

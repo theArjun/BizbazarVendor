@@ -9,12 +9,12 @@ export const useLogin = () =>
       if (err?.response?.status === 404) {
         notification.error({
           message: "Login Failed",
-          description: err.message,
+          description: err.response.data.message,
         });
       } else {
         notification.error({
           message: "Login failed",
-          description: err.message,
+          description: err.response.data.message,
         });
       }
     },

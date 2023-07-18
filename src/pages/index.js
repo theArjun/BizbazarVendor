@@ -207,6 +207,7 @@ const Comments = React.lazy(() =>
     "../features/Orders/ReturnRequests/ViewReturnRequests/Comments/Comments"
   )
 );
+const ProfileContent = React.lazy(() => import("../features/Profile/Content"));
 export {
   //Orders
   ViewOrdersTable,
@@ -284,4 +285,5 @@ export {
   ProductBundleTable,
   ProductBundleGeneralTab,
   ProductBundleProductTab,
+  ProfileContent,
 };

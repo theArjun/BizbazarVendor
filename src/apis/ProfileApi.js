@@ -19,7 +19,7 @@ export const useUpdateProfile = () =>
     onError: (err) => {
       notification.error({
         message: "Failed to update ",
-        description: err.message,
+        description: err?.response?.data?.message,
       });
     },
   });
