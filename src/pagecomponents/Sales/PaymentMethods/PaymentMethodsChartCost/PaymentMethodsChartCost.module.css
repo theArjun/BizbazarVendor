@@ -1,0 +1,16 @@
+.pie_chart_container {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 10%;
+  aspect-ratio: 1/1;
+  flex-grow: 1;
+}
+.categories_item_sold {
+  height: calc(100vh - 380px);
+  display: flex;
+  flex-direction: column;
+}
+.categories_item_sold_title {
+  margin-left: 5%;
+  margin-bottom: 20px;
+}

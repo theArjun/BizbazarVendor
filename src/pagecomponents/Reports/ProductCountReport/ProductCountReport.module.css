@@ -1,0 +1,22 @@
+.container {
+  max-height: 80vh;
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+  position: relative;
+  margin-top: 10px;
+}
+
+.positionabsolute {
+  position: absolute;
+  right: 0;
+  top: -38px;
+}
+
+.print {
+  margin-right: 10px;
+}
+
+.margintop {
+  margin-top: 100vh;
+}

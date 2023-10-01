@@ -1,0 +1,10 @@
+
+.terms_condition_body{
+    display: grid;
+    grid-template-columns: 190px 1fr;
+}
+@media (max-width: 780px) {
+    .terms_condition_body{
+        grid-template-columns:1fr;
+    }
+  }

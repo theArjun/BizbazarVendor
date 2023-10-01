@@ -1,0 +1,13 @@
+.electronics_title{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.close_electro{
+    display: none;
+}
+.export_title{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}

@@ -1,0 +1,10 @@
+.bar_chart_container {
+  aspect-ratio: 5/2;
+  flex-grow: 1;
+}
+.categories_item_sold {
+  height: calc(100vh - 435px);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}

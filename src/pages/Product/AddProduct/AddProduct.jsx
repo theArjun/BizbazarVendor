@@ -9,6 +9,7 @@ import {
   Select,
   message,
   Checkbox,
+  InputNumber,
   Card,
 } from "antd";
 import { AiFillCaretRight, AiFillCaretDown } from "react-icons/ai";
@@ -158,7 +159,7 @@ const AddProduct = () => {
             amount: 1,
           }}
         >
-          <Form.Item style={{ float: "right" }}>
+          <Form.Item className={styles.save_btn}>
             <Button disabled={loading} type="primary" htmlType="submit">
               Create
             </Button>
@@ -169,100 +170,100 @@ const AddProduct = () => {
                 Information{!info ? <AiFillCaretRight /> : <AiFillCaretDown />}
               </h2>
             </div>
-            <Card
+            <div
               className={
                 info ? styles.information_container : styles.close_container
               }
             >
-              <Form.Item
-                label="Name"
-                name="product"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please enter product name!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                id="category"
-                label="Categories"
-                rules={[
-                  {
-                    required: true,
-                    message: "Select your product category!",
-                  },
-                ]}
-                name="category"
-              >
-                <Select
-                  showSearch
-                  mode="tags"
-                  placeholder="Select a category"
-                  optionFilterProp="children"
-                  onSearch={onSearch}
-                  filterOption={(input, option) =>
-                    (option?.label ?? "")
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                  options={getCategories}
+              <div className={styles.input_items}>
+                <Form.Item
+                  label="Name"
+                  name="product"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter product name!",
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                  id="category"
+                  label="Categories"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Select your product category!",
+                    },
+                  ]}
+                  name="category"
+                >
+                  <Select
+                    showSearch
+                    mode="tags"
+                    placeholder="Select a category"
+                    optionFilterProp="children"
+                    onSearch={onSearch}
+                    filterOption={(input, option) =>
+                      (option?.label ?? "")
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
+                    options={getCategories}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Price (रु)"
+                  name="price"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please  enter product price!",
+                    },
+                  ]}
+                >
+                  <InputNumber type="number" min={0} />
+                </Form.Item>
+                <Form.Item
+                  label="List price (रु)"
+                  name="list_price"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please  enter product price!",
+                    },
+                  ]}
+                >
+                  <InputNumber type="number" min={0} />
+                </Form.Item>
+                <Form.Item
+                  label="Full description"
+                  name="full_description"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Description is required!",
+                    },
+                  ]}
+                >
+                  <ReactQuill
+                    theme="snow"
+                    value={description}
+                    onChange={setDescription}
+                  />
+                </Form.Item>
+                <ImageUploader
+                  message={message}
+                  uploadedImage={uploadedImage}
+                  setUploadedImage={setUploadedImage}
+                  imageCount={imageCount}
+                  setImageCount={setImageCount}
+                  Form={Form}
+                  setLoading={setLoading}
                 />
-              </Form.Item>
-              <Form.Item
-                label="Price (रु)"
-                name="price"
-                style={{ width: 300 }}
-                rules={[
-                  {
-                    required: true,
-                    message: "Please  enter product price!",
-                  },
-                ]}
-              >
-                <Input type="number" />
-              </Form.Item>
-              <Form.Item
-                label="List price (रु)"
-                name="list_price"
-                style={{ width: 300 }}
-                rules={[
-                  {
-                    required: true,
-                    message: "Please  enter product price!",
-                  },
-                ]}
-              >
-                <Input type="number" />
-              </Form.Item>
-              <Form.Item
-                label="Full description"
-                name="full_description"
-                rules={[
-                  {
-                    required: true,
-                    message: "Description is required!",
-                  },
-                ]}
-              >
-                <ReactQuill
-                  theme="snow"
-                  value={description}
-                  onChange={setDescription}
-                />
-              </Form.Item>
-              <ImageUploader
-                message={message}
-                uploadedImage={uploadedImage}
-                setUploadedImage={setUploadedImage}
-                imageCount={imageCount}
-                setImageCount={setImageCount}
-                Form={Form}
-                setLoading={setLoading}
-              />
-            </Card>
+              </div>
+            </div>
           </div>
           <div className={styles.options}>
             <div
@@ -274,36 +275,38 @@ const AddProduct = () => {
                 {!options ? <AiFillCaretRight /> : <AiFillCaretDown />}
               </h2>
             </div>
-            <Card
+            <div
               className={
                 options ? styles.options_container : styles.close_container
               }
             >
-              <Form.Item label="Options type" name="options_type">
-                <Select
-                  style={{
-                    width: 300,
-                  }}
-                  options={options_type.map((option) => ({
-                    label: option.label,
-                    value: option.value,
-                  }))}
-                />
-              </Form.Item>
+              <div className={styles.input_items}>
+                <Form.Item label="Options type" name="options_type">
+                  <Select
+                    style={{
+                      width: 300,
+                    }}
+                    options={options_type.map((option) => ({
+                      label: option.label,
+                      value: option.value,
+                    }))}
+                  />
+                </Form.Item>
 
-              <Form.Item label="Exceptions type" name="exceptions_type">
-                <Select
-                  style={{
-                    width: 300,
-                  }}
-                  //   onChange={onSecondCityChange}
-                  options={exception_type.map((exception) => ({
-                    label: exception.label,
-                    value: exception.value,
-                  }))}
-                />
-              </Form.Item>
-            </Card>
+                <Form.Item label="Exceptions type" name="exceptions_type">
+                  <Select
+                    style={{
+                      width: 300,
+                    }}
+                    //   onChange={onSecondCityChange}
+                    options={exception_type.map((exception) => ({
+                      label: exception.label,
+                      value: exception.value,
+                    }))}
+                  />
+                </Form.Item>
+              </div>
+            </div>
           </div>
           <div className={styles.pricing}>
             <div className="pricing_title" onClick={() => setPricing(!pricing)}>
@@ -312,88 +315,81 @@ const AddProduct = () => {
                 {!pricing ? <AiFillCaretRight /> : <AiFillCaretDown />}
               </h2>{" "}
             </div>
-            <Card
+            <div
               className={
                 pricing ? styles.pricing_container : styles.close_container
               }
             >
-              <Form.Item
-                label="CODE"
-                name="product_code"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please enter product name!",
-                  },
-                ]}
-              >
-                <Input type="text" />
-              </Form.Item>
-              <Form.Item label="In stock" name="amount" style={{ width: 200 }}>
-                <Input type="number" />
-              </Form.Item>
-
-              <Form.Item label="Zero price action" name="zero_price_action">
-                <Select
-                  //   onChange={onSecondCityChange}
-                  options={price_action.map((price_action) => ({
-                    label: price_action.label,
-                    value: price_action.value,
-                  }))}
-                />
-              </Form.Item>
-              <Form.Item
-                label="Track inventory"
-                name="tracking"
-                extra="When inventory is tracked, the number of products in stock
-              will decrease after each purchase."
-              >
-                <Select
-                  style={{
-                    width: 300,
-                  }}
-                  options={track_inventory.map((track) => ({
-                    label: track.label,
-                    value: track.value,
-                  }))}
-                />
-              </Form.Item>
-              <Form.Item
-                label="Minimum quantity to buy per product"
-                name="min_qty"
-                style={{
-                  width: 400,
-                }}
-              >
-                <Input type="number" />
-              </Form.Item>
-              <Form.Item
-                label="Maximum quantity to buy per product"
-                name="max_qty"
-                style={{
-                  width: 400,
-                }}
-              >
-                <Input type="number" />
-              </Form.Item>
-              <Form.Item
-                label="No of available quantities"
-                name="available_qty"
-                style={{
-                  width: 400,
-                }}
-              >
-                <Input type="number" />
-              </Form.Item>
-              <Form.Item label="Taxes" valuePropName="yes" name="tax">
-                <Checkbox
-                  checked={taxChecked}
-                  onChange={(e) => setTaxChecked(e.target.checked)}
+              <div className={styles.input_items}>
+                <Form.Item
+                  label="CODE"
+                  name="product_code"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter product name!",
+                    },
+                  ]}
                 >
-                  VAT
-                </Checkbox>
-              </Form.Item>
-            </Card>
+                  <Input type="text" />
+                </Form.Item>
+                <Form.Item label="In stock" name="amount">
+                  <InputNumber type="number" min={0} />
+                </Form.Item>
+
+                <Form.Item label="Zero price action" name="zero_price_action">
+                  <Select
+                    //   onChange={onSecondCityChange}
+                    options={price_action.map((price_action) => ({
+                      label: price_action.label,
+                      value: price_action.value,
+                    }))}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Track inventory"
+                  name="tracking"
+                  extra="When inventory is tracked, the number of products in stock
+              will decrease after each purchase."
+                >
+                  <Select
+                    style={{
+                      width: 300,
+                    }}
+                    options={track_inventory.map((track) => ({
+                      label: track.label,
+                      value: track.value,
+                    }))}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Minimum quantity to buy per product"
+                  name="min_qty"
+                >
+                  <InputNumber type="number" min={0} />
+                </Form.Item>
+                <Form.Item
+                  label="Maximum quantity to buy per product"
+                  name="max_qty"
+                >
+                  <InputNumber type="number" min={0} />
+                </Form.Item>
+                <Form.Item
+                  label="No of available quantities"
+                  name="available_qty"
+                >
+                  <InputNumber type="number" min={0} />
+                </Form.Item>
+                <Form.Item label="Taxes" valuePropName="yes" name="tax">
+                  <Checkbox
+                    checked={taxChecked}
+                    onChange={(e) => setTaxChecked(e.target.checked)}
+                  >
+                    VAT
+                  </Checkbox>
+                </Form.Item>
+              </div>
+            </div>
           </div>
         </Form>
       </div>

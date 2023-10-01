@@ -1,12 +1,15 @@
 .container {
-  /* background-color: var(--theme-page-background-sub); */
   width: 100%;
   height: 100%;
-  /* box-shadow: var(--box-shadow); */
-  /* padding: 2px 4px; */
-  display: flex;
   flex-direction: column;
   justify-content: center;
+}
+.formContainer {
+  background-color: var(--theme-page-background-sub);
+  box-shadow: var(--box-shadow);
+  padding: 20px;
+  min-height: calc(100vh - 285px);
+  margin-top: 10px;
 }
 .breadcrumb_create_btn {
   display: flex;
@@ -18,10 +21,28 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  margin: 0;
+  font-weight: 500;
+  margin-bottom: 10px;
 }
 .close_container {
   display: none;
 }
-.pricing {
-  padding-bottom: 100px;
+.save_btn {
+  display: flex;
+  justify-content: end;
+  margin-bottom: 0 !important;
+}
+.input_items > div > div {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  column-gap: 20px;
+}
+@media screen and (max-width: 768px) {
+  .input_items > div > div {
+    grid-template-columns: 1fr;
+  }
+  .input_items > div > div > div {
+    text-align: start !important;
+  }
 }

@@ -1,0 +1,31 @@
+.shipping_cost {
+  padding: 0 20px;
+  /* max-width: 1000px; */
+}
+.total_value {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
+}
+.shipping_cost_header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+.single_shipping_cost {
+  display: grid;
+  grid-template-columns: 1fr 100px;
+  justify-content: space-between;
+  background-color: aliceblue;
+  padding: 5px;
+  margin: 3px 0;
+}
+.single_shipping_cost > div > a {
+  text-decoration: none;
+}
+.progress_value {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}

@@ -1,0 +1,25 @@
+.add_bonus_field{
+    display:  flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.add_bonus_field > *{
+margin: 10px 0;
+}
+.bonus_fields >*{
+   margin-right: 20px;
+}
+.bonus_fields{
+    display: flex;
+    flex-wrap: wrap;
+}
+.bonus_fields > div{
+    margin-bottom: 0 !important;
+}
+.particular_bonus{
+    display: flex;
+}
+.particular_bonus > *{
+    margin: 0 5px;
+}

@@ -1,0 +1,10 @@
+
+.description_body{
+    display: grid;
+    grid-template-columns: 120px 1fr;
+}
+@media (max-width: 780px) {
+    .description_body{
+        grid-template-columns:1fr;
+    }
+  }

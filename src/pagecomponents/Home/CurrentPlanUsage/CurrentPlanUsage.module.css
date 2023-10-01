@@ -1,0 +1,47 @@
+.container {
+  background-color: white;
+  box-shadow: var(--box-shadow);
+  /* padding: 18px 0; */
+  border-radius: 5px;
+  padding: 20px;
+  overflow: hidden;
+  /* padding-top: 10px !important; */
+}
+.plan_usage_container {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+.divrow {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+  margin: 2px 0;
+  border-radius: 5px;
+  background-color: rgb(237, 237, 237);
+}
+
+.gauge {
+  display: flex;
+  align-items: center;
+}
+
+.projectplan > span {
+  margin-left: 70px;
+  font-weight: 600;
+  opacity: 0.9;
+  color: #0c0931;
+}
+
+.projectplan {
+  margin: 10px 0;
+}
+
+.label1 {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.label2 {
+  font-size: 12px;
+  transform: translateY(-3px) !important;
+}

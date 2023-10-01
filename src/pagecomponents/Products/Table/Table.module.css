@@ -1,0 +1,36 @@
+.product_info{
+    display: flex;
+    /* align-items: center; */
+}
+.product_name{
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.icons{
+    cursor: pointer;
+    color: gray;
+    border: 1px solid transparent;
+    padding: 3px 10px;
+    
+    border-radius: 10px;
+}
+.icons:hover{
+   background-color: rgb(209, 205, 205);
+    padding: 3px 10px;
+    border-radius: 10px;
+}
+.icons::before{
+    content:"\f013";
+}
+.openDelete{
+    display: none;
+}
+.selectBar{
+    cursor: pointer;
+    color: #7367f0 !important;
+    font-weight: bold;
+    font-size: 30px;
+    float: right;
+    margin: 5px 20px;
+}

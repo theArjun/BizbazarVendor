@@ -1,0 +1,15 @@
+.container {
+  background-color: white;
+  width: 42%;
+  box-shadow: var(--box-shadow);
+  height: 150px;
+  margin: 0 14px 14px 14px;
+  border-radius: 4px;
+}
+
+@media (max-width: 780px) {
+  .container {
+    height: 120px;
+    width: 35%;
+  }
+}

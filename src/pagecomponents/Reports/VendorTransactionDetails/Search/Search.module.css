@@ -1,0 +1,87 @@
+.container {
+  margin-top: 10px;
+  background-color: white;
+}
+.search_inputs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.price_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: fit-content;
+  margin-top: 8px;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+.search_btn {
+  margin-top: 25px;
+}
+
+.form {
+  width: 90%;
+}
+
+@media (min-width: 1400px) {
+  .form {
+    width: 85%;
+  }
+}
+
+.formcolumn {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.formcolumn > label {
+  width: 18%;
+  margin: 20px 10px;
+}
+.dropdownbutton {
+  width: 100%;
+}
+
+.icon {
+  transform: translate(0, 3px);
+  margin-left: 3px;
+  font-weight: 500;
+}
+
+@media (max-width: 1400px) {
+  .formcolumn > label {
+    width: 160px;
+    margin: 10px;
+  }
+}
+
+.flex {
+  width: 400px;
+  display: flex;
+  width: inherit;
+}
+
+.datepicker {
+  width: 100%;
+}
+
+.date {
+  width: 170px !important;
+}
+
+.span {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: center;
+}

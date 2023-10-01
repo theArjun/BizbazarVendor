@@ -1,0 +1,40 @@
+.container {
+  padding: 10px 5px 0 10px;
+  border-radius: 5px;
+}
+
+.customerinformation {
+  display: grid;
+  grid-template-columns: 0.3fr 1fr;
+  color: rgba(0, 0, 0, 0.634);
+  font-size: 14px;
+}
+
+.shippinginformation {
+  display: grid;
+  grid-template-columns: 0.1fr 1fr;
+  color: rgba(0, 0, 0, 0.634);
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+.heading {
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.6;
+  margin-bottom: 5px;
+}
+
+.heading1 {
+  font-size: 18px;
+  font-weight: 600;
+  opacity: 0.6;
+  margin-bottom: 5px;
+  margin-top: 40px;
+}
+
+@media (max-width: 1400px) {
+  .customerinformation {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,39 @@
+.seo_card{
+    display: flex;
+}
+.seo_card_left{
+    width: 50%;
+}
+.seo_card_right{
+    width: 50%;
+    margin-left: 20px;
+    margin-top: 40px;
+}
+.google_preview{
+    display: flex;
+    flex-direction: column;
+}
+.google_preview > h4{
+   margin: 0;
+   padding: 0;
+}
+.seo_card_left >div>div>div>div>div> span{
+    overflow-x: scroll;
+} 
+/* .seo_card_left >div>div>div>div>div> span >span>input{
+    width: 100px !important;
+}  */
+@media (max-width: 718px) {
+    .seo_card {
+   display: block;
+    }
+    .seo_card_left{
+        width: 100%;
+    }
+    .seo_card_right{
+        width: 100%;
+        margin-left: 0px;
+        margin-top: 0px;
+    }
+    
+  }

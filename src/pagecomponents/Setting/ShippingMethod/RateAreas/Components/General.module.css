@@ -1,0 +1,54 @@
+.container{
+    background-color: white;
+    min-height: 70vh;
+    padding :20px
+}
+
+.topInfo{
+      width: fit-content;
+      
+      padding: 10px;
+      box-shadow: calc(--box-shadow);
+      border: 3px dotted green;
+      border-radius: 4px;
+
+}
+
+.body{
+    margin-top: 4px;
+}
+
+.sectionContainer{
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+}
+
+.sectionHeading{
+    font-size: 20px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.699);
+    margin-right: 10px;
+}
+
+.tagCountry{
+    font-size: 18px;
+    padding: 5px 8px;
+}
+
+.tagContainer{
+    margin-top: 10px;
+    display: flex;
+}
+
+.deleteTag{
+    background-color: red;
+    margin:0 0 0 1em;
+    padding: 0.2em;
+    height: fit-content;
+    width: fit-content;
+}
+
+.countryInputWrap{
+    position: relative;
+}
